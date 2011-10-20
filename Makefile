@@ -1,6 +1,6 @@
-NODE_BIN=node_modules/.bin
-CSS_MIN=$(NODE_BIN)/cleancss
-JS_MIN=$(NODE_BIN)/uglifyjs
+NODE_MODULES=node_modules
+CSS_MIN=$(NODE_MODULES)/.bin/cleancss
+JS_MIN=$(NODE_MODULES)/.bin/uglifyjs
 
 CSS_FILES=\
 	src/css/detail.css\
@@ -34,7 +34,7 @@ JS_FILES=\
 build: rickshaw.min.css rickshaw.min.js
 
 clean:
-	rm -rf rickshaw.css rickshaw.js rickshaw.min.* node_*
+	rm -rf rickshaw.css rickshaw.js rickshaw.min.*
 
 $(CSS_MIN):
 	npm install clean-css
