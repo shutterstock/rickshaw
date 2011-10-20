@@ -29,7 +29,7 @@ JS_FILES=\
 	src/js/Rickshaw.Graph.Unstacker.js\
 	src/js/Rickshaw.Series.js\
 
-.PHONY: build
+.PHONY: clean build
 
 build: rickshaw.min.css rickshaw.min.js
 
