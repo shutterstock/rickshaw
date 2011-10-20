@@ -1,0 +1,95 @@
+/* graph */
+
+.rickshaw_graph {
+	position: relative;
+}
+.rickshaw_graph svg {
+	display: block;	
+}
+
+/* ticks */
+
+.rickshaw_graph .x_tick {
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	width: 0px;
+	border-left: 1px dotted rgba(0, 0, 0, 0.3);
+}
+.rickshaw_graph .x_tick .title {
+	position: absolute;
+	font-size: 12px;
+	font-family: Arial, sans-serif;
+	color: rgba(0, 0, 0, 0.4);
+	white-space: nowrap;
+	margin-left: 3px;
+	bottom: 1px;
+}
+
+/* annotations */
+
+.rickshaw_annotation_timeline {
+	height: 1px;
+	border-top: 1px solid #e0e0e0;
+	margin-top: 10px;
+	position: relative;
+}
+.rickshaw_annotation_timeline .annotation {
+	position: absolute;
+	height: 6px;
+	width: 6px;
+	margin-left: -2px;
+	top: -3px;
+	border-radius: 5px;
+	background-color: rgba(0, 0, 0, 0.25);
+}
+.rickshaw_graph .annotation_line {
+	position: absolute;
+	top: 0;
+	bottom: -6px;
+	width: 0px;
+	border-left: 2px solid rgba(0, 0, 0, 0.3);
+	display: none;
+}
+.rickshaw_graph .annotation_line.active {
+	display: block;
+}
+.rickshaw_annotation_timeline .annotation .content {
+	background: white;
+	color: black;
+	opacity: 0.9;
+	padding: 5px 5px;
+	box-shadow: 0 0 2px rgba(0, 0, 0, 0.8);
+	border-radius: 3px;
+	position: relative;
+	z-index: 20;
+	font-size: 12px;
+	padding: 6px 8px 8px;
+	top: 18px;
+	left: -11px;
+	width: 160px;
+	display: none;
+	cursor: pointer;
+}
+.rickshaw_annotation_timeline .annotation .content:before {
+	content: "\25b2";
+	position: absolute;
+	top: -11px;
+	color: white;
+	text-shadow: 0 -1px 1px rgba(0, 0, 0, 0.8);
+}
+.rickshaw_annotation_timeline .annotation.active,
+.rickshaw_annotation_timeline .annotation:hover {
+	background-color: rgba(0, 0, 0, 0.8);
+	cursor: none;
+}
+.rickshaw_annotation_timeline .annotation .content:hover {
+	z-index: 50;
+}
+.rickshaw_annotation_timeline .annotation.active .content {
+	display: block;
+}
+.rickshaw_annotation_timeline .annotation:hover .content {
+	display: block;
+	z-index: 50;
+}

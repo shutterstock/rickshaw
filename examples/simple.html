@@ -1,0 +1,49 @@
+<!doctype>
+<head>
+	<link type="text/css" rel="stylesheet" href="../src/css/graph.css">
+	<link type="text/css" rel="stylesheet" href="css/lines.css">
+
+	<script src="https://raw.github.com/mbostock/d3/master/d3.js"></script>
+	<script src="https://raw.github.com/mbostock/d3/master/d3.layout.js"></script>
+
+	<script src="../src/js/Rickshaw.Graph.js"></script>
+	<script src="../src/js/Rickshaw.Graph.Unstacker.js"></script>
+	<script src="../src/js/Rickshaw.Graph.Renderer.Line.js"></script>
+</head>
+<body>
+
+<div id="chart_container">
+	<div id="chart"></div>
+</div>
+
+<script>
+
+// instantiate our graph!
+
+var graph = new Rickshaw.Graph( {
+	element: document.getElementById("chart"),
+	width: 400,
+	height: 200,
+	renderer: 'line',
+	series: [
+		{
+			name: 'Firefox',
+			data: [ { x: 0, y: 40 }, { x: 1, y: 49 }, { x: 2, y: 38 }, { x: 3, y: 30 }, { x: 4, y: 32 } ],
+			color: "#c05020"
+		}, {
+			name: 'Chrome',
+			data: [ { x: 0, y: 19 }, { x: 1, y: 22 }, { x: 2, y: 29 }, { x: 3, y: 20 }, { x: 4, y: 14 } ],
+			color: "#30c020"
+		}, {
+			name: 'Safari',
+			data: [ { x: 0, y: 8 }, { x: 1, y: 12 }, { x: 2, y: 15 }, { x: 3, y: 11 }, { x: 4, y: 10 } ],
+			color: "#6060c0"
+		}
+	]
+} );
+
+graph.render();
+
+</script>
+
+</body>

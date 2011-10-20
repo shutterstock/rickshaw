@@ -1,0 +1,95 @@
+<!doctype>
+<head>
+	<link type="text/css" rel="stylesheet" href="http://jqueryui.com/themes/base/jquery.ui.all.css">
+	<link type="text/css" rel="stylesheet" href="../src/css/graph.css">
+	<link type="text/css" rel="stylesheet" href="../src/css/detail.css">
+	<link type="text/css" rel="stylesheet" href="../src/css/legend.css">
+	<link type="text/css" rel="stylesheet" href="css/lines.css">
+
+	<script src="https://raw.github.com/mbostock/d3/master/d3.js"></script>
+	<script src="https://raw.github.com/mbostock/d3/master/d3.layout.js"></script>
+
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.15/jquery-ui.min.js"></script>
+
+	<script src="../src/js/Rickshaw.Graph.js"></script>
+	<script src="../src/js/Rickshaw.Graph.Renderer.Line.js"></script>
+	<script src="../src/js/Rickshaw.Graph.HoverDetail.js"></script>
+	<script src="../src/js/Rickshaw.Graph.Legend.js"></script>
+	<script src="../src/js/Rickshaw.Graph.Axis.Time.js"></script>
+	<script src="../src/js/Rickshaw.Graph.Behavior.Series.Toggle.js"></script>
+	<script src="../src/js/Rickshaw.Graph.Unstacker.js"></script>
+	<script src="../src/js/Rickshaw.Fixtures.Time.js"></script>
+	<script src="../src/js/Rickshaw.Fixtures.RandomData.js"></script>
+</head>
+<body>
+
+<div id="chart_container">
+	<div id="chart"></div>
+	<div id="legend_container">
+		<div id="smoother" title="Smoothing"></div>
+		<div id="legend"></div>
+	</div>
+	<div id="slider"></div>
+</div>
+
+<script>
+
+// set up our data series with 50 random data points
+
+var seriesData = [ [], [], [] ];
+var random = new Rickshaw.Fixtures.RandomData(150);
+
+for (var i = 0; i < 150; i++) {
+	random.addData(seriesData);
+}
+
+// instantiate our graph!
+
+var graph = new Rickshaw.Graph( {
+	element: document.getElementById("chart"),
+	width: 960,
+	height: 500,
+	renderer: 'line',
+	series: [
+		{
+			color: "#c05020",
+			data: seriesData[0],
+			name: 'Firefox'
+		}, {
+			color: "#30c020",
+			data: seriesData[1],
+			name: 'Chrome'
+		}, {
+			color: "#6060c0",
+			data: seriesData[2],
+			name: 'Safari'
+		}
+	]
+} );
+
+graph.render();
+
+var hoverDetail = new Rickshaw.Graph.HoverDetail( {
+	graph: graph
+} );
+
+var legend = new Rickshaw.Graph.Legend( {
+	graph: graph,
+	element: document.getElementById('legend')
+
+} );
+
+var shelving = new Rickshaw.Graph.Behavior.Series.Toggle( {
+	graph: graph,
+	legend: legend
+} );
+
+var axes = new Rickshaw.Graph.Axis.Time( {
+	graph: graph
+} );
+axes.render();
+
+</script>
+
+</body>
