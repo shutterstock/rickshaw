@@ -1,4 +1,6 @@
-NODE_MODULES=node_modules
+NODE_PREFIX=$(shell npm prefix)
+NODE_MODULES=$(NODE_PREFIX)/node_modules
+
 CSS_MIN=$(NODE_MODULES)/.bin/cleancss
 JS_MIN=$(NODE_MODULES)/.bin/uglifyjs
 
@@ -8,10 +10,11 @@ CSS_FILES=\
 	src/css/legend.css\
 
 JS_FILES=\
-	src/js/Rickshaw.Color.Palette.js\
+	src/js/Rickshaw.Graph.js\
 	src/js/Rickshaw.Fixtures.Color.js\
 	src/js/Rickshaw.Fixtures.RandomData.js\
 	src/js/Rickshaw.Fixtures.Time.js\
+	src/js/Rickshaw.Color.Palette.js\
 	src/js/Rickshaw.Graph.Ajax.js\
 	src/js/Rickshaw.Graph.Annotate.js\
 	src/js/Rickshaw.Graph.Axis.Time.js\
@@ -19,7 +22,6 @@ JS_FILES=\
 	src/js/Rickshaw.Graph.Behavior.Series.Order.js\
 	src/js/Rickshaw.Graph.Behavior.Series.Toggle.js\
 	src/js/Rickshaw.Graph.HoverDetail.js\
-	src/js/Rickshaw.Graph.js\
 	src/js/Rickshaw.Graph.JSONP.js\
 	src/js/Rickshaw.Graph.Legend.js\
 	src/js/Rickshaw.Graph.RangeSlider.js\
