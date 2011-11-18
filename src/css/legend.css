@@ -27,6 +27,7 @@
 	border-radius: 2px;
 }
 .rickshaw_legend .label {
+	white-space: nowrap;
 	display: inline;
 }
 .rickshaw_legend .action:hover {
@@ -52,6 +53,7 @@
 .rickshaw_legend li {
 	padding: 0 0 0 2px;
 	min-width: 80px;
+	white-space: nowrap;
 }
 .rickshaw_legend li:hover {
 	background: rgba(255, 255, 255, 0.08);

@@ -1,23 +1,23 @@
-window.Rickshaw = window.Rickshaw || {};
-Rickshaw.Graph = Rickshaw.Graph || {};
+Rickshaw.namespace('Graph.Ajax');
 
 Rickshaw.Graph.Ajax = function(args) {
 
 	var self = this;
-	this.data_url = args.data_url;
+	this.dataURL = args.dataURL;
 
 	$.ajax( {
-		url: this.data_url,
+		url: this.dataURL,
 		complete: function(response, status) {
 
 			if (status === 'error') {
-				console.log("error loading data_url: " + this.data_url);
+				console.log("error loading dataURL: " + this.dataURL);
 			}
 
 			var data = eval( '(' + response.responseText + ')' );	
 
 			if (typeof args.onData === 'function') {
-				args.onData(data);
+				var processedData = args.onData(data);
+				data = processedData;
 			}
 
 			if (args.series) {
@@ -49,7 +49,7 @@ Rickshaw.Graph.Ajax = function(args) {
 			self.graph.render();
 
 			if (typeof args.onComplete == 'function') {
-				args.onComplete();
+				args.onComplete(self);
 			}
 		}
 	} );

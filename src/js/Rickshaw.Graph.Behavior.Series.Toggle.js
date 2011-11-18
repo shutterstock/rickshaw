@@ -1,5 +1,4 @@
-Rickshaw.Graph.Behavior = Rickshaw.Graph.Behavior || {};
-Rickshaw.Graph.Behavior.Series = Rickshaw.Graph.Behavior.Series || {};
+Rickshaw.namespace('Rickshaw.Graph.Behavior.Series.Toggle');
 
 Rickshaw.Graph.Behavior.Series.Toggle = function(args) {
 

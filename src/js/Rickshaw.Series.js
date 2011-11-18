@@ -1,24 +1,13 @@
-if (typeof module !== 'undefined' && module.exports && typeof window === 'undefined') {
-	window = module.exports;
-}
+Rickshaw.namespace('Rickshaw.Series');
 
-window.Rickshaw = window.Rickshaw || {};
-
-window.d3 = window.d3 || {};
-window.d3.keys = function(map) {
-	var keys = [];
-	for (var key in map) keys.push(key);
-	return keys;
-};
-
-window.Rickshaw.Series = function(data) {
+Rickshaw.Series = function(data) {
 
 	var self = this;
 
 	this.initialize = function (data, palette, options) {
 		options = options || {}
 
-		self.palette = new window.Rickshaw.Color.Palette(palette);
+		self.palette = new Rickshaw.Color.Palette(palette);
 		self.timeBase = typeof(options.timeBase) === 'undefined' ? Math.floor(new Date().getTime() / 1000) : options.timeBase;
 
 		if (data && (typeof(data) == "object") && (data instanceof Array)) {
@@ -54,7 +43,7 @@ window.Rickshaw.Series = function(data) {
 	this.addData = function(data) {
 		var index = this.getIndex();
 
-		window.d3.keys(data).forEach( function (name) {
+		Rickshaw.keys(data).forEach( function (name) {
 			if (! self.itemByName(name)) {
 				self.addItem({ name: name });
 			}
@@ -130,4 +119,29 @@ window.Rickshaw.Series = function(data) {
 	this.initialize(data);
 }
 
-window.Rickshaw.Series.prototype = new Array;
+Rickshaw.Series.prototype = new Array;
+
+Rickshaw.Series.zeroFill = function(series) {
+
+	var x;
+	var i = 0;
+
+	var data = series.map( function(s) { return s.data } );
+
+	while ( i < Math.max.apply(null, data.map( function(d) { return d.length } )) ) {
+
+		x = Math.min.apply( null, 
+			data
+				.filter(function(d) { return d[i] })
+				.map(function(d) { return d[i].x })
+		);
+
+		data.forEach( function(d) {
+			if (!d[i] || d[i].x != x) {
+				d.splice(i, 0, { x: x, y: 0 });
+			}
+		} );
+
+		i++;
+	}
+};

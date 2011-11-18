@@ -1,22 +1,22 @@
-window.Rickshaw = window.Rickshaw || {};
-Rickshaw.Graph = Rickshaw.Graph || {};
+Rickshaw.namespace('Rickshaw.Graph.JSONP');
 
 Rickshaw.Graph.JSONP = function(args) {
 
 	var self = this;
-	this.data_url = args.data_url;
+	this.dataURL = args.dataURL;
 
 	$.ajax( {
-		url: this.data_url,
+		url: this.dataURL,
 		dataType: 'jsonp',
 		success: function(data, status, response) {
 
 			if (status === 'error') {
-				console.log("error loading data_url: " + this.data_url);
+				console.log("error loading dataURL: " + this.dataURL);
 			}
 
 			if (typeof args.onData === 'function') {
-				args.onData(data);
+				var processedData = args.onData(data);
+				data = processedData;
 			}
 
 			if (args.series) {
@@ -48,8 +48,9 @@ Rickshaw.Graph.JSONP = function(args) {
 			self.graph.render();
 
 			if (typeof args.onComplete == 'function') {
-				args.onComplete();
+				args.onComplete(self);
 			}
 		}
 	} );
 }
+

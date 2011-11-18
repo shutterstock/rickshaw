@@ -1,3 +1,5 @@
+Rickshaw.namespace('Rickshaw.Graph.HoverDetail');
+
 Rickshaw.Graph.HoverDetail = function(args) {
 
 	var graph = this.graph = args.graph;
@@ -100,23 +102,35 @@ Rickshaw.Graph.HoverDetail = function(args) {
 		xLabel.innerHTML = this.xFormatter(domainX);
 		this.element.appendChild(xLabel);
 
-		detail.forEach( function(d) {
+		var activeItem = null;
+
+		var sortFn = function(a, b) {
+			return (a.value.y0 + a.value.y) - (b.value.y0 + b.value.y);
+		}
+
+		detail.sort(sortFn).forEach( function(d) {
+
 			var item = document.createElement('div');
 			item.className = 'item';
 			item.innerHTML = d.name + ':&nbsp;' + d.value.y.toFixed(2);
-			item.style.top = graph.element.offsetHeight - graph.y(d.value.y0 + d.value.y) + 'px';
-			
-			var domainMouseY = graph.y.invert(graph.element.offsetHeight - mouseY);
-			
-			if (domainMouseY > d.value.y0 && domainMouseY < d.value.y0 + d.value.y) {
-				item.className = 'item active';	
-			}
+			item.style.top = graph.y(d.value.y0 + d.value.y) + 'px';
+
+			var domainMouseY = graph.y.magnitude.invert(graph.element.offsetHeight - mouseY);
 			
 			this.element.appendChild(item);
 
-			// silly lazy workaround so labels don't become dead spots
-			item.onmouseover = function() { item.style.display = 'none' };
-			item.onmouseout = function() { item.style.display = 'block' };
+			var dot = document.createElement('div');
+			dot.className = 'dot';
+			dot.style.top = item.style.top;
+
+			this.element.appendChild(dot);
+
+			if (domainMouseY > d.value.y0 && domainMouseY < d.value.y0 + d.value.y && !activeItem) {
+
+				activeItem = item;
+				item.className = 'item active';	
+				dot.className = 'dot active';
+			}
 
 		}, this );
 

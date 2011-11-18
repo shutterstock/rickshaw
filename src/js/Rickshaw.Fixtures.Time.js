@@ -1,5 +1,4 @@
-window.Rickshaw = window.Rickshaw || {};
-Rickshaw.Fixtures = Rickshaw.Fixtures || {};
+Rickshaw.namespace('Rickshaw.Fixtures.Time');
 
 Rickshaw.Fixtures.Time = function() {
 
@@ -11,6 +10,10 @@ Rickshaw.Fixtures.Time = function() {
 
 	this.units = [
 		{ 
+			name: 'decade',
+			seconds: 86400 * 365 * 10,
+			formatter: function(d) { return (parseInt(d.getUTCFullYear()/10) * 10) } 
+		}, { 
 			name: 'year',
 			seconds: 86400 * 365,
 			formatter: function(d) { return d.getUTCFullYear() } 

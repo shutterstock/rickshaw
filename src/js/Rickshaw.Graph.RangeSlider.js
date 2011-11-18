@@ -1,3 +1,5 @@
+Rickshaw.namespace('Rickshaw.Graph.RangeSlider');
+
 Rickshaw.Graph.RangeSlider = function(args) {
 
 	var element = this.element = args.element;

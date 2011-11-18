@@ -1,4 +1,4 @@
-window.Rickshaw = window.Rickshaw || {};
+Rickshaw.namespace('Rickshaw.Graph');
 
 Rickshaw.Graph = function(args) {
 
@@ -7,8 +7,12 @@ Rickshaw.Graph = function(args) {
 	this.series = args.series;
 	this.offset = 'zero';
 
-	this.width = args.width;
-	this.height = args.height
+	var style = window.getComputedStyle(this.element, null);
+	var elementWidth = parseInt(style.getPropertyValue('width'));
+	var elementHeight = parseInt(style.getPropertyValue('height'));
+
+	this.width = args.width || elementWidth || 400;
+	this.height = args.height || elementHeight || 250;
 
 	this.window = {};
 
@@ -16,9 +20,9 @@ Rickshaw.Graph = function(args) {
 
 	var self = this;
 
-	// TODO: validate series
-
 	this.initialize = function(args) {
+
+		this.validateSeries(args.series);
 
 		this.series.active = function() { return self.series.filter( function(s) { return !s.disabled } ) };
 
@@ -30,7 +34,8 @@ Rickshaw.Graph = function(args) {
 
 		var renderers = [
 			Rickshaw.Graph.Renderer.Stack, 
-			Rickshaw.Graph.Renderer.Line
+			Rickshaw.Graph.Renderer.Line,
+			Rickshaw.Graph.Renderer.Bar
 		];
 	
 		renderers.forEach( function(r) {
@@ -40,6 +45,42 @@ Rickshaw.Graph = function(args) {
 
 		this.setRenderer(args.renderer || 'stack');
 		this.discoverRange();
+	}
+
+	this.validateSeries = function(series) {
+
+		var seriesSignature = Object.prototype.toString.apply(series);
+
+		if (seriesSignature !== '[object Array]') {
+			throw "series is not an array: " + seriesSignature;
+		}
+
+		var pointsCount;
+
+		series.forEach( function(s) {
+
+			if (! s instanceof Object) {
+				throw "series element is not an object " + s;
+			}
+			if (!s.data) {
+				throw "series has no data: " + JSON.stringify(s);
+			}
+
+			pointsCount = pointsCount || s.data.length;
+
+			if (pointsCount && s.data.length != pointsCount) {
+				throw "series cannot have differing numbers of points: " +
+					pointsCount	+ " vs " + s.data.length + "; see Rickshaw.Series.zeroFill()";
+			}
+
+			var dataTypeX = typeof s.data[0].x;
+			var dataTypeY = typeof s.data[0].y;
+
+			if (dataTypeX != 'number' || dataTypeY != 'number') {
+				throw "x and y properties of points should be numbers instead of " + 
+					dataTypeX + " and " + dataTypeY;
+			}
+		} );
 	}
 
 	this.dataDomain = function() {
@@ -56,7 +97,9 @@ Rickshaw.Graph = function(args) {
 		var domain = this.renderer.domain();
 	
 		this.x = d3.scale.linear().domain(domain.x).range([0, this.width]);
-		this.y = d3.scale.linear().domain(domain.y).range([0, this.height]);
+
+		this.y = d3.scale.linear().domain(domain.y).range([this.height, 0]);
+		this.y.magnitude = d3.scale.linear().domain(domain.y).range([0, this.height]);
 		
 	}
 
@@ -74,7 +117,7 @@ Rickshaw.Graph = function(args) {
 
 	this.update = this.render;
 
-  this.stackData = function() {
+	this.stackData = function() {
 
 		var data = this.series.active()
 			.map( function(d) { return d.data } )

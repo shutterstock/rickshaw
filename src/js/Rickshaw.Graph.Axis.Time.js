@@ -1,6 +1,4 @@
-window.Rickshaw = window.Rickshaw || {};
-Rickshaw.Graph = Rickshaw.Graph || {};
-Rickshaw.Graph.Axis = Rickshaw.Graph.Axis || {};
+Rickshaw.namespace('Rickshaw.Graph.Axis.Time');
 
 Rickshaw.Graph.Axis.Time = function(args) {
 
@@ -8,6 +6,7 @@ Rickshaw.Graph.Axis.Time = function(args) {
 
 	this.graph = args.graph;
 	this.elements = [];
+	this.ticksTreatment = args.ticksTreatment || 'plain';
 
 	var time = new Rickshaw.Fixtures.Time();
 
@@ -67,6 +66,7 @@ Rickshaw.Graph.Axis.Time = function(args) {
 			var element = document.createElement('div');
 			element.style.left = self.graph.x(o.value) + 'px';
 			element.classList.add('x_tick');
+			element.classList.add(self.ticksTreatment);
 
 			var title = document.createElement('div');
 			title.classList.add('title');

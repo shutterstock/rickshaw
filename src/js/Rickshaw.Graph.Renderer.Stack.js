@@ -1,4 +1,4 @@
-Rickshaw.Graph.Renderer = Rickshaw.Graph.Renderer || {};
+Rickshaw.namespace('Rickshaw.Graph.Renderer.Stack');
 
 Rickshaw.Graph.Renderer.Stack = function(args) {
 
@@ -7,11 +7,14 @@ Rickshaw.Graph.Renderer.Stack = function(args) {
 
 		this.name = 'stack';
 
-		this.seriesPathFactory = d3.svg.area()
-			.x( function(d) { return graph.x(d.x) } )
-			.y0( function(d) { return graph.height - graph.y(d.y0) } )
-			.y1( function(d) { return graph.height - graph.y(d.y + d.y0)} )
-			.interpolate(this.graph.interpolation).tension(0.8);
+		this.seriesPathFactory = function() { 
+
+			return d3.svg.area()
+				.x( function(d) { return graph.x(d.x) } )
+				.y0( function(d) { return graph.y(d.y0) } )
+				.y1( function(d) { return graph.y(d.y + d.y0)} )
+				.interpolate(this.graph.interpolation).tension(0.8);
+		}
 
 		this.domain = function() {
 
@@ -30,12 +33,12 @@ Rickshaw.Graph.Renderer.Stack = function(args) {
 
 		this.render = function() {
 
-			graph.vis.selectAll('path').remove();
+			graph.vis.selectAll('*').remove();
 
 			var nodes = graph.vis.selectAll("path")
 				.data(graph.stackedData)
 				.enter().append("svg:path")
-				.attr("d", this.seriesPathFactory); 
+				.attr("d", this.seriesPathFactory()); 
 
 			var i = 0;
 			graph.series.forEach( function(series) {

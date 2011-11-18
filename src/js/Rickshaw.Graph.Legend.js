@@ -1,3 +1,5 @@
+Rickshaw.namespace('Rickshaw.Graph.Legend');
+
 Rickshaw.Graph.Legend = function(args) {
 
 	var element = this.element = args.element;

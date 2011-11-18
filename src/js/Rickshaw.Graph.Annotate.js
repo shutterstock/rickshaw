@@ -1,3 +1,5 @@
+Rickshaw.namespace('Rickshaw.Graph.Annotate');
+
 Rickshaw.Graph.Annotate = function(args) {
 
 	var graph = this.graph = args.graph;

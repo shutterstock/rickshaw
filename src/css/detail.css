@@ -1,4 +1,5 @@
 .rickshaw_graph .detail {
+	pointer-events: none;
 	position: absolute;
 	top: 0;
 	z-index: 2;
@@ -34,13 +35,17 @@
 	padding: 0.25em;
 	font-size: 12px;
 	font-family: Arial, sans-serif;
-	opacity: 0.92;
+	opacity: 0;
 	background: rgba(0, 0, 0, 0.4);
 	color: white;
 	border: 1px solid rgba(0, 0, 0, 0.4);
 	margin-left: 1em;
 	margin-top: -1em;
 	white-space: nowrap;
+}
+.rickshaw_graph .detail .item.active {
+	opacity: 1;
+	background: rgba(0, 0, 0, 0.8);
 }
 .rickshaw_graph .detail .item:before {
 	content: "\25c2";
@@ -49,4 +54,15 @@
 	color: rgba(0, 0, 0, 0.7);
 	width: 0;
 }
-
+.rickshaw_graph .detail .dot {
+	width: 5px;
+	height: 5px;
+	margin-left: -2px;
+	margin-top: -3px;
+	border-radius: 3px;
+	position: absolute;
+}
+.rickshaw_graph .detail .dot.active {
+	background: rgba(255, 255, 255, 0.8);
+	box-shadow: 0 0 1px rgba(0, 0, 0, 0.5);
+}

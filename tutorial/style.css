@@ -1,0 +1,34 @@
+body {
+	width: 800px;
+	margin: auto;
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 13px;
+	color: #282828;
+}
+pre {
+	padding: 0.5em;
+	background: #f4f4f4;
+	border: 1px solid #eaeaea;
+	white-space: pre-wrap;
+	display: inline-block;
+	vertical-align: top;
+}
+h1 {
+	margin: 0 0 0.2em 0;
+	font-weight: normal;
+}
+h2 {
+	font-weight: normal;
+	margin: 1em 0 0.2em 0;
+}
+.tutorial-chart {
+	margin-left: 1%;
+	vertical-align: top;
+	margin-top: 1em;
+}
+#tutorial-chart04-container,
+#tutorial-chart05-container,
+#tutorial-chart06-container,
+#tutorial-chart07-container {
+	border: none;
+}

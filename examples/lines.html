@@ -6,12 +6,13 @@
 	<link type="text/css" rel="stylesheet" href="../src/css/legend.css">
 	<link type="text/css" rel="stylesheet" href="css/lines.css">
 
-	<script src="https://raw.github.com/mbostock/d3/master/d3.js"></script>
-	<script src="https://raw.github.com/mbostock/d3/master/d3.layout.js"></script>
+	<script src="../vendor/d3.min.js"></script>
+	<script src="../vendor/d3.layout.min.js"></script>
 
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
 	<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.15/jquery-ui.min.js"></script>
 
+	<script src="../src/js/Rickshaw.js"></script>
 	<script src="../src/js/Rickshaw.Graph.js"></script>
 	<script src="../src/js/Rickshaw.Graph.Renderer.Line.js"></script>
 	<script src="../src/js/Rickshaw.Graph.HoverDetail.js"></script>
@@ -55,15 +56,15 @@ var graph = new Rickshaw.Graph( {
 		{
 			color: "#c05020",
 			data: seriesData[0],
-			name: 'Firefox'
+			name: 'New York'
 		}, {
 			color: "#30c020",
 			data: seriesData[1],
-			name: 'Chrome'
+			name: 'London'
 		}, {
 			color: "#6060c0",
 			data: seriesData[2],
-			name: 'Safari'
+			name: 'Tokyo'
 		}
 	]
 } );

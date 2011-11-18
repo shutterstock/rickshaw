@@ -10,14 +10,17 @@ CSS_FILES=\
 	src/css/legend.css\
 
 JS_FILES=\
+	src/js/Rickshaw.js\
 	src/js/Rickshaw.Graph.js\
 	src/js/Rickshaw.Fixtures.Color.js\
 	src/js/Rickshaw.Fixtures.RandomData.js\
 	src/js/Rickshaw.Fixtures.Time.js\
+	src/js/Rickshaw.Fixtures.Number.js\
 	src/js/Rickshaw.Color.Palette.js\
 	src/js/Rickshaw.Graph.Ajax.js\
 	src/js/Rickshaw.Graph.Annotate.js\
 	src/js/Rickshaw.Graph.Axis.Time.js\
+	src/js/Rickshaw.Graph.Axis.Y.js\
 	src/js/Rickshaw.Graph.Behavior.Series.Highlight.js\
 	src/js/Rickshaw.Graph.Behavior.Series.Order.js\
 	src/js/Rickshaw.Graph.Behavior.Series.Toggle.js\
@@ -27,6 +30,7 @@ JS_FILES=\
 	src/js/Rickshaw.Graph.RangeSlider.js\
 	src/js/Rickshaw.Graph.Renderer.Line.js\
 	src/js/Rickshaw.Graph.Renderer.Stack.js\
+	src/js/Rickshaw.Graph.Renderer.Bar.js\
 	src/js/Rickshaw.Graph.Smoother.js\
 	src/js/Rickshaw.Graph.Unstacker.js\
 	src/js/Rickshaw.Series.js\

@@ -1,11 +1,6 @@
-if (typeof module !== 'undefined' && module.exports && typeof window === 'undefined') {
-	window = module.exports;
-}
+Rickshaw.namespace('Rickshaw.Fixtures.Color');
 
-window.Rickshaw.Fixtures = window.Rickshaw.Fixtures || {};
-window.Rickshaw.Fixtures.Color = window.Rickshaw.Fixtures.Color || {};
-
-window.Rickshaw.Fixtures.Color = function() {
+Rickshaw.Fixtures.Color = function() {
 
 	this.schemes = {};
 
@@ -87,6 +82,30 @@ window.Rickshaw.Fixtures.Color = function() {
 		'#963b20',
 		'#7c2626',
 		'#491d37',
-		'#2e162c'
+		'#2f254a'
 	].reverse();
+
+	this.schemes.httpStatus = {
+		503: '#ea5029',
+		502: '#d23f14',
+		500: '#bf3613',
+		410: '#efacea',
+		409: '#e291dc',
+		403: '#f457e8',
+		408: '#e121d2',
+		401: '#b92dae',
+		405: '#f47ceb',
+		404: '#a82a9f',
+		400: '#b263c6',
+		301: '#6fa024',
+		302: '#87c32b',
+		307: '#a0d84c',
+		304: '#28b55c',
+		200: '#1a4f74',
+		206: '#27839f',
+		201: '#52adc9',
+		202: '#7c979f',
+		203: '#a5b8bd',
+		204: '#c1cdd1',
+	}
 }

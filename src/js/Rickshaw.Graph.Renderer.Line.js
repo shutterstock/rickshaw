@@ -1,4 +1,4 @@
-Rickshaw.Graph.Renderer = Rickshaw.Graph.Renderer || {};
+Rickshaw.namespace('Rickshaw.Graph.Renderer.Line');
 
 Rickshaw.Graph.Renderer.Line = function(args) {
 
@@ -10,10 +10,13 @@ Rickshaw.Graph.Renderer.Line = function(args) {
 
 		graph.unstacker = graph.unstacker || new Rickshaw.Graph.Unstacker( { graph: graph } );
 
-		this.seriesPathFactory = d3.svg.line()
-			.x( function(d) { return graph.x(d.x) } )
-			.y( function(d) { return graph.height - graph.y(d.y) } )
-			.interpolate(this.graph.interpolation).tension(0.8);
+		this.seriesPathFactory = function() { 
+
+			return d3.svg.line()
+				.x( function(d) { return graph.x(d.x) } )
+				.y( function(d) { return graph.y(d.y) } )
+				.interpolate(this.graph.interpolation).tension(0.8);
+		}
 
 		this.domain = function() {
 
@@ -37,12 +40,12 @@ Rickshaw.Graph.Renderer.Line = function(args) {
 
 		this.render = function() {
 
-			graph.vis.selectAll('path').remove();
+			graph.vis.selectAll('*').remove();
 
 			var nodes = this.graph.vis.selectAll("path")
 				.data(this.graph.stackedData)
 				.enter().append("svg:path")
-				.attr("d", this.seriesPathFactory); 
+				.attr("d", this.seriesPathFactory()); 
 
 			var i = 0;
 			graph.series.forEach( function(series) {

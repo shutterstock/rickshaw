@@ -1,5 +1,4 @@
-window.Rickshaw = window.Rickshaw || {};
-Rickshaw.Graph = Rickshaw.Graph || {};
+Rickshaw.namespace('Rickshaw.Graph.Unstacker');
 
 Rickshaw.Graph.Unstacker = function(args) {
 

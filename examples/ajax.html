@@ -3,11 +3,12 @@
 	<link type="text/css" rel="stylesheet" href="../src/css/graph.css">
 	<link type="text/css" rel="stylesheet" href="css/lines.css">
 
-	<script src="https://raw.github.com/mbostock/d3/master/d3.js"></script>
-	<script src="https://raw.github.com/mbostock/d3/master/d3.layout.js"></script>
+	<script src="../vendor/d3.min.js"></script>
+	<script src="../vendor/d3.layout.min.js"></script>
 
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
 
+	<script src="../src/js/Rickshaw.js"></script>
 	<script src="../src/js/Rickshaw.Graph.js"></script>
 	<script src="../src/js/Rickshaw.Graph.Ajax.js"></script>
 	<script src="../src/js/Rickshaw.Graph.Unstacker.js"></script>
@@ -27,17 +28,17 @@ var ajaxGraph = new Rickshaw.Graph.Ajax( {
 	width: 400,
 	height: 200,
 	renderer: 'line',
-	data_url: 'data.json',
-	onData: function(d) { d[0].data[0].y = 80 },
+	dataURL: 'data.json',
+	onData: function(d) { d[0].data[0].y = 80; return d },
 	series: [
 		{
-			name: 'Firefox',
+			name: 'New York',
 			color: '#c05020',
 		}, {
-			name: 'Chrome',
+			name: 'London',
 			color: '#30c020',
 		}, {
-			name: 'Safari',
+			name: 'Tokyo',
 			color: '#6060c0'
 		}
 	]

@@ -1,14 +1,8 @@
-if (typeof module !== 'undefined' && module.exports && typeof window === 'undefined') {
-	window = module.exports;
-}
+Rickshaw.namespace("Rickshaw.Color.Palette");
 
-window.Rickshaw.Color = window.Rickshaw.Color || {};
+Rickshaw.Color.Palette = function(args) {
 
-(function() {
-
-var color = new window.Rickshaw.Fixtures.Color();
-
-window.Rickshaw.Color.Palette = function(args) {
+	var color = new Rickshaw.Fixtures.Color();
 
 	args = args || {};
 	this.schemes = {};
@@ -17,8 +11,6 @@ window.Rickshaw.Color.Palette = function(args) {
 	this.runningIndex = 0;
 
 	this.color = function(key) {
-		return this.scheme[this.runningIndex++] || '#808080';
+		return this.scheme[key || this.runningIndex++] || '#808080';
 	}
 }
-
-})();
