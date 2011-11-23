@@ -1,0 +1,88 @@
+<!doctype>
+<link type="text/css" rel="stylesheet" href="../src/css/graph.css">
+<link type="text/css" rel="stylesheet" href="css/lines.css">
+
+<script src="../vendor/d3.min.js"></script>
+<script src="../vendor/d3.layout.min.js"></script>
+
+<script src="../rickshaw.min.js"></script>
+
+<style>
+section {
+	width: 300px;
+	height: 250px;
+	float: left;
+	margin: 16px;
+}
+section div {
+	width: 300px;
+	height: 200px;
+}
+span {
+	font-family: Arial, Helvetica, sans-serif;
+	color: #808080;
+	display: inline-block;
+	margin: 4px 0;
+}
+</style>
+
+<body>
+
+<script>
+
+var schemes = [
+	'spectrum14', 
+	'colorwheel', 
+	'cool',
+	'spectrum2000', 
+	'spectrum2001', 
+	'classic9'
+];
+
+schemes.forEach( function(name) {
+
+	var palette = new Rickshaw.Color.Palette( { scheme: name } );
+
+	var seriesData = [];
+
+	palette.scheme.forEach( function() {
+		seriesData.push([]);
+	} );
+
+	var random = new Rickshaw.Fixtures.RandomData(150);
+
+	for (var i = 0; i < 100; i++) {
+		random.addData(seriesData);
+	}
+
+	var section = document.createElement('section');
+	var element = document.createElement('div');
+	var caption = document.createElement('span');
+
+	caption.innerHTML = name;
+
+	section.appendChild(element);
+	section.appendChild(caption);
+	document.body.appendChild(section);
+
+	var series = [];
+
+	seriesData.forEach( function(s) {
+		series.push( {
+			data: s,
+			color: palette.color()
+		} );
+	} );
+	
+	var graph = new Rickshaw.Graph( {
+		element: element,
+		series: series
+	} );
+
+	graph.render();
+
+} );
+
+</script>
+
+</body>

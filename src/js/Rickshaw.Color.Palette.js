@@ -7,7 +7,7 @@ Rickshaw.Color.Palette = function(args) {
 	args = args || {};
 	this.schemes = {};
 
-	this.scheme = color.schemes[args.scheme] || color.schemes.classic9;
+	this.scheme = color.schemes[args.scheme] || args.scheme || color.schemes.colorwheel;
 	this.runningIndex = 0;
 
 	this.color = function(key) {
