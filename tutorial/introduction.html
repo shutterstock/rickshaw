@@ -1,98 +1,47 @@
 <!doctype>
 <head>
+	<link rel="stylesheet" href="rickshaw.min.css">
+	<link rel="stylesheet" href="vendor/prettify/prettify.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.0/jquery.min.js"></script>
+	<script src="vendor/prettify/prettify.js"></script>
 	<link rel="stylesheet" href="style.css">
-	<link rel="stylesheet" href="../rickshaw.min.css">
-	<script src="../vendor/d3.min.js"></script>
-	<script src="../vendor/d3.layout.min.js"></script>
-	<script src="../rickshaw.min.js"></script>
 </head>
 
 <body>
 
-<h1>Taking Rickshaw for a Drive</h1>
+<h1>Taking Rickshaw for a Go</h1>
 
 <p>
-Rickshaw makes charting time series data easy.
-</p>
-
-<p>
-Building on top of Mike Bostock's
-delightful <a href="http://mbostock.github.com/d3/">d3.js</a> library,
 Rickshaw is a simple framework for drawing charts of time series data
-on a web page.  These charts can be powered by static historical data
-sets, or living data that continuously updates.
+on a web page, built on top of Mike Bostock's delightful 
+<a href="http://mbostock.github.com/d3/">d3 library</a>.  These charts 
+can be powered by static historical data sets, or living data that 
+continuously updates in real time.
 </p>
 
 <p>
-Rickshaw builds on top of d3.js technically, and spiritually too.
+Rickshaw builds on top of d3 technically, and spiritually too.
 Rickshaw makes every effort to provide help for common problems
 without obscuring anything underneath it.  If you need to reach down
-to d3 or the svg layers below, it's just data.
+to d3 or the svg layers below, go right ahead -- it's all there waiting.
 </p>
 
 <p>
-Let's start with a simple but complete program that paints a chart.
+Let's start with a simple but complete program that paints a chart:
 </p>
 
-<pre>
-&lt;!doctype&gt;
-&lt;head&gt;
-&lt;script src=&quot;../vendor/d3.min.js&quot;&gt;&lt;/script&gt;
-&lt;script src=&quot;../vendor/d3.layout.min.js&quot;&gt;&lt;/script&gt;
-&lt;script src=&quot;../rickshaw.min.js&quot;&gt;&lt;/script&gt;
-&lt;/head&gt;
-
-&lt;body&gt;
-
-&lt;div id=&quot;chart&quot;&gt;&lt;/div&gt;
-
-&lt;script&gt;
-
-var graph = new Rickshaw.Graph( {
-	element: document.querySelector(&quot;#chart&quot;),
-	width: 300,
-	height: 230,
-	series: [
-		{
-			data: [ { x: 0, y: 40 }, { x: 1, y: 49 }, { x: 2, y: 38 }, { x: 3, y: 30 }, { x: 4, y: 32 } ],
-			color: 'steelblue'
-		}
-	]
-} );
-
-graph.render();
-&lt;/script&gt;
-
-&lt;/body&gt;
-</pre>
-
-<div class="tutorial-chart" id="tutorial-chart01-container">
-
-<div id="chart01"></div>
-
-<script>
-var graph = new Rickshaw.Graph( {
-	element: document.querySelector("#chart01"),
-	width: 300,
-	height: 230,
-	series: [
-		{
-			data: [ { x: 0, y: 40 }, { x: 1, y: 49 }, { x: 2, y: 38 }, { x: 3, y: 30 }, { x: 4, y: 32 } ],
-			color: 'steelblue'
-		}
-	]
-} );
-
-graph.render();
-</script>
-
-</div>
-
-<h2>Real Data</h2>
+<section class="example" id="example_01">
+	<header>
+		<a href="example_01.html" target="_blank">view</a>
+		<h3>Example 01</h3>
+	</header>
+	<iframe scrolling="no"></iframe>
+	<pre class="prettyprint"></pre>
+</section>
 
 <p>
-Breaking that down a bit, we first pull in our dependancies and create
-a div to hold our chart.  Then in our <code>script</code>
+Breaking that down, first we pull in our dependancies and create
+a div to hold our chart.  Then in our <code>script</code> we
 call <code>Rickshaw.Graph</code>'s constructor, and pass along an
 element reference to our chart container, some layout instructions,
 and a series of data objects.
@@ -101,21 +50,17 @@ and a series of data objects.
 <p>
 The <code>series</code> object has a couple of slots,
 a <code>data</code> array of coordinate objects, and a color to draw
-them with.
+them with. Finally, we call the render() method on our just instantiated
+graph object, which creates paints our chart on the screen.
 </p>
 
-<p>
-Lastly, we call the render() method on our previously declared graph
-object, which creates paints our chart on the screen.
-</p>
-
+<h2>Let's Try with Real Data</h2>
 
 <p>
 Our previous work allowed us to paint a chart of made up values with
 minimal scaffolding.  That was fun, but it doesn't tell us anything
-interesting about data.  Let's use population change data from the
-<a href="http://2010.census.gov/2010census/data/pop_change.csv">2010
-U.S. Census</a> to power our chart, and see what we find.
+interesting about data.  Let's use <a href="http://2010.census.gov/2010census/data/pop_change.csv">population change data</a> from the
+2010 U.S. Census to power our chart, and see what we find.
 </p>
 
 <p>
@@ -123,78 +68,23 @@ We'll begin by drawing a line representing the United States
 population with a point for each decade from 1910 to 2010.  We'll use
 a short program to massage the CSV data at the census.gov URL into a
 JavaScript data structure that <code>Rickshaw.Graph</code>'s constructor can take
-as its <code>data</code> argument:
+as its <code>data</code> argument.
 </p>
-
-<br>
-<pre>
-% curl -s http://2010.census.gov/2010census/data/pop_change.csv | ./transform.pl
-</pre>
-
-(Our <a href="./transform01.pl">transform.pl</a> source.)
-
-outputs:
-
-<br>
-<pre>[ { x: 1910, y: 92228531 }, { x: 1920, y: 106021568 }, { x: 1930, y: 123202660 }, { x: 1940, y: 132165129 }, { x: 1950, y: 151325798 }, { x: 1960, y: 179323175 }, { x: 1970, y: 203211926 }, { x: 1980, y: 226545805 }, { x: 1990, y: 248709873 }, { x: 2000, y: 281421906 }, { x: 2010, y: 308745538 } ]</pre>
 
 <p>
-which we can replace our previous data argument with.
+Piping that CSV data through <a href="transform.pl">transform.pl</a> gives 
+us JSON data that we can take and feed into our graph below.
 </p>
 
 <br>
-<pre>
-&lt;!doctype&gt;
-&lt;head&gt;
-&lt;script src=&quot;../vendor/d3.min.js&quot;&gt;&lt;/script&gt;
-&lt;script src=&quot;../vendor/d3.layout.min.js&quot;&gt;&lt;/script&gt;
-&lt;script src=&quot;../rickshaw.min.js&quot;&gt;&lt;/script&gt;
-&lt;/head&gt;
-
-&lt;body&gt;
-
-&lt;div id=&quot;chart&quot;&gt;&lt;/div&gt;
-
-&lt;script&gt;
-var graph = new Rickshaw.Graph( {
-	element: document.querySelector(&quot;#chart&quot;),
-	width: 300,
-	height: 230,
-	series: [
-		{
-			color: 'steelblue',
-			data: [ { x: 1910, y: 92228531 }, { x: 1920, y: 106021568 }, { x: 1930, y: 123202660 }, { x: 1940, y: 132165129 }, { x: 1950, y: 151325798 }, { x: 1960, y: 179323175 }, { x: 1970, y: 203211926 }, { x: 1980, y: 226545805 }, { x: 1990, y: 248709873 }, { x: 2000, y: 281421906 }, { x: 2010, y: 308745538 } ]
-		}
-	]
-} );
-
-graph.render();
-&lt;/script&gt;
-
-&lt;/body&gt;
-</pre>
-
-<div class="tutorial-chart" id="tutorial-chart02-container">
-	<div id="chart02"></div>
-
-	<script>
-	var graph = new Rickshaw.Graph( {
-		element: document.querySelector("#chart02"),
-		height: 230,
-		width: 300,
-		series: [
-			{
-				color: 'steelblue',
-				data: [ { x: 1910, y: 92228531 }, { x: 1920, y: 106021568 }, { x: 1930, y: 123202660 }, { x: 1940, y: 132165129 }, { x: 1950, y: 151325798 }, { x: 1960, y: 179323175 }, { x: 1970, y: 203211926 }, { x: 1980, y: 226545805 }, { x: 1990, y: 248709873 }, { x: 2000, y: 281421906 }, { x: 2010, y: 308745538 } ]
-			}
-		]
-	} );
-
-	graph.render();
-	</script>
-
-	</div>
-</div>
+<section class="example" id="example_02">
+	<header>
+		<a href="example02.html" target="_blank">view</a>
+		<h3>Example 02</h3>
+	</header>
+	<iframe scrolling="no"></iframe>
+	<pre class="prettyprint linenums"></pre>
+</section>
 
 <h2>Time on the X-Axis</h2>
 
@@ -217,74 +107,21 @@ unit being used, and labels the graph accordingly.  The styling we
 included lines up the labels nicely across the bottom of our graph.
 </p>
 
-(Our updated <a href="./transform02.pl">transform.pl</a> that uses
-epoch seconds for <code>x</code>.)
+<p>
+Our updated <a href="./transform_epoch.pl">transform_epoch.pl</a> uses epoch 
+seconds for <code>x</code>.  Let's see how we do.
+</p>
 
 <br>
-Combining this all brings our source listing and graph to:<br>
+<section class="example" id="example_03">
+	<header>
+		<a href="example_03.html" target="_blank">view</a>
+		<h3>Example 03</h3>
+	</header>
+	<iframe scrolling="no"></iframe>
+	<pre class="prettyprint linenums"></pre>
+</section>
 
-<br>
-<pre>
-&lt;!doctype&gt;
-&lt;head&gt;
-	&lt;link type=&quot;text/css&quot; rel=&quot;stylesheet&quot; href=&quot;../rickshaw.min.css&quot;&gt;
-	&lt;script src=&quot;../vendor/d3.min.js&quot;&gt;&lt;/script&gt;
-	&lt;script src=&quot;../vendor/d3.layout.min.js&quot;&gt;&lt;/script&gt;
-	&lt;script src=&quot;../rickshaw.min.js&quot;&gt;&lt;/script&gt;
-&lt;/head&gt;
-
-&lt;body&gt;
-
-&lt;div id=&quot;chart&quot;&gt;&lt;/div&gt;
-
-&lt;script&gt;
-var graph = new Rickshaw.Graph( {
-	element: document.querySelector(&quot;#chart&quot;),
-	width: 300,
-	height: 230,
-	series: [
-		{
-			data: [ { x: -1893456000, y: 92228531 }, { x: -1577923200, y: 106021568 }, { x: -1262304000, y: 123202660 }, { x: -946771200, y: 132165129 }, { x: -631152000, y: 151325798 }, { x: -315619200, y: 179323175 }, { x: 0, y: 203211926 }, { x: 315532800, y: 226545805 }, { x: 631152000, y: 248709873 }, { x: 946684800, y: 281421906 }, { x: 1262304000, y: 308745538 } ], 
-			color: 'steelblue'
-		}
-	]
-} );
-
-var axes = new Rickshaw.Graph.Axis.Time( {
-	graph: graph
-} );
-
-graph.render();
-
-&lt;/script&gt;
-
-&lt;/body&gt;
-</pre>
-
-<div class="tutorial-chart" id="tutorial-chart03-container">
-	<div id="chart03"></div>
-
-	<script>
-	var graph = new Rickshaw.Graph( {
-		element: document.querySelector("#chart03"),
-	width: 300,
-		height: 230,
-		series: [
-			{
-				data: [ { x: -1893456000, y: 92228531 }, { x: -1577923200, y: 106021568 }, { x: -1262304000, y: 123202660 }, { x: -946771200, y: 132165129 }, { x: -631152000, y: 151325798 }, { x: -315619200, y: 179323175 }, { x: 0, y: 203211926 }, { x: 315532800, y: 226545805 }, { x: 631152000, y: 248709873 }, { x: 946684800, y: 281421906 }, { x: 1262304000, y: 308745538 } ], 
-				color: 'steelblue'
-			}
-		]
-	} );
-
-	var axes = new Rickshaw.Graph.Axis.Time( {
-		graph: graph
-	} );
-
-	graph.render();
-	</script>
-	</div>
-</div>
 
 <h2>Y-Axis Too</h2>
 
@@ -302,141 +139,23 @@ element we want to draw the axis inside.  We also ask
 numbers on our <code>y</code> ticks in there.
 </p>
 
+<section class="example" id="example_04">
+	<header>
+		<a href="example_04.html" target="_blank">view</a>
+		<h3>Example 04</h3>
+	</header>
+	<iframe scrolling="no"></iframe>
+	<pre class="prettyprint linenums"></pre>
+</section>
 <br>
-<pre>
-&lt;!doctype&gt;
-&lt;head&gt;
-	&lt;link type=&quot;text/css&quot; rel=&quot;stylesheet&quot; href=&quot;../rickshaw.min.css&quot;&gt;
-	&lt;script src=&quot;../vendor/d3.min.js&quot;&gt;&lt;/script&gt;
-	&lt;script src=&quot;../vendor/d3.layout.min.js&quot;&gt;&lt;/script&gt;
-	&lt;script src=&quot;../rickshaw.min.js&quot;&gt;&lt;/script&gt;
-
-	&lt;style&gt;
-		#chart {
-			position: relative;
-			left: 80px;
-		}
-		.rickshaw_graph .y_ticks {
-			left: 0;
-		}
-		.rickshaw_graph .y_tick {
-			stroke: #808080;
-		}
-		#y_axis {
-			position: absolute;
-			top: 0;
-			bottom: 0;
-			width: 80px;
-		}
-	&lt;/style&gt;
-
-&lt;/head&gt;
-
-&lt;body&gt;
-
-&lt;div id=&quot;chart_container&quot;&gt;
-	&lt;div id=&quot;y_axis&quot;&gt;&lt;/div&gt;
-	&lt;div id=&quot;chart&quot;&gt;&lt;/div&gt;
-&lt;/div&gt;
-
-&lt;script&gt;
-var graph = new Rickshaw.Graph( {
-	element: document.querySelector(&quot;#chart&quot;),
-	width: 300,
-	height: 230,
-	series: [
-		{
-			data: [ { x: -1893456000, y: 92228531 }, { x: -1577923200, y: 106021568 }, { x: -1262304000, y: 123202660 }, { x: -946771200, y: 132165129 }, { x: -631152000, y: 151325798 }, { x: -315619200, y: 179323175 }, { x: 0, y: 203211926 }, { x: 315532800, y: 226545805 }, { x: 631152000, y: 248709873 }, { x: 946684800, y: 281421906 }, { x: 1262304000, y: 308745538 } ], 
-			color: 'steelblue'
-		}
-	]
-} );
-
-var x_axis = new Rickshaw.Graph.Axis.Time( {
-	graph: graph
-} );
-
-var y_axis = new Rickshaw.Graph.Axis.Y( {
-	graph: graph,
-	orientation: 'left',
-	tickFormat: Rickshaw.Fixtures.Number.formatKMBT,
-	element: document.getElementById('y_axis'),
-} );
-
-graph.render();
-
-&lt;/script&gt;
-
-&lt;/body&gt;
-
-</pre>
-
-<style>
-	#chart04_container {
-		display: inline-block;
-	}
-	#chart04 {
-		display: inline-block;
-	}
-	.rickshaw_graph .y_ticks {
-		left: 0;
-	}
-	.rickshaw_graph .y_tick {
-		stroke: #808080;
-	}
-	#y_axis04 {
-		float: left;
-		width: 44px;
-	}
-</style>
-
-<div class="tutorial-chart" id="tutorial-chart04-container">
-	<div id="chart04_container">
-		<div id="y_axis04"></div>
-		<div id="chart04"></div>
-	</div>
-
-	<script>
-	var graph = new Rickshaw.Graph( {
-		element: document.querySelector("#chart04"),
-		height: 230,
-		series: [
-			{
-				data: [ { x: -1893456000, y: 92228531 }, { x: -1577923200, y: 106021568 }, { x: -1262304000, y: 123202660 }, { x: -946771200, y: 132165129 }, { x: -631152000, y: 151325798 }, { x: -315619200, y: 179323175 }, { x: 0, y: 203211926 }, { x: 315532800, y: 226545805 }, { x: 631152000, y: 248709873 }, { x: 946684800, y: 281421906 }, { x: 1262304000, y: 308745538 } ], 
-				color: 'steelblue'
-			}
-		]
-	} );
-
-	var x_axis = new Rickshaw.Graph.Axis.Time( {
-		graph: graph
-	} );
-
-	var y_axis = new Rickshaw.Graph.Axis.Y( {
-		graph: graph,
-		orientation: 'left',
-		tickFormat: Rickshaw.Fixtures.Number.formatKMBT,
-		element: document.getElementById('y_axis04'),
-	} );
-
-	graph.render();
-	</script>
-</div>
 
 <h2>Breaking Things Down</h2>
 
 <p>
-The Great Depression left a mark.
+The Great Depression left a mark.  We should break that data down by 
+region.  Some simple changes to our data transformation gives us the 
+regional data for our series.  Here's <a href="transform_region.pl">transform_region.pl</a>.
 </p>
-
-<p>
-We should break that data down by region.  Some simple changes to our
-data transformation gives us the regional data for our series.
-</p>
-
-(A <a href="./transform03.pl">transform.pl</a> that breaks down by region.)
-
-<h2>Color Palettes</h2>
 
 <p>
 Plugging that data into our series parameter leaves us wanting to
@@ -447,163 +166,14 @@ returns the next color.
 </p>
 
 <br>
-<pre>
-&lt;!doctype&gt;
-&lt;head&gt;
-	&lt;link type=&quot;text/css&quot; rel=&quot;stylesheet&quot; href=&quot;../rickshaw.min.css&quot;&gt;
-	&lt;script src=&quot;../vendor/d3.min.js&quot;&gt;&lt;/script&gt;
-	&lt;script src=&quot;../vendor/d3.layout.min.js&quot;&gt;&lt;/script&gt;
-	&lt;script src=&quot;../rickshaw.min.js&quot;&gt;&lt;/script&gt;
-
-	&lt;style&gt;
-		#chart {
-			position: relative;
-			left: 80px;
-		}
-		.rickshaw_graph .y_ticks {
-			left: 0;
-		}
-		.rickshaw_graph .y_tick {
-			stroke: #808080;
-		}
-		#y_axis {
-			position: absolute;
-			top: 0;
-			bottom: 0;
-			width: 80px;
-		}
-	&lt;/style&gt;
-
-&lt;/head&gt;
-
-&lt;body&gt;
-
-&lt;div id=&quot;chart_container&quot;&gt;
-	&lt;div id=&quot;y_axis&quot;&gt;&lt;/div&gt;
-	&lt;div id=&quot;chart&quot;&gt;&lt;/div&gt;
-&lt;/div&gt;
-
-&lt;script&gt;
-var palette = new Rickshaw.Color.Palette();
-
-var graph = new Rickshaw.Graph( {
-	element: document.querySelector(&quot;#chart&quot;),
-	width: 300,
-	height: 230,
-	series: [
-		{
-			name: &quot;Northeast&quot;,
-			data: [ { x: -1893456000, y: 25868573 }, { x: -1577923200, y: 29662053 }, { x: -1262304000, y: 34427091 }, { x: -946771200, y: 35976777 }, { x: -631152000, y: 39477986 }, { x: -315619200, y: 44677819 }, { x: 0, y: 49040703 }, { x: 315532800, y: 49135283 }, { x: 631152000, y: 50809229 }, { x: 946684800, y: 53594378 }, { x: 1262304000, y: 55317240 } ],
-			color: palette.color()
-		},
-		{
-			name: &quot;Midwest&quot;,
-			data: [ { x: -1893456000, y: 29888542 }, { x: -1577923200, y: 34019792 }, { x: -1262304000, y: 38594100 }, { x: -946771200, y: 40143332 }, { x: -631152000, y: 44460762 }, { x: -315619200, y: 51619139 }, { x: 0, y: 56571663 }, { x: 315532800, y: 58865670 }, { x: 631152000, y: 59668632 }, { x: 946684800, y: 64392776 }, { x: 1262304000, y: 66927001 } ],
-			color: palette.color()
-		},
-		{
-			name: &quot;South&quot;,
-			data: [ { x: -1893456000, y: 29389330 }, { x: -1577923200, y: 33125803 }, { x: -1262304000, y: 37857633 }, { x: -946771200, y: 41665901 }, { x: -631152000, y: 47197088 }, { x: -315619200, y: 54973113 }, { x: 0, y: 62795367 }, { x: 315532800, y: 75372362 }, { x: 631152000, y: 85445930 }, { x: 946684800, y: 100236820 }, { x: 1262304000, y: 114555744 } ],
-			color: palette.color()
-		},
-		{
-			name: &quot;West&quot;,
-			data: [ { x: -1893456000, y: 7082086 }, { x: -1577923200, y: 9213920 }, { x: -1262304000, y: 12323836 }, { x: -946771200, y: 14379119 }, { x: -631152000, y: 20189962 }, { x: -315619200, y: 28053104 }, { x: 0, y: 34804193 }, { x: 315532800, y: 43172490 }, { x: 631152000, y: 52786082 }, { x: 946684800, y: 63197932 }, { x: 1262304000, y: 71945553 } ],
-			color: palette.color()
-		}
-	]
-} );
-
-var x_axis = new Rickshaw.Graph.Axis.Time( {
-	graph: graph
-} );
-
-var y_axis = new Rickshaw.Graph.Axis.Y( {
-	graph: graph,
-	orientation: 'left',
-	tickFormat: Rickshaw.Fixtures.Number.formatKMBT,
-	element: document.getElementById('y_axis'),
-} );
-
-graph.render();
-
-&lt;/script&gt;
-
-&lt;/body&gt;
-
-</pre>
-
-
-<style>
-	#chart05_container {
-		display: inline-block;
-	}
-	#chart05 {
-		display: inline-block;
-	}
-	.rickshaw_graph .y_ticks {
-		left: 0;
-	}
-	.rickshaw_graph .y_tick {
-		stroke: #808080;
-	}
-	#y_axis05 {
-		float: left;
-		width: 80px;
-	}
-</style>
-<div class="tutorial-chart" id="tutorial-chart05-container">
-<div id="chart05_container">
-	<div id="y_axis05"></div>
-	<div id="chart05"></div>
-</div>
-
-<script>
-var palette = new Rickshaw.Color.Palette();
-
-var graph = new Rickshaw.Graph( {
-	element: document.querySelector("#chart05"),
-	width: 300,
-	height: 230,
-	series: [
-		{
-			name: "Northeast",
-			data: [ { x: -1893456000, y: 25868573 }, { x: -1577923200, y: 29662053 }, { x: -1262304000, y: 34427091 }, { x: -946771200, y: 35976777 }, { x: -631152000, y: 39477986 }, { x: -315619200, y: 44677819 }, { x: 0, y: 49040703 }, { x: 315532800, y: 49135283 }, { x: 631152000, y: 50809229 }, { x: 946684800, y: 53594378 }, { x: 1262304000, y: 55317240 } ],
-			color: palette.color()
-		},
-		{
-			name: "Midwest",
-			data: [ { x: -1893456000, y: 29888542 }, { x: -1577923200, y: 34019792 }, { x: -1262304000, y: 38594100 }, { x: -946771200, y: 40143332 }, { x: -631152000, y: 44460762 }, { x: -315619200, y: 51619139 }, { x: 0, y: 56571663 }, { x: 315532800, y: 58865670 }, { x: 631152000, y: 59668632 }, { x: 946684800, y: 64392776 }, { x: 1262304000, y: 66927001 } ],
-			color: palette.color()
-		},
-		{
-			name: "South",
-			data: [ { x: -1893456000, y: 29389330 }, { x: -1577923200, y: 33125803 }, { x: -1262304000, y: 37857633 }, { x: -946771200, y: 41665901 }, { x: -631152000, y: 47197088 }, { x: -315619200, y: 54973113 }, { x: 0, y: 62795367 }, { x: 315532800, y: 75372362 }, { x: 631152000, y: 85445930 }, { x: 946684800, y: 100236820 }, { x: 1262304000, y: 114555744 } ],
-			color: palette.color()
-		},
-		{
-			name: "West",
-			data: [ { x: -1893456000, y: 7082086 }, { x: -1577923200, y: 9213920 }, { x: -1262304000, y: 12323836 }, { x: -946771200, y: 14379119 }, { x: -631152000, y: 20189962 }, { x: -315619200, y: 28053104 }, { x: 0, y: 34804193 }, { x: 315532800, y: 43172490 }, { x: 631152000, y: 52786082 }, { x: 946684800, y: 63197932 }, { x: 1262304000, y: 71945553 } ],
-			color: palette.color()
-		}
-	]
-} );
-
-var x_axis = new Rickshaw.Graph.Axis.Time( {
-	graph: graph
-} );
-
-var y_axis = new Rickshaw.Graph.Axis.Y( {
-	graph: graph,
-	orientation: 'left',
-	tickFormat: Rickshaw.Fixtures.Number.formatKMBT,
-	element: document.getElementById('y_axis05'),
-} );
-
-graph.render();
-
-</script>
-</div>
+<section class="example" id="example_05">
+	<header>
+		<a href="example_05.html" target="_blank">view</a>
+		<h3>Example 05</h3>
+	</header>
+	<iframe scrolling="no"></iframe>
+	<pre class="prettyprint linenums"></pre>
+</section>
 
 <h2>What Are We Looking At?</h2>
 
@@ -615,187 +185,14 @@ our newly added dom element, and a reference to the graph.
 </p>
 
 <br>
-<pre>
-&lt;!doctype&gt;
-&lt;head&gt;
-	&lt;link type=&quot;text/css&quot; rel=&quot;stylesheet&quot; href=&quot;../rickshaw.min.css&quot;&gt;
-	&lt;script src=&quot;../vendor/d3.min.js&quot;&gt;&lt;/script&gt;
-	&lt;script src=&quot;../vendor/d3.layout.min.js&quot;&gt;&lt;/script&gt;
-	&lt;script src=&quot;../rickshaw.min.js&quot;&gt;&lt;/script&gt;
-
-	&lt;style&gt;
-		#chart_container {
-			float: left;
-		}
-		#chart {
-			left: 80px;
-		}
-		.rickshaw_graph .y_ticks {
-			left: 0;
-		}
-		.rickshaw_graph .y_tick {
-			stroke: #808080;
-		}
-		#y_axis {
-			position: absolute;
-			top: 0;
-			bottom: 0;
-			width: 80px;
-		}
-		#legend {
-			float: left;
-			left: 100px;
-		}
-	&lt;/style&gt;
-
-&lt;/head&gt;
-
-&lt;body&gt;
-
-&lt;div id=&quot;chart_container&quot;&gt;
-	&lt;div id=&quot;y_axis&quot;&gt;&lt;/div&gt;
-	&lt;div id=&quot;chart&quot;&gt;&lt;/div&gt;
-&lt;/div&gt;
-&lt;div id=&quot;legend&quot;&gt;&lt;/div&gt;
-
-
-&lt;script&gt;
-var palette = new Rickshaw.Color.Palette();
-
-var graph = new Rickshaw.Graph( {
-	element: document.querySelector(&quot;#chart&quot;),
-	width: 300,
-	height: 230,
-	series: [
-		{
-			name: &quot;Northeast&quot;,
-			data: [ { x: -1893456000, y: 25868573 }, { x: -1577923200, y: 29662053 }, { x: -1262304000, y: 34427091 }, { x: -946771200, y: 35976777 }, { x: -631152000, y: 39477986 }, { x: -315619200, y: 44677819 }, { x: 0, y: 49040703 }, { x: 315532800, y: 49135283 }, { x: 631152000, y: 50809229 }, { x: 946684800, y: 53594378 }, { x: 1262304000, y: 55317240 } ],
-			color: "#018571"
-		},
-		{
-			name: &quot;Midwest&quot;,
-			data: [ { x: -1893456000, y: 29888542 }, { x: -1577923200, y: 34019792 }, { x: -1262304000, y: 38594100 }, { x: -946771200, y: 40143332 }, { x: -631152000, y: 44460762 }, { x: -315619200, y: 51619139 }, { x: 0, y: 56571663 }, { x: 315532800, y: 58865670 }, { x: 631152000, y: 59668632 }, { x: 946684800, y: 64392776 }, { x: 1262304000, y: 66927001 } ],
-			color: "#DFC27D"
-		},
-		{
-			name: &quot;South&quot;,
-			data: [ { x: -1893456000, y: 29389330 }, { x: -1577923200, y: 33125803 }, { x: -1262304000, y: 37857633 }, { x: -946771200, y: 41665901 }, { x: -631152000, y: 47197088 }, { x: -315619200, y: 54973113 }, { x: 0, y: 62795367 }, { x: 315532800, y: 75372362 }, { x: 631152000, y: 85445930 }, { x: 946684800, y: 100236820 }, { x: 1262304000, y: 114555744 } ],
-			color: "#80CDC1"
-		},
-		{
-			name: &quot;West&quot;,
-			data: [ { x: -1893456000, y: 7082086 }, { x: -1577923200, y: 9213920 }, { x: -1262304000, y: 12323836 }, { x: -946771200, y: 14379119 }, { x: -631152000, y: 20189962 }, { x: -315619200, y: 28053104 }, { x: 0, y: 34804193 }, { x: 315532800, y: 43172490 }, { x: 631152000, y: 52786082 }, { x: 946684800, y: 63197932 }, { x: 1262304000, y: 71945553 } ],
-			color: "#A6611A"
-		}
-	]
-} );
-
-var x_axis = new Rickshaw.Graph.Axis.Time( {
-	graph: graph
-} );
-
-var y_axis = new Rickshaw.Graph.Axis.Y( {
-	graph: graph,
-	orientation: 'left',
-	tickFormat: Rickshaw.Fixtures.Number.formatKMBT,
-	element: document.getElementById('y_axis'),
-} );
-
-var legend = new Rickshaw.Graph.Legend( {
-	element: document.querySelector('#legend'),
-	graph: graph
-} );
-
-graph.render();
-
-&lt;/script&gt;
-
-&lt;/body&gt;
-
-</pre>
-
-
-<style>
-	#chart06_container {
-		display: inline-block;
-	}
-	#chart06 {
-		display: inline-block;
-	}
-	#legend06 {
-		display: inline-block;
-		margin-left: 42px;
-		position: relative;
-		bottom: 156px;
-	}
-	.rickshaw_graph .y_ticks {
-		left: 0;
-	}
-	.rickshaw_graph .y_tick {
-		stroke: #808080;
-	}
-	#y_axis06 {
-		float: left;
-		width: 80px;
-	}
-</style>
-
-<div class="tutorial-chart" id="tutorial-chart06-container">
-<div id="chart06_container">
-	<div id="y_axis06"></div>
-	<div id="chart06"></div>
-	<div id="legend06"></div>
-</div>
-
-<script>
-var palette = new Rickshaw.Color.Palette();
-
-var graph = new Rickshaw.Graph( {
-	element: document.querySelector("#chart06"),
-	height: 230,
-	series: [
-		{
-			name: "Northeast",
-			data: [ { x: -1893456000, y: 25868573 }, { x: -1577923200, y: 29662053 }, { x: -1262304000, y: 34427091 }, { x: -946771200, y: 35976777 }, { x: -631152000, y: 39477986 }, { x: -315619200, y: 44677819 }, { x: 0, y: 49040703 }, { x: 315532800, y: 49135283 }, { x: 631152000, y: 50809229 }, { x: 946684800, y: 53594378 }, { x: 1262304000, y: 55317240 } ],
-			color: "#018571"
-		},
-		{
-			name: "Midwest",
-			data: [ { x: -1893456000, y: 29888542 }, { x: -1577923200, y: 34019792 }, { x: -1262304000, y: 38594100 }, { x: -946771200, y: 40143332 }, { x: -631152000, y: 44460762 }, { x: -315619200, y: 51619139 }, { x: 0, y: 56571663 }, { x: 315532800, y: 58865670 }, { x: 631152000, y: 59668632 }, { x: 946684800, y: 64392776 }, { x: 1262304000, y: 66927001 } ],
-			color: "#DFC27D"
-		},
-		{
-			name: "South",
-			data: [ { x: -1893456000, y: 29389330 }, { x: -1577923200, y: 33125803 }, { x: -1262304000, y: 37857633 }, { x: -946771200, y: 41665901 }, { x: -631152000, y: 47197088 }, { x: -315619200, y: 54973113 }, { x: 0, y: 62795367 }, { x: 315532800, y: 75372362 }, { x: 631152000, y: 85445930 }, { x: 946684800, y: 100236820 }, { x: 1262304000, y: 114555744 } ],
-			color: "#80CDC1"
-		},
-		{
-			name: "West",
-			data: [ { x: -1893456000, y: 7082086 }, { x: -1577923200, y: 9213920 }, { x: -1262304000, y: 12323836 }, { x: -946771200, y: 14379119 }, { x: -631152000, y: 20189962 }, { x: -315619200, y: 28053104 }, { x: 0, y: 34804193 }, { x: 315532800, y: 43172490 }, { x: 631152000, y: 52786082 }, { x: 946684800, y: 63197932 }, { x: 1262304000, y: 71945553 } ],
-			color: "#A6611A"
-		}
-	]
-} );
-
-var x_axis = new Rickshaw.Graph.Axis.Time( {
-	graph: graph
-} );
-
-var y_axis = new Rickshaw.Graph.Axis.Y( {
-	graph: graph,
-	orientation: 'left',
-	tickFormat: Rickshaw.Fixtures.Number.formatKMBT,
-	element: document.getElementById('y_axis06'),
-} );
-
-var legend = new Rickshaw.Graph.Legend( {
-	element: document.querySelector('#legend06'),
-	graph: graph
-} );
-
-graph.render();
-</script>
-</div>
+<section class="example" id="example_06">
+	<header>
+		<a href="example_06.html" target="_blank">view</a>
+		<h3>Example 06</h3>
+	</header>
+	<iframe scrolling="no"></iframe>
+	<pre class="prettyprint linenums"></pre>
+</section>
 
 <h2>Unstacking</h2>
 
@@ -807,315 +204,55 @@ callback, and then ask the graph to update.
 </p>
 
 <br>
-<pre>
-&lt;!doctype&gt;
-&lt;head&gt;
-	&lt;link type=&quot;text/css&quot; rel=&quot;stylesheet&quot; href=&quot;../rickshaw.min.css&quot;&gt;
-	&lt;script src=&quot;../vendor/d3.min.js&quot;&gt;&lt;/script&gt;
-	&lt;script src=&quot;../vendor/d3.layout.min.js&quot;&gt;&lt;/script&gt;
-	&lt;script src=&quot;../rickshaw.min.js&quot;&gt;&lt;/script&gt;
-
-&lt;style&gt;
-	#chart_container {
-		display: inline-block;
-	}
-	#chart {
-		display: inline-block;
-	}
-	#legend {
-		display: inline-block;
-		margin-left: 42px;
-		position: relative;
-		bottom: 156px;
-	}
-	#offset_form {
-		display: inline-block;
-		position: relative;
-		right: 116px;
-		bottom: 86px;
-	}
-	.rickshaw_graph .y_ticks {
-		left: 0;
-	}
-	.rickshaw_graph .y_tick {
-		stroke: #808080;
-	}
-	#y_axis {
-		float: left;
-		width: 80px;
-	}
-	form.toggler {
-		display: block;
-		margin: 0;
-	}
-	form.toggler input[type=radio] {
-		margin: 0 7px;
-		width: 39px;
-		height: 26px;
-		position: absolute;
-		-moz-appearance: button;
-	}
-	form.toggler label {
-		display: inline-block;
-		padding: 0;
-		width: 39px;
-		padding-top: 27px;
-		text-align: center;
-		font-size: 10px;
-		color: #808080;
-		background-repeat: no-repeat;
-		position: relative;
-		margin: 0 7px;
-		cursor: pointer;
-	}
-	label[for=stack] {
-		background: url(../examples/images/om_stack.png);
-	}
-	label[for=lines] {
-		background: url(../examples/images/om_lines.png);
-	}
-&lt;/style&gt;
-&lt;/head&gt;
-
-&lt;body&gt;
-&lt;div id=&quot;tutorial-chart-container&quot;&gt;
-&lt;div id=&quot;chart_container&quot;&gt;
-	&lt;div id=&quot;y_axis&quot;&gt;&lt;/div&gt;
-	&lt;div id=&quot;chart&quot;&gt;&lt;/div&gt;
-	&lt;div id=&quot;legend&quot;&gt;&lt;/div&gt;
-	&lt;div id=&quot;offset_form&quot;&gt;
-	&lt;form id=&quot;offset_form&quot; class=&quot;toggler&quot;&gt;
-		&lt;input type=&quot;radio&quot; name=&quot;offset&quot; id=&quot;stack&quot; value=&quot;zero&quot;&gt;
-		&lt;label class=&quot;stack&quot; for=&quot;stack&quot;&gt;stack&lt;/label&gt;
-		&lt;input type=&quot;radio&quot; name=&quot;offset&quot; id=&quot;lines&quot; value=&quot;lines&quot; checked&gt;
-		&lt;label class=&quot;lines&quot; for=&quot;lines&quot;&gt;lines&lt;/label&gt;
-	&lt;/form&gt;
-	&lt;/div&gt;
-&lt;/div&gt;
-
-&lt;script&gt;
-var palette = new Rickshaw.Color.Palette();
-
-var graph = new Rickshaw.Graph( {
-	element: document.querySelector(&quot;#chart&quot;),
-	width: 300,
-	height: 230,
-	renderer: 'line',
-	series: [
-		{
-			name: &quot;Northeast&quot;,
-			data: [ { x: -1893456000, y: 25868573 }, { x: -1577923200, y: 29662053 }, { x: -1262304000, y: 34427091 }, { x: -946771200, y: 35976777 }, { x: -631152000, y: 39477986 }, { x: -315619200, y: 44677819 }, { x: 0, y: 49040703 }, { x: 315532800, y: 49135283 }, { x: 631152000, y: 50809229 }, { x: 946684800, y: 53594378 }, { x: 1262304000, y: 55317240 } ],
-			color: &quot;#018571&quot;
-		},
-		{
-			name: &quot;Midwest&quot;,
-			data: [ { x: -1893456000, y: 29888542 }, { x: -1577923200, y: 34019792 }, { x: -1262304000, y: 38594100 }, { x: -946771200, y: 40143332 }, { x: -631152000, y: 44460762 }, { x: -315619200, y: 51619139 }, { x: 0, y: 56571663 }, { x: 315532800, y: 58865670 }, { x: 631152000, y: 59668632 }, { x: 946684800, y: 64392776 }, { x: 1262304000, y: 66927001 } ],
-			color: &quot;#DFC27D&quot;
-		},
-		{
-			name: &quot;South&quot;,
-			data: [ { x: -1893456000, y: 29389330 }, { x: -1577923200, y: 33125803 }, { x: -1262304000, y: 37857633 }, { x: -946771200, y: 41665901 }, { x: -631152000, y: 47197088 }, { x: -315619200, y: 54973113 }, { x: 0, y: 62795367 }, { x: 315532800, y: 75372362 }, { x: 631152000, y: 85445930 }, { x: 946684800, y: 100236820 }, { x: 1262304000, y: 114555744 } ],
-			color: &quot;#80CDC1&quot;
-		},
-		{
-			name: &quot;West&quot;,
-			data: [ { x: -1893456000, y: 7082086 }, { x: -1577923200, y: 9213920 }, { x: -1262304000, y: 12323836 }, { x: -946771200, y: 14379119 }, { x: -631152000, y: 20189962 }, { x: -315619200, y: 28053104 }, { x: 0, y: 34804193 }, { x: 315532800, y: 43172490 }, { x: 631152000, y: 52786082 }, { x: 946684800, y: 63197932 }, { x: 1262304000, y: 71945553 } ],
-			color: &quot;#A6611A&quot;
-		}
-	]
-} );
-
-var x_axis = new Rickshaw.Graph.Axis.Time( {
-	graph: graph
-} );
-
-var y_axis = new Rickshaw.Graph.Axis.Y( {
-	graph: graph,
-	orientation: 'left',
-	tickFormat: Rickshaw.Fixtures.Number.formatKMBT,
-	element: document.getElementById('y_axis'),
-} );
-
-var legend = new Rickshaw.Graph.Legend( {
-	element: document.querySelector('#legend'),
-	graph: graph
-} );
-
-var offsetForm = document.getElementById('offset_form');
-
-offsetForm.addEventListener('change', function(e) {
-	var offsetMode = e.target.value;
-
-	if (offsetMode == 'lines') {
-		graph.setRenderer('line');
-		graph.offset = 'zero';
-	} else {
-		graph.setRenderer('stack');
-		graph.offset = offsetMode;
-	}	
-	graph.update();
-
-}, false);
-
-graph.render();
-&lt;/script&gt;
-&lt;/div&gt;
-&lt;/body&gt;
-
-</pre>
-
-<style>
-	#chart07_container {
-		display: inline-block;
-	}
-	#chart07 {
-		display: inline-block;
-	}
-	#legend07 {
-		display: inline-block;
-		margin-left: 42px;
-		position: relative;
-		bottom: 156px;
-	}
-	#offset_form07 {
-		display: inline-block;
-		position: relative;
-		right: 116px;
-		bottom: 86px;
-	}
-	.rickshaw_graph .y_ticks {
-		left: 0;
-	}
-	.rickshaw_graph .y_tick {
-		stroke: #808080;
-	}
-	#y_axis07 {
-		float: left;
-		width: 80px;
-	}
-	form.toggler {
-		display: block;
-		margin: 0;
-	}
-	form.toggler input[type=radio] {
-		margin: 0 7px;
-		width: 39px;
-		height: 26px;
-		position: absolute;
-		-moz-appearance: button;
-	}
-	form.toggler label {
-		display: inline-block;
-		padding: 0;
-		width: 39px;
-		padding-top: 27px;
-		text-align: center;
-		font-size: 10px;
-		color: #808080;
-		background-repeat: no-repeat;
-		position: relative;
-		margin: 0 7px;
-		cursor: pointer;
-	}
-	label[for=stack] {
-		background: url(../examples/images/om_stack.png);
-	}
-	label[for=lines] {
-		background: url(../examples/images/om_lines.png);
-	}
-</style>
-</head>
-
-<body>
-<div class="tutorial-chart" id="tutorial-chart07-container">
-<div id="chart07_container">
-	<div id="y_axis07"></div>
-	<div id="chart07"></div>
-	<div id="legend07"></div>
-	<div id="offset_form07">
-	<form id="offset_form" class="toggler">
-		<input type="radio" name="offset" id="stack" value="zero">
-		<label class="stack" for="stack">stack</label>
-		<input type="radio" name="offset" id="lines" value="lines" checked>
-		<label class="lines" for="lines">lines</label>
-	</form>
-	</div>
-</div>
-
-<script>
-var palette = new Rickshaw.Color.Palette();
-
-var graph = new Rickshaw.Graph( {
-	element: document.querySelector("#chart07"),
-	width: 300,
-	height: 230,
-	renderer: 'line',
-	series: [
-		{
-			name: "Northeast",
-			data: [ { x: -1893456000, y: 25868573 }, { x: -1577923200, y: 29662053 }, { x: -1262304000, y: 34427091 }, { x: -946771200, y: 35976777 }, { x: -631152000, y: 39477986 }, { x: -315619200, y: 44677819 }, { x: 0, y: 49040703 }, { x: 315532800, y: 49135283 }, { x: 631152000, y: 50809229 }, { x: 946684800, y: 53594378 }, { x: 1262304000, y: 55317240 } ],
-			color: "#018571"
-		},
-		{
-			name: "Midwest",
-			data: [ { x: -1893456000, y: 29888542 }, { x: -1577923200, y: 34019792 }, { x: -1262304000, y: 38594100 }, { x: -946771200, y: 40143332 }, { x: -631152000, y: 44460762 }, { x: -315619200, y: 51619139 }, { x: 0, y: 56571663 }, { x: 315532800, y: 58865670 }, { x: 631152000, y: 59668632 }, { x: 946684800, y: 64392776 }, { x: 1262304000, y: 66927001 } ],
-			color: "#DFC27D"
-		},
-		{
-			name: "South",
-			data: [ { x: -1893456000, y: 29389330 }, { x: -1577923200, y: 33125803 }, { x: -1262304000, y: 37857633 }, { x: -946771200, y: 41665901 }, { x: -631152000, y: 47197088 }, { x: -315619200, y: 54973113 }, { x: 0, y: 62795367 }, { x: 315532800, y: 75372362 }, { x: 631152000, y: 85445930 }, { x: 946684800, y: 100236820 }, { x: 1262304000, y: 114555744 } ],
-			color: "#80CDC1"
-		},
-		{
-			name: "West",
-			data: [ { x: -1893456000, y: 7082086 }, { x: -1577923200, y: 9213920 }, { x: -1262304000, y: 12323836 }, { x: -946771200, y: 14379119 }, { x: -631152000, y: 20189962 }, { x: -315619200, y: 28053104 }, { x: 0, y: 34804193 }, { x: 315532800, y: 43172490 }, { x: 631152000, y: 52786082 }, { x: 946684800, y: 63197932 }, { x: 1262304000, y: 71945553 } ],
-			color: "#A6611A"
-		}
-	]
-} );
-
-var x_axis = new Rickshaw.Graph.Axis.Time( {
-	graph: graph
-} );
-
-var y_axis = new Rickshaw.Graph.Axis.Y( {
-	graph: graph,
-	orientation: 'left',
-	tickFormat: Rickshaw.Fixtures.Number.formatKMBT,
-	element: document.getElementById('y_axis07'),
-} );
-
-var legend = new Rickshaw.Graph.Legend( {
-	element: document.querySelector('#legend07'),
-	graph: graph
-} );
-
-var offsetForm = document.getElementById('offset_form07');
-
-offsetForm.addEventListener('change', function(e) {
-	var offsetMode = e.target.value;
-
-	if (offsetMode == 'lines') {
-		graph.setRenderer('line');
-		graph.offset = 'zero';
-	} else {
-		graph.setRenderer('stack');
-		graph.offset = offsetMode;
-	}	
-	graph.update();
-
-}, false);
-
-graph.render();
-</script>
-</div>
+<section class="example" id="example_07">
+	<header>
+		<a href="example_07.html" target="_blank">view</a>
+		<h3>Example 07</h3>
+	</header>
+	<iframe scrolling="no"></iframe>
+	<pre class="prettyprint"></pre>
+</section>
 
 <h2>More Later</h2>
 
 <p>
-That's all for today.  If you're clamoring for more, you may enjoy a
-poke around in the <a href="../examples">examples</a> directory.
+We're just getting started, but that's all for today.  Next time we'll
+get into stacked bars, and different line interpolations, and smoothing,
+and zooming.
+</p>
+
+<p>
+If you're clamoring for more, you may enjoy a poke around in the 
+<a href="../examples/">examples</a> directory.
 </p>
 
 <br><br>
+<script>
+var sections = document.querySelectorAll('section.example');
+
+var htmlEntities = function(str) {
+	return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+
+Array.prototype.forEach.call(sections, function(s) {
+
+	var code = s.querySelector('pre');
+	var iframe = s.querySelector('iframe');
+	var anchor = s.querySelector('a');
+
+	var exampleURL = s.getAttribute('id') + ".html";
+
+	iframe.src = exampleURL;
+
+	$.ajax( {
+		url: exampleURL,
+		success: function(r) {
+			code.innerHTML = htmlEntities(r);
+			code.innerHTML = prettyPrintOne(code.innerHTML);
+		}
+	} );
+
+} );
+
+</script>
 </body>

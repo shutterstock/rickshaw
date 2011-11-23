@@ -1,38 +1,31 @@
 <!doctype>
-<head>
-	<link type="text/css" rel="stylesheet" href="../rickshaw.min.css">
-	<script src="../vendor/d3.min.js"></script>
-	<script src="../vendor/d3.layout.min.js"></script>
-	<script src="../rickshaw.min.js"></script>
+<link type="text/css" rel="stylesheet" href="/rickshaw.min.css">
+<script src="/vendor/d3.min.js"></script>
+<script src="/vendor/d3.layout.min.js"></script>
+<script src="/rickshaw.min.js"></script>
 
-	<style>
-		#chart_container {
-			float: left;
-		}
-		#chart {
-			left: 80px;
-		}
-		.rickshaw_graph .y_ticks {
-			left: 0;
-		}
-		.rickshaw_graph .y_tick {
-			stroke: #808080;
-		}
-		#y_axis {
-			position: absolute;
-			top: 0;
-			bottom: 0;
-			width: 80px;
-		}
-		#legend {
-			float: left;
-			left: 100px;
-		}
-	</style>
-
-</head>
-
-<body>
+<style>
+#chart_container {
+	position: relative;
+	display: inline-block;
+	font-family: Arial, Helvetica, sans-serif;
+}
+#chart {
+	display: inline-block;
+	margin-left: 40px;
+}
+#y_axis {
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	width: 40px;
+}
+#legend {
+	display: inline-block;
+	vertical-align: top;
+	margin: 0 0 0 10px;
+}
+</style>
 
 <div id="chart_container">
 	<div id="y_axis"></div>
@@ -40,14 +33,13 @@
 </div>
 <div id="legend"></div>
 
-
 <script>
 var palette = new Rickshaw.Color.Palette();
 
 var graph = new Rickshaw.Graph( {
 	element: document.querySelector("#chart"),
-	width: 300,
-	height: 230,
+	width: 550,
+	height: 250,
 	series: [
 		{
 			name: "Northeast",
@@ -72,9 +64,7 @@ var graph = new Rickshaw.Graph( {
 	]
 } );
 
-var x_axis = new Rickshaw.Graph.Axis.Time( {
-	graph: graph
-} );
+var x_axis = new Rickshaw.Graph.Axis.Time( { graph: graph } );
 
 var y_axis = new Rickshaw.Graph.Axis.Y( {
 	graph: graph,
@@ -91,5 +81,3 @@ var legend = new Rickshaw.Graph.Legend( {
 graph.render();
 
 </script>
-
-</body>

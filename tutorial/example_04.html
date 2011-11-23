@@ -1,32 +1,25 @@
 <!doctype>
-<head>
-	<link type="text/css" rel="stylesheet" href="../rickshaw.min.css">
-	<script src="../vendor/d3.min.js"></script>
-	<script src="../vendor/d3.layout.min.js"></script>
-	<script src="../rickshaw.min.js"></script>
+<link type="text/css" rel="stylesheet" href="/rickshaw.min.css">
+<script src="/vendor/d3.min.js"></script>
+<script src="/vendor/d3.layout.min.js"></script>
+<script src="/rickshaw.min.js"></script>
 
-	<style>
-		#chart {
-			position: relative;
-			left: 80px;
-		}
-		.rickshaw_graph .y_ticks {
-			left: 0;
-		}
-		.rickshaw_graph .y_tick {
-			stroke: #808080;
-		}
-		#y_axis {
-			position: absolute;
-			top: 0;
-			bottom: 0;
-			width: 80px;
-		}
-	</style>
-
-</head>
-
-<body>
+<style>
+#chart_container {
+	position: relative;
+	font-family: Arial, Helvetica, sans-serif;
+}
+#chart {
+	position: relative;
+	left: 40px;
+}
+#y_axis {
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	width: 40px;
+}
+</style>
 
 <div id="chart_container">
 	<div id="y_axis"></div>
@@ -36,19 +29,15 @@
 <script>
 var graph = new Rickshaw.Graph( {
 	element: document.querySelector("#chart"),
-	width: 600,
-	height: 400,
-	series: [
-		{
-			data: [ { x: -1893456000, y: 92228531 }, { x: -1577923200, y: 106021568 }, { x: -1262304000, y: 123202660 }, { x: -946771200, y: 132165129 }, { x: -631152000, y: 151325798 }, { x: -315619200, y: 179323175 }, { x: 0, y: 203211926 }, { x: 315532800, y: 226545805 }, { x: 631152000, y: 248709873 }, { x: 946684800, y: 281421906 }, { x: 1262304000, y: 308745538 } ], 
-			color: 'steelblue'
-		}
-	]
+	width: 540,
+	height: 240,
+	series: [ {
+		data: [ { x: -1893456000, y: 92228531 }, { x: -1577923200, y: 106021568 }, { x: -1262304000, y: 123202660 }, { x: -946771200, y: 132165129 }, { x: -631152000, y: 151325798 }, { x: -315619200, y: 179323175 }, { x: 0, y: 203211926 }, { x: 315532800, y: 226545805 }, { x: 631152000, y: 248709873 }, { x: 946684800, y: 281421906 }, { x: 1262304000, y: 308745538 } ], 
+		color: 'steelblue'
+	} ]
 } );
 
-var x_axis = new Rickshaw.Graph.Axis.Time( {
-	graph: graph
-} );
+var x_axis = new Rickshaw.Graph.Axis.Time( { graph: graph } );
 
 var y_axis = new Rickshaw.Graph.Axis.Y( {
 	graph: graph,
@@ -60,5 +49,3 @@ var y_axis = new Rickshaw.Graph.Axis.Y( {
 graph.render();
 
 </script>
-
-</body>

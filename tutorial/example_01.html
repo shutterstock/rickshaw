@@ -1,28 +1,24 @@
 <!doctype>
-<head>
-	<script src="../vendor/d3.min.js"></script>
-	<script src="../vendor/d3.layout.min.js"></script>
-	<script src="../rickshaw.min.js"></script>
-</head>
-
-<body>
+<script src="/vendor/d3.min.js"></script>
+<script src="/vendor/d3.layout.min.js"></script>
+<script src="/rickshaw.min.js"></script>
 
 <div id="chart"></div>
 
 <script>
+
+var data = [ { x: 0, y: 40 }, { x: 1, y: 49 }, { x: 2, y: 17 }, { x: 3, y: 42 } ];
+
 var graph = new Rickshaw.Graph( {
 	element: document.querySelector("#chart"),
-	width: 600,
-	height: 400,
-	series: [
-		{
-			data: [ { x: 0, y: 40 }, { x: 1, y: 49 }, { x: 2, y: 38 }, { x: 3, y: 30 }, { x: 4, y: 32 } ],
-			color: 'steelblue'
-		}
-	]
+	width: 580,
+	height: 250,
+	series: [ {
+		color: 'steelblue',
+		data: data
+	} ]
 } );
 
 graph.render();
-</script>
 
-</body>
+</script>

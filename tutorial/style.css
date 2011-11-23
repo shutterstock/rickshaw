@@ -1,34 +1,82 @@
 body {
-	width: 800px;
+	width: 780px;
 	margin: auto;
 	font-family: Arial, Helvetica, sans-serif;
 	font-size: 13px;
 	color: #282828;
+	line-height: 135%;
 }
-pre {
-	padding: 0.5em;
-	background: #f4f4f4;
-	border: 1px solid #eaeaea;
-	white-space: pre-wrap;
-	display: inline-block;
-	vertical-align: top;
+a {
+	text-decoration: none;
+	color: steelblue;
+}
+a:hover {
+	color: lightblue;
 }
 h1 {
-	margin: 0 0 0.2em 0;
+	margin: 1em 0 1em 0;
 	font-weight: normal;
 }
 h2 {
 	font-weight: normal;
-	margin: 1em 0 0.2em 0;
+	margin: 1.4em 0 1em 0;
+	color: black;
 }
 .tutorial-chart {
 	margin-left: 1%;
 	vertical-align: top;
 	margin-top: 1em;
 }
-#tutorial-chart04-container,
-#tutorial-chart05-container,
-#tutorial-chart06-container,
-#tutorial-chart07-container {
+code {
+	background-color: #f0f0f0;
+	padding: 2px;
+}
+section.example {
+	border: 1px solid #e4e4e4;
+}
+
+pre.prettyprint {
 	border: none;
+	border-top: 1px solid #e8e8e8;
+	background: #f0f0f0;
+	padding: 14px 14px;
+	margin: 0;
+	white-space: pre-wrap;
+}
+section iframe {
+	width: 580px;
+	height: 270px;
+	border: none;
+	margin: 0 auto 12px auto;
+	display: block;
+}
+section header {
+	border-bottom: 1px solid #e8e8e8;
+	color: #b0b0b0;
+	margin: 0 0 16px 0;
+}
+section header a:hover {
+	color: steelblue;
+}
+section header a {
+	color: #d0d0d0;
+	text-decoration: none;
+	margin: 6px 10px 0 0;
+}
+section header h3 {
+	font-weight: normal;
+	margin: 0 0 10px 0;
+	position: relative;
+	padding: 6px 0 0 8px;
+	pointer-events: none;
+}
+section header a {
+	float: right;
+}
+.linenums {
+	color: #d0d0d0;
+}
+#example_06 iframe,
+#example_07 iframe {
+	width: 750px;
 }
