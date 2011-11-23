@@ -51,7 +51,7 @@ Rickshaw.Graph = function(args) {
 
 		var seriesSignature = Object.prototype.toString.apply(series);
 
-		if (seriesSignature !== '[object Array]') {
+		if (seriesSignature !== '[object Array]' && ! series instanceof Rickshaw.Series) {
 			throw "series is not an array: " + seriesSignature;
 		}
 
