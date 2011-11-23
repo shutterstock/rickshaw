@@ -89,7 +89,7 @@ for (var i = 0; i < 150; i++) {
 	random.addData(seriesData);
 }
 
-var palette = new Rickshaw.Color.Palette();
+var palette = new Rickshaw.Color.Palette( { scheme: 'classic9' } );
 
 // instantiate our graph!
 
@@ -194,6 +194,7 @@ var stackRenderer = 'stack';
 
 var renderModeMap = {
 	stack: {
+		render: 'stack',
 		offset: 'zero',
 	},
 	percent: {
@@ -250,14 +251,14 @@ renderer_form.addEventListener("change", function(e) { setRenderMode(e.target.va
 // add some data every so often
 
 var messages = [
-	"Changed home page welcome message"
+	"Changed home page welcome message",
 	"Minified JS and CSS",
 	"Changed button color from blue to green",
 	"Refactored SQL query to use indexed columns",
 	"Added additional logging for debugging",
 	"Fixed typo",
 	"Rewrite conditional logic for clarity",
-	"Added documentation for new methods",
+	"Added documentation for new methods"
 ];
 
 setInterval( function() {

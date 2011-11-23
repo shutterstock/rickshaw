@@ -1,26 +1,14 @@
 <!doctype>
-<head>
-	<link type="text/css" rel="stylesheet" href="../src/css/graph.css">
-	<link type="text/css" rel="stylesheet" href="../src/css/legend.css">
-	<link type="text/css" rel="stylesheet" href="css/extensions.css">
+<link type="text/css" rel="stylesheet" href="../src/css/graph.css">
+<link type="text/css" rel="stylesheet" href="../src/css/legend.css">
+<link type="text/css" rel="stylesheet" href="css/extensions.css">
 
-	<script src="../vendor/d3.min.js"></script>
-	<script src="../vendor/d3.layout.min.js"></script>
+<script src="../vendor/d3.min.js"></script>
+<script src="../vendor/d3.layout.min.js"></script>
+<script src="../rickshaw.min.js"></script>
 
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
-	<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.15/jquery-ui.min.js"></script>
-
-	<script src="../src/js/Rickshaw.js"></script>
-	<script src="../src/js/Rickshaw.Series.js"></script>
-	<script src="../src/js/Rickshaw.Graph.js"></script>
-	<script src="../src/js/Rickshaw.Graph.Ajax.js"></script>
-	<script src="../src/js/Rickshaw.Graph.Renderer.Stack.js"></script>
-	<script src="../src/js/Rickshaw.Graph.Renderer.Bar.js"></script>
-	<script src="../src/js/Rickshaw.Graph.Legend.js"></script>
-	<script src="../src/js/Rickshaw.Fixtures.Color.js"></script>
-	<script src="../src/js/Rickshaw.Color.Palette.js"></script>
-</head>
-<body>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.15/jquery-ui.min.js"></script>
 
 <div id="chart"></div>
 <div id="legend"></div>
@@ -35,7 +23,6 @@ var wrapper = new Rickshaw.Graph.Ajax( {
 	width: 960,
 	height: 500,
 	renderer: 'bar',
-	interpolation: 'step-after',
 	onData: function(d) { return transformData(d) },
 	onComplete: function(w) {
 		var legend = new Rickshaw.Graph.Legend( { 
@@ -68,7 +55,5 @@ function transformData(d) {
 	return data;
 }
 
-
 </script>
 
-</body>

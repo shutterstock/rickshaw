@@ -1,40 +1,25 @@
 <!doctype>
-<head>
-	<link type="text/css" rel="stylesheet" href="../src/css/graph.css">
-	<link type="text/css" rel="stylesheet" href="css/lines.css">
 
-	<script src="../vendor/d3.min.js"></script>
-	<script src="../vendor/d3.layout.min.js"></script>
+<link type="text/css" rel="stylesheet" href="../src/css/graph.css">
+<link type="text/css" rel="stylesheet" href="css/lines.css">
 
-	<script src="../src/js/Rickshaw.js"></script>
-	<script src="../src/js/Rickshaw.Graph.js"></script>
-	<script src="../src/js/Rickshaw.Graph.Unstacker.js"></script>
-	<script src="../src/js/Rickshaw.Graph.Renderer.Line.js"></script>
-	<script src="../src/js/Rickshaw.Fixtures.Number.js"></script>
-	<script src="../src/js/Rickshaw.Graph.Axis.Y.js"></script>
+<script src="../vendor/d3.min.js"></script>
+<script src="../vendor/d3.layout.min.js"></script>
+
+<script src="../rickshaw.min.js"></script>
 	
-	<style>
-		#chart {
-			position: relative;
-			left: 80px;
-		}
-		.rickshaw_graph .y_ticks {
-			left: 0;
-		}
-		.rickshaw_graph .y_tick {
-			stroke: #808080; 
-		}
-		#y_axis {
-			position: absolute;
-			top: 0;
-			bottom: 0;
-			width: 80px;
-		}
-	</style>
-
-
-</head>
-<body>
+<style>
+#chart {
+	position: relative;
+	left: 40px;
+}
+#y_axis {
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	width: 40px;
+}
+</style>
 
 <div id="chart_container">
 	<div id="y_axis"></div>
@@ -50,7 +35,6 @@ var graph = new Rickshaw.Graph( {
 	renderer: 'line',
 	height: 300,
 	width: 800,
-	interpolation: 'cardinal',
 	series: [
 		{
 			data: [ { x: 0, y: 120 }, { x: 1, y: 890 }, { x: 2, y: 38 }, { x: 3, y: 70 }, { x: 4, y: 32 } ],
@@ -75,5 +59,3 @@ var y_ticks = new Rickshaw.Graph.Axis.Y( {
 graph.render();
 
 </script>
-
-</body>
