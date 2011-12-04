@@ -11,11 +11,11 @@ Rickshaw.Fixtures.Time = function() {
 	this.units = [
 		{ 
 			name: 'decade',
-			seconds: 86400 * 365 * 10,
-			formatter: function(d) { return (parseInt(d.getUTCFullYear()/10) * 10) } 
+			seconds: 86400 * 365.25 * 10,
+			formatter: function(d) { return (parseInt(d.getUTCFullYear() / 10) * 10) }
 		}, { 
 			name: 'year',
-			seconds: 86400 * 365,
+			seconds: 86400 * 365.25,
 			formatter: function(d) { return d.getUTCFullYear() } 
 		}, { 
 			name: 'month',
