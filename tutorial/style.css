@@ -1,10 +1,13 @@
 body {
-	width: 780px;
-	margin: auto;
+	margin: 0;
 	font-family: Arial, Helvetica, sans-serif;
 	font-size: 13px;
 	color: #282828;
 	line-height: 135%;
+}
+.content {
+	width: 780px;
+	margin: auto;
 }
 a {
 	text-decoration: none;

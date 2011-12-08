@@ -19,7 +19,7 @@ h1 {
 	margin: 1.7em 0 0.6em 0;
 	font-weight: normal;
 }
-h3 {
+h2 {
 	font-weight: normal;
 	margin: 0 0 0.7em 0;
 	color: black;
@@ -34,20 +34,53 @@ section {
 	border-top: 1px solid #e0e0e0;
 	padding: 1.8em 0;
 }
+section p, a.light {
+	color: #a0a0a0;
+}
+.preview {
+	float: left;
+	min-height: 2em;
+	width: 130px;
+	font-size: 16px;
+	border: 1px solid #e8e8e8;
+	margin-right: 1.2em;
+	padding: 3px;
+}
+.preview img {
+	width: 120px;
+}
+.preview.group img {
+	width: 60px;
+}
 </style>
 
 <h1>Rickshaw</h1>
 
-<h6>Rickshaw is a JavaScript toolkit for creating interactive real-time graphs, developed at <a href="http://www.shutterstock.com">Shutterstock</a>.</h6>
+<h6>Rickshaw is a JavaScript toolkit for creating interactive time series graphs, developed at <a href="http://www.shutterstock.com">Shutterstock</a>.</h6>
 
 <section>
-	<h3>Source Code</h3>
-	<a href="https://github.com/shutterstock/rickshaw">https://github.com/shutterstock/rickshaw</a>
+	<div class="preview">
+		<img src="examples/screenshots/tutorial.png">
+	</div>
+	<h2><a href="tutorial/introduction.html">Tutorial</a></h2>
+	<p>Get a simple graph on the page, add real data from the U.S. Census, and break that data down to draw some conclusions</p>
 </section>
 <section>
-	<h3><a href="tutorial/introduction.html">Tutorial</a></h3>
+	<div class="preview group">
+		<img src="examples/screenshots/start.png">	
+		<img src="examples/screenshots/lines.png">	
+		<img src="examples/screenshots/extensions.png">	
+		<img src="examples/screenshots/status.png">	
+	</div>
+	<h2><a href="examples/">Examples</a></h2>
+	<p>See working examples exercising extensions.  Add legends, annotations, axes and labels, get data via AJAX, etc.</p>
 </section>
 <section>
-	<h3><a href="examples/">Examples</a></h3>
+	<div class="preview">
+		<img src="examples/screenshots/github_rickshaw.png">
+	</div>
+	<h2><a href="https://github.com/shutterstock/rickshaw">Rickshaw Project on GitHub</a></h2>
+	<a class="light" href="https://github.com/shutterstock/rickshaw">https://github.com/shutterstock/rickshaw</a>
+	<div style="clear: both"></div>
 </section>
 <section></section>
