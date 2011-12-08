@@ -1,1 +1,1 @@
-document.write( '<header> <h5><a href="../">Rickshaw</a></h5> <a href="../tutorial/introduction.html">Tutorial</a> | <a href="../examples/">Examples</a> | <a href="http://shutterstock.github.com/rickshaw">Code</a> </header>' );
+document.write( '<header> <h5><a href="../">Rickshaw</a></h5> <a href="../tutorial/introduction.html">Tutorial</a> | <a href="../examples/">Examples</a> | <a href="https://github.com/shutterstock/rickshaw">Code</a> </header>' );
