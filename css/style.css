@@ -2,6 +2,7 @@ header {
 	border-bottom: 1px solid #f0f0f0;
 	color: #e0e0e0;
 	margin-bottom: 43px;
+	display: block;
 }
 header h5 {
 	display: inline-block;
