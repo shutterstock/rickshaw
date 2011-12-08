@@ -27,7 +27,7 @@ continuously updates in real time.
 Rickshaw builds on top of D3 technically, and spiritually too.
 Rickshaw makes every effort to provide help for common problems
 without obscuring anything underneath it.  If you need to reach down
-to D3 or the svg layers below, go right ahead -- it's all there waiting.
+to D3 or the SVG layers below, go right ahead -- it's all there waiting.
 </p>
 
 <p>
@@ -44,7 +44,7 @@ Let's start with a simple but complete program that paints a chart:
 </section>
 
 <p>
-Breaking that down, first we pull in our dependancies and create
+Breaking that down, first we pull in our dependencies and create
 a div to hold our chart.  Then in our <code>script</code> we
 call <code>Rickshaw.Graph</code>'s constructor, and pass along an
 element reference to our chart container, some layout instructions,
@@ -70,20 +70,16 @@ interesting about data.  Let's use <a href="http://2010.census.gov/2010census/da
 <p>
 We'll begin by drawing a line representing the United States
 population with a point for each decade from 1910 to 2010.  We'll use
-a short program to massage the CSV data at the census.gov URL into a
-JavaScript data structure that <code>Rickshaw.Graph</code>'s constructor can take
-as its <code>data</code> argument.
-</p>
-
-<p>
-Piping that CSV data through <a href="transform.pl">transform.pl</a> gives 
-us JSON data that we can take and feed into our graph below.
+a short <a href="transform.pl">script</a> we've written to massage the
+CSV data at the census.gov URL into a JavaScript data structure
+that <code>Rickshaw.Graph</code>'s constructor can take as
+its <code>data</code> argument.
 </p>
 
 <br>
 <section class="example" id="example_02">
 	<header>
-		<a href="example02.html" target="_blank">view</a>
+		<a href="example_02.html" target="_blank">view</a>
 		<h3>Example 02</h3>
 	</header>
 	<iframe scrolling="no"></iframe>
@@ -185,7 +181,7 @@ returns the next color.
 We need a legend!  Following a familiar pattern, we add a container
 div for the legend and style it.  Then we call the constructor for the
 <code>Rickshaw.Graph.Legend</code> plugin, which takes a reference to
-our newly added dom element, and a reference to the graph.
+our newly added DOM element, and a reference to the graph.
 </p>
 
 <br>
@@ -205,6 +201,12 @@ It's clear that the South is growing quickly, but instead of painting
 this chart as a stacked graph it would be nice to see how these growth
 patterns line up against each other.  We set the renderer in a
 callback, and then ask the graph to update.
+</p>
+<p>
+In addition to setting the default renderer for the graph, we've added
+a little JavaScript to observe clicks between our stack/line toggle
+whose job is to update the type of renderer we're using and render the
+graph appropriately.
 </p>
 
 <br>
