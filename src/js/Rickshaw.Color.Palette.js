@@ -11,6 +11,6 @@ Rickshaw.Color.Palette = function(args) {
 	this.runningIndex = 0;
 
 	this.color = function(key) {
-		return this.scheme[key || this.runningIndex++] || '#808080';
+		return this.scheme[key] || this.scheme[this.runningIndex++] || '#808080';
 	}
 }

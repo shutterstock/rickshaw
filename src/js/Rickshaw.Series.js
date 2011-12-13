@@ -1,6 +1,6 @@
 Rickshaw.namespace('Rickshaw.Series');
 
-Rickshaw.Series = function(data) {
+Rickshaw.Series = function(data, palette, options) {
 
 	var self = this;
 
@@ -20,7 +20,7 @@ Rickshaw.Series = function(data) {
 			throw('addItem() needs a name');
 		}
 		
-		item.color = (item.color || self.palette.color());
+		item.color = (item.color || self.palette.color(item.name));
 		item.data = (item.data || []);
 
 		// backfill, if necissary
@@ -116,7 +116,7 @@ Rickshaw.Series = function(data) {
 		}
 	}
 
-	this.initialize(data);
+	this.initialize(data, palette, options);
 }
 
 Rickshaw.Series.prototype = new Array;
