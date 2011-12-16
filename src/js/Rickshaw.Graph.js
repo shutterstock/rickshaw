@@ -49,9 +49,8 @@ Rickshaw.Graph = function(args) {
 
 	this.validateSeries = function(series) {
 
-		var seriesSignature = Object.prototype.toString.apply(series);
-
-		if (seriesSignature !== '[object Array]' && ! series instanceof Rickshaw.Series) {
+		if (!(series instanceof Array) && !(series instanceof Rickshaw.Series)) {
+			var seriesSignature = Object.prototype.toString.apply(series);
 			throw "series is not an array: " + seriesSignature;
 		}
 
@@ -59,11 +58,14 @@ Rickshaw.Graph = function(args) {
 
 		series.forEach( function(s) {
 
-			if (! s instanceof Object) {
+			if (!(s instanceof Object)) {
 				throw "series element is not an object " + s;
 			}
-			if (!s.data) {
+			if (!(s.data)) {
 				throw "series has no data: " + JSON.stringify(s);
+			}
+			if (!(s.data instanceof Array)) {
+				throw "series data is not an array: " + JSON.stringify(s.data);
 			}
 
 			pointsCount = pointsCount || s.data.length;
