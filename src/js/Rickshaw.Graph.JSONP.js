@@ -46,6 +46,15 @@ Rickshaw.Graph.JSONP = function(args) {
 
 			self.graph = new Rickshaw.Graph(args);
 			self.graph.render();
+			
+			self.setRenderer = function (x) {
+                        	self.graph.setRenderer(x);
+                       	}
+
+                      	self.update = function(x) {
+                       		self.graph.update(x)
+                       	}
+
 
 			if (typeof args.onComplete == 'function') {
 				args.onComplete(self);
