@@ -10,18 +10,18 @@ Rickshaw.Graph.Axis.Time = function(args) {
 
 	var time = new Rickshaw.Fixtures.Time();
 
-	this.appropriateTimeUnit = function() {
+	this.appropriateTimeUnit = function(domain) {
 
-		var unit;		
+		var unit;
 		var units = time.units;
 
-		var domain = this.graph.x.domain();
+		domain = domain || this.graph.x.domain();
 		var rangeSeconds = domain[1] - domain[0];
 
 		units.forEach( function(u) {
-				if (Math.floor(rangeSeconds / u.seconds) >= 2) {
-					unit = unit || u;
-				}
+			if (Math.floor(rangeSeconds / u.seconds) >= 2) {
+				unit = unit || u;
+			}
 		} );
 
 		return (unit || time.units[time.units.length - 1]);
@@ -31,7 +31,7 @@ Rickshaw.Graph.Axis.Time = function(args) {
 
 		var domain = this.graph.x.domain();
 
-		var unit = this.appropriateTimeUnit();
+		var unit = args.timeUnit || this.appropriateTimeUnit(domain);
 		var count = Math.ceil((domain[1] - domain[0]) / unit.seconds);
 
 		var runningTick = domain[0];
