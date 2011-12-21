@@ -56,6 +56,10 @@ Rickshaw.Fixtures.Time = function() {
 		}
 	];
 
+	this.unit = function(unitName) {
+		return this.units.filter( function(unit) { return unitName == unit.name } ).shift();
+	}
+
 	this.formatDate = function(d) {
 		return d.toUTCString().match(/, (\w+ \w+ \w+)/)[1];
 	}
