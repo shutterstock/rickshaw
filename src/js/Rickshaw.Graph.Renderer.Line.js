@@ -32,7 +32,7 @@ Rickshaw.Graph.Renderer.Line = function(args) {
 			var xMin = stackedData[0][0].x;
 			var xMax = stackedData[0][ stackedData[0].length - 1 ].x;
 
-			var yMin = 0;
+			var yMin = d3.min( values );
 			var yMax = d3.max( values );
 
 			return { x: [xMin, xMax], y: [yMin, yMax] };
