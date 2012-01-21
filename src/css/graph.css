@@ -5,6 +5,7 @@
 }
 .rickshaw_graph svg {
 	display: block;	
+	overflow: hidden;
 }
 
 /* ticks */
