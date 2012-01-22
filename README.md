@@ -1,6 +1,6 @@
 # Rickshaw
 
-Rickshaw is a JavaScript toolkit for creating interactive real-time graphs.
+Rickshaw is a JavaScript toolkit for creating interactive time series graphs, developed at [Shutterstock](http://www.shutterstock.com)
 
 ## Getting Started
 
@@ -21,6 +21,7 @@ Getting started with a simple graph is straightforward.  Here's the gist:
 
     graph.render();
 
+See the [tutorial](http://shutterstock.github.com/rickshaw/tutorial/introduction.html) and [examples](http://shutterstock.github.com/rickshaw/examples/) for more.
 
 ## Rickshaw.Graph 
 
@@ -40,7 +41,7 @@ Getting started with a simple graph is straightforward.  Here's the gist:
 
 * _height_: height of graph in pixels
 
-* _interpolation_: optional line smoothing / interpolation method (see D3 docs); notable options:
+* _interpolation_: optional line smoothing / interpolation method (see [D3 docs](https://github.com/mbostock/d3/wiki/SVG-Shapes#wiki-line_interpolate)); notable options:
 
   * _linear_: straight lines between points
   * _step-after_: square steps from point to point
@@ -57,6 +58,8 @@ Getting started with a simple graph is straightforward.  Here's the gist:
 
 
 ## Rickshaw Extensions
+
+Once you have a basic graph, extensions let you add functionality.  See the [examples](http://shutterstock.github.com/rickshaw/examples/) listing for more.
  
 * __Rickshaw.Graph.Legend__ - add a basic legend
 
@@ -94,7 +97,14 @@ Available color schemes:
   * spectrum2000
 
 
-## Dependencies
+## Rickshaw and Cross-Browser Support
+
+This library works in modern browsers and Internet Explorer 9.
+
+Rickshaw relies on the HTMLElement#classList API, which isn't natively supported in Internet Explorer 9.  Rickshaw adds support by including a shim which implements the classList API by extending the HTMLElement prototype.  You can disable this behavior if you like, by setting `RICKSHAW_NO_COMPAT` to a true value before including the library. 
+
+
+## Dependencies & Building
 
 Rickshaw relies on the fantastic [D3 visualization library](http://mbostock.github.com/d3/) to do lots of the heavy lifting for stacking and rendering to SVG.
 
