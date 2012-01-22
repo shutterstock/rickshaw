@@ -56,6 +56,10 @@ Rickshaw.Fixtures.Time = function() {
 		}
 	];
 
+	this.unit = function(unitName) {
+		return this.units.filter( function(unit) { return unitName == unit.name } ).shift();
+	}
+
 	this.formatDate = function(d) {
 		return d.toUTCString().match(/, (\w+ \w+ \w+)/)[1];
 	}
@@ -68,14 +72,12 @@ Rickshaw.Fixtures.Time = function() {
 		
 		if (unit.name == 'month') {
 			var nearFuture = new Date((time + unit.seconds - 1) * 1000);
-			var monthDate = [nearFuture.getUTCFullYear(), nearFuture.getUTCMonth() + 1, 1].join('-');
-			return new Date(monthDate).getTime() / 1000;
+			return new Date(nearFuture.getUTCFullYear(), nearFuture.getUTCMonth() + 1, 1, 0, 0, 0, 0).getTime() / 1000;
 		} 
 
 		if (unit.name == 'year') {
 			var nearFuture = new Date((time + unit.seconds - 1) * 1000);
-			var yearDate = [nearFuture.getUTCFullYear(), 1, 1].join('-');
-			return new Date(yearDate).getTime() / 1000;
+			return new Date(nearFuture.getUTCFullYear(), 1, 1, 0, 0, 0, 0).getTime() / 1000;
 		}
 
 		return Math.ceil(time / unit.seconds) * unit.seconds;

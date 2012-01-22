@@ -1,3 +1,71 @@
+.rickshaw_graph .detail {
+	pointer-events: none;
+	position: absolute;
+	top: 0;
+	z-index: 2;
+	background: rgba(0, 0, 0, 0.1);
+	bottom: 0;
+	width: 1px;
+	transition: opacity 0.25s linear;
+	-moz-transition: opacity 0.25s linear;
+	-o-transition: opacity 0.25s linear;
+	-webkit-transition: opacity 0.25s linear;
+}
+.rickshaw_graph .detail.inactive {
+	opacity: 0;
+}
+.rickshaw_graph .detail .item.active {
+	opacity: 1;
+}
+.rickshaw_graph .detail .x_label {
+	font-family: Arial, sans-serif;
+	border-radius: 3px;
+	padding: 6px;
+	opacity: 0.5;
+	border: 1px solid #e0e0e0;
+	font-size: 12px;
+	position: absolute;
+	background: white;
+	white-space: nowrap;
+}
+.rickshaw_graph .detail .item {
+	position: absolute;
+	z-index: 2;
+	border-radius: 3px;
+	padding: 0.25em;
+	font-size: 12px;
+	font-family: Arial, sans-serif;
+	opacity: 0;
+	background: rgba(0, 0, 0, 0.4);
+	color: white;
+	border: 1px solid rgba(0, 0, 0, 0.4);
+	margin-left: 1em;
+	margin-top: -1em;
+	white-space: nowrap;
+}
+.rickshaw_graph .detail .item.active {
+	opacity: 1;
+	background: rgba(0, 0, 0, 0.8);
+}
+.rickshaw_graph .detail .item:before {
+	content: "\25c2";
+	position: absolute;
+	left: -0.5em;
+	color: rgba(0, 0, 0, 0.7);
+	width: 0;
+}
+.rickshaw_graph .detail .dot {
+	width: 5px;
+	height: 5px;
+	margin-left: -2px;
+	margin-top: -3px;
+	border-radius: 3px;
+	position: absolute;
+}
+.rickshaw_graph .detail .dot.active {
+	background: rgba(255, 255, 255, 0.8);
+	box-shadow: 0 0 1px rgba(0, 0, 0, 0.5);
+}
 /* graph */
 
 .rickshaw_graph {
@@ -150,4 +218,69 @@
 		1px 0px 0 rgba(0, 0, 0, 0.8),
 		-1px 0px 0 rgba(0, 0, 0, 0.8),
 		-1px -1px 0 rgba(0, 0, 0, 0.8);
+}
+.rickshaw_legend {
+	font-family: Arial;
+	font-size: 12px;
+	color: white;
+	background: #404040;
+	display: inline-block;
+	padding: 12px 5px; 
+	border-radius: 2px;
+	position: relative;
+}
+.rickshaw_legend:hover {
+	z-index: 10;
+}
+.rickshaw_legend .swatch {
+	width: 10px;
+	height: 10px;
+	border: 1px solid rgba(0, 0, 0, 0.2);
+}
+.rickshaw_legend .line {
+	clear: both;
+	line-height: 140%;
+	padding-right: 15px;
+}
+.rickshaw_legend .line .swatch {
+	display: inline-block;
+	margin-right: 3px;
+	border-radius: 2px;
+}
+.rickshaw_legend .label {
+	white-space: nowrap;
+	display: inline;
+}
+.rickshaw_legend .action:hover {
+	opacity: 0.6;
+}
+.rickshaw_legend .action {
+	margin-right: 0.2em;
+	font-size: 10px;
+	opacity: 0.2;
+	cursor: pointer;
+	font-size: 14px;
+}
+.rickshaw_legend .line.disabled {
+	opacity: 0.4;
+}
+.rickshaw_legend ul {
+	list-style-type: none;
+	margin: 0;
+	padding: 0;
+	margin: 2px;
+	cursor: pointer;
+}
+.rickshaw_legend li {
+	padding: 0 0 0 2px;
+	min-width: 80px;
+	white-space: nowrap;
+}
+.rickshaw_legend li:hover {
+	background: rgba(255, 255, 255, 0.08);
+	border-radius: 3px;
+}
+.rickshaw_legend li:active {
+	background: rgba(255, 255, 255, 0.2);
+	border-radius: 3px;
 }

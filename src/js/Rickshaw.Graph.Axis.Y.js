@@ -22,8 +22,8 @@ Rickshaw.Graph.Axis.Y = function(args) {
 			var elementHeight = parseInt(style.getPropertyValue('height'));
 		}
 
-		this.width = args.width || elementWidth || graph.width * berthRate;
-		this.height = args.height || elementHeight || graph.height;
+		this.width = args.width || elementWidth || this.graph.width * berthRate;
+		this.height = args.height || elementHeight || this.graph.height;
 
 		this.vis = d3.select(args.element)
 			.append("svg:svg")

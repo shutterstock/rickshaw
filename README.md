@@ -59,7 +59,7 @@ See the [tutorial](http://shutterstock.github.com/rickshaw/tutorial/introduction
 
 ## Rickshaw Extensions
 
-Once you have a basic graph, extensions let you add functionality.  See the [examples](http://shutterstock.github.com/rickshaw/examples) listing for more.
+Once you have a basic graph, extensions let you add functionality.  See the [examples](http://shutterstock.github.com/rickshaw/examples/) listing for more.
  
 * __Rickshaw.Graph.Legend__ - add a basic legend
 
@@ -95,6 +95,13 @@ Available color schemes:
   * spectrum19
   * spectrum2001
   * spectrum2000
+
+
+## Rickshaw and Cross-Browser Support
+
+This library works in modern browsers and Internet Explorer 9.
+
+Rickshaw relies on the HTMLElement#classList API, which isn't natively supported in Internet Explorer 9.  Rickshaw adds support by including a shim which implements the classList API by extending the HTMLElement prototype.  You can disable this behavior if you like, by setting `RICKSHAW_NO_COMPAT` to a true value before including the library. 
 
 
 ## Dependencies & Building
