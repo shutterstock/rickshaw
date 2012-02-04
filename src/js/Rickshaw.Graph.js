@@ -124,11 +124,9 @@ Rickshaw.Graph = function(args) {
 		var data = this.series.active()
 			.map( function(d) { return d.data } )
 			.map( function(d) { return d.filter( function(d) { return this._slice(d) }, this ) }, this); 
-
         if (data[0].length === 0) {
-            data[0] = [];
+            data[0] = [{x: undefined, y: undefined}];
         }
-
 		this.stackData.hooks.data.forEach( function(entry) {
 			data = entry.f.apply(self, [data]);
 		} ); 
