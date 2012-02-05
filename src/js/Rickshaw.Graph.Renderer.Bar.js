@@ -8,17 +8,28 @@ Rickshaw.Graph.Renderer.Bar = function(args) {
 		this.name = 'bar';
 		this.gapSize = args.gapSize || 0.05;
 
+		this.unstack = false;
+
+		graph.unstacker = graph.unstacker || new Rickshaw.Graph.Unstacker( { graph: graph } );
+
 		this.domain = function() {
 
+			var values = [];
 			var stackedData = graph.stackedData || graph.stackData();
 
-			var topSeriesData = stackedData.slice(-1).shift();
+			var topSeriesData = this.unstack ? stackedData : [ stackedData.slice(-1).shift() ];
+
+			topSeriesData.forEach( function(series) {
+				series.forEach( function(d) {
+					values.push( d.y + d.y0 );
+				} );
+			} );
 
 			var xMin = stackedData[0][0].x;
 			var xMax = stackedData[0][ stackedData[0].length - 1 ].x;
 
 			var yMin = 0;
-			var yMax = d3.max( topSeriesData, function(d) { return d.y + d.y0 } );
+			var yMax = d3.max( values );
 
 			this._barWidth = null;
 
@@ -52,7 +63,9 @@ Rickshaw.Graph.Renderer.Bar = function(args) {
 				}
 			} );
 
+
 			this._barWidth = this.graph.x(data[0].x + frequentInterval.magnitude * (1 - this.gapSize));
+
 			return this._barWidth;
 		}
 
@@ -60,7 +73,12 @@ Rickshaw.Graph.Renderer.Bar = function(args) {
 
 			graph.vis.selectAll('*').remove();
 
+			var barsPerSlot = this.unstack ? this.graph.series.length : 1;
 			var barWidth = this.barWidth();
+			var barXOffset = 0;
+
+			var activeSeriesCount = graph.series.filter( function(s) { return !s.disabled } ).length;
+			var seriesBarWidth = this.unstack ? barWidth / activeSeriesCount : barWidth;
 
 			graph.series.forEach( function(series) {
 
@@ -69,14 +87,16 @@ Rickshaw.Graph.Renderer.Bar = function(args) {
 				var nodes = graph.vis.selectAll("path")
 					.data(series.stack)
 					.enter().append("svg:rect")
-					.attr("x", function(d) { return graph.x(d.x) })
+					.attr("x", function(d) { return graph.x(d.x) + barXOffset })
 					.attr("y", function(d) { return graph.y(d.y0 + d.y) })
-					.attr("width", barWidth)
+					.attr("width", seriesBarWidth)
 					.attr("height", function(d) { return graph.y.magnitude(d.y) });
 
 				Array.prototype.forEach.call(nodes[0], function(n) {
 					n.setAttribute('fill', series.color);
 				} );
+
+				if (self.unstack) barXOffset += seriesBarWidth;
 
 			} );
 		}
