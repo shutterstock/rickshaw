@@ -15,7 +15,7 @@
 	<script src="../src/js/Rickshaw.js"></script>
 	<script src="../src/js/Rickshaw.Compat.ClassList.js"></script>
 	<script src="../src/js/Rickshaw.Graph.js"></script>
-	<script src="../src/js/Rickshaw.Graph.Renderer.Stack.js"></script>
+	<script src="../src/js/Rickshaw.Graph.Renderer.Area.js"></script>
 	<script src="../src/js/Rickshaw.Graph.Renderer.Line.js"></script>
 	<script src="../src/js/Rickshaw.Graph.Renderer.Bar.js"></script>
 	<script src="../src/js/Rickshaw.Graph.RangeSlider.js"></script>
@@ -98,7 +98,8 @@ var graph = new Rickshaw.Graph( {
 	element: document.getElementById("chart"),
 	width: 900,
 	height: 500,
-	renderer: 'stack',
+	renderer: 'area',
+	stroke: true,
 	series: [
 		{
 			color: palette.color(),
@@ -191,19 +192,17 @@ var yAxis = new Rickshaw.Graph.Axis.Y( {
 
 yAxis.render();
 
-var stackRenderer = 'stack';
-
 var renderModeMap = {
 	stack: {
-		render: 'stack',
+		render: 'area',
 		offset: 'zero',
 	},
 	percent: {
-		render: 'stack',
+		render: 'area',
 		offset: 'expand',
 	},
 	stream: {
-		renderer: 'stack',
+		renderer: 'area',
 		offset: 'wiggle',
 	},
 	lines: {
@@ -212,14 +211,14 @@ var renderModeMap = {
 		offset: 'zero'
 	},
 	curves: {
-		renderer: 'stack',
+		renderer: 'area',
 		interpolation: 'cardinal'
 	},
 	bars: {
 		renderer: 'bar',
 	},
 	step: {
-		renderer: 'stack',
+		renderer: 'area',
 		interpolation: 'step-after'
 	},
 };
