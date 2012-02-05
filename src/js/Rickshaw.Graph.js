@@ -36,7 +36,8 @@ Rickshaw.Graph = function(args) {
 		var renderers = [
 			Rickshaw.Graph.Renderer.Line,
 			Rickshaw.Graph.Renderer.Bar,
-			Rickshaw.Graph.Renderer.Area
+			Rickshaw.Graph.Renderer.Area,
+			Rickshaw.Graph.Renderer.ScatterPlot
 		];
 	
 		renderers.forEach( function(r) {
