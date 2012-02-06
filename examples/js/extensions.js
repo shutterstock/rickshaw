@@ -75,13 +75,6 @@ var RenderControls = function(args) {
 			} else {
 				input.disabled = true;
 				input.parentNode.classList.add('disabled');
-
-				Array.prototype.forEach.call(this.inputs.offset, function(input) {
-					if (input.value == options.defaults.offset) {
-						input.checked = true;
-					}
-
-				}.bind(this));
 			}
 
 		}.bind(this));
@@ -114,7 +107,7 @@ var RenderControls = function(args) {
 		},
 		line: {
 			interpolation: true,
-			offset: ['value'],
+			offset: ['expand', 'value'],
 			defaults: { offset: 'value' }
 		},
 		bar: {
