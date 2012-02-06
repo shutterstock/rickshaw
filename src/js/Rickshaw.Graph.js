@@ -34,6 +34,7 @@ Rickshaw.Graph = function(args) {
 			.attr('height', this.height);
 
 		var renderers = [
+			Rickshaw.Graph.Renderer.Stack,
 			Rickshaw.Graph.Renderer.Line,
 			Rickshaw.Graph.Renderer.Bar,
 			Rickshaw.Graph.Renderer.Area,
