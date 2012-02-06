@@ -6,6 +6,7 @@ Rickshaw.Graph = function(args) {
 	this.interpolation = args.interpolation || 'cardinal';
 	this.series = args.series;
 	this.offset = 'zero';
+	this.stroke = args.stroke || false;
 
 	var style = window.getComputedStyle(this.element, null);
 	var elementWidth = parseInt(style.getPropertyValue('width'));
@@ -33,9 +34,11 @@ Rickshaw.Graph = function(args) {
 			.attr('height', this.height);
 
 		var renderers = [
-			Rickshaw.Graph.Renderer.Stack, 
+			Rickshaw.Graph.Renderer.Stack,
 			Rickshaw.Graph.Renderer.Line,
-			Rickshaw.Graph.Renderer.Bar
+			Rickshaw.Graph.Renderer.Bar,
+			Rickshaw.Graph.Renderer.Area,
+			Rickshaw.Graph.Renderer.ScatterPlot
 		];
 	
 		renderers.forEach( function(r) {

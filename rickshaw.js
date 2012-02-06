@@ -166,6 +166,7 @@ Rickshaw.Graph = function(args) {
 	this.interpolation = args.interpolation || 'cardinal';
 	this.series = args.series;
 	this.offset = 'zero';
+	this.stroke = args.stroke || false;
 
 	var style = window.getComputedStyle(this.element, null);
 	var elementWidth = parseInt(style.getPropertyValue('width'));
@@ -193,9 +194,11 @@ Rickshaw.Graph = function(args) {
 			.attr('height', this.height);
 
 		var renderers = [
-			Rickshaw.Graph.Renderer.Stack, 
+			Rickshaw.Graph.Renderer.Stack,
 			Rickshaw.Graph.Renderer.Line,
-			Rickshaw.Graph.Renderer.Bar
+			Rickshaw.Graph.Renderer.Bar,
+			Rickshaw.Graph.Renderer.Area,
+			Rickshaw.Graph.Renderer.ScatterPlot
 		];
 	
 		renderers.forEach( function(r) {
@@ -1476,65 +1479,253 @@ Rickshaw.namespace('Rickshaw.Graph.Renderer.Bar');
 
 Rickshaw.Graph.Renderer.Bar = function(args) {
 
+	var graph = this.graph = args.graph;
+	var self = this;
+
+	this.name = 'bar';
+	this.gapSize = args.gapSize || 0.05;
+
+	this.unstack = false;
+	graph.unstacker = graph.unstacker || new Rickshaw.Graph.Unstacker( { graph: graph } );
+
+	this.domain = function() {
+
+		var values = [];
+		var stackedData = graph.stackedData || graph.stackData();
+
+		var topSeriesData = this.unstack ? stackedData : [ stackedData.slice(-1).shift() ];
+
+		topSeriesData.forEach( function(series) {
+			series.forEach( function(d) {
+				values.push( d.y + d.y0 );
+			} );
+		} );
+
+		var xMin = stackedData[0][0].x;
+		var xMax = stackedData[0][ stackedData[0].length - 1 ].x;
+
+		var yMin = 0;
+		var yMax = d3.max( values );
+
+		this._barWidth = null;
+
+		return { x: [xMin, xMax], y: [yMin, yMax] };
+	}
+
+	this.barWidth = function() {
+
+		if (this._barWidth) return this._barWidth;
+
+		var stackedData = graph.stackedData || graph.stackData();
+		var data = stackedData.slice(-1).shift();
+
+		var intervalCounts = {};
+
+		for (var i = 0; i < data.length - 1; i++) {
+			var interval = data[i + 1].x - data[i].x;
+			intervalCounts[interval] = intervalCounts[interval] || 0;
+			intervalCounts[interval]++;
+		}
+
+		var frequentInterval = { count: 0 };
+
+		d3.keys(intervalCounts).forEach( function(i) {
+			if (frequentInterval.count < intervalCounts[i]) {
+
+				frequentInterval = {
+					count: intervalCounts[i],
+					magnitude: i
+				};
+			}
+		} );
+
+
+		this._barWidth = this.graph.x(data[0].x + frequentInterval.magnitude * (1 - this.gapSize));
+
+		return this._barWidth;
+	}
+
+	this.render = function() {
+
+		graph.vis.selectAll('*').remove();
+
+		var barsPerSlot = this.unstack ? this.graph.series.length : 1;
+		var barWidth = this.barWidth();
+		var barXOffset = 0;
+
+		var activeSeriesCount = graph.series.filter( function(s) { return !s.disabled } ).length;
+		var seriesBarWidth = this.unstack ? barWidth / activeSeriesCount : barWidth;
+
+		graph.series.forEach( function(series) {
+
+			if (series.disabled) return;
+
+			var nodes = graph.vis.selectAll("path")
+				.data(series.stack)
+				.enter().append("svg:rect")
+				.attr("x", function(d) { return graph.x(d.x) + barXOffset })
+				.attr("y", function(d) { return graph.y(d.y0 + d.y) })
+				.attr("width", seriesBarWidth)
+				.attr("height", function(d) { return graph.y.magnitude(d.y) });
+
+			Array.prototype.forEach.call(nodes[0], function(n) {
+				n.setAttribute('fill', series.color);
+			} );
+
+			if (self.unstack) barXOffset += seriesBarWidth;
+
+		} );
+	}
+
+	this._styleSeries = function(series) {
+		if (!series.path) return;
+		series.path.setAttribute('fill', series.color);
+		series.path.setAttribute('stroke-width', 2);
+		series.path.setAttribute('class', series.className);
+	}
+}
+Rickshaw.namespace('Rickshaw.Graph.Renderer.Area');
+
+Rickshaw.Graph.Renderer.Area = function(args) {
+
+	var graph = this.graph = args.graph;
+	var self = this;
+
+	this.tension = 0.8;
+	this.strokeWidth = 2;
+	this.yBerth = 1.025;
+
+	this.name = 'area';
+
+	this.unstack = false;
+	graph.unstacker = graph.unstacker || new Rickshaw.Graph.Unstacker( { graph: graph } );
+
+	this.seriesPathFactory = function() { 
+
+		return d3.svg.area()
+			.x( function(d) { return graph.x(d.x) } )
+			.y0( function(d) { return graph.y(d.y0) } )
+			.y1( function(d) { return graph.y(d.y + d.y0)} )
+			.interpolate(this.graph.interpolation).tension(this.tension)
+	}
+
+	this.seriesLineFactory = function() { 
+
+		return d3.svg.line()
+			.x( function(d) { return graph.x(d.x) } )
+			.y( function(d) { return graph.y(d.y + d.y0)} )
+			.interpolate(this.graph.interpolation).tension(this.tension)
+	}
+
+	this.domain = function() {
+
+		var values = [];
+		var stackedData = graph.stackedData || graph.stackData();
+
+		var topSeriesData = this.unstack ? stackedData : [ stackedData.slice(-1).shift() ];
+
+		topSeriesData.forEach( function(series) {
+			series.forEach( function(d) {
+				values.push( d.y + d.y0 );
+			} );
+		} );
+
+		var xMin = stackedData[0][0].x;
+		var xMax = stackedData[0][ stackedData[0].length - 1 ].x;
+
+		var yMin = 0;
+		var yMax = d3.max( values ) * this.yBerth;
+
+		return { x: [xMin, xMax], y: [yMin, yMax] };
+	}
+
+	this.render = function() {
+
+		graph.vis.selectAll('*').remove();
+
+		var nodes = graph.vis.selectAll("path")
+			.data(graph.stackedData)
+			.enter().insert("svg:g", 'g')
+
+		nodes.append("svg:path")
+			.attr("d", this.seriesPathFactory())
+			.attr("class", 'area');
+
+		if (this.graph.stroke) {
+			nodes.append("svg:path")
+				.attr("d", this.seriesLineFactory())
+				.attr("class", 'line');
+		}
+		
+		var i = 0;
+		graph.series.forEach( function(series) {
+			if (series.disabled) return;
+			series.path = nodes[0][i++];
+			self._styleSeries(series);
+		} );
+	}
+
+	this._styleSeries = function(series) {
+
+		if (!series.path) return;
+
+		d3.select(series.path).select('.area')
+			.attr('fill', series.color);
+
+		if (this.graph.stroke) {
+			d3.select(series.path).select('.line')
+				.attr('fill', 'none')
+				.attr('stroke', series.stroke || d3.interpolateRgb(series.color, 'black')(0.125))
+				.attr('stroke-width', this.strokeWidth);
+		}
+
+		if (series.className) {
+			series.path.setAttribute('class', series.className);
+		}
+	}
+}
+Rickshaw.namespace('Rickshaw.Graph.Renderer.ScatterPlot');
+
+Rickshaw.Graph.Renderer.ScatterPlot = function(args) {
+
 		var graph = this.graph = args.graph;
 		var self = this;
 
-		this.name = 'bar';
-		this.gapSize = args.gapSize || 0.05;
+		this.name = 'scatterplot';
+		this.unstack = true;
+		this.dotSize = args.dotSize || 4;
+
+		this.xBerth = 1.0125;
+		this.yBerth = 1.0125;
+
+		graph.unstacker = graph.unstacker || new Rickshaw.Graph.Unstacker( { graph: graph } );
 
 		this.domain = function() {
 
+			var values = [];
 			var stackedData = graph.stackedData || graph.stackData();
-
-			var topSeriesData = stackedData.slice(-1).shift();
+	
+			stackedData.forEach( function(series) {
+				series.forEach( function(d) {
+					values.push( d.y )
+				} );
+			} );
 
 			var xMin = stackedData[0][0].x;
 			var xMax = stackedData[0][ stackedData[0].length - 1 ].x;
 
-			var yMin = 0;
-			var yMax = d3.max( topSeriesData, function(d) { return d.y + d.y0 } );
+			xMin -= (xMax - xMin) * (this.xBerth - 1);
+			xMax += (xMax - xMin) * (this.xBerth - 1);
 
-			this._barWidth = null;
+			var yMin = 0;
+			var yMax = d3.max( values ) * this.yBerth;
 
 			return { x: [xMin, xMax], y: [yMin, yMax] };
-		}
-
-		this.barWidth = function() {
-
-			if (this._barWidth) return this._barWidth;
-
-			var stackedData = graph.stackedData || graph.stackData();
-			var data = stackedData.slice(-1).shift();
-
-			var intervalCounts = {};
-
-			for (var i = 0; i < data.length - 1; i++) {
-				var interval = data[i + 1].x - data[i].x;
-				intervalCounts[interval] = intervalCounts[interval] || 0;
-				intervalCounts[interval]++;
-			}
-
-			var frequentInterval = { count: 0 };
-
-			d3.keys(intervalCounts).forEach( function(i) {
-				if (frequentInterval.count < intervalCounts[i]) {
-
-					frequentInterval = {
-						count: intervalCounts[i],
-						magnitude: i
-					};
-				}
-			} );
-
-			this._barWidth = this.graph.x(data[0].x + frequentInterval.magnitude * (1 - this.gapSize));
-			return this._barWidth;
 		}
 
 		this.render = function() {
 
 			graph.vis.selectAll('*').remove();
-
-			var barWidth = this.barWidth();
 
 			graph.series.forEach( function(series) {
 
@@ -1542,17 +1733,16 @@ Rickshaw.Graph.Renderer.Bar = function(args) {
 
 				var nodes = graph.vis.selectAll("path")
 					.data(series.stack)
-					.enter().append("svg:rect")
-					.attr("x", function(d) { return graph.x(d.x) })
-					.attr("y", function(d) { return graph.y(d.y0 + d.y) })
-					.attr("width", barWidth)
-					.attr("height", function(d) { return graph.y.magnitude(d.y) });
+					.enter().append("svg:circle")
+					.attr("cx", function(d) { return graph.x(d.x) })
+					.attr("cy", function(d) { return graph.y(d.y) })
+					.attr("r", this.dotSize);
 
 				Array.prototype.forEach.call(nodes[0], function(n) {
 					n.setAttribute('fill', series.color);
 				} );
 
-			} );
+			}, this );
 		}
 
 		this._styleSeries = function(series) {
