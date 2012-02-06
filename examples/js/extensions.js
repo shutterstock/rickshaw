@@ -36,7 +36,7 @@ var RenderControls = function(args) {
 
 			this.graph.render();
 
-		}.bind(this));
+		}.bind(this), false);
 	}
 
 	this.serialize = function() {

@@ -108,6 +108,8 @@ label.disabled {
 	outline: 2px solid steelblue;
 }
 #renderer_form.toggler input[type=radio] {
+	-moz-appearance: button;
+	background: white;
 	margin: 0 7px;
 	width: 39px;
 	height: 26px;
