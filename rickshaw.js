@@ -267,6 +267,19 @@ Rickshaw.Graph = function(args) {
 		this.y.magnitude = d3.scale.linear().domain(domain.y).range([0, this.height]);
 		
 	}
+	
+	this.resize = function(height, width) {	    
+	    if (height) {
+	        this.height = height;
+	    }
+	    
+	    if (width) {
+	        this.width = width;
+	    }
+
+	    this.element.setAttribute("height", this.height);
+	    this.element.setAttribute("height", this.width);
+	}
 
 	this.render = function() {
 
