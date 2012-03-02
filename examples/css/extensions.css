@@ -97,21 +97,25 @@ section {
 	margin: 5px 0 0 10px;
 	width: 90%;
 }
-form.toggler {
+label.disabled {
+	opacity: 0.4;
+}
+#renderer_form.toggler {
 	display: block;
 	margin: 0;
 }
-form.toggler input[type=radio]:checked {
+#renderer_form.toggler input[type=radio]:checked {
 	outline: 2px solid steelblue;
 }
-form.toggler input[type=radio] {
+#renderer_form.toggler input[type=radio] {
+	-moz-appearance: button;
+	background: white;
 	margin: 0 7px;
 	width: 39px;
 	height: 26px;
 	position: absolute;
-	-moz-appearance: button;
 }
-form.toggler label {
+#renderer_form.toggler label {
 	display: inline-block;
 	padding: 0;
 	width: 39px;
@@ -124,24 +128,57 @@ form.toggler label {
 	margin: 0 7px;
 	cursor: pointer;
 }
-label[for=stack] {
+#interpolation_form,
+#offset_form {
+	vertical-align: top;
+	display: inline-block;
+	width: 45%;
+}
+#interpolation_form label,
+#offset_form label {
+	display: block;
+}
+label[for=area] {
 	background: url(../images/om_stack.png);
 }
-label[for=stream] {
-	background: url(../images/om_stream.png);
-}
-label[for=percent] {
-	background: url(../images/om_percent.png);
-}
-label[for=lines] {
+label[for=line] {
 	background: url(../images/om_lines.png);
 }
-label[for=stack_renderer] {
-	background: url(../images/om_curves.png);
-}
-label[for=bar_renderer] {
+label[for=bar] {
 	background: url(../images/om_bar.png);
 }
-label[for=step_interpolation] {
-	background: url(../images/om_step.png);
+label[for=scatter] {
+	background: url(../images/om_scatter.png);
+}
+#offset_form label,
+#interpolation_form label {
+	background-repeat: no-repeat;
+	background-position: 2em center;
+	cursor: pointer;
+	cursor: hand;
+}
+#offset_form label span,
+#interpolation_form label span {
+	padding-left: 36px;
+}
+label[for=stack] {
+	background-image: url(../images/offset_stack.png);
+}
+label[for=pct] {
+	background-image: url(../images/offset_pct.png);
+}
+label[for=stream] {
+	background-image: url(../images/offset_stream.png);
+}
+label[for=value] {
+	background-image: url(../images/offset_value.png);
+}
+label[for=cardinal] {
+	background-image: url(../images/interp_cardinal.png);
+}
+label[for=linear] {
+	background-image: url(../images/interp_linear.png);
+}
+label[for=step] {
+	background-image: url(../images/interp_step.png);
 }
