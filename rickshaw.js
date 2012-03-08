@@ -269,16 +269,18 @@ Rickshaw.Graph = function(args) {
 	}
 	
 	this.resize = function(height, width) {	    
+	    var svg = this.element.getElementsByTagName('svg')[0];
 	    if (height) {
 	        this.height = height;
+	        this.element.style.height = this.height + 'px';
+	        svg.setAttribute("height", this.height);
 	    }
 	    
 	    if (width) {
 	        this.width = width;
+	        this.element.style.width = this.width + 'px';
+	        svg.setAttribute("width", this.width);
 	    }
-
-	    this.element.setAttribute("height", this.height);
-	    this.element.setAttribute("height", this.width);
 	}
 
 	this.render = function() {
