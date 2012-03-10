@@ -37,6 +37,7 @@ JS_FILES=\
 	src/js/Rickshaw.Graph.Smoother.js\
 	src/js/Rickshaw.Graph.Unstacker.js\
 	src/js/Rickshaw.Series.js\
+	src/js/Rickshaw.Series.FixedDuration.js\
 
 .PHONY: clean build
 
