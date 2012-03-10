@@ -3,12 +3,14 @@ Rickshaw.namespace('Rickshaw.Graph.HoverDetail');
 Rickshaw.Graph.HoverDetail = function(args) {
 
 	var graph = this.graph = args.graph;
+
 	var xFormatter = args.xFormatter || function(x) {
 		return new Date( x * 1000 ).toUTCString();
 	};
+
 	var yFormatter = args.yFormatter || function(y) {
-    return y.toFixed(2);
-  }; 
+		return y.toFixed(2);
+	}; 
 	
 	var element = this.element = document.createElement('div');
 	element.className = 'detail';
@@ -113,8 +115,8 @@ Rickshaw.Graph.HoverDetail = function(args) {
 		detail.sort(sortFn).forEach( function(d) {
 
 			var formattedYValue = (yFormatter.constructor == Array) ?
-			  yFormatter[detail.indexOf(d)](d.value.y) :
-			  yFormatter(d.value.y);
+				yFormatter[detail.indexOf(d)](d.value.y) :
+				yFormatter(d.value.y);
 
 			var item = document.createElement('div');
 			item.className = 'item';
