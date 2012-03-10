@@ -13,7 +13,7 @@ Rickshaw.Graph.Ajax = function(args) {
 				console.log("error loading dataURL: " + this.dataURL);
 			}
 
-			var data = eval( '(' + response.responseText + ')' );	
+			var data = JSON.parse(response.responseText);	
 
 			if (typeof args.onData === 'function') {
 				var processedData = args.onData(data);
