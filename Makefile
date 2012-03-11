@@ -11,6 +11,7 @@ CSS_FILES=\
 
 JS_FILES=\
 	src/js/Rickshaw.js\
+	src/js/Rickshaw.Class.js\
 	src/js/Rickshaw.Compat.ClassList.js\
 	src/js/Rickshaw.Graph.js\
 	src/js/Rickshaw.Fixtures.Color.js\
