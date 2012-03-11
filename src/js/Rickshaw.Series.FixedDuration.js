@@ -1,81 +1,80 @@
 Rickshaw.namespace('Rickshaw.Series.FixedDuration');
 
-Rickshaw.Series.FixedDuration = function(data, palette, options) {
+Rickshaw.Series.FixedDuration = Rickshaw.Class.create(Rickshaw.Series, {
 
-	this.initialize(data, palette, options);
-}
+	initialize: function (data, palette, options) {
 
-Rickshaw.Series.FixedDuration.prototype = new Rickshaw.Series;
+		var options = options || {}
 
-Rickshaw.Series.FixedDuration.prototype.constructor = Rickshaw.Series.FixedDuration;
-
-Rickshaw.Series.FixedDuration.prototype.initialize = function (data, palette, options) {
-	var self = this;
-	options = options || {}
-
-	if (typeof(options.timeInterval) === 'undefined') {
-		throw('FixedDuration series requires timeInterval');
-	}
-	if (typeof(options.maxDataPoints) === 'undefined') {
-		throw('FixedDuration series requires maxDataPoints');
-	}
-
-	self.palette = new Rickshaw.Color.Palette(palette);
-	self.timeBase = typeof(options.timeBase) === 'undefined' ? Math.floor(new Date().getTime() / 1000) : options.timeBase;
-	self.setTimeInterval(options.timeInterval);
-	if (self[0] && self[0].data && self[0].data.length) {
-		self.currentSize = self[0].data.length;
-		self.currentIndex = self[0].data.length;
-	} else {
-		self.currentSize  = 0;
-		self.currentIndex = 0;
-	}
-	self.maxDataPoints = options.maxDataPoints;
-
-	// reset timeBase for zero-filled values if needed
-	if ((typeof(self.maxDataPoints) !== 'undefined') && (self.currentSize < self.maxDataPoints)) {
-		self.timeBase -= Math.floor((self.maxDataPoints - self.currentSize) * self.timeInterval);
-	}
-
-	if (data && (typeof(data) == "object") && (data instanceof Array)) {
-		data.forEach( function (item) { self.addItem(item) } );
-		self.currentSize  += 1;
-		self.currentIndex += 1;
-	}
-
-	// zero-fill up to maxDataPoints size if we don't have that much data yet
-	if ((typeof(self.maxDataPoints) !== 'undefined') && (self.currentSize < self.maxDataPoints)) {
-		for (var i = self.maxDataPoints - self.currentSize; i > 0; i--) {
-			self.currentSize  += 1;
-			self.currentIndex += 1;
-			self.forEach( function (item) {
-					item.data.splice(1, 0, { x: (i * self.timeInterval || 1) + self.timeBase, y: 0 });
-					} );
+		if (typeof(options.timeInterval) === 'undefined') {
+			throw new Error('FixedDuration series requires timeInterval');
 		}
-	}
-}
 
-Rickshaw.Series.FixedDuration.prototype.addData = function(data) {
-	// call the parent
-	Rickshaw.Series.prototype.addData.call(this, data);
-	this.currentSize += 1;
-	this.currentIndex += 1;
-
-	if (this.maxDataPoints !== undefined) {
-		while (this.currentSize > this.maxDataPoints) {
-			this.dropData();
+		if (typeof(options.maxDataPoints) === 'undefined') {
+			throw new Error('FixedDuration series requires maxDataPoints');
 		}
-	}
-}
 
-Rickshaw.Series.FixedDuration.prototype.dropData = function() {
-	var self = this;
-	self.forEach( function(item) {
+		this.palette = new Rickshaw.Color.Palette(palette);
+		this.timeBase = typeof(options.timeBase) === 'undefined' ? Math.floor(new Date().getTime() / 1000) : options.timeBase;
+		this.setTimeInterval(options.timeInterval);
+
+		if (this[0] && this[0].data && this[0].data.length) {
+			this.currentSize = this[0].data.length;
+			this.currentIndex = this[0].data.length;
+		} else {
+			this.currentSize  = 0;
+			this.currentIndex = 0;
+		}
+
+		this.maxDataPoints = options.maxDataPoints;
+
+
+		if (data && (typeof(data) == "object") && (data instanceof Array)) {
+			data.forEach( function (item) { this.addItem(item) }, this );
+			this.currentSize  += 1;
+			this.currentIndex += 1;
+		}
+
+		// reset timeBase for zero-filled values if needed
+		this.timeBase -= (this.maxDataPoints - this.currentSize) * this.timeInterval;
+
+		// zero-fill up to maxDataPoints size if we don't have that much data yet
+		if ((typeof(this.maxDataPoints) !== 'undefined') && (this.currentSize < this.maxDataPoints)) {
+			for (var i = this.maxDataPoints - this.currentSize - 1; i > 0; i--) {
+				this.currentSize  += 1;
+				this.currentIndex += 1;
+				this.forEach( function (item) {
+					item.data.unshift({ x: ((i-1) * this.timeInterval || 1) + this.timeBase, y: 0, i: i });
+				}, this );
+			}
+		}
+	},
+
+	addData: function($super, data) {
+
+		$super(data)
+
+		this.currentSize += 1;
+		this.currentIndex += 1;
+
+		if (this.maxDataPoints !== undefined) {
+			while (this.currentSize > this.maxDataPoints) {
+				this.dropData();
+			}
+		}
+	},
+
+	dropData: function() {
+
+		this.forEach(function(item) {
 			item.data.splice(0, 1);
-			} );
-	self.currentSize -= 1;
-}
+		} );
 
-Rickshaw.Series.FixedDuration.prototype.getIndex = function () {
-	return this.currentIndex;
-}
+		this.currentSize -= 1;
+	},
+
+	getIndex: function () {
+		return this.currentIndex;
+	}
+} );
+
