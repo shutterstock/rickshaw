@@ -74,7 +74,7 @@ exports.addData = function(test) {
 		series.addData({series1: 42});	
 	}
 
-	test.equal(series[0].data.length, 20 + 3, 'series length stuck around maxDataPoints');
+	test.equal(series[0].data.length, 20 + 2, 'series length stuck around maxDataPoints');
 	test.equal(series.currentSize, 20, 'series.currentSize is stuck at maxDataPoints');
 	test.done();
 }

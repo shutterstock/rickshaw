@@ -31,8 +31,8 @@ Rickshaw.Series = Rickshaw.Class.create( Array, {
 			this[0].data.forEach( function(plot) {
 				item.data.push({ x: plot.x, y: 0 });
 			} );
-		} else { //if (item.data.length == 0) {
-			item.data.push({ x: this.timeBase, y: 0 });
+		} else if (item.data.length == 0) {
+			item.data.push({ x: this.timeBase - (this.timeInterval || 0), y: 0 });
 		} 
 
 		this.push(item);

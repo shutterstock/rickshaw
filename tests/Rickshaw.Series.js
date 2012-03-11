@@ -29,8 +29,7 @@ exports.initialize = function(test) {
 		series[0].data, 
 		[ { x: 0, y: 20 },
 		  { x: 1, y: 21 },
-		  { x: 2, y: 15 },
-		  { x: 0, y: 0 } ],
+		  { x: 2, y: 15 } ],
 		'data made it in as we expect'
 	);
 
@@ -56,15 +55,15 @@ exports.addData = function(test) {
 
 	series.addData( { series1: 22, } );
 
-	test.equal(series[0].data.length, 5, 'first series has five data points');
-	test.equal(series[0].data[4].y, 22, 'first series last data point made it in');
+	test.equal(series[0].data.length, 4, 'first series has four data points');
+	test.equal(series[0].data[3].y, 22, 'first series last data point made it in');
 
 	series.addData( { series1: 29, series2: 57 } );
 
-	test.equal(series[0].data[5].y, 29, 'first series has a new data point');
+	test.equal(series[0].data[4].y, 29, 'first series has a new data point');
 
-	test.equal(series[1].data.length, 6, 'second series has six data points');
-	test.equal(series[1].data[5].y, 57, 'second series last data point made it in');
+	test.equal(series[1].data.length, 5, 'second series has five data points');
+	test.equal(series[1].data[4].y, 57, 'second series last data point made it in');
 
 	test.done();
 }
@@ -90,7 +89,7 @@ exports.dump = function(test) {
 			"items":[{
 				"color":"red",
 				"name":"series1",
-				"data":[{"x":0,"y":20},{"x":1,"y":21},{"x":2,"y":15},{"x":0,"y":0}]
+				"data":[{"x":0,"y":20},{"x":1,"y":21},{"x":2,"y":15}]
 			}]
 		},
 		'dumped series matches'
