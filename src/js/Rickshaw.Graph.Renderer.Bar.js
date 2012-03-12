@@ -1,45 +1,27 @@
 Rickshaw.namespace('Rickshaw.Graph.Renderer.Bar');
 
-Rickshaw.Graph.Renderer.Bar = function(args) {
+Rickshaw.Graph.Renderer.Bar = Rickshaw.Class.create( Rickshaw.Graph.Renderer, {
 
-	var graph = this.graph = args.graph;
-	var self = this;
+	name: 'bar',
+	gapSize: 0.05,
+	unstack: false,
 
-	this.name = 'bar';
-	this.gapSize = args.gapSize || 0.05;
+	initialize: function($super, args) {
+		args = args || {};
+		this.gapSize = args.gapSize || this.gapSize;
+		$super(args);
+	},
 
-	this.unstack = false;
-	graph.unstacker = graph.unstacker || new Rickshaw.Graph.Unstacker( { graph: graph } );
-
-	this.domain = function() {
-
-		var values = [];
-		var stackedData = graph.stackedData || graph.stackData();
-
-		var topSeriesData = this.unstack ? stackedData : [ stackedData.slice(-1).shift() ];
-
-		topSeriesData.forEach( function(series) {
-			series.forEach( function(d) {
-				values.push( d.y + d.y0 );
-			} );
-		} );
-
-		var xMin = stackedData[0][0].x;
-		var xMax = stackedData[0][ stackedData[0].length - 1 ].x;
-
-		var yMin = 0;
-		var yMax = d3.max( values );
-
+	domain: function($super) {
 		this._barWidth = null;
+		return $super();
+	},
 
-		return { x: [xMin, xMax], y: [yMin, yMax] };
-	}
-
-	this.barWidth = function() {
+	barWidth: function() {
 
 		if (this._barWidth) return this._barWidth;
 
-		var stackedData = graph.stackedData || graph.stackData();
+		var stackedData = this.graph.stackedData || this.graph.stackData();
 		var data = stackedData.slice(-1).shift();
 
 		var intervalCounts = {};
@@ -66,17 +48,18 @@ Rickshaw.Graph.Renderer.Bar = function(args) {
 		this._barWidth = this.graph.x(data[0].x + frequentInterval.magnitude * (1 - this.gapSize));
 
 		return this._barWidth;
-	}
+	},
 
-	this.render = function() {
+	render: function() {
+
+		var graph = this.graph;
 
 		graph.vis.selectAll('*').remove();
 
-		var barsPerSlot = this.unstack ? this.graph.series.length : 1;
 		var barWidth = this.barWidth();
 		var barXOffset = 0;
 
-		var activeSeriesCount = graph.series.filter( function(s) { return !s.disabled } ).length;
+		var activeSeriesCount = graph.series.filter( function(s) { return !s.disabled; } ).length;
 		var seriesBarWidth = this.unstack ? barWidth / activeSeriesCount : barWidth;
 
 		graph.series.forEach( function(series) {
@@ -95,15 +78,9 @@ Rickshaw.Graph.Renderer.Bar = function(args) {
 				n.setAttribute('fill', series.color);
 			} );
 
-			if (self.unstack) barXOffset += seriesBarWidth;
+			if (this.unstack) barXOffset += seriesBarWidth;
 
-		} );
+		}, this );
 	}
+} );
 
-	this._styleSeries = function(series) {
-		if (!series.path) return;
-		series.path.setAttribute('fill', series.color);
-		series.path.setAttribute('stroke-width', 2);
-		series.path.setAttribute('class', series.className);
-	}
-}

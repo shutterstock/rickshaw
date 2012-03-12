@@ -20,5 +20,5 @@ Rickshaw.Graph.Unstacker = function(args) {
 			return data;
 		}
 	} );
-}
+};
 
