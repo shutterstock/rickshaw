@@ -44,29 +44,29 @@ Rickshaw.Graph.Axis.Y = function(args) {
 
 	this.render = function() {
 
-		var axis = d3.svg.axis().scale(this.graph.y).orient(this.orientation);
+		var axis = d3.svg.axis().scale(self.graph.y).orient(self.orientation);
 		axis.tickFormat( args.tickFormat || function(y) { return y } );
 
-		if (this.orientation == 'left') {
-			var transform = 'translate(' + this.width + ', 0)';
+		if (self.orientation == 'left') {
+			var transform = 'translate(' + self.width + ', 0)';
 		}
 
-		if (this.element) {
-			this.vis.selectAll('*').remove();
+		if (self.element) {
+			self.vis.selectAll('*').remove();
 		}
 
-		this.vis
+		self.vis
 			.append("svg:g")
-			.attr("class", ["y_ticks", this.ticksTreatment].join(" "))
+			.attr("class", ["y_ticks", self.ticksTreatment].join(" "))
 			.attr("transform", transform)
-			.call(axis.ticks(this.ticks).tickSubdivide(0).tickSize(this.tickSize))
+			.call(axis.ticks(self.ticks).tickSubdivide(0).tickSize(self.tickSize))
 
-		var gridSize = (this.orientation == 'right' ? 1 : -1) * this.graph.width;
+		var gridSize = (self.orientation == 'right' ? 1 : -1) * self.graph.width;
 
-		this.graph.vis
+		self.graph.vis
 			.append("svg:g")
 			.attr("class", "y_grid")
-			.call(axis.ticks(this.ticks).tickSubdivide(0).tickSize(gridSize));
+			.call(axis.ticks(self.ticks).tickSubdivide(0).tickSize(gridSize));
 	}
 
 	this.graph.onUpdate( function() { self.render() } );
