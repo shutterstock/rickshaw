@@ -1,133 +1,132 @@
 Rickshaw.namespace('Rickshaw.Series');
 
-Rickshaw.Series = function(data, palette, options) {
+Rickshaw.Series = Rickshaw.Class.create( Array, {
 
-	this.initialize(data, palette, options);
-}
+	initialize: function (data, palette, options) {
 
-Rickshaw.Series.prototype = new Array;
+		options = options || {}
 
-Rickshaw.Series.prototype.constructor = Rickshaw.Series;
+		this.palette = new Rickshaw.Color.Palette(palette);
 
-Rickshaw.Series.prototype.initialize = function (data, palette, options) {
-	var self = this;
-	options = options || {}
+		this.timeBase = typeof(options.timeBase) === 'undefined' ? 
+			Math.floor(new Date().getTime() / 1000) : 
+			options.timeBase;
 
-	self.palette = new Rickshaw.Color.Palette(palette);
-	self.timeBase = typeof(options.timeBase) === 'undefined' ? Math.floor(new Date().getTime() / 1000) : options.timeBase;
-
-	if (data && (typeof(data) == "object") && (data instanceof Array)) {
-		data.forEach( function (item) { self.addItem(item) } );
-	}
-}
-
-Rickshaw.Series.prototype.addItem = function(item) {
-	var self = this;
-	if (typeof(item.name) === 'undefined') {
-		throw('addItem() needs a name');
-	}
-
-	item.color = (item.color || self.palette.color(item.name));
-	item.data = (item.data || []);
-
-	// backfill, if necessary
-	if ((item.data.length == 0) && (self.getIndex() > 0)) {
-		self[0].data.forEach( function (plot) {
-			item.data.push({ x: plot.x, y: 0 });
-		} );
-	} else {
-		// otherwise add a first plot
-		console.log(self.timeBase);
-		item.data.push({ x: self.timeBase, y: 0 });
-	}
-
-	self.push(item);
-
-	if (self.legend) {
-		self.legend.addLine(self.itemByName(item.name));
-	}
-}
-
-Rickshaw.Series.prototype.addData = function(data) {
-	var self = this;
-	var index = this.getIndex();
-
-	Rickshaw.keys(data).forEach( function (name) {
-		if (! self.itemByName(name)) {
-			self.addItem({ name: name });
+		if (data && (typeof(data) == "object") && (data instanceof Array)) {
+			data.forEach( function(item) { this.addItem(item) }, this );
 		}
-	} );
+	},
 
-	self.forEach( function (item) {
-		item.data.push({ x: (index * self.timeInterval || 1) + self.timeBase, y: (data[item.name] || 0) });
-	} );
-}
+	addItem: function(item) {
 
-Rickshaw.Series.prototype.getIndex = function () {
-	var self = this;
-	return (self[0] && self[0].data && self[0].data.length) ? self[0].data.length : 0;
-}
+		if (typeof(item.name) === 'undefined') {
+			throw('addItem() needs a name');
+		}
 
-Rickshaw.Series.prototype.itemByName = function (name) {
-	var self = this;
-	var ret;
-	self.forEach( function (item) {
-		if (item.name == name) { ret = item }
-	} );
-	return ret;
-}
+		item.color = (item.color || this.palette.color(item.name));
+		item.data = (item.data || []);
 
-Rickshaw.Series.prototype.setTimeInterval = function (iv) {
-	this.timeInterval = parseInt(iv/1000);
-}
+		// backfill, if necessary
+		if ((item.data.length == 0) && this.length && (this.getIndex() > 0)) {
+			this[0].data.forEach( function(plot) {
+				item.data.push({ x: plot.x, y: 0 });
+			} );
+		} else if (item.data.length == 0) {
+			item.data.push({ x: this.timeBase - (this.timeInterval || 0), y: 0 });
+		} 
 
-Rickshaw.Series.prototype.setTimeBase = function (t) {
-	this.timeBase = t;
-}
+		this.push(item);
 
-Rickshaw.Series.prototype.dump = function () {
-	var self = this;
-	var data = {
-		timeBase: self.timeBase,
-		timeInterval: self.timeInterval,
-		items: [],
-	};
-	self.forEach( function (item) {
-		var newItem = {
-			color: item.color,
-			name: item.name,
-			data: []
+		if (this.legend) {
+			this.legend.addLine(this.itemByName(item.name));
+		}
+	},
+
+	addData: function(data) {
+
+		var index = this.getIndex();
+
+		Rickshaw.keys(data).forEach( function(name) {
+			if (! this.itemByName(name)) {
+				this.addItem({ name: name });
+			}
+		}, this );
+
+		this.forEach( function(item) {
+			item.data.push({ 
+				x: (index * this.timeInterval || 1) + this.timeBase, 
+				y: (data[item.name] || 0) 
+			});
+		}, this );
+	},
+
+	getIndex: function () {
+		return (this[0] && this[0].data && this[0].data.length) ? this[0].data.length : 0;
+	},
+
+	itemByName: function(name) {
+
+		for (var i = 0; i < this.length; i++) {
+			if (this[i].name == name)
+				return this[i];
+		}
+	},
+
+	setTimeInterval: function(iv) {
+		this.timeInterval = iv / 1000;
+	},
+
+	setTimeBase: function (t) {
+		this.timeBase = t;
+	},
+
+	dump: function() {
+
+		var data = {
+			timeBase: this.timeBase,
+			timeInterval: this.timeInterval,
+			items: [],
 		};
 
-		item.data.forEach( function (plot) {
-			newItem.data.push({ x: plot.x, y: plot.y });
+		this.forEach( function(item) {
+
+			var newItem = {
+				color: item.color,
+				name: item.name,
+				data: []
+			};
+
+			item.data.forEach( function(plot) {
+				newItem.data.push({ x: plot.x, y: plot.y });
+			} );
+
+			data.items.push(newItem);
 		} );
 
-		data.items.push(newItem);
-	} );
-	return data;
-}
+		return data;
+	},
 
-Rickshaw.Series.prototype.load = function (data) {
-	var self = this;
-	if (data.timeInterval) {
-		self.timeInterval = data.timeInterval;
+	load: function(data) {
+
+		if (data.timeInterval) {
+			this.timeInterval = data.timeInterval;
+		}
+
+		if (data.timeBase) {
+			this.timeBase = data.timeBase;
+		}
+
+		if (data.items) {
+			data.items.forEach( function(item) {
+				this.push(item);
+				if (this.legend) {
+					this.legend.addLine(this.itemByName(item.name));
+				}
+
+			}, this );
+		}
 	}
-
-	if (data.timeBase) {
-		self.timeBase = data.timeBase;
-	}
-
-	if (data.items) {
-		data.items.forEach( function (item) {
-			self.push(item);
-
-			if (self.legend) {
-				self.legend.addLine(self.itemByName(item.name));
-			}
-		} );
-	}
-}
+} );
 
 Rickshaw.Series.zeroFill = function(series) {
 

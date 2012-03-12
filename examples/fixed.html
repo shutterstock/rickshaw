@@ -1,0 +1,82 @@
+<!doctype>
+<head>
+	<link type="text/css" rel="stylesheet" href="http://jqueryui.com/themes/base/jquery.ui.all.css">
+	<link type="text/css" rel="stylesheet" href="../src/css/graph.css">
+	<link type="text/css" rel="stylesheet" href="../src/css/detail.css">
+	<link type="text/css" rel="stylesheet" href="../src/css/legend.css">
+	<link type="text/css" rel="stylesheet" href="css/extensions.css">
+
+	<script src="../vendor/d3.min.js"></script>
+	<script src="../vendor/d3.layout.min.js"></script>
+
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.15/jquery-ui.min.js"></script>
+
+	<script src="../src/js/Rickshaw.js"></script>
+	<script src="../src/js/Rickshaw.Class.js"></script>
+	<script src="../src/js/Rickshaw.Graph.js"></script>
+	<script src="../src/js/Rickshaw.Graph.Renderer.js"></script>
+	<script src="../src/js/Rickshaw.Graph.Renderer.Stack.js"></script>
+	<script src="../src/js/Rickshaw.Graph.Renderer.Line.js"></script>
+	<script src="../src/js/Rickshaw.Graph.Renderer.Area.js"></script>
+	<script src="../src/js/Rickshaw.Graph.RangeSlider.js"></script>
+	<script src="../src/js/Rickshaw.Graph.HoverDetail.js"></script>
+	<script src="../src/js/Rickshaw.Graph.Annotate.js"></script>
+	<script src="../src/js/Rickshaw.Graph.Legend.js"></script>
+	<script src="../src/js/Rickshaw.Graph.Axis.Time.js"></script>
+	<script src="../src/js/Rickshaw.Graph.Behavior.Series.Toggle.js"></script>
+	<script src="../src/js/Rickshaw.Graph.Behavior.Series.Order.js"></script>
+	<script src="../src/js/Rickshaw.Graph.Behavior.Series.Highlight.js"></script>
+	<script src="../src/js/Rickshaw.Graph.Smoother.js"></script>
+	<script src="../src/js/Rickshaw.Graph.Unstacker.js"></script>
+	<script src="../src/js/Rickshaw.Fixtures.Time.js"></script>
+	<script src="../src/js/Rickshaw.Fixtures.RandomData.js"></script>
+	<script src="../src/js/Rickshaw.Fixtures.Color.js"></script>
+	<script src="../src/js/Rickshaw.Color.Palette.js"></script>
+	<script src="../src/js/Rickshaw.Series.js"></script>
+	<script src="../src/js/Rickshaw.Series.FixedDuration.js"></script>
+</head>
+<body>
+
+<div id="content">
+	<div id="chart"></div>
+</div>
+
+<script>
+
+var tv = 250;
+
+// instantiate our graph!
+var graph = new Rickshaw.Graph( {
+	element: document.getElementById("chart"),
+	width: 900,
+	height: 500,
+	renderer: 'line',
+	series: new Rickshaw.Series.FixedDuration([{ name: 'one' }], undefined, {
+		timeInterval: tv,
+		maxDataPoints: 100,
+		timeBase: new Date().getTime() / 1000
+	}) 
+} );
+
+graph.render();
+
+// add some data every so often
+
+var i = 0;
+var iv = setInterval( function() {
+
+	var data = { one: Math.floor(Math.random() * 40) + 120 };
+
+	var randInt = Math.floor(Math.random()*100);
+	data.two = (Math.sin(i++ / 40) + 4) * (randInt + 400);
+	data.three = randInt + 300;
+
+	graph.series.addData(data);
+	graph.render();
+
+}, tv );
+
+</script>
+
+</body>

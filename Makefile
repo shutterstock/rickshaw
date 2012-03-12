@@ -11,6 +11,7 @@ CSS_FILES=\
 
 JS_FILES=\
 	src/js/Rickshaw.js\
+	src/js/Rickshaw.Class.js\
 	src/js/Rickshaw.Compat.ClassList.js\
 	src/js/Rickshaw.Graph.js\
 	src/js/Rickshaw.Fixtures.Color.js\
@@ -29,6 +30,7 @@ JS_FILES=\
 	src/js/Rickshaw.Graph.JSONP.js\
 	src/js/Rickshaw.Graph.Legend.js\
 	src/js/Rickshaw.Graph.RangeSlider.js\
+	src/js/Rickshaw.Graph.Renderer.js\
 	src/js/Rickshaw.Graph.Renderer.Line.js\
 	src/js/Rickshaw.Graph.Renderer.Stack.js\
 	src/js/Rickshaw.Graph.Renderer.Bar.js\
@@ -37,6 +39,7 @@ JS_FILES=\
 	src/js/Rickshaw.Graph.Smoother.js\
 	src/js/Rickshaw.Graph.Unstacker.js\
 	src/js/Rickshaw.Series.js\
+	src/js/Rickshaw.Series.FixedDuration.js\
 
 .PHONY: clean build
 
@@ -61,4 +64,4 @@ rickshaw.min.css: $(CSS_MIN) rickshaw.css
 	$(CSS_MIN) rickshaw.css > rickshaw.min.css
 
 rickshaw.min.js: $(JS_MIN) rickshaw.js
-	$(JS_MIN) rickshaw.js > rickshaw.min.js
+	$(JS_MIN) --reserved-names "\$$super" rickshaw.js > rickshaw.min.js

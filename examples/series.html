@@ -13,7 +13,9 @@
 	<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.15/jquery-ui.min.js"></script>
 
 	<script src="../src/js/Rickshaw.js"></script>
+	<script src="../src/js/Rickshaw.Class.js"></script>
 	<script src="../src/js/Rickshaw.Graph.js"></script>
+	<script src="../src/js/Rickshaw.Graph.Renderer.js"></script>
 	<script src="../src/js/Rickshaw.Graph.Renderer.Stack.js"></script>
 	<script src="../src/js/Rickshaw.Graph.Renderer.Line.js"></script>
 	<script src="../src/js/Rickshaw.Graph.RangeSlider.js"></script>
@@ -76,7 +78,6 @@ var graph = new Rickshaw.Graph( {
 	interpolation: 'step-after',
 	series: new Rickshaw.Series([{ name: 'This' }])
 } );
-
 
 var slider = new Rickshaw.Graph.RangeSlider( {
 	graph: graph,
