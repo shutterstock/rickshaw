@@ -53,5 +53,5 @@ Rickshaw.Graph.Ajax = function(args) {
 			}
 		}
 	} );
-}
+};
 

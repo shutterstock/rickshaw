@@ -63,7 +63,7 @@ Rickshaw.Graph.HoverDetail = function(args) {
 		if (this.visible) {
 			self.render.call( self, domainX, detail, eventX, eventY);
 		}
-	}
+	};
 
 	this.graph.element.addEventListener( 
 		'mousemove', 
@@ -89,12 +89,12 @@ Rickshaw.Graph.HoverDetail = function(args) {
 	this.hide = function() {
 		this.visible = false;
 		this.element.classList.add('inactive');
-	}
+	};
 
 	this.show = function() {
 		this.visible = true;
 		this.element.classList.remove('inactive');
-	}
+	};
 
 	this.render = function(domainX, detail, mouseX, mouseY) {
 
@@ -110,7 +110,7 @@ Rickshaw.Graph.HoverDetail = function(args) {
 
 		var sortFn = function(a, b) {
 			return (a.value.y0 + a.value.y) - (b.value.y0 + b.value.y);
-		}
+		};
 
 		detail.sort(sortFn).forEach( function(d) {
 
@@ -143,6 +143,6 @@ Rickshaw.Graph.HoverDetail = function(args) {
 		}, this );
 
 		this.show();
-	}
-}
+	};
+};
 

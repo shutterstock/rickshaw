@@ -8,4 +8,4 @@ Rickshaw.Fixtures.Number.formatKMBT = function(y) {
 	else if (y < 1 && y > 0)  { return y.toFixed(2) }
 	else if (y == 0)          { return '' }
 	else                      { return y }
-}
+};

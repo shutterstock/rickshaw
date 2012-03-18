@@ -124,4 +124,4 @@ Rickshaw.Fixtures.Color = function() {
 		'#a47493',
 		'#c09fb5'
 	];
-}
+};

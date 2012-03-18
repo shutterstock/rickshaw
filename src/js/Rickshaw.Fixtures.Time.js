@@ -58,15 +58,15 @@ Rickshaw.Fixtures.Time = function() {
 
 	this.unit = function(unitName) {
 		return this.units.filter( function(unit) { return unitName == unit.name } ).shift();
-	}
+	};
 
 	this.formatDate = function(d) {
 		return d.toUTCString().match(/, (\w+ \w+ \w+)/)[1];
-	}
+	};
 
 	this.formatTime = function(d) {
 		return d.toUTCString().match(/(\d+:\d+):/)[1];
-	}
+	};
 
 	this.ceil = function(time, unit) {
 		
@@ -81,5 +81,5 @@ Rickshaw.Fixtures.Time = function() {
 		}
 
 		return Math.ceil(time / unit.seconds) * unit.seconds;
-	}
-}
+	};
+};
