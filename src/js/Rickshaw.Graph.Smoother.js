@@ -63,5 +63,5 @@ Rickshaw.Graph.Smoother = function(args) {
 		this.aggregationScale = scale;
 		this.graph.update();
 	}
-}
+};
 

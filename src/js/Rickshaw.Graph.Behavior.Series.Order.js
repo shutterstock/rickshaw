@@ -33,4 +33,4 @@ Rickshaw.Graph.Behavior.Series.Order = function(args) {
 		var h = window.getComputedStyle(self.legend.element).height;
 		self.legend.element.style.height = h;
 	} );
-}
+};
