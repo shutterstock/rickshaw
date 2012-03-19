@@ -15,6 +15,9 @@ Rickshaw.Graph = function(args) {
 	this.width = args.width || elementWidth || 400;
 	this.height = args.height || elementHeight || 250;
 
+	this.min = args.min;
+	this.max = args.max;
+
 	this.window = {};
 
 	this.updateCallbacks = [];
