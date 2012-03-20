@@ -14,7 +14,7 @@ Rickshaw.Graph.Annotate = function(args) {
 	this.add = function(time, content) {
 		self.data[time] = self.data[time] || {'boxes': []};
 		self.data[time].boxes.push({content: content});
-	}
+	};
 
 	this.update = function() {
 
@@ -62,7 +62,7 @@ Rickshaw.Graph.Annotate = function(args) {
 				annotation.line.style.left = left + 'px';
 			} );
 		}
-	}
+	};
 
 	this.graph.onUpdate( function() { self.update() } );
-}
+};

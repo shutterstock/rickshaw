@@ -52,5 +52,5 @@ Rickshaw.Graph.JSONP = function(args) {
 			}
 		}
 	} );
-}
+};
 

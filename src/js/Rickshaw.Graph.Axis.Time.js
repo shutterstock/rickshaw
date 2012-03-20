@@ -26,7 +26,7 @@ Rickshaw.Graph.Axis.Time = function(args) {
 		} );
 
 		return (unit || time.units[time.units.length - 1]);
-	}
+	};
 
 	this.tickOffsets = function() {
 
@@ -48,7 +48,7 @@ Rickshaw.Graph.Axis.Time = function(args) {
 		}
 
 		return offsets;
-	}
+	};
 
 	this.render = function() {
 
@@ -78,7 +78,7 @@ Rickshaw.Graph.Axis.Time = function(args) {
 			self.elements.push(element);
 
 		} );
-	}
+	};
 
 	this.graph.onUpdate( function() { self.render() } );
 };

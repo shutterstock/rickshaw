@@ -15,6 +15,9 @@ Rickshaw.Graph = function(args) {
 	this.width = args.width || elementWidth || 400;
 	this.height = args.height || elementHeight || 250;
 
+	this.min = args.min;
+	this.max = args.max;
+
 	this.window = {};
 
 	this.updateCallbacks = [];
@@ -48,7 +51,7 @@ Rickshaw.Graph = function(args) {
 
 		this.setRenderer(args.renderer || 'stack');
 		this.discoverRange();
-	}
+	};
 
 	this.validateSeries = function(series) {
 
@@ -86,7 +89,7 @@ Rickshaw.Graph = function(args) {
 					dataTypeX + " and " + dataTypeY;
 			}
 		} );
-	}
+	};
 
 	this.dataDomain = function() {
 		
@@ -95,7 +98,7 @@ Rickshaw.Graph = function(args) {
 		
 		return [ data[0].x, data.slice(-1).shift().x ]; 
 
-	}
+	};
 
 	this.discoverRange = function() {
 
@@ -106,7 +109,7 @@ Rickshaw.Graph = function(args) {
 		this.y = d3.scale.linear().domain(domain.y).range([this.height, 0]);
 		this.y.magnitude = d3.scale.linear().domain(domain.y).range([0, this.height]);
 		
-	}
+	};
 
 	this.render = function() {
 
@@ -118,7 +121,7 @@ Rickshaw.Graph = function(args) {
 		this.updateCallbacks.forEach( function(callback) {
 			callback();
 		} );
-	}
+	};
 
 	this.update = this.render;
 
@@ -149,7 +152,7 @@ Rickshaw.Graph = function(args) {
 
 		this.stackedData = stackedData;
 		return stackedData;
-	}
+	};
 
 	this.stackData.hooks = { data: [], after: [] };
 
@@ -166,16 +169,16 @@ Rickshaw.Graph = function(args) {
 		}
 
 		return true;
-	}
+	};
 
 	this.onUpdate = function(callback) {
 		this.updateCallbacks.push(callback);
-	}
+	};
 
 	this.registerRenderer = function(renderer) {
 		this._renderers = this._renderers || {};
 		this._renderers[renderer.name] = renderer;			
-	}
+	};
 	
 	this.setRenderer = function(name) {
 
@@ -183,7 +186,7 @@ Rickshaw.Graph = function(args) {
 			throw "couldn't find renderer " + name;
 		}
 		this.renderer = this._renderers[name]; 
-	}
+	};
 
 	this.initialize(args);
-}
+};

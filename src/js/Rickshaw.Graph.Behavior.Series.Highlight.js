@@ -33,7 +33,7 @@ Rickshaw.Graph.Behavior.Series.Highlight = function(args) {
 			self.graph.update();
 
 		}, false );
-	}
+	};
 
 	if (this.legend) {
 		this.legend.lines.forEach( function(l) {
@@ -41,4 +41,4 @@ Rickshaw.Graph.Behavior.Series.Highlight = function(args) {
 		} );
 	}
 
-}
+};

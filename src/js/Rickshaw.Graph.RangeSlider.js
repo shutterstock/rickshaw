@@ -51,5 +51,5 @@ Rickshaw.Graph.RangeSlider = function(args) {
 		$(element).slider('option', 'values', values);
 
 	} );
-}
+};
 

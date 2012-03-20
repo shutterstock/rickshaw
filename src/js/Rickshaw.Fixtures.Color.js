@@ -63,7 +63,7 @@ Rickshaw.Fixtures.Color = function() {
 		'#531e1e',
 		'#3d1818',
 		'#320a1b'
-    ];
+	];
 
 	this.schemes.classic9 = [
 		'#423d4f',
@@ -124,4 +124,36 @@ Rickshaw.Fixtures.Color = function() {
 		'#a47493',
 		'#c09fb5'
 	];
-}
+
+	this.schemes.munin = [
+		'#00cc00',
+		'#0066b3',
+		'#ff8000',
+		'#ffcc00',
+		'#330099',
+		'#990099',
+		'#ccff00',
+		'#ff0000',
+		'#808080',
+		'#008f00',
+		'#00487d',
+		'#b35a00',
+		'#b38f00',
+		'#6b006b',
+		'#8fb300',
+		'#b30000',
+		'#bebebe',
+		'#80ff80',
+		'#80c9ff',
+		'#ffc080',
+		'#ffe680',
+		'#aa80ff',
+		'#ee00cc',
+		'#ff8080',
+		'#666600',
+		'#ffbfff',
+		'#00ffcc',
+		'#cc6699',
+		'#999900'
+	];
+};
