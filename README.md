@@ -41,6 +41,10 @@ See the [tutorial](http://shutterstock.github.com/rickshaw/tutorial/introduction
 
 * _height_: height of graph in pixels
 
+* _min_: Lower value on the Y-axis, or `auto` for the lowest value in the series.  Defaults to 0.
+
+* _max_: Highest value on the Y-axis.  Defaults to the highest value in the series.
+
 * _interpolation_: optional line smoothing / interpolation method (see [D3 docs](https://github.com/mbostock/d3/wiki/SVG-Shapes#wiki-line_interpolate)); notable options:
 
   * _linear_: straight lines between points

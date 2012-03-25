@@ -50,7 +50,7 @@ Rickshaw.Graph.Legend = function(args) {
 			self.highlighter.addHighlightEvents(_line);
 		}
 		self.lines.push(_line);
-	}
+	};
 
 	series.forEach( function(s) {
 		self.addLine(s);
@@ -59,4 +59,4 @@ Rickshaw.Graph.Legend = function(args) {
 	graph.onUpdate( function() {
 		
 	} );
-}
+};

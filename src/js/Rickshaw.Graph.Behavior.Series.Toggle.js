@@ -22,7 +22,7 @@ Rickshaw.Graph.Behavior.Series.Toggle = function(args) {
 				line.element.classList.add('disabled');
 			}
 		}
-	}
+	};
 
 	if (this.legend) {
 
@@ -43,16 +43,16 @@ Rickshaw.Graph.Behavior.Series.Toggle = function(args) {
 				
 				s.disabled = true;
 				self.graph.update();
-			}
+			};
 
 			s.enable = function() {
 				s.disabled = false;
 				self.graph.update();
-			}
+			};
 		} );
-	}
+	};
 	this._addBehavior();
 
-	this.updateBehaviour = function () { this._addBehavior() }
+	this.updateBehaviour = function () { this._addBehavior() };
 
-}
+};

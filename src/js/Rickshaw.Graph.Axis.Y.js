@@ -67,7 +67,7 @@ Rickshaw.Graph.Axis.Y = function(args) {
 			.append("svg:g")
 			.attr("class", "y_grid")
 			.call(axis.ticks(this.ticks).tickSubdivide(0).tickSize(gridSize));
-	}
+	};
 
 	this.graph.onUpdate( function() { self.render() } );
 };

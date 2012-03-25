@@ -28,5 +28,5 @@ Rickshaw.Fixtures.RandomData = function(timeInterval) {
 
 		lastRandomValue = randomValue * .85;
 	}
-}
+};
 
