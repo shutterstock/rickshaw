@@ -1,87 +1,413 @@
-<!DOCTYPE html>
-<style>
-body {
-	width: 780px;
-	margin: auto;
-	font-family: Arial, Helvetica, sans-serif;
-	font-size: 13px;
-	color: #282828;
-	line-height: 135%;
-}
-a {
-	text-decoration: none;
-	color: steelblue;
-}
-a:hover {
-	color: lightblue;
-}
-h1 {
-	margin: 1.7em 0 0.6em 0;
-	font-weight: normal;
-}
-h2 {
-	font-weight: normal;
-	margin: 0 0 0.7em 0;
-	color: black;
-}
-h6 {
-	font-weight: normal;
-	font-size: 16px;
-	color: #808080;
-	margin: 0 0 2em 0;
-}
-section {
-	border-top: 1px solid #e0e0e0;
-	padding: 1.8em 0;
-	display: block;
-}
-section p, a.light {
-	color: #a0a0a0;
-}
-.preview {
-	float: left;
-	min-height: 2em;
-	width: 130px;
-	font-size: 16px;
-	border: 1px solid #e8e8e8;
-	margin-right: 1.2em;
-	padding: 3px;
-}
-.preview img {
-	width: 120px;
-}
-.preview.group img {
-	width: 60px;
-}
-</style>
+<!doctype html>
 
-<h1>Rickshaw</h1>
+<link rel="stylesheet" type="text/css" href="css/fonts/stylesheet.css">
+<link rel="stylesheet" type="text/css" href="css/elements.css">
+<link rel="stylesheet" type="text/css" href="css/style.css">
+<link rel="stylesheet" type="text/css" href="css/index.css">
 
-<h6>Rickshaw is a JavaScript toolkit for creating interactive time series graphs, developed at <a href="http://www.shutterstock.com">Shutterstock</a>.</h6>
+<title>Rickshaw: A JavaScript toolkit for creating interactive time series graphs</title>
 
-<section>
-	<div class="preview">
-		<img src="examples/screenshots/tutorial.png">
+<meta name="keywords" content="JavaScript,graphs,interactive,time-series,SVG,d3,CSS,charts,bars,lines,scatterplot">
+
+<script src="js/header.js"></script>
+
+<div id="content">
+	<div id="hero">
+		<div class="welcome">
+			<h1>Rickshaw is a JavaScript toolkit for creating interactive time series graphs.</h1>
+			<a class="button red large" href="https://github.com/shutterstock/rickshaw">Rickshaw on GitHub</a>
+		</div>
+		<img src="guide/images/graph_example.png">
+		<div class="clear"></div>
 	</div>
-	<h2><a href="tutorial/introduction.html">Tutorial</a></h2>
-	<p>Get a simple graph on the page, add real data from the U.S. Census, and break that data down to draw some conclusions</p>
-</section>
-<section>
-	<div class="preview group">
-		<img src="examples/screenshots/start.png">	
-		<img src="examples/screenshots/lines.png">	
-		<img src="examples/screenshots/extensions.png">	
-		<img src="examples/screenshots/status.png">	
+
+	<div class="intro">
+		<section>
+			<h4>Graphing Toolkit</h4>
+			<p>Rickshaw provides the elements you need to create interactive graphs: renderers, legends, hovers, range selectors, etc.  You put the pieces together.</p>
+		</section>
+		<section>
+			<h4>Built on d3.js</h4>
+			<p>It's all based on <a href="http://mbostock.github.com/d3/">d3</a> underneath, so graphs are drawn with standard SVG and styled with CSS.  Customize all you like with techniques you already know.</p>
+		</section>
+		<section>
+			<h4>Open Source</h4>
+			<p>Rickshaw is free and open source, available under the MIT license.  Developed at Shutterstock.  <a href="http://www.shutterstock.com/jobs.mhtml">We're Hiring!</a></p>
+		</section>
+		<div class="clear"></div>
 	</div>
-	<h2><a href="examples/">Examples</a></h2>
-	<p>See working examples exercising extensions.  Add legends, annotations, axes and labels, get data via AJAX, etc.</p>
-</section>
-<section>
-	<div class="preview">
-		<img src="examples/screenshots/github_rickshaw.png">
+
+	<br>
+	<h2>Getting Started</h2>
+
+	<section class="topic-2">
+		<div class="example">
+			<iframe style="height: 220px" src="http://shutterstock.github.com/rickshaw/examples/start.html"></iframe>
+			<a class="button tertiary standalone" href="http://shutterstock.github.com/rickshaw/examples/start.html" target="_blank">standalone example</a>
+		</div>
+		<div class="code">
+			<script src="https://gist.github.com/af33022d39253bcbdd73.js"></script>
+		</div>
+	</section>
+
+	<h2>Area Graphs</h2>
+
+	<div id="area-graphs"></div>
+
+	<section class="topic-2">
+		<div class="example">
+			<h3>Area</h3>
+			<iframe height=110 src="guide/area-1.html"></iframe>
+			<a class="button tertiary standalone" href="/guide/area-1.html" target="_blank">standalone example</a>
+		</div>
+		<div class="code">
+			<script src="https://gist.github.com/d444c6afb8586e256b17.js"></script>
+		</div>
+	</section>
+	<section class="topic-2">
+		<div class="example">
+			<h3>Stacked Area</h3>
+			<iframe src="guide/area-2.html"></iframe>
+			<a class="button tertiary standalone" href="guide/area-2.html" target="_blank">standalone example</a>
+		</div>
+		<div class="code">
+			<script src="https://gist.github.com/e886439fe2e54035af8f.js"></script>
+		</div>
+	</section>
+	<section class="topic-3">
+		<div class="example">
+			<h3>Multiple Area</h3>
+			<iframe src="guide/area-3.html"></iframe>
+			<a class="button tertiary standalone" href="guide/area-3.html" target="_blank">standalone example</a>
+		</div>
+		<div class="code">
+			<script src="https://gist.github.com/faa9d52c631565287dc7.js"></script>
+		</div>
+	</section>
+
+	<h2>Lines</h2>
+
+	<section class="topic-3">
+		<div class="example">
+			<h3>Line</h3>
+			<iframe src="guide/line-1.html"></iframe>
+			<a class="button tertiary standalone" href="guide/line-1.html" target="_blank">standalone example</a>
+		</div>
+		<div class="code">
+			<script src="https://gist.github.com/539009c53175cb619e67.js"></script>
+		</div>
+	</section>
+
+	<section class="topic-3">
+		<div class="example">
+			<h3>Multiple Line</h3>
+			<iframe src="guide/line-2.html"></iframe>
+			<a class="button tertiary standalone" href="guide/line-2.html" target="_blank">standalone example</a>
+		</div>
+		<div class="code">
+			<script src="https://gist.github.com/f97986c205fc340cbf5d.js"></script>
+		</div>
+	</section>
+
+	<h2>Bars</h2>
+	
+	<section class="topic-3">
+		<div class="example">
+			<h3>Bars</h3>
+			<iframe src="guide/bar-1.html"></iframe>
+			<a class="button tertiary standalone" href="guide/bar-1.html" target="_blank">standalone example</a>
+		</div>
+		<div class="code">
+			<script src="https://gist.github.com/1adbdcef0a9de32cc039.js"></script>
+		</div>
+	</section>
+
+	<section class="topic-3">
+		<div class="example">
+			<h3>Stacked Bars</h3>
+			<iframe src="guide/bar-2.html"></iframe>
+			<a class="button tertiary standalone" href="guide/bar-2.html" target="_blank">standalone example</a>
+		</div>
+		<div class="code">
+			<script src="https://gist.github.com/035cbfabc65e7d683578.js"></script>
+		</div>
+	</section>
+
+	<section class="topic-3">
+		<div class="example">
+			<h3>Multiple Bars</h3>
+			<iframe src="guide/bar-3.html"></iframe>
+			<a class="button tertiary standalone" href="guide/bar-3.html" target="_blank">standalone example</a>
+		</div>
+		<div class="code">
+			<script src="https://gist.github.com/192e336bb6d43594d792.js"></script>
+		</div>
+	</section>
+
+	<h2>Scatterplot</h2>
+
+	<section class="topic-3">
+		<div class="example">
+			<h3>Scatterplot</h3>
+			<iframe src="guide/scatterplot-1.html"></iframe>
+			<a class="button tertiary standalone" href="guide/scatterplot-1.html" target="_blank">standalone example</a>
+		</div>
+		<div class="code">
+			<script src="https://gist.github.com/1cd792330282c7d1639d.js"></script>
+		</div>
+	</section>
+
+	<h2>Interactive Legend</h2>
+
+	<section class="topic-2">
+		<div class="example">
+			<img src="guide/images/legend.png" width="165">
+			<br>
+			<a class="button tertiary standalone" href="examples/legend.html" target="_blank">standalone example</a>
+			<br>
+			<div class="sources" id="legend-sources">
+				<h5>Sources</h5>
+				<ul>
+				<li><a href="https://github.com/shutterstock/rickshaw/blob/master/src/js/Rickshaw.Graph.Legend.js">Rickshaw.Graph.Legend</a></li>
+				<li><a href="https://github.com/shutterstock/rickshaw/blob/master/src/js/Rickshaw.Graph.Behavior.Series.Toggle.js">Rickshaw.Graph.Behavior.Series.Toggle</a></li>
+				<li><a href="https://github.com/shutterstock/rickshaw/blob/master/src/js/Rickshaw.Graph.Behavior.Series.Order.js">Rickshaw.Graph.Behavior.Series.Order</a></li>
+				<li><a href="https://github.com/shutterstock/rickshaw/blob/master/src/js/Rickshaw.Behavior.Series.Highlight.js">Rickshaw.Graph.Behavior.Series.Highlight</a></li>
+				</ul>
+			</div>
+		</div>
+		<div class="documentation">
+<br>
+Add a basic legend:
+<pre>
+var legend = new Rickshaw.Graph.Legend({
+    graph: graph,
+    element: document.querySelector('#graph')
+});
+</pre>
+
+Add functionality to toggle series' visibility on and off:
+<pre>
+var shelving = new Rickshaw.Graph.Behavior.Series.Toggle({
+    graph: graph,
+    legend: legend
+});
+</pre>
+Add drag-and-drop functionality to re-order the stack:
+<pre>
+var order = new Rickshaw.Graph.Behavior.Series.Order({
+    graph: graph,
+    legend: legend
+});
+</pre>
+Highlight each series on hover within the legend:
+<pre>
+var highlighter = new Rickshaw.Graph.Behavior.Series.Highlight({
+    graph: graph,
+    legend: legend
+});
+</pre>
+
+		</div>
+	</section>
+
+	<h2>Interactive Hover Details</h2>
+
+	<section class="topic-2">
+		<div class="example">
+			<img src="guide/images/label.png" width="165">
+			<br>
+			<a class="button tertiary standalone" href="examples/lines.html" target="_blank">standalone example</a>
+			<br>
+			<div class="sources" id="legend-sources">
+				<h5>Sources</h5>
+				<ul>
+				<li><a href="https://github.com/shutterstock/rickshaw/blob/master/src/js/Rickshaw.Graph.HoverDetail.js">Rickshaw.Graph.HoverDetail</a></li>
+				</ul>
+			</div>
+		</div>
+		<div class="documentation">
+<br>
+Show the series value and formatted date and time on hover:
+<pre>
+var hoverDetail = new Rickshaw.Graph.HoverDetail( {
+    graph: graph
+} );
+</pre>
+
+Specify formatting callbacks to customize output:
+<pre>
+var hoverDetail = new Rickshaw.Graph.HoverDetail( {
+    graph: graph,
+    xFormatter: function(x) { return x + "seconds" },
+    yFormatter: function(y) { return Math.floor(y) + " percent" }
+} );
+</pre>
+
+		</div>
+	</section>
+
+	<h2>Annotations</h2>
+
+	<section class="topic-2">
+		<div class="example">
+			<img src="guide/images/annotation.png" width="280">
+			<br>
+			<a class="button tertiary standalone" href="examples/extensions.html" target="_blank">standalone example</a>
+			<br>
+			<div class="sources" id="legend-sources">
+				<h5>Sources</h5>
+				<ul>
+				<li><a href="https://github.com/shutterstock/rickshaw/blob/master/src/js/Rickshaw.Graph.Annotate.js">Rickshaw.Graph.Annotate</a></li>
+				</ul>
+			</div>
+		</div>
+		<div class="documentation">
+			<br>
+Add toggleable annotations:
+<pre>
+var annotator = new Rickshaw.Graph.Annotate({
+    graph: graph,
+    element: document.getElementById('timeline')
+});
+
+annotator.add(timestamp, message);
+</pre>
+		
+		</div>
+	</section>
+
+	<h2>Range Slider</h2>
+
+	<section class="topic-2">
+		<div class="example">
+			<img src="guide/images/slider.png" width="280">
+			<br>
+			<a class="button tertiary standalone" href="examples/extensions.html" target="_blank">standalone example</a>
+			<br>
+			<div class="sources" id="legend-sources">
+				<h5>Sources</h5>
+				<ul>
+				<li><a href="https://github.com/shutterstock/rickshaw/blob/master/src/js/Rickshaw.Graph.RangeSlider.js">Rickshaw.Graph.RangeSlider</a></li>
+				</ul>
+			</div>
+		</div>
+		<div class="documentation">
+			<br>
+Add a range selector with a slider from jQuery UI:
+<pre>
+var slider = new Rickshaw.Graph.RangeSlider({
+    graph: graph,
+    element: document.querySelector('#slider')
+});
+</pre>
+		
+		</div>
+	</section>
+
+	<h2>Axes and Tick Marks</h2>
+
+	<section class="topic-2">
+		<div class="example">
+			<img src="guide/images/axes.png" width="280">
+			<br>
+			<a class="button tertiary standalone" href="examples/extensions.html" target="_blank">standalone example</a>
+			<br>
+			<div class="sources" id="legend-sources">
+				<h5>Sources</h5>
+				<ul>
+				<li><a href="https://github.com/shutterstock/rickshaw/blob/master/src/js/Rickshaw.Graph.Axis.Time.js">Rickshaw.Graph.Axis.Time</a></li>
+				<li><a href="https://github.com/shutterstock/rickshaw/blob/master/src/js/Rickshaw.Graph.Axis.Y.js">Rickshaw.Graph.Axis.Y</a></li>
+				<li><a href="https://github.com/shutterstock/rickshaw/blob/master/src/js/Rickshaw.Fixtures.Time.js">Rickshaw.Fixtures.Time</a></li>
+				<li><a href="https://github.com/shutterstock/rickshaw/blob/master/src/js/Rickshaw.Fixtures.Number.js">Rickshaw.Fixtures.Number</a></li>
+				</ul>
+			</div>
+		</div>
+		<div class="documentation">
+<br>
+Add a basic x-axis with time values:
+<pre>
+var xAxis = new Rickshaw.Graph.Axis.Time({
+    graph: graph
+});
+
+xAxis.render();
+</pre>
+
+Add a basic y-axis:
+<pre>
+var yAxis = new Rickshaw.Graph.Axis.Y({
+    graph: graph
+});
+
+yAxis.render();
+</pre>
+
+Override time units on the x-axis:
+<pre>
+var time = new Rickshaw.Fixtures.time();
+var seconds = time.unit('seconds');
+
+var xAxis = new Rickshaw.Graph.Axis.Time({
+    graph: graph,
+    timeUnit: seconds
+});
+
+xAxis.render();
+</pre>
+
+Format tick values on the y-axis:
+<pre>
+var yAxis = new Rickshaw.Graph.Axis.Y{{
+    graph: graph,
+    tickFormat: Rickshaw.Fixtures.Number.formatKMBT
+});
+
+yAxis.render();
+</pre>
+
+For y-axes outside the graph, specify an axis container element and an orientation:
+<pre>
+var yAxis = new Rickshaw.Graph.Axis.Y( {
+    graph: graph,
+    orientation: 'left',
+    element: document.getElementById('y_axis'),
+} );
+
+yAxis.render();
+</pre>
+		</div>
+	</section>
+
+	<h2>More Resources</h2>
+
+	<div id="resources">
+
+		<section>
+			<div class="preview">
+				<img src="examples/screenshots/tutorial.png">
+			</div>
+			<h5><a href="tutorial/introduction.html">Tutorial</a></h5>
+			<p>Get a simple graph on the page, add real data from the U.S. Census, and break that data down to draw some conclusions</p>
+		</section>
+		<section>
+			<div class="preview group">
+				<img src="examples/screenshots/start.png">	
+				<img src="examples/screenshots/lines.png">	
+				<img src="examples/screenshots/extensions.png">	
+				<img src="examples/screenshots/status.png">	
+			</div>
+			<h5><a href="examples/">Examples</a></h5>
+			<p>See working examples exercising extensions.  Add legends, annotations, axes and labels, get data via AJAX, etc.</p>
+		</section>
+		<section>
+			<div class="preview">
+				<img src="examples/screenshots/github_rickshaw.png">
+			</div>
+			<h5><a href="https://github.com/shutterstock/rickshaw">Rickshaw Project on GitHub</a></h5>
+			<p><a class="light" href="https://github.com/shutterstock/rickshaw">https://github.com/shutterstock/rickshaw</a></p>
+			<div style="clear: both"></div>
+		</section>
 	</div>
-	<h2><a href="https://github.com/shutterstock/rickshaw">Rickshaw Project on GitHub</a></h2>
-	<a class="light" href="https://github.com/shutterstock/rickshaw">https://github.com/shutterstock/rickshaw</a>
-	<div style="clear: both"></div>
-</section>
-<section></section>
+
+</div>
+<script src="js/footer.js"></script>
