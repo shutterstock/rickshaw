@@ -11,6 +11,7 @@ body {
 }
 #content {
 	width: 990px;
+	padding: 0 10px;
 	margin: auto;
 	font-size: 14px;
 	color: #282828;
