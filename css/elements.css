@@ -1,4 +1,8 @@
-* { box-sizing: border-box }
+* { 
+	-moz-box-sizing: border-box;
+	-webkit-box-sizing: border-box;
+	box-sizing: border-box; 
+}
 body {
 	font-family: Arial, Helvetica, sans-serif;
 	margin: 0;
@@ -69,10 +73,10 @@ body {
 	border-radius: 5px;
 }
 .button.tertiary {
-	color: #62b6b3;
+	color: #7ea1be;
 }
 .button.tertiar:hover {
-	color: #62b6b3;
+	color: #7ea1be;
 }
 h1,h2,h3,h4,h5 {
 	font-family: UnDotumWeb, Arial, sans-serif;

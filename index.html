@@ -4,6 +4,7 @@
 <link rel="stylesheet" type="text/css" href="css/elements.css">
 <link rel="stylesheet" type="text/css" href="css/style.css">
 <link rel="stylesheet" type="text/css" href="css/index.css">
+<link rel="stylesheet" type="text/css" href="vendor/prettify/prettify.css">
 
 <title>Rickshaw: A JavaScript toolkit for creating interactive time series graphs</title>
 
@@ -24,7 +25,7 @@
 	<div class="intro">
 		<section>
 			<h4>Graphing Toolkit</h4>
-			<p>Rickshaw provides the elements you need to create interactive graphs: renderers, legends, hovers, range selectors, etc.  You put the pieces together.</p>
+			<p>Rickshaw provides the elements you need to create interactive graphs: renderers, legends, hovers, range selectors, etc.  You put the pieces together. <a href="examples/extensions.html">See Demo<span style="font-size: 1.67em">&rarr;</span></a></p>
 		</section>
 		<section>
 			<h4>Built on d3.js</h4>
@@ -40,15 +41,21 @@
 	<br>
 	<h2>Getting Started</h2>
 
+	<section>
+		<p>Here's a minimal but complete working example.  We start by pulling in dependencies.  A few extensions require jQuery, but here all we need is d3 and the Rickshaw library itself.  Instantiate a graph, and then render it. For more along this path, <a href="tutorial/introduction.html">check out the tutorial</a> and also see our <a href="examples/">examples listing</a>.</p>
+	</section>
+
 	<section class="topic-2">
 		<div class="example">
 			<iframe style="height: 220px" src="http://shutterstock.github.com/rickshaw/examples/start.html"></iframe>
 			<a class="button tertiary standalone" href="http://shutterstock.github.com/rickshaw/examples/start.html" target="_blank">standalone example</a>
+			<br><br>
 		</div>
 		<div class="code">
 			<script src="https://gist.github.com/af33022d39253bcbdd73.js"></script>
 		</div>
 	</section>
+
 
 	<h2>Area Graphs</h2>
 
@@ -304,6 +311,51 @@ var slider = new Rickshaw.Graph.RangeSlider({
 		</div>
 	</section>
 
+	<h2>Graphs & Data via AJAX / JSONP</h2>
+
+	<section class="topic-2">
+		<div class="example">
+			<iframe src="guide/ajax-1.html" scrolling="no"></iframe>
+			<br>
+			<a class="button tertiary standalone" href="guide/ajax-1.html" target="_blank">standalone example</a>
+			<br>
+			<div class="sources" id="legend-sources">
+				<h5>Sources</h5>
+				<ul>
+				<li><a href="https://github.com/shutterstock/rickshaw/blob/master/src/js/Rickshaw.Graph.JSONP.js">Rickshaw.Graph.JSONP</a></li>
+				<li><a href="https://github.com/shutterstock/rickshaw/blob/master/src/js/Rickshaw.Graph.Ajax.js">Rickshaw.Graph.Ajax</a></li>
+				</ul>
+			</div>
+		</div>
+		<div class="documentation">
+
+<br>
+Instantiate a transport to fetch the data and draw a graph:
+<pre>
+new Rickshaw.Graph.JSONP({
+	element: document.querySelector('#chart'),
+	dataURL: 'http://example.com/data'
+});
+</pre>
+Transform the data before sending in, and then add other elements once that's done:
+<pre>
+new Rickshaw.Graph.JSONP({
+	element: document.querySelector('#chart'),
+	dataURL: 'http://example.com/data',
+	onData: function(d) { 
+		d[0].data[0].y += 1; 
+		return d;
+	},
+	onComplete: function(transport) {
+		var graph = transport.graph;
+		var detail = new Rickshaw.Graph.HoverDetail({ graph: graph });
+	}
+});
+</pre>
+
+		</div>
+	</section>
+
 	<h2>Axes and Tick Marks</h2>
 
 	<section class="topic-2">
@@ -381,6 +433,7 @@ yAxis.render();
 	<h2>More Resources</h2>
 
 	<div id="resources">
+		<div id="resources-graphic"></div>
 
 		<section>
 			<div class="preview">
@@ -399,15 +452,15 @@ yAxis.render();
 			<h5><a href="examples/">Examples</a></h5>
 			<p>See working examples exercising extensions.  Add legends, annotations, axes and labels, get data via AJAX, etc.</p>
 		</section>
-		<section>
-			<div class="preview">
-				<img src="examples/screenshots/github_rickshaw.png">
-			</div>
-			<h5><a href="https://github.com/shutterstock/rickshaw">Rickshaw Project on GitHub</a></h5>
-			<p><a class="light" href="https://github.com/shutterstock/rickshaw">https://github.com/shutterstock/rickshaw</a></p>
-			<div style="clear: both"></div>
-		</section>
+		<div style="clear: both"></div>
 	</div>
 
 </div>
+
+<script src="vendor/prettify/prettify.js"></script>
+<script>
+Array.prototype.forEach.call(document.querySelectorAll('.documentation pre'), function(e) {
+	e.innerHTML = prettyPrintOne(e.innerHTML);
+});
+</script>
 <script src="js/footer.js"></script>

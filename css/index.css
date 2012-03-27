@@ -107,7 +107,7 @@ section .example iframe {
 }
 section.topic-3 .code,
 section.topic-2 .code {
-	background: #f2f2f2;
+	background: #f0f0f0;
 }
 section.topic-3 .call {
 	padding-top: 2%;
@@ -125,8 +125,9 @@ section.topic-2 .documentation {
 	width: 67%;
 }
 section.topic-2 .documentation pre {
+	font-family: 'Bitstream Vera Sans Mono','Courier',monospace;
 	padding: 1em;
-	background-color: #f2f2f2;
+	background-color: #f0f0f0;
 	margin-bottom: 1.4em;
 }
 .sources h5 {
@@ -137,7 +138,7 @@ section.topic-2 .documentation pre {
 .sources ul {
 	list-style: none;
 	padding: 0;
-	margin: 0;
+	margin: 0 0 2em 0;
 }
 .sources li a {
 	color: #c0c0c0;
@@ -162,7 +163,7 @@ section.topic-2 .documentation pre {
 	display: none;
 }
 .gist .gist-file .gist-data {
-	background-color: #f2f2f2 !important;
+	background-color: #f0f0f0 !important;
 	padding-left: 1em !important;
 	border: none !important;
 }
@@ -196,6 +197,17 @@ footer {
 #resources section {
 	border-top: 1px solid #e0e0e0;
 	padding: 1.8em 0;
-	display: block;
+	float: right;
+	width: 67%;
+}
+#resources-graphic:before {
+	content: "F";
+	font-family: WebSymbolsRegular;
+	font-size: 80px;
+	color: #d0d0d0;
+	float: left;
+	position: relative;
+	top: 50px;
+	left: 10px;
 }
 
