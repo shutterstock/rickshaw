@@ -22,6 +22,24 @@ Rickshaw.Graph.Behavior.Series.Toggle = function(args) {
 				line.element.classList.add('disabled');
 			}
 		}
+		
+                var label = line.element.getElementsByTagName('span')[0];
+                label.onclick = function(e){
+
+                        // these must happen first or else we try ( and probably fail ) to make a no line graph
+                        line.series.enable();
+                        line.element.classList.remove('disabled');
+
+                        self.legend.lines.forEach(function(l){
+                                if (line.series === l.series) {
+                                        // noop
+                                } else {
+                                        l.series.disable();
+                                        l.element.classList.add('disabled');
+                                }
+                        });
+                };
+
 	};
 
 	if (this.legend) {
