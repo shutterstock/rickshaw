@@ -22,9 +22,70 @@ Rickshaw.Graph.Behavior.Series.Toggle = function(args) {
 				line.element.classList.add('disabled');
 			}
 		}
+		
+                var label = line.element.getElementsByTagName('span')[0];
+                label.onclick = function(e){
+
+                        var disableAllOtherLines = line.series.disabled;
+                        if ( ! disableAllOtherLines ) {
+                                for ( var i = 0; i < self.legend.lines.length; i++ ) {
+                                        var l = self.legend.lines[i];
+                                        if ( line.series === l.series ) {
+                                                // noop
+                                        } else if ( l.series.disabled ) {
+                                                // noop
+                                        } else {
+                                                disableAllOtherLines = true;
+                                                break;
+                                        }
+                                }
+                        }
+
+                        // show all or none
+                        if ( disableAllOtherLines ) {
+
+                                // these must happen first or else we try ( and probably fail ) to make a no line graph
+                                line.series.enable();
+                                line.element.classList.remove('disabled');
+
+                                self.legend.lines.forEach(function(l){
+                                        if ( line.series === l.series ) {
+                                                // noop
+                                        } else {
+                                                l.series.disable();
+                                                l.element.classList.add('disabled');
+                                        }
+                                });
+
+                        } else {
+
+                                self.legend.lines.forEach(function(l){
+                                        l.series.enable();
+                                        l.element.classList.remove('disabled');
+                                });
+
+                        }
+
+                };
+
 	};
 
 	if (this.legend) {
+
+                $(this.legend.list).sortable( {
+                        start: function(event, ui) {
+                                ui.item.bind('no.onclick',
+                                        function(event) {
+                                                event.preventDefault();
+                                        }
+                                );
+                        },
+                        stop: function(event, ui) {
+                                setTimeout(function(){
+                                        ui.item.unbind('no.onclick');
+                                }, 250);
+                        }
+                })
 
 		this.legend.lines.forEach( function(l) {
 			self.addAnchor(l);
