@@ -96,9 +96,12 @@ Rickshaw comes with a few color schemes. Instantiate a palette and specify a sch
 Available color schemes:
 
   * classic9
-  * spectrum19
-  * spectrum2001
+  * colorwheel
+  * cool
+  * munin
+  * spectrum14
   * spectrum2000
+  * spectrum2001
 
 
 ## Rickshaw and Cross-Browser Support
