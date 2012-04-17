@@ -56,7 +56,11 @@ See the [tutorial](http://shutterstock.github.com/rickshaw/tutorial/introduction
 
 * _render()_: paint the graph
 
+* _update(args)_: re-paint the graph
+
 * _setRenderer()_: set renderer to stack or line
+
+* _updateSize(args)_: update the size of the graph (not for direct use, use `update(args)` instead)
 
 * _onUpdate(f)_: add a callback to run when the graph is rendered
 
@@ -133,4 +137,3 @@ Permission is hereby granted, free of charge, to any person obtaining a copy of 
 The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
