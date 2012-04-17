@@ -8,13 +8,6 @@ Rickshaw.Graph = function(args) {
 	this.offset = 'zero';
 	this.stroke = args.stroke || false;
 
-	var style = window.getComputedStyle(this.element, null);
-	var elementWidth = parseInt(style.getPropertyValue('width'));
-	var elementHeight = parseInt(style.getPropertyValue('height'));
-
-	this.width = args.width || elementWidth || 400;
-	this.height = args.height || elementHeight || 250;
-
 	this.min = args.min;
 	this.max = args.max;
 
@@ -50,6 +43,9 @@ Rickshaw.Graph = function(args) {
 		} );
 
 		this.setRenderer(args.renderer || 'stack');
+
+		this.updateSize(args);
+
 		this.discoverRange();
 	};
 
@@ -123,7 +119,24 @@ Rickshaw.Graph = function(args) {
 		} );
 	};
 
-	this.update = this.render;
+	this.update = function(args) {
+		this.updateSize(args);
+		
+		this.render();
+	};
+
+	this.updateSize = function(args) {
+		var args = args || {};
+		var style = window.getComputedStyle(this.element, null);
+		var elementWidth = parseInt(style.getPropertyValue('width'));
+		var elementHeight = parseInt(style.getPropertyValue('height'));
+
+		this.width = args.width || elementWidth || 400;
+		this.height = args.height || elementHeight || 250;
+		
+		this.vis.attr('width', this.width)
+				.attr('height', this.height);
+	};
 
 	this.stackData = function() {
 
