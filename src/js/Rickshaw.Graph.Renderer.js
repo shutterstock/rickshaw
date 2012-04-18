@@ -45,7 +45,13 @@ Rickshaw.Graph.Renderer = Rickshaw.Class.create( {
 		xMax += (xMax - xMin) * (this.padding.right);
 
 		var yMin = ( this.graph.min === 'auto' ? d3.min( values ) : this.graph.min || 0 );
-		var yMax = this.graph.max || d3.max( values ) * (1 + this.padding.top);
+		var yMax = this.graph.max || d3.max( values );
+
+    var dynamicPadding = (yMax - yMin) * this.padding.top;
+    yMax = this.graph.max || d3.min([yMax * (1 + dynamicPadding), yMax * (1 + this.padding.top)]);
+    if(this.graph.min === 'auto') {
+      yMin = d3.max([yMin * (1 - this.padding.top), yMin * (1 - dynamicPadding)]);
+    }
 
 		return { x: [xMin, xMax], y: [yMin, yMax] };
 	},
@@ -59,7 +65,7 @@ Rickshaw.Graph.Renderer = Rickshaw.Class.create( {
 		var nodes = graph.vis.selectAll("path")
 			.data(this.graph.stackedData)
 			.enter().append("svg:path")
-			.attr("d", this.seriesPathFactory()); 
+			.attr("d", this.seriesPathFactory());
 
 		var i = 0;
 		graph.series.forEach( function(series) {
