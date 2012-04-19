@@ -377,12 +377,15 @@ Rickshaw.Graph = function(args) {
 	this.max = args.max;
 
 	this.window = {};
+		
+	this.padding = {};
 
 	this.updateCallbacks = [];
 
 	var self = this;
 
 	this.initialize = function(args) {
+		this.padding = args.padding || this.padding;
 
 		this.validateSeries(args.series);
 
@@ -469,7 +472,6 @@ Rickshaw.Graph = function(args) {
 
 		this.y = d3.scale.linear().domain(domain.y).range([this.height, 0]);
 		this.y.magnitude = d3.scale.linear().domain(domain.y).range([0, this.height]);
-		
 	};
 
 	this.render = function() {
@@ -1720,7 +1722,11 @@ Rickshaw.Graph.Renderer = Rickshaw.Class.create( {
 		this.graph = args.graph;
 		this.tension = args.tension || this.tension;
 		this.graph.unstacker = this.graph.unstacker || new Rickshaw.Graph.Unstacker( { graph: this.graph } );
-
+		
+		this.padding.top = this.graph.padding.top || this.padding.top;
+		this.padding.right = this.graph.padding.right || this.padding.right;
+		this.padding.bottom = this.graph.padding.bottom || this.padding.bottom;
+		this.padding.left = this.graph.padding.left || this.padding.left;
 	},
 
 	seriesPathFactory: function() {
@@ -1750,8 +1756,11 @@ Rickshaw.Graph.Renderer = Rickshaw.Class.create( {
 		xMin -= (xMax - xMin) * (this.padding.left);
 		xMax += (xMax - xMin) * (this.padding.right);
 
-		var yMin = ( this.graph.min === 'auto' ? d3.min( values ) : this.graph.min || 0 );
-		var yMax = this.graph.max || d3.max( values ) * (1 + this.padding.top);
+		var yMin = ( this.graph.min === 'auto' ? d3.min( values ) : this.graph.min || 0 ) * (1 - this.padding.bottom);
+		var yMax = this.graph.max || d3.max( values );
+
+		yMin -= (yMax - yMin) * (this.padding.bottom);
+		yMax += (yMax - yMin) * (this.padding.top);
 
 		return { x: [xMin, xMax], y: [yMin, yMax] };
 	},

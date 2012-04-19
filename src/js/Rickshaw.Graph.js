@@ -12,12 +12,15 @@ Rickshaw.Graph = function(args) {
 	this.max = args.max;
 
 	this.window = {};
+		
+	this.padding = {};
 
 	this.updateCallbacks = [];
 
 	var self = this;
 
 	this.initialize = function(args) {
+		this.padding = args.padding || this.padding;
 
 		this.validateSeries(args.series);
 
@@ -104,7 +107,6 @@ Rickshaw.Graph = function(args) {
 
 		this.y = d3.scale.linear().domain(domain.y).range([this.height, 0]);
 		this.y.magnitude = d3.scale.linear().domain(domain.y).range([0, this.height]);
-		
 	};
 
 	this.render = function() {
