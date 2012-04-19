@@ -35,30 +35,38 @@ See the [tutorial](http://shutterstock.github.com/rickshaw/tutorial/introduction
   * _color_: a CSS color
   * _data_: an array of objects, each with x and y properties
 
-* _renderer_: renderer name, like `stack` or `line`
+* _renderer_: renderer name. Currently available options:
+  
+  * `'area'`
+  * `'bar'`
+  * `'line'`
+  * `'scatterplot'`
+  * `'stack'`
 
 * _width_: width of the graph in pixels
 
 * _height_: height of graph in pixels
 
-* _min_: Lower value on the Y-axis, or `auto` for the lowest value in the series.  Defaults to 0.
+* _min_: Lower value on the Y-axis, or `'auto'` for the lowest value in the series.  Defaults to 0.
 
 * _max_: Highest value on the Y-axis.  Defaults to the highest value in the series.
 
 * _interpolation_: optional line smoothing / interpolation method (see [D3 docs](https://github.com/mbostock/d3/wiki/SVG-Shapes#wiki-line_interpolate)); notable options:
 
-  * _linear_: straight lines between points
-  * _step-after_: square steps from point to point
-  * _cardinal_: smooth curves via cardinal splines (default)
-  * _basis_: smooth curves via B-splines
+  * `'linear'`: straight lines between points
+  * `'step-after'`: square steps from point to point
+  * `'cardinal'`: smooth curves via cardinal splines (default)
+  * `'basis'`: smooth curves via B-splines
 
 ### methods
 
 * _render()_: paint the graph
 
-* _setRenderer()_: set renderer to stack or line
+* _registerRenderer(renderer)_: add a renderer to the graph's registry
 
-* _onUpdate(f)_: add a callback to run when the graph is rendered
+* _setRenderer(rendererName)_: set renderer by name
+
+* _onUpdate(callback)_: add a callback to run when the graph is rendered
 
 
 ## Rickshaw Extensions
@@ -95,13 +103,13 @@ Rickshaw comes with a few color schemes. Instantiate a palette and specify a sch
 
 Available color schemes:
 
-  * classic9
-  * colorwheel
-  * cool
-  * munin
-  * spectrum14
-  * spectrum2000
-  * spectrum2001
+  * `'classic9'`
+  * `'colorwheel'`
+  * `'cool'`
+  * `'munin'`
+  * `'spectrum14'`
+  * `'spectrum2000'`
+  * `'spectrum2001'`
 
 
 ## Rickshaw and Cross-Browser Support
@@ -110,6 +118,32 @@ This library works in modern browsers and Internet Explorer 9.
 
 Rickshaw relies on the HTMLElement#classList API, which isn't natively supported in Internet Explorer 9.  Rickshaw adds support by including a shim which implements the classList API by extending the HTMLElement prototype.  You can disable this behavior if you like, by setting `RICKSHAW_NO_COMPAT` to a true value before including the library. 
 
+## Rickshaw.Graph.Renderer
+
+You can create change the default options for some of the renderers.
+
+For example, if you want the dot size in the scatter plot to be smaller than the default:
+
+    var data = [ { x: 0, y: 40 }, { x: 1, y: 49 }, { x: 2, y: 17 }, { x: 3, y: 42 } ];
+
+    var graph = new Rickshaw.Graph({
+        element: document.querySelector("#chart"),
+        width: 580,
+        height: 250,
+        series: [ {
+            color: 'steelblue',
+            data: data
+        }]
+    });
+
+    // First register the new instance of the renderer with the graph
+    graph.registerRenderer(new Rickshaw.Graph.Renderer.ScatterPlot({graph: graph, dotSize: 1}));
+    // Set the graph's renderer to this new instance by its name
+    graph.setRenderer('scatterplot');
+
+    graph.render();
+
+You can create your own renderers and register them in a similar manner.
 
 ## Dependencies & Building
 
