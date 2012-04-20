@@ -12,10 +12,9 @@ Rickshaw.Color.Palette = function(args) {
 	this.runningIndex = 0;
 
 	this.color = function(key) {
-	  this.runningIndex++;
 	  if(this.recycleColors && this.runningIndex >= this.scheme.length) {
 	    this.runningIndex = 0;
 	  }
-		return this.scheme[key] || this.scheme[this.runningIndex] || '#808080';
+		return this.scheme[key] || this.scheme[this.runningIndex++] || '#808080';
 	};
 };
