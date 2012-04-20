@@ -7,10 +7,15 @@ Rickshaw.Color.Palette = function(args) {
 	args = args || {};
 	this.schemes = {};
 
+  this.recycleColors = args.recycleColors || false;
 	this.scheme = color.schemes[args.scheme] || args.scheme || color.schemes.colorwheel;
 	this.runningIndex = 0;
 
 	this.color = function(key) {
-		return this.scheme[key] || this.scheme[this.runningIndex++] || '#808080';
+	  this.runningIndex++;
+	  if(this.recycleColors && this.runningIndex >= this.scheme.length) {
+	    this.runningIndex = 0;
+	  }
+		return this.scheme[key] || this.scheme[this.runningIndex] || '#808080';
 	};
 };
