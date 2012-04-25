@@ -862,10 +862,14 @@ Rickshaw.Color.Palette = function(args) {
 	args = args || {};
 	this.schemes = {};
 
+  this.recycleColors = args.recycleColors || false;
 	this.scheme = color.schemes[args.scheme] || args.scheme || color.schemes.colorwheel;
 	this.runningIndex = 0;
 
 	this.color = function(key) {
+	  if(this.recycleColors && this.runningIndex >= this.scheme.length) {
+	    this.runningIndex = 0;
+	  }
 		return this.scheme[key] || this.scheme[this.runningIndex++] || '#808080';
 	};
 };
@@ -1257,9 +1261,70 @@ Rickshaw.Graph.Behavior.Series.Toggle = function(args) {
 				line.element.classList.add('disabled');
 			}
 		}
+		
+                var label = line.element.getElementsByTagName('span')[0];
+                label.onclick = function(e){
+
+                        var disableAllOtherLines = line.series.disabled;
+                        if ( ! disableAllOtherLines ) {
+                                for ( var i = 0; i < self.legend.lines.length; i++ ) {
+                                        var l = self.legend.lines[i];
+                                        if ( line.series === l.series ) {
+                                                // noop
+                                        } else if ( l.series.disabled ) {
+                                                // noop
+                                        } else {
+                                                disableAllOtherLines = true;
+                                                break;
+                                        }
+                                }
+                        }
+
+                        // show all or none
+                        if ( disableAllOtherLines ) {
+
+                                // these must happen first or else we try ( and probably fail ) to make a no line graph
+                                line.series.enable();
+                                line.element.classList.remove('disabled');
+
+                                self.legend.lines.forEach(function(l){
+                                        if ( line.series === l.series ) {
+                                                // noop
+                                        } else {
+                                                l.series.disable();
+                                                l.element.classList.add('disabled');
+                                        }
+                                });
+
+                        } else {
+
+                                self.legend.lines.forEach(function(l){
+                                        l.series.enable();
+                                        l.element.classList.remove('disabled');
+                                });
+
+                        }
+
+                };
+
 	};
 
 	if (this.legend) {
+
+                $(this.legend.list).sortable( {
+                        start: function(event, ui) {
+                                ui.item.bind('no.onclick',
+                                        function(event) {
+                                                event.preventDefault();
+                                        }
+                                );
+                        },
+                        stop: function(event, ui) {
+                                setTimeout(function(){
+                                        ui.item.unbind('no.onclick');
+                                }, 250);
+                        }
+                })
 
 		this.legend.lines.forEach( function(l) {
 			self.addAnchor(l);
@@ -1659,7 +1724,13 @@ Rickshaw.Graph.Renderer = Rickshaw.Class.create( {
 		xMax += (xMax - xMin) * (this.padding.right);
 
 		var yMin = ( this.graph.min === 'auto' ? d3.min( values ) : this.graph.min || 0 );
-		var yMax = this.graph.max || d3.max( values ) * (1 + this.padding.top);
+		var yMax = this.graph.max || d3.max( values );
+
+    var dynamicPadding = (yMax - yMin) * this.padding.top;
+    yMax = this.graph.max || d3.min([yMax * (1 + dynamicPadding), yMax * (1 + this.padding.top)]);
+    if(this.graph.min === 'auto') {
+      yMin = d3.max([yMin * (1 - this.padding.top), yMin * (1 - dynamicPadding)]);
+    }
 
 		return { x: [xMin, xMax], y: [yMin, yMax] };
 	},
@@ -1673,7 +1744,7 @@ Rickshaw.Graph.Renderer = Rickshaw.Class.create( {
 		var nodes = graph.vis.selectAll("path")
 			.data(this.graph.stackedData)
 			.enter().append("svg:path")
-			.attr("d", this.seriesPathFactory()); 
+			.attr("d", this.seriesPathFactory());
 
 		var i = 0;
 		graph.series.forEach( function(series) {
