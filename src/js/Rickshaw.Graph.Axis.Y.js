@@ -16,20 +16,11 @@ Rickshaw.Graph.Axis.Y = function(args) {
 
 		var berthRate = 0.10;
 
-		if (!args.width || !args.height) {
-			var style = window.getComputedStyle(args.element, null);
-			var elementWidth = parseInt(style.getPropertyValue('width'));
-			var elementHeight = parseInt(style.getPropertyValue('height'));
-		}
-
-		this.width = args.width || elementWidth || this.graph.width * berthRate;
-		this.height = args.height || elementHeight || this.graph.height;
-
 		this.vis = d3.select(args.element)
 			.append("svg:svg")
-			.attr('class', 'rickshaw_graph y_axis')
-			.attr('width', this.width)
-			.attr('height', this.height * (1 + berthRate));
+			.attr('class', 'rickshaw_graph y_axis');
+
+		this.updateSize(args);
 
 		this.element = this.vis[0][0];
 		this.element.style.position = 'relative';
@@ -69,6 +60,33 @@ Rickshaw.Graph.Axis.Y = function(args) {
 			.call(axis.ticks(this.ticks).tickSubdivide(0).tickSize(gridSize));
 	};
 
-	this.graph.onUpdate( function() { self.render() } );
+	this.update = function(args) {
+		var args = args || {};
+
+		if(this.element) {
+			args.element = this.element;
+
+			this.updateSize(args);
+		}
+
+		this.render();
+	};
+
+	this.updateSize = function(args) {
+		var args = args || {};
+		if (!args.width || !args.height) {
+			var style = window.getComputedStyle(args.element, null);
+			var elementWidth = parseInt(style.getPropertyValue('width'));
+			var elementHeight = parseInt(style.getPropertyValue('height'));
+		}
+
+		this.width = args.width || elementWidth || this.graph.width * berthRate;
+		this.height = args.height || elementHeight || this.graph.height;
+
+		this.vis.attr('width', this.width)
+				.attr('height', this.height * (1 + berthRate));
+	};
+
+	this.graph.onUpdate( function() { self.update() } );
 };
 
