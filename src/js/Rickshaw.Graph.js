@@ -162,8 +162,8 @@ Rickshaw.Graph = function(args) {
 			
 			var isInRange = true;
 			
-			if (this.window.xMin && d.x <= this.window.xMin) isInRange = false;
-			if (this.window.xMax && d.x >= this.window.xMax) isInRange = false;
+			if (this.window.xMin && d.x < this.window.xMin) isInRange = false;
+			if (this.window.xMax && d.x > this.window.xMax) isInRange = false;
 			
 			return isInRange;
 		}
