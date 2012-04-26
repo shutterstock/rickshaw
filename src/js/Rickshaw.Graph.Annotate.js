@@ -23,9 +23,15 @@ Rickshaw.Graph.Annotate = function(args) {
 			var annotation = self.data[time];
 			var left = self.graph.x(time);
 
-			if (left > self.graph.x.range()[1]) {
+			if ((left < 0) || (left > self.graph.x.range()[1])) {
 				if (annotation.element) {
 					annotation.element.style.display = 'none';
+				}
+				if (annotation.line) {
+					// Hide the line; when it is scrolled back to
+					// view, it still may be invisible with display: none
+					// if the annotation isn't active.
+					annotation.line.style.visibility = 'hidden';
 				}
 				return;
 			}
@@ -60,6 +66,10 @@ Rickshaw.Graph.Annotate = function(args) {
 				}
 
 				annotation.line.style.left = left + 'px';
+				// Set line to be visible (the annotation is in the
+				// visible region), but the line may be hidden
+				// if the annotation is not active.
+				annotation.line.style.visibility = 'visible';
 			} );
 		}, this );
 	};
