@@ -4,6 +4,8 @@ Rickshaw.Graph.HoverDetail = function(args) {
 
 	var graph = this.graph = args.graph;
 
+	var hoverCallback = args.hoverCallback || function() {};
+
 	var xFormatter = args.xFormatter || function(x) {
 		return new Date( x * 1000 ).toUTCString();
 	};
@@ -61,7 +63,7 @@ Rickshaw.Graph.HoverDetail = function(args) {
 			.map( function(s) { return { name: s.name, value: s.stack[dataIndex] } } );
 
 		if (this.visible) {
-			self.render.call( self, domainX, detail, eventX, eventY);
+			return self.render.call( self, domainX, detail, eventX, eventY);
 		}
 	};
 
@@ -69,7 +71,8 @@ Rickshaw.Graph.HoverDetail = function(args) {
 		'mousemove', 
 		function(e) { 
 			self.visible = true; 
-			self.update(e) 
+			name = self.update(e);
+			hoverCallback(name);
 		}, 
 		false 
 	);
@@ -82,6 +85,7 @@ Rickshaw.Graph.HoverDetail = function(args) {
 			if (e.relatedTarget && !(e.relatedTarget.compareDocumentPosition(self.graph.element) & Node.DOCUMENT_POSITION_CONTAINS)) {
 				self.hide();
 			}
+			hoverCallback(undefined);
 		 }, 
 		false 
 	);
@@ -107,6 +111,7 @@ Rickshaw.Graph.HoverDetail = function(args) {
 		this.element.appendChild(xLabel);
 
 		var activeItem = null;
+		var activeItemName = null;
 
 		var sortFn = function(a, b) {
 			return (a.value.y0 + a.value.y) - (b.value.y0 + b.value.y);
@@ -136,6 +141,7 @@ Rickshaw.Graph.HoverDetail = function(args) {
 			if (domainMouseY > d.value.y0 && domainMouseY < d.value.y0 + d.value.y && !activeItem) {
 
 				activeItem = item;
+				activeItemName = d.name;
 				item.className = 'item active';	
 				dot.className = 'dot active';
 			}
@@ -143,6 +149,7 @@ Rickshaw.Graph.HoverDetail = function(args) {
 		}, this );
 
 		this.show();
+		return activeItemName;
 	};
 };
 
