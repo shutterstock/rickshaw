@@ -1,8 +1,7 @@
-Rickshaw.namespace('Rickshaw.Graph.HoverDetail');
-
 Rickshaw.Graph.HoverDetail = function(args) {
 
 	var graph = this.graph = args.graph;
+	var combineXAndY = args.combineXAndY;
 
 	var xFormatter = args.xFormatter || function(x) {
 		return new Date( x * 1000 ).toUTCString();
@@ -100,12 +99,13 @@ Rickshaw.Graph.HoverDetail = function(args) {
 
 		this.element.innerHTML = '';
 		this.element.style.left = graph.x(domainX) + 'px';
-
-		var xLabel = document.createElement('div');
-		xLabel.className = 'x_label';
-		xLabel.innerHTML = xFormatter(domainX);
-		this.element.appendChild(xLabel);
-
+		
+		if (!combineXAndY) {
+			var xLabel = document.createElement('div');
+			xLabel.className = 'x_label';
+			xLabel.innerHTML = xFormatter(domainX);
+			this.element.appendChild(xLabel);
+		}
 		var activeItem = null;
 
 		var sortFn = function(a, b) {
@@ -120,7 +120,12 @@ Rickshaw.Graph.HoverDetail = function(args) {
 
 			var item = document.createElement('div');
 			item.className = 'item';
-			item.innerHTML = d.name + ':&nbsp;' + formattedYValue;
+			if (combineXAndY) {
+				item.innerHTML = d.name + '<br />' + xFormatter(domainX) + '<br />' + 'Value: ' + formattedYValue;
+			} else {
+				item.innerHTML = d.name + ':&nbsp;' + formattedYValue;
+			}
+			
 			item.style.top = graph.y(d.value.y0 + d.value.y) + 'px';
 
 			var domainMouseY = graph.y.magnitude.invert(graph.element.offsetHeight - mouseY);
@@ -145,4 +150,3 @@ Rickshaw.Graph.HoverDetail = function(args) {
 		this.show();
 	};
 };
-
