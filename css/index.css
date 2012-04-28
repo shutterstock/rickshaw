@@ -58,6 +58,12 @@ h2 {
 	color: white;
 	padding: 0.5em 0.75em 0.67em;
 }
+h2 a {
+	color: white;
+}
+h2 a:hover {
+	color: white;
+}
 section.topic-2,
 section.topic-3 {
 	display: table; 
