@@ -23,7 +23,7 @@ Rickshaw.Graph.Annotate = function(args) {
 			var annotation = self.data[time];
 			var left = self.graph.x(time);
 
-			if (left > self.graph.x.range()[1]) {
+			if (left < 0 || left > self.graph.x.range()[1]) {
 				if (annotation.element) {
 					annotation.element.style.display = 'none';
 				}
