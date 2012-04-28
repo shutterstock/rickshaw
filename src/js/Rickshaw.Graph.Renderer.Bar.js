@@ -13,41 +13,24 @@ Rickshaw.Graph.Renderer.Bar = Rickshaw.Class.create( Rickshaw.Graph.Renderer, {
 	},
 
 	domain: function($super) {
-		this._barWidth = null;
-		return $super();
+
+		var domain = $super();
+
+		var frequentInterval = this._frequentInterval();
+		domain.x[1] += parseInt(frequentInterval.magnitude);
+
+		return domain;
 	},
 
 	barWidth: function() {
 
-		if (this._barWidth) return this._barWidth;
-
 		var stackedData = this.graph.stackedData || this.graph.stackData();
 		var data = stackedData.slice(-1).shift();
 
-		var intervalCounts = {};
+		var frequentInterval = this._frequentInterval();
+		var barWidth = this.graph.x(data[0].x + frequentInterval.magnitude * (1 - this.gapSize)); 
 
-		for (var i = 0; i < data.length - 1; i++) {
-			var interval = data[i + 1].x - data[i].x;
-			intervalCounts[interval] = intervalCounts[interval] || 0;
-			intervalCounts[interval]++;
-		}
-
-		var frequentInterval = { count: 0 };
-
-		d3.keys(intervalCounts).forEach( function(i) {
-			if (frequentInterval.count < intervalCounts[i]) {
-
-				frequentInterval = {
-					count: intervalCounts[i],
-					magnitude: i
-				};
-			}
-		} );
-
-
-		this._barWidth = this.graph.x(data[0].x + frequentInterval.magnitude * (1 - this.gapSize));
-
-		return this._barWidth;
+		return barWidth;
 	},
 
 	render: function() {
@@ -81,6 +64,36 @@ Rickshaw.Graph.Renderer.Bar = Rickshaw.Class.create( Rickshaw.Graph.Renderer, {
 			if (this.unstack) barXOffset += seriesBarWidth;
 
 		}, this );
+	},
+
+	_frequentInterval: function() {
+
+		var stackedData = this.graph.stackedData || this.graph.stackData();
+		var data = stackedData.slice(-1).shift();
+
+		var intervalCounts = {};
+
+		for (var i = 0; i < data.length - 1; i++) {
+			var interval = data[i + 1].x - data[i].x;
+			intervalCounts[interval] = intervalCounts[interval] || 0;
+			intervalCounts[interval]++;
+		}
+
+		var frequentInterval = { count: 0 };
+
+		Rickshaw.keys(intervalCounts).forEach( function(i) {
+			if (frequentInterval.count < intervalCounts[i]) {
+
+				frequentInterval = {
+					count: intervalCounts[i],
+					magnitude: i
+				};
+			}
+		} );
+
+		this._frequentInterval = function() { return frequentInterval };
+
+		return frequentInterval;
 	}
 } );
 
