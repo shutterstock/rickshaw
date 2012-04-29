@@ -2,17 +2,18 @@ Rickshaw.namespace('Rickshaw.Graph.Renderer.Stack');
 
 Rickshaw.Graph.Renderer.Stack = Rickshaw.Class.create( Rickshaw.Graph.Renderer, {
 
-	defaults: function() {
+	name: 'line',
+
+	defaults: function($super) {
 
 		return Rickshaw.extend( $super(), {
-			name: 'stack',
 			fill: true,
 			stroke: false,
 			unstack: false,
 		} );
 	},
 
-	seriesPathFactory: function() { 
+	seriesPathFactory: function() {
 
 		var graph = this.graph;
 
