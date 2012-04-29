@@ -1,29 +1,40 @@
 Rickshaw.namespace('Rickshaw.Graph.HoverDetail');
 
-Rickshaw.Graph.HoverDetail = function(args) {
+Rickshaw.Graph.HoverDetail = Rickshaw.Class.create({
 
-	var graph = this.graph = args.graph;
+	initialize: function(args) {
 
-	var xFormatter = args.xFormatter || function(x) {
-		return new Date( x * 1000 ).toUTCString();
-	};
+		var graph = this.graph = args.graph;
 
-	var yFormatter = args.yFormatter || function(y) {
-		return y.toFixed(2);
-	}; 
-	
-	var element = this.element = document.createElement('div');
-	element.className = 'detail';
-	
-	this.visible = true;
+		this.xFormatter = args.xFormatter || function(x) {
+			return new Date( x * 1000 ).toUTCString();
+		};
 
-	graph.element.appendChild(element);
+		this.yFormatter = args.yFormatter || function(y) {
+			return y.toFixed(2);
+		}; 
+		
+		var element = this.element = document.createElement('div');
+		element.className = 'detail';
+		
+		this.visible = true;
+		graph.element.appendChild(element);
 
-	var self = this;
+		this.lastEvent = null;
+		this._addListeners();
 
-	this.lastEvent = null;
+		this.onShow = args.onShow;
+		this.onHide = args.onHide;
+		this.onRender = args.onRender;
 
-	this.update = function(e) {
+		this.formatter = args.formatter || this.formatter;
+	},
+
+	formatter: function(series, x, y, formattedX, formattedY) {
+		return series.name + ':&nbsp;' + formattedY;
+	},
+
+	update: function(e) {
 
 		e = e || this.lastEvent;
 		if (!e) return;
@@ -55,87 +66,102 @@ Rickshaw.Graph.HoverDetail = function(args) {
 			if (stackedData[0][i + 1] < domainX) { i++ } else { i-- }
 		}
 
-		domainX = stackedData[0][dataIndex].x;
+		var domainX = stackedData[0][dataIndex].x;
+		var formattedXValue = this.xFormatter(domainX);
+		var graphX = graph.x(domainX);
+		var order = 0;
 
 		var detail = graph.series.active()
-			.map( function(s) { return { name: s.name, value: s.stack[dataIndex] } } );
+			.map( function(s) { return { order: order++, series: s, name: s.name, value: s.stack[dataIndex] } } );
 
-		if (this.visible) {
-			self.render.call( self, domainX, detail, eventX, eventY);
-		}
-	};
-
-	this.graph.element.addEventListener( 
-		'mousemove', 
-		function(e) { 
-			self.visible = true; 
-			self.update(e) 
-		}, 
-		false 
-	);
-
-	this.graph.onUpdate( function() { self.update() } );
-
-	this.graph.element.addEventListener( 
-		'mouseout', 
-		function(e) { 
-			if (e.relatedTarget && !(e.relatedTarget.compareDocumentPosition(self.graph.element) & Node.DOCUMENT_POSITION_CONTAINS)) {
-				self.hide();
-			}
-		 }, 
-		false 
-	);
-
-	this.hide = function() {
-		this.visible = false;
-		this.element.classList.add('inactive');
-	};
-
-	this.show = function() {
-		this.visible = true;
-		this.element.classList.remove('inactive');
-	};
-
-	this.render = function(domainX, detail, mouseX, mouseY) {
-
-		this.element.innerHTML = '';
-		this.element.style.left = graph.x(domainX) + 'px';
-
-		var xLabel = document.createElement('div');
-		xLabel.className = 'x_label';
-		xLabel.innerHTML = xFormatter(domainX);
-		this.element.appendChild(xLabel);
-
-		var activeItem = null;
+		var activeItem;
 
 		var sortFn = function(a, b) {
 			return (a.value.y0 + a.value.y) - (b.value.y0 + b.value.y);
 		};
 
+		var domainMouseY = graph.y.magnitude.invert(graph.element.offsetHeight - eventY);
+
 		detail.sort(sortFn).forEach( function(d) {
 
-			var formattedYValue = (yFormatter.constructor == Array) ?
-				yFormatter[detail.indexOf(d)](d.value.y) :
-				yFormatter(d.value.y);
+			d.formattedYValue = (this.yFormatter.constructor == Array) ?
+				this.yFormatter[detail.indexOf(d)](d.value.y) :
+				this.yFormatter(d.value.y);
+
+			d.graphX = graphX;
+			d.graphY = graph.y(d.value.y0 + d.value.y);
+			
+			if (domainMouseY > d.value.y0 && domainMouseY < d.value.y0 + d.value.y && !activeItem) {
+				activeItem = d;
+				d.active = true;
+			}
+
+		}, this );
+
+		this.element.innerHTML = '';
+		this.element.style.left = graph.x(domainX) + 'px';
+
+		if (this.visible) {
+			this.render( { 
+				detail: detail, 
+				domainX: domainX, 
+				formattedXValue: formattedXValue,
+				mouseX: eventX, 
+				mouseY: eventY
+			} );
+		}
+	},
+
+	hide: function() {
+		this.visible = false;
+		this.element.classList.add('inactive');
+
+		if (typeof this.onHide == 'function') {
+			this.onHide();
+		}
+	},
+
+	show: function() {
+		this.visible = true;
+		this.element.classList.remove('inactive');
+
+		if (typeof this.onShow == 'function') {
+			this.onShow();
+		}
+	},
+
+	render: function(args) {
+
+		var detail = args.detail;
+		var domainX = args.domainX;
+
+		var mouseX = args.mouseX;
+		var mouseY = args.mouseY;
+
+		var formattedXValue = args.formattedXValue;
+
+		var xLabel = document.createElement('div');
+		xLabel.className = 'x_label';
+		xLabel.innerHTML = formattedXValue; 
+		this.element.appendChild(xLabel);
+
+		detail.forEach( function(d) {
 
 			var item = document.createElement('div');
 			item.className = 'item';
-			item.innerHTML = d.name + ':&nbsp;' + formattedYValue;
+			item.innerHTML = this.formatter(d.series, domainX, d.value.y, formattedXValue, d.formattedYValue);
 			item.style.top = graph.y(d.value.y0 + d.value.y) + 'px';
 
-			var domainMouseY = graph.y.magnitude.invert(graph.element.offsetHeight - mouseY);
-			
 			this.element.appendChild(item);
 
 			var dot = document.createElement('div');
 			dot.className = 'dot';
 			dot.style.top = item.style.top;
+			dot.style.backgroundColor = d.series.color;
 
 			this.element.appendChild(dot);
 
-			if (domainMouseY > d.value.y0 && domainMouseY < d.value.y0 + d.value.y && !activeItem) {
-
-				activeItem = item;
+			if (d.active) {
 				item.className = 'item active';	
 				dot.className = 'dot active';
 			}
@@ -143,6 +169,34 @@ Rickshaw.Graph.HoverDetail = function(args) {
 		}, this );
 
 		this.show();
-	};
-};
+
+		if (typeof this.onRender == 'function') {
+			this.onRender(args);
+		}
+	},
+
+	_addListeners: function() {
+
+		this.graph.element.addEventListener( 
+			'mousemove', 
+			function(e) { 
+				this.visible = true; 
+				this.update(e) 
+			}.bind(this), 
+			false 
+		);
+
+		this.graph.onUpdate( function() { this.update() }.bind(this) );
+
+		this.graph.element.addEventListener( 
+			'mouseout', 
+			function(e) { 
+				if (e.relatedTarget && !(e.relatedTarget.compareDocumentPosition(this.graph.element) & Node.DOCUMENT_POSITION_CONTAINS)) {
+					this.hide();
+				}
+			 }.bind(this), 
+			false 
+		);
+	}
+});
 

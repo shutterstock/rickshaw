@@ -3,10 +3,18 @@ Rickshaw.namespace('Rickshaw.Graph');
 Rickshaw.Graph = function(args) {
 
 	this.element = args.element;
-	this.interpolation = args.interpolation || 'cardinal';
 	this.series = args.series;
-	this.offset = 'zero';
-	this.stroke = args.stroke || false;
+
+	this.defaults = {
+		interpolation: 'cardinal',
+		offset: 'zero',
+		min: undefined,
+		max: undefined,
+	};
+
+	Rickshaw.keys(this.defaults).forEach( function(k) {
+		this[k] = args[k] || this.defaults[k];
+	}, this );
 
 	var style = window.getComputedStyle(this.element, null);
 	var elementWidth = parseInt(style.getPropertyValue('width'));
@@ -14,9 +22,6 @@ Rickshaw.Graph = function(args) {
 
 	this.width = args.width || elementWidth || 400;
 	this.height = args.height || elementHeight || 250;
-
-	this.min = args.min;
-	this.max = args.max;
 
 	this.window = {};
 
@@ -43,13 +48,13 @@ Rickshaw.Graph = function(args) {
 			Rickshaw.Graph.Renderer.Area,
 			Rickshaw.Graph.Renderer.ScatterPlot
 		];
-	
+
 		renderers.forEach( function(r) {
-			if (!r) return; 
+			if (!r) return;
 			self.registerRenderer(new r( { graph: self } ));
 		} );
 
-		this.setRenderer(args.renderer || 'stack');
+		this.setRenderer(args.renderer || 'stack', args);
 		this.discoverRange();
 	};
 
@@ -85,30 +90,30 @@ Rickshaw.Graph = function(args) {
 			var dataTypeY = typeof s.data[0].y;
 
 			if (dataTypeX != 'number' || dataTypeY != 'number') {
-				throw "x and y properties of points should be numbers instead of " + 
+				throw "x and y properties of points should be numbers instead of " +
 					dataTypeX + " and " + dataTypeY;
 			}
 		} );
 	};
 
 	this.dataDomain = function() {
-		
+
 		// take from the first series
 		var data = this.series[0].data;
-		
-		return [ data[0].x, data.slice(-1).shift().x ]; 
+
+		return [ data[0].x, data.slice(-1).shift().x ];
 
 	};
 
 	this.discoverRange = function() {
 
 		var domain = this.renderer.domain();
-	
+
 		this.x = d3.scale.linear().domain(domain.x).range([0, this.width]);
 
 		this.y = d3.scale.linear().domain(domain.y).range([this.height, 0]);
 		this.y.magnitude = d3.scale.linear().domain(domain.y).range([0, this.height]);
-		
+
 	};
 
 	this.render = function() {
@@ -129,20 +134,20 @@ Rickshaw.Graph = function(args) {
 
 		var data = this.series.active()
 			.map( function(d) { return d.data } )
-			.map( function(d) { return d.filter( function(d) { return this._slice(d) }, this ) }, this); 
+			.map( function(d) { return d.filter( function(d) { return this._slice(d) }, this ) }, this);
 
 		this.stackData.hooks.data.forEach( function(entry) {
 			data = entry.f.apply(self, [data]);
-		} ); 
+		} );
 
 		var layout = d3.layout.stack();
 		layout.offset( self.offset );
 
 		var stackedData = layout(data);
-	
+
 		this.stackData.hooks.after.forEach( function(entry) {
 			stackedData = entry.f.apply(self, [data]);
-		} ); 
+		} );
 
 		var i = 0;
 		this.series.forEach( function(series) {
@@ -159,12 +164,12 @@ Rickshaw.Graph = function(args) {
 	this._slice = function(d) {
 
 		if (this.window.xMin || this.window.xMax) {
-			
+
 			var isInRange = true;
-			
-			if (this.window.xMin && d.x <= this.window.xMin) isInRange = false;
-			if (this.window.xMax && d.x >= this.window.xMax) isInRange = false;
-			
+
+			if (this.window.xMin && d.x < this.window.xMin) isInRange = false;
+			if (this.window.xMax && d.x > this.window.xMax) isInRange = false;
+
 			return isInRange;
 		}
 
@@ -177,15 +182,28 @@ Rickshaw.Graph = function(args) {
 
 	this.registerRenderer = function(renderer) {
 		this._renderers = this._renderers || {};
-		this._renderers[renderer.name] = renderer;			
+		this._renderers[renderer.name] = renderer;
 	};
-	
-	this.setRenderer = function(name) {
+
+	this.configure = function(args) {
+
+		Rickshaw.keys(this.defaults).forEach( function(k) {
+			this[k] = args[k] || this.defaults[k];
+		}, this );
+
+		this.setRenderer(args.renderer || graph.renderer.name, args);
+	};
+
+	this.setRenderer = function(name, args) {
 
 		if (!this._renderers[name]) {
 			throw "couldn't find renderer " + name;
 		}
-		this.renderer = this._renderers[name]; 
+		this.renderer = this._renderers[name];
+
+		if (typeof args == 'object') {
+			this.renderer.configure(args);
+		}
 	};
 
 	this.initialize(args);

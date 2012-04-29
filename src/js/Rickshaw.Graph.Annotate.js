@@ -18,16 +18,16 @@ Rickshaw.Graph.Annotate = function(args) {
 
 	this.update = function() {
 
-		for (var time in self.data) {
+		Rickshaw.keys(self.data).forEach( function(time) {
 
 			var annotation = self.data[time];
 			var left = self.graph.x(time);
 
-			if (left > self.graph.x.range()[1]) {
+			if (left < 0 || left > self.graph.x.range()[1]) {
 				if (annotation.element) {
 					annotation.element.style.display = 'none';
 				}
-				continue;
+				return;
 			}
 
 			if (!annotation.element) {
@@ -61,7 +61,7 @@ Rickshaw.Graph.Annotate = function(args) {
 
 				annotation.line.style.left = left + 'px';
 			} );
-		}
+		}, this );
 	};
 
 	this.graph.onUpdate( function() { self.update() } );
