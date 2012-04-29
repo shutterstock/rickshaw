@@ -117,7 +117,7 @@
 	</section>
 
 	<h2><a name="bars">Bars</a></h2>
-	
+
 	<section class="topic-3">
 		<div class="example">
 			<h3>Bars</h3>
@@ -279,7 +279,7 @@ var annotator = new Rickshaw.Graph.Annotate({
 
 annotator.add(timestamp, message);
 </pre>
-		
+
 		</div>
 	</section>
 
@@ -307,7 +307,7 @@ var slider = new Rickshaw.Graph.RangeSlider({
     element: document.querySelector('#slider')
 });
 </pre>
-		
+
 		</div>
 	</section>
 
@@ -342,8 +342,8 @@ Transform the data before sending in, and then add other elements once that's do
 new Rickshaw.Graph.JSONP({
 	element: document.querySelector('#chart'),
 	dataURL: 'http://example.com/data',
-	onData: function(d) { 
-		d[0].data[0].y += 1; 
+	onData: function(d) {
+		d[0].data[0].y += 1;
 		return d;
 	},
 	onComplete: function(transport) {
@@ -444,10 +444,10 @@ yAxis.render();
 		</section>
 		<section>
 			<div class="preview group">
-				<img src="examples/screenshots/start.png">	
-				<img src="examples/screenshots/lines.png">	
-				<img src="examples/screenshots/extensions.png">	
-				<img src="examples/screenshots/status.png">	
+				<img src="examples/screenshots/start.png">
+				<img src="examples/screenshots/lines.png">
+				<img src="examples/screenshots/extensions.png">
+				<img src="examples/screenshots/status.png">
 			</div>
 			<h5><a href="examples/">Examples</a></h5>
 			<p>See working examples exercising extensions.  Add legends, annotations, axes and labels, get data via AJAX, etc.</p>
