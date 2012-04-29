@@ -1,6 +1,6 @@
 Rickshaw = {
 
-	namespace: function(namespace, obj) { 
+	namespace: function(namespace, obj) {
 
 		var parts = namespace.split('.');
 
@@ -20,7 +20,15 @@ Rickshaw = {
 	keys: function(obj) {
 		var keys = [];
 		for (var key in obj) keys.push(key);
-		return keys;	
+		return keys;
+	},
+
+	extend: function(destination, source) {
+
+		for (var property in source) {
+			destination[property] = source[property];
+		}
+		return destination;
 	}
 };
 

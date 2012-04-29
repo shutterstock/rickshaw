@@ -3,14 +3,20 @@ Rickshaw.namespace('Rickshaw.Graph.Renderer.ScatterPlot');
 Rickshaw.Graph.Renderer.ScatterPlot = Rickshaw.Class.create( Rickshaw.Graph.Renderer, {
 
 	name: 'scatterplot',
-	unstack: true,
-	fill: true,
-	stroke: false,
-	padding: { top: 0.025, right: 0.025, bottom: 0, left: 0.025 },
+
+	defaults: function($super) {
+
+		return Rickshaw.extend( $super(), {
+			unstack: true,
+			fill: true,
+			stroke: false,
+			padding:{ top: 0.01, right: 0.01, bottom: 0.01, left: 0.01 },
+			dotSize: 4
+		} );
+	},
 
 	initialize: function($super, args) {
 		$super(args);
-		this.dotSize = args.dotSize || 4;
 	},
 
 	render: function() {

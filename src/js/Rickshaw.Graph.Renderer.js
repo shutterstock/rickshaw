@@ -2,19 +2,11 @@ Rickshaw.namespace("Rickshaw.Graph.Renderer");
 
 Rickshaw.Graph.Renderer = Rickshaw.Class.create( {
 
-	name: undefined,
-	tension: 0.8,
-	strokeWidth: 2,
-	unstack: true,
-	padding: { top: 0.025, right: 0, bottom: 0, left: 0 },
-	stroke: false,
-	fill: false,
-
 	initialize: function(args) {
 		this.graph = args.graph;
 		this.tension = args.tension || this.tension;
 		this.graph.unstacker = this.graph.unstacker || new Rickshaw.Graph.Unstacker( { graph: this.graph } );
-
+		this.configure(args);
 	},
 
 	seriesPathFactory: function() {
@@ -23,6 +15,17 @@ Rickshaw.Graph.Renderer = Rickshaw.Class.create( {
 
 	seriesStrokeFactory: function() {
 		// implement in subclass
+	},
+
+	defaults: function() {
+		return {
+			tension: 0.8,
+			strokeWidth: 2,
+			unstack: true,
+			padding: { top: 0.01, right: 0, bottom: 0.01, left: 0 },
+			stroke: false,
+			fill: false
+		};
 	},
 
 	domain: function() {
@@ -59,7 +62,7 @@ Rickshaw.Graph.Renderer = Rickshaw.Class.create( {
 		var nodes = graph.vis.selectAll("path")
 			.data(this.graph.stackedData)
 			.enter().append("svg:path")
-			.attr("d", this.seriesPathFactory()); 
+			.attr("d", this.seriesPathFactory());
 
 		var i = 0;
 		graph.series.forEach( function(series) {
@@ -71,7 +74,6 @@ Rickshaw.Graph.Renderer = Rickshaw.Class.create( {
 
 	_styleSeries: function(series) {
 
-
 		var fill = this.fill ? series.color : 'none';
 		var stroke = this.stroke ? series.color : 'none';
 
@@ -79,6 +81,38 @@ Rickshaw.Graph.Renderer = Rickshaw.Class.create( {
 		series.path.setAttribute('stroke', stroke);
 		series.path.setAttribute('stroke-width', this.strokeWidth);
 		series.path.setAttribute('class', series.className);
+	},
+
+	configure: function(args) {
+
+		args = args || {};
+
+		Rickshaw.keys(this.defaults()).forEach( function(key) {
+
+			if (!args.hasOwnProperty(key)) {
+				this[key] = this[key] || this.graph[key] || this.defaults()[key];
+				return;
+			}
+
+			if (typeof this.defaults()[key] == 'object') {
+
+				Rickshaw.keys(this.defaults()[key]).forEach( function(k) {
+
+					this[key][k] =
+						args[key][k] !== undefined ? args[key][k] :
+						this[key][k] !== undefined ? this[key][k] :
+						this.defaults()[key][k];
+				}, this );
+
+			} else {
+				this[key] =
+					args[key] !== undefined ? args[key] :
+					this[key] !== undefined ? this[key] :
+					this.graph[key] !== undefined ? this.graph[key] :
+					this.defaults()[key];
+			}
+
+		}, this );
 	},
 
 	setStrokeWidth: function(strokeWidth) {

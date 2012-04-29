@@ -3,8 +3,17 @@ Rickshaw.namespace('Rickshaw.Graph.Renderer.Bar');
 Rickshaw.Graph.Renderer.Bar = Rickshaw.Class.create( Rickshaw.Graph.Renderer, {
 
 	name: 'bar',
-	gapSize: 0.05,
-	unstack: false,
+
+	defaults: function($super) {
+
+		var defaults = Rickshaw.extend( $super(), {
+			gapSize: 0.05,
+			unstack: false,
+		} );
+
+		delete defaults.tension;
+		return defaults;
+	},
 
 	initialize: function($super, args) {
 		args = args || {};

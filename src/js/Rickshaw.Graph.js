@@ -3,10 +3,18 @@ Rickshaw.namespace('Rickshaw.Graph');
 Rickshaw.Graph = function(args) {
 
 	this.element = args.element;
-	this.interpolation = args.interpolation || 'cardinal';
 	this.series = args.series;
-	this.offset = 'zero';
-	this.stroke = args.stroke || false;
+
+	this.defaults = {
+		interpolation: 'cardinal',
+		offset: 'zero',
+		min: undefined,
+		max: undefined,
+	};
+
+	Rickshaw.keys(this.defaults).forEach( function(k) {
+		this[k] = args[k] || this.defaults[k];
+	}, this );
 
 	var style = window.getComputedStyle(this.element, null);
 	var elementWidth = parseInt(style.getPropertyValue('width'));
@@ -14,9 +22,6 @@ Rickshaw.Graph = function(args) {
 
 	this.width = args.width || elementWidth || 400;
 	this.height = args.height || elementHeight || 250;
-
-	this.min = args.min;
-	this.max = args.max;
 
 	this.window = {};
 
@@ -49,7 +54,7 @@ Rickshaw.Graph = function(args) {
 			self.registerRenderer(new r( { graph: self } ));
 		} );
 
-		this.setRenderer(args.renderer || 'stack');
+		this.setRenderer(args.renderer || 'stack', args);
 		this.discoverRange();
 	};
 
@@ -180,12 +185,25 @@ Rickshaw.Graph = function(args) {
 		this._renderers[renderer.name] = renderer;
 	};
 
-	this.setRenderer = function(name) {
+	this.configure = function(args) {
+
+		Rickshaw.keys(this.defaults).forEach( function(k) {
+			this[k] = args[k] || this.defaults[k];
+		}, this );
+
+		this.setRenderer(args.renderer || graph.renderer.name, args);
+	};
+
+	this.setRenderer = function(name, args) {
 
 		if (!this._renderers[name]) {
 			throw "couldn't find renderer " + name;
 		}
 		this.renderer = this._renderers[name];
+
+		if (typeof args == 'object') {
+			this.renderer.configure(args);
+		}
 	};
 
 	this.initialize(args);

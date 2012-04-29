@@ -3,9 +3,15 @@ Rickshaw.namespace('Rickshaw.Graph.Renderer.Line');
 Rickshaw.Graph.Renderer.Line = Rickshaw.Class.create( Rickshaw.Graph.Renderer, {
 
 	name: 'line',
-	unstack: true,
-	fill: false,
-	stroke: true,
+
+	defaults: function($super) {
+
+		return Rickshaw.extend( $super(), {
+			unstack: true,
+			fill: false,
+			stroke: true
+		} );
+	},
 
 	seriesPathFactory: function() {
 

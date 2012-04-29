@@ -3,9 +3,17 @@ Rickshaw.namespace('Rickshaw.Graph.Renderer.Area');
 Rickshaw.Graph.Renderer.Area = Rickshaw.Class.create( Rickshaw.Graph.Renderer, {
 
 	name: 'area',
-	unstack: false,
 
-	seriesPathFactory: function() { 
+	defaults: function($super) {
+
+		return Rickshaw.extend( $super(), {
+			unstack: false,
+			fill: false,
+			stroke: false
+		} );
+	},
+
+	seriesPathFactory: function() {
 
 		var graph = this.graph;
 
@@ -16,7 +24,7 @@ Rickshaw.Graph.Renderer.Area = Rickshaw.Class.create( Rickshaw.Graph.Renderer, {
 			.interpolate(graph.interpolation).tension(this.tension);
 	},
 
-	seriesStrokeFactory: function() { 
+	seriesStrokeFactory: function() {
 
 		var graph = this.graph;
 
@@ -40,12 +48,12 @@ Rickshaw.Graph.Renderer.Area = Rickshaw.Class.create( Rickshaw.Graph.Renderer, {
 			.attr("d", this.seriesPathFactory())
 			.attr("class", 'area');
 
-		if (this.graph.stroke) {
+		if (this.stroke) {
 			nodes.append("svg:path")
 				.attr("d", this.seriesStrokeFactory())
 				.attr("class", 'line');
 		}
-		
+
 		var i = 0;
 		graph.series.forEach( function(series) {
 			if (series.disabled) return;
@@ -61,7 +69,7 @@ Rickshaw.Graph.Renderer.Area = Rickshaw.Class.create( Rickshaw.Graph.Renderer, {
 		d3.select(series.path).select('.area')
 			.attr('fill', series.color);
 
-		if (this.graph.stroke) {
+		if (this.stroke) {
 			d3.select(series.path).select('.line')
 				.attr('fill', 'none')
 				.attr('stroke', series.stroke || d3.interpolateRgb(series.color, 'black')(0.125))
