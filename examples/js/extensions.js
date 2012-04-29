@@ -23,17 +23,20 @@ var RenderControls = function(args) {
 			this.syncOptions();
 			this.settings = this.serialize();
 
-			this.graph.setRenderer(this.settings.renderer);
-			this.graph.interpolation = this.settings.interpolation;
+			var config = {
+				renderer: this.settings.renderer,
+				interpolation: this.settings.interpolation
+			};
 
 			if (this.settings.offset == 'value') {
-				this.graph.renderer.unstack = true;
-				this.graph.offset = 'zero';
+				config.unstack = true;
+				config.offset = 'zero';
 			} else {
-				this.graph.renderer.unstack = false;
-				this.graph.offset = this.settings.offset;
+				config.unstack = false;
+				config.offset = this.settings.offset;
 			}
 
+			this.graph.configure(config);
 			this.graph.render();
 
 		}.bind(this), false);
