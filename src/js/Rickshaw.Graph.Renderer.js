@@ -44,11 +44,19 @@ Rickshaw.Graph.Renderer = Rickshaw.Class.create( {
 		var xMin = stackedData[0][0].x;
 		var xMax = stackedData[0][ stackedData[0].length - 1 ].x;
 
-		xMin -= (xMax - xMin) * (this.padding.left);
-		xMax += (xMax - xMin) * (this.padding.right);
+		xMin -= (xMax - xMin) * this.padding.left;
+		xMax += (xMax - xMin) * this.padding.right;
 
-		var yMin = ( this.graph.min === 'auto' ? d3.min( values ) : this.graph.min || 0 );
-		var yMax = this.graph.max || d3.max( values ) * (1 + this.padding.top);
+		var yMin = this.graph.min === 'auto' ? d3.min( values ) : this.graph.min || 0;
+		var yMax = this.graph.max || d3.max( values );
+
+		if (this.graph.min === 'auto' || yMin < 0) {
+			yMin -= (yMax - yMin) * this.padding.bottom;
+		}
+
+		if (this.graph.max === undefined) {
+			yMax += (yMax - yMin) * this.padding.top;
+		}
 
 		return { x: [xMin, xMax], y: [yMin, yMax] };
 	},

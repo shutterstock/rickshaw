@@ -55,14 +55,19 @@
 	width: 0;
 }
 .rickshaw_graph .detail .dot {
-	width: 5px;
-	height: 5px;
-	margin-left: -2px;
+	width: 4px;
+	height: 4px;
+	margin-left: -4px;
 	margin-top: -3px;
-	border-radius: 3px;
+	border-radius: 5px;
 	position: absolute;
+	box-shadow: 0 0 2px rgba(0, 0, 0, 0.6);
+	background: white;
+	border-width: 2px;
+	border-style: solid;
+	display: none;
+	background-clip: padding-box;
 }
 .rickshaw_graph .detail .dot.active {
-	background: rgba(255, 255, 255, 0.8);
-	box-shadow: 0 0 1px rgba(0, 0, 0, 0.5);
+	display: block;
 }
