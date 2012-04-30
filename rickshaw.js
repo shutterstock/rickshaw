@@ -1578,7 +1578,7 @@ Rickshaw.Graph.HoverDetail = Rickshaw.Class.create({
 			var dot = document.createElement('div');
 			dot.className = 'dot';
 			dot.style.top = item.style.top;
-			dot.style.backgroundColor = d.series.color;
+			dot.style.borderColor = d.series.color;
 
 			this.element.appendChild(dot);
 
