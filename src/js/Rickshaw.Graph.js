@@ -16,13 +16,6 @@ Rickshaw.Graph = function(args) {
 		this[k] = args[k] || this.defaults[k];
 	}, this );
 
-	var style = window.getComputedStyle(this.element, null);
-	var elementWidth = parseInt(style.getPropertyValue('width'));
-	var elementHeight = parseInt(style.getPropertyValue('height'));
-
-	this.width = args.width || elementWidth || 400;
-	this.height = args.height || elementHeight || 250;
-
 	this.window = {};
 
 	this.updateCallbacks = [];
@@ -34,6 +27,8 @@ Rickshaw.Graph = function(args) {
 		this.validateSeries(args.series);
 
 		this.series.active = function() { return self.series.filter( function(s) { return !s.disabled } ) };
+
+		this.setSize({ width: args.width, height: args.height });
 
 		this.element.classList.add('rickshaw_graph');
 		this.vis = d3.select(this.element)
@@ -187,6 +182,10 @@ Rickshaw.Graph = function(args) {
 
 	this.configure = function(args) {
 
+		if (args.width || args.height) {
+			this.setSize(args);
+		}
+
 		Rickshaw.keys(this.defaults).forEach( function(k) {
 			this[k] = args[k] || this.defaults[k];
 		}, this );
@@ -205,6 +204,24 @@ Rickshaw.Graph = function(args) {
 			this.renderer.configure(args);
 		}
 	};
+
+	this.setSize = function(args) {
+
+		args = args || {};
+
+		if (typeof window !== undefined) {
+			var style = window.getComputedStyle(this.element, null);
+			var elementWidth = parseInt(style.getPropertyValue('width'));
+			var elementHeight = parseInt(style.getPropertyValue('height'));
+		}
+
+		this.width = args.width || elementWidth || 400;
+		this.height = args.height || elementHeight || 250;
+
+		this.vis && this.vis
+			.attr('width', this.width)
+			.attr('height', this.height);
+	}
 
 	this.initialize(args);
 };
