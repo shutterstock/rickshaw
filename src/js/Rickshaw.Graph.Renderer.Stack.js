@@ -2,7 +2,7 @@ Rickshaw.namespace('Rickshaw.Graph.Renderer.Stack');
 
 Rickshaw.Graph.Renderer.Stack = Rickshaw.Class.create( Rickshaw.Graph.Renderer, {
 
-	name: 'line',
+	name: 'stack',
 
 	defaults: function($super) {
 
