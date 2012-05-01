@@ -1463,6 +1463,8 @@ Rickshaw.Graph.HoverDetail = Rickshaw.Class.create({
 
 		if (e.target.nodeName != 'path' && e.target.nodeName != 'svg') return;
 
+		var graph = this.graph;
+
 		var eventX = e.offsetX || e.layerX;
 		var eventY = e.offsetY || e.layerY;
 
@@ -1571,7 +1573,7 @@ Rickshaw.Graph.HoverDetail = Rickshaw.Class.create({
 			var item = document.createElement('div');
 			item.className = 'item';
 			item.innerHTML = this.formatter(d.series, domainX, d.value.y, formattedXValue, d.formattedYValue);
-			item.style.top = graph.y(d.value.y0 + d.value.y) + 'px';
+			item.style.top = this.graph.y(d.value.y0 + d.value.y) + 'px';
 
 			this.element.appendChild(item);
 
