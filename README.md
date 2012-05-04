@@ -21,49 +21,73 @@ Getting started with a simple graph is straightforward.  Here's the gist:
 
     graph.render();
 
-See the [tutorial](http://shutterstock.github.com/rickshaw/tutorial/introduction.html) and [examples](http://shutterstock.github.com/rickshaw/examples/) for more.
+See the [overview](http://code.shutterstock.com/rickshaw/), [tutorial](http://shutterstock.github.com/rickshaw/tutorial/introduction.html), and [examples](http://shutterstock.github.com/rickshaw/examples/) for more.
 
 ## Rickshaw.Graph 
 
-### properties
+A Rickshaw graph.  Send an `element` reference, `series` data, and optionally other properties to the constructor before calling `render()` to point the graph.  A listing of properties follows.  Send these as arguments to the constructor, and optionally set them later on already-instantiated graphs with a call to `configure()`
 
-* _element_: a reference to an HTML element
+##### element
 
-* _series_: an array of objects each with the following properties
+A reference to an HTML element that should hold the graph. 
 
-  * _name_: a name meant for humans
-  * _color_: a CSS color
-  * _data_: an array of objects, each with x and y properties
+##### series
 
-* _renderer_: renderer name, like `stack` or `line`
+Array of objects containing series data to plot.  Each object should contain `data` at a minimum, an array of objects each with x and y properties.  Optionally send a `name` and `color` as well.  Some renderers and extensions may also support additional keys.
 
-* _width_: width of the graph in pixels
+##### renderer
 
-* _height_: height of graph in pixels
+A string containing the name of the renderer to be used.  Options include `area`, `stack`, `bar`, `line`, and `scatterplot`.
 
-* _min_: Lower value on the Y-axis, or `auto` for the lowest value in the series.  Defaults to 0.
+##### width
 
-* _max_: Highest value on the Y-axis.  Defaults to the highest value in the series.
+Width of the graph in pixels.  Falls back to the width of the `element`, or defaults to 400 if the element has no width.
 
-* _interpolation_: optional line smoothing / interpolation method (see [D3 docs](https://github.com/mbostock/d3/wiki/SVG-Shapes#wiki-line_interpolate)); notable options:
+##### height
 
-  * _linear_: straight lines between points
-  * _step-after_: square steps from point to point
-  * _cardinal_: smooth curves via cardinal splines (default)
-  * _basis_: smooth curves via B-splines
+Height of the graph in pixels.  Falls back to the height of the `element`, or defaults to 250 if the element has no height.
 
-### methods
+##### min
 
-* _render()_: paint the graph
+Lower value on the Y-axis, or `auto` for the lowest value in the series.  Defaults to 0.
 
-* _setRenderer()_: set renderer to stack or line
+##### max
 
-* _onUpdate(f)_: add a callback to run when the graph is rendered
+Highest value on the Y-axis.  Defaults to the highest value in the series.
+
+##### padding
+
+An object containing any of `top`, `right`, `bottom`, and `left` properties specifying padding around the extrema of the data in the graph.  Defaults to 0.01 on top for 1% padding, and 0 on other sides.
+
+##### interpolation
+
+Line smoothing / interpolation method (see [D3 docs](https://github.com/mbostock/d3/wiki/SVG-Shapes#wiki-line_interpolate)); notable options:
+
+  * `linear`: straight lines between points
+  * `step-after`: square steps from point to point
+  * `cardinal`: smooth curves via cardinal splines (default)
+  * `basis`: smooth curves via B-splines
+
+### Methods
+
+Once you have instantiated a graph, call methods below to get pixels on the screen, change configuration, and set callbacks.
+
+##### render()
+
+Draw or redraw the graph.
+
+##### configure()
+
+Set properties on an instantiated graph.  Specify any properties the constructor accepts, including `width` and `height` and `renderer`.  Call `render()` to redraw the graph and reflect newly-configured properties.
+
+##### onUpdate(f)
+
+Add a callback to run when the graph is rendered
 
 
-## Rickshaw Extensions
+## Extensions
 
-Once you have a basic graph, extensions let you add functionality.  See the [examples](http://shutterstock.github.com/rickshaw/examples/) listing for more.
+Once you have a basic graph, extensions let you add functionality.  See the [overview](http://code.shutterstock.com/rickshaw/) and [examples](http://shutterstock.github.com/rickshaw/examples/) listing for more.
  
 * __Rickshaw.Graph.Legend__ - add a basic legend
 
