@@ -31,6 +31,9 @@ var RenderControls = function(args) {
 			if (this.settings.offset == 'value') {
 				config.unstack = true;
 				config.offset = 'zero';
+			} else if (this.settings.offset == 'expand') {
+				config.unstack = true;
+				config.offset = this.settings.offset;
 			} else {
 				config.unstack = false;
 				config.offset = this.settings.offset;
@@ -56,7 +59,7 @@ var RenderControls = function(args) {
 
 	this.syncOptions = function() {
 
-		var options = this.rendererOptions[this.settings.renderer];	
+		var options = this.rendererOptions[this.settings.renderer];
 
 		Array.prototype.forEach.call(this.inputs.interpolation, function(input) {
 
@@ -86,7 +89,7 @@ var RenderControls = function(args) {
 
 	this.setDefaultOffset = function(renderer) {
 
-		var options = this.rendererOptions[renderer];	
+		var options = this.rendererOptions[renderer];
 
 		if (options.defaults && options.defaults.offset) {
 
