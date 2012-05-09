@@ -11,7 +11,7 @@ Rickshaw.Graph.Legend = function(args) {
 
 	var list = this.list = document.createElement('ul');
 	element.appendChild(list);
-	
+
 	var series = graph.series
 		.map( function(s) { return s } )
 		.reverse();
@@ -56,7 +56,5 @@ Rickshaw.Graph.Legend = function(args) {
 		self.addLine(s);
 	} );
 
-	graph.onUpdate( function() {
-		
-	} );
+	graph.onUpdate( function() {} );
 };
