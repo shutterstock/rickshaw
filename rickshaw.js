@@ -1164,9 +1164,9 @@ Rickshaw.Graph.Axis.Y = function(args) {
 
 		if (!this.element) return;
 
-		if (typeof window !== undefined) {
+		if (typeof window !== 'undefined') {
 
-			var style = window.getComputedStyle(this.element, null);
+			var style = window.getComputedStyle(this.element.parentNode, null);
 			var elementWidth = parseInt(style.getPropertyValue('width'));
 
 			if (!args.auto) {
@@ -1183,7 +1183,6 @@ Rickshaw.Graph.Axis.Y = function(args) {
 
 		var berth = this.height * berthRate;
 		this.element.style.top = -1 * berth + 'px';
-		this.element.style.paddingTop = berth + 'px';
 	};
 
 	this.render = function() {
@@ -1194,7 +1193,8 @@ Rickshaw.Graph.Axis.Y = function(args) {
 		axis.tickFormat( args.tickFormat || function(y) { return y } );
 
 		if (this.orientation == 'left') {
-			var transform = 'translate(' + this.width + ', 0)';
+			var berth = this.height * berthRate;
+			var transform = 'translate(' + this.width + ', ' + berth + ')';
 		}
 
 		if (this.element) {
@@ -1433,11 +1433,11 @@ Rickshaw.Graph.HoverDetail = Rickshaw.Class.create({
 
 		this.yFormatter = args.yFormatter || function(y) {
 			return y.toFixed(2);
-		}; 
-		
+		};
+
 		var element = this.element = document.createElement('div');
 		element.className = 'detail';
-		
+
 		this.visible = true;
 		graph.element.appendChild(element);
 
@@ -1517,7 +1517,7 @@ Rickshaw.Graph.HoverDetail = Rickshaw.Class.create({
 
 			d.graphX = graphX;
 			d.graphY = graph.y(d.value.y0 + d.value.y);
-			
+
 			if (domainMouseY > d.value.y0 && domainMouseY < d.value.y0 + d.value.y && !activeItem) {
 				activeItem = d;
 				d.active = true;
@@ -1529,11 +1529,11 @@ Rickshaw.Graph.HoverDetail = Rickshaw.Class.create({
 		this.element.style.left = graph.x(domainX) + 'px';
 
 		if (this.visible) {
-			this.render( { 
-				detail: detail, 
-				domainX: domainX, 
+			this.render( {
+				detail: detail,
+				domainX: domainX,
 				formattedXValue: formattedXValue,
-				mouseX: eventX, 
+				mouseX: eventX,
 				mouseY: eventY
 			} );
 		}
@@ -1569,7 +1569,7 @@ Rickshaw.Graph.HoverDetail = Rickshaw.Class.create({
 
 		var xLabel = document.createElement('div');
 		xLabel.className = 'x_label';
-		xLabel.innerHTML = formattedXValue; 
+		xLabel.innerHTML = formattedXValue;
 		this.element.appendChild(xLabel);
 
 		detail.forEach( function(d) {
@@ -1589,7 +1589,7 @@ Rickshaw.Graph.HoverDetail = Rickshaw.Class.create({
 			this.element.appendChild(dot);
 
 			if (d.active) {
-				item.className = 'item active';	
+				item.className = 'item active';
 				dot.className = 'dot active';
 			}
 
@@ -1604,25 +1604,25 @@ Rickshaw.Graph.HoverDetail = Rickshaw.Class.create({
 
 	_addListeners: function() {
 
-		this.graph.element.addEventListener( 
-			'mousemove', 
-			function(e) { 
-				this.visible = true; 
-				this.update(e) 
-			}.bind(this), 
-			false 
+		this.graph.element.addEventListener(
+			'mousemove',
+			function(e) {
+				this.visible = true;
+				this.update(e)
+			}.bind(this),
+			false
 		);
 
 		this.graph.onUpdate( function() { this.update() }.bind(this) );
 
-		this.graph.element.addEventListener( 
-			'mouseout', 
-			function(e) { 
+		this.graph.element.addEventListener(
+			'mouseout',
+			function(e) {
 				if (e.relatedTarget && !(e.relatedTarget.compareDocumentPosition(this.graph.element) & Node.DOCUMENT_POSITION_CONTAINS)) {
 					this.hide();
 				}
-			 }.bind(this), 
-			false 
+			 }.bind(this),
+			false
 		);
 	}
 });
@@ -1696,7 +1696,7 @@ Rickshaw.Graph.Legend = function(args) {
 
 	var list = this.list = document.createElement('ul');
 	element.appendChild(list);
-	
+
 	var series = graph.series
 		.map( function(s) { return s } )
 		.reverse();
@@ -1741,9 +1741,7 @@ Rickshaw.Graph.Legend = function(args) {
 		self.addLine(s);
 	} );
 
-	graph.onUpdate( function() {
-		
-	} );
+	graph.onUpdate( function() {} );
 };
 Rickshaw.namespace('Rickshaw.Graph.RangeSlider');
 
