@@ -30,7 +30,7 @@ Rickshaw.Graph.HoverDetail = Rickshaw.Class.create({
 		this.formatter = args.formatter || this.formatter;
 	},
 
-	formatter: function(series, x, y, formattedX, formattedY) {
+	formatter: function(series, x, y, formattedX, formattedY, d) {
 		return series.name + ':&nbsp;' + formattedY;
 	},
 
@@ -155,7 +155,7 @@ Rickshaw.Graph.HoverDetail = Rickshaw.Class.create({
 
 			var item = document.createElement('div');
 			item.className = 'item';
-			item.innerHTML = this.formatter(d.series, domainX, d.value.y, formattedXValue, d.formattedYValue);
+			item.innerHTML = this.formatter(d.series, domainX, d.value.y, formattedXValue, d.formattedYValue, d);
 			item.style.top = this.graph.y(d.value.y0 + d.value.y) + 'px';
 
 			this.element.appendChild(item);
