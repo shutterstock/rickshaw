@@ -9,6 +9,7 @@ Rickshaw.Graph.Renderer.Bar = Rickshaw.Class.create( Rickshaw.Graph.Renderer, {
 		var defaults = Rickshaw.extend( $super(), {
 			gapSize: 0.05,
 			unstack: false,
+      opacity: 1.0
 		} );
 
 		delete defaults.tension;
@@ -64,6 +65,7 @@ Rickshaw.Graph.Renderer.Bar = Rickshaw.Class.create( Rickshaw.Graph.Renderer, {
 				.attr("x", function(d) { return graph.x(d.x) + barXOffset })
 				.attr("y", function(d) { return graph.y(d.y0 + d.y) })
 				.attr("width", seriesBarWidth)
+				.attr("opacity", series.opacity)
 				.attr("height", function(d) { return graph.y.magnitude(d.y) });
 
 			Array.prototype.forEach.call(nodes[0], function(n) {

@@ -28,13 +28,15 @@ Rickshaw.Graph.Renderer.ScatterPlot = Rickshaw.Class.create( Rickshaw.Graph.Rend
 		graph.series.forEach( function(series) {
 
 			if (series.disabled) return;
+      var opacity = series.opacity ? series.opacity : 1;
 
 			var nodes = graph.vis.selectAll("path")
 				.data(series.stack)
 				.enter().append("svg:circle")
 				.attr("cx", function(d) { return graph.x(d.x) })
 				.attr("cy", function(d) { return graph.y(d.y) })
-				.attr("r", function(d) { return ("r" in d) ? d.r : graph.renderer.dotSize});
+				.attr("r", function(d) { return ("r" in d) ? d.r : graph.renderer.dotSize})
+				.attr("opacity", function(d) { return ("opacity" in d) ? d.opacity : opacity});
 
 			Array.prototype.forEach.call(nodes[0], function(n) {
 				n.setAttribute('fill', series.color);

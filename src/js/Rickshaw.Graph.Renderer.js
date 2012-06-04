@@ -24,7 +24,8 @@ Rickshaw.Graph.Renderer = Rickshaw.Class.create( {
 			unstack: true,
 			padding: { top: 0.01, right: 0, bottom: 0.01, left: 0 },
 			stroke: false,
-			fill: false
+			fill: false,
+			opacity: 1
 		};
 	},
 
@@ -81,13 +82,15 @@ Rickshaw.Graph.Renderer = Rickshaw.Class.create( {
 	},
 
 	_styleSeries: function(series) {
-
 		var fill = this.fill ? series.color : 'none';
 		var stroke = this.stroke ? series.color : 'none';
+		var width = this.strokeWidth ? series.width : this.strokeWidth;
+		var opacity = this.opacity ? series.opacity : this.opacity;
 
 		series.path.setAttribute('fill', fill);
 		series.path.setAttribute('stroke', stroke);
-		series.path.setAttribute('stroke-width', this.strokeWidth);
+		series.path.setAttribute('stroke-width', width);
+		series.path.setAttribute('opacity', opacity);
 		series.path.setAttribute('class', series.className);
 	},
 
