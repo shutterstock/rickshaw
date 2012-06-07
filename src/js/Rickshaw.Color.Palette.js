@@ -10,6 +10,20 @@ Rickshaw.Color.Palette = function(args) {
 	this.scheme = color.schemes[args.scheme] || args.scheme || color.schemes.colorwheel;
 	this.runningIndex = 0;
 	this.generatorIndex = 0;
+
+  if (args.preInterpolateCount) {
+    var schemeCount = this.scheme.length - 1;
+    var i, j, scheme = [];
+    for (i = 0; i < schemeCount; i++) {
+      scheme.push(this.scheme[i]);
+      var generator = d3.interpolateHsl(this.scheme[i], this.scheme[i + 1]);
+      for (j = 1; j < args.preInterpolateCount; j++) {
+        scheme.push(generator((1 / args.preInterpolateCount) * j));
+      }
+    }
+    scheme.push(this.scheme[this.scheme.length - 1]);
+    this.scheme = scheme;
+  }
   this.rotateCount = this.scheme.length;
 
 	this.color = function(key) {
