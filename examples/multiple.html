@@ -1,4 +1,8 @@
 <!doctype>
+<link type="text/css" rel="stylesheet" href="../src/css/graph.css">
+<link type="text/css" rel="stylesheet" href="../src/css/detail.css">
+<link type="text/css" rel="stylesheet" href="../src/css/legend.css">
+<link type="text/css" rel="stylesheet" href="css/extensions.css">
 <script src="../vendor/d3.min.js"></script>
 <script src="../vendor/d3.layout.min.js"></script>
 
@@ -17,84 +21,89 @@
 <script src="../src/js/Rickshaw.Series.js"></script>
 <script src="../src/js/Rickshaw.Series.FixedDuration.js"></script>
 
+<script src="../src/js/Rickshaw.Graph.HoverDetail.js"></script>
+<script src="../src/js/Rickshaw.Graph.HoverDetail.Multi.js"></script>
+<script src="../src/js/Rickshaw.Graph.Legend.js"></script>
+<script src="../src/js/Rickshaw.Graph.Behavior.Series.Toggle.js"></script>
+<script src="../src/js/Rickshaw.Graph.Behavior.Series.Order.js"></script>
+<script src="../src/js/Rickshaw.Graph.Behavior.Series.Highlight.js"></script>
+<script src="../src/js/Rickshaw.Graph.RangeSlider.js"></script>
+
+<link type="text/css" rel="stylesheet" href="../jquery/jquery-ui-1.8.20.custom.css">
+<script src="../jquery/jquery-1.7.2.min.js"></script>
+<script src="../jquery/jquery-ui-1.8.20.custom.min.js"></script>
+
 <style>
 	.chart {float:left; border: 1px solid #333; margin: 5px;}
 </style>
 <div id="chart" class="chart"></div>
-<div id="chart2" class="chart"></div>
-<div id="chart3" class="chart"></div>
-
+<div id="slider"></div>
+<div id="legend"></div>
 <script>
 
-console.log('chart2');
-var graph2 = new Rickshaw.Graph( {
-	element: document.querySelector("#chart2")
-	, width: 300
-	, height: 200
-  , renderer: 'area'
-	, series: [
-		{
-			data: [ { x: 0, y: 40 }, { x: 1, y: 49 }, { x: 2, y: 38 }, { x: 3, y: 30 }, { x: 4, y: 32 } ]
-			, color: 'steelblue'
-		},
-		{
-			data: [ { x: 0, y: 60 }, { x: 1, y: 3 }, { x: 2, y: 14 }, { x: 3, y: 52 }, { x: 4, y: 21 } ]
-			, color: 'red'
-		},
-		{
-			data: [ { x: 0, y: 20 }, { x: 1, y: 15 }, { x: 2, y: 62 }, { x: 3, y: 42 }, { x: 4, y: 3 } ]
-      , color: 'green'
-		}
-	]
-} );
-graph2.render();
-
-console.log('chart3');
-var graph3 = new Rickshaw.Graph( {
-	element: document.querySelector("#chart3")
-	, width: 300
-	, height: 200
-  , renderer: 'line'
-	, series: [
-		{
-			data: [ { x: 0, y: 40 }, { x: 1, y: 49 }, { x: 2, y: 38 }, { x: 3, y: 30 }, { x: 4, y: 32 } ]
-			, color: 'steelblue'
-		},
-		{
-			data: [ { x: 0, y: 60 }, { x: 1, y: 3 }, { x: 2, y: 14 }, { x: 3, y: 52 }, { x: 4, y: 21 } ]
-			, color: 'red'
-		},
-		{
-			data: [ { x: 0, y: 20 }, { x: 1, y: 15 }, { x: 2, y: 62 }, { x: 3, y: 42 }, { x: 4, y: 3 } ]
-      , color: 'green'
-		}
-	]
-} );
-graph3.render();
-
-console.log('chart1');
+console.log('chart');
 var graph = new Rickshaw.Graph( {
 	element: document.querySelector("#chart")
 	, width: 300
 	, height: 200
-  , renderer: 'multi'
+	, renderer: 'multi'
+	, order: ['bar', 'area', 'line']
 	, series: [
-		{
-			data: [ { x: 0, y: 40 }, { x: 1, y: 49 }, { x: 2, y: 38 }, { x: 3, y: 30 }, { x: 4, y: 32 } ]
-			, color: 'steelblue'
-      , renderer: 'area'
+	        {
+			data: [ { x: 0, y: 52 }, { x: 1, y: 3 }, { x: 2, y: 14 }, { x: 3, y: 42 }, { x: 4, y: 21 } ]
+			, color: 'red'
+			, renderer: 'area'
+		        , name: 'sample3'
 		}
 		,{
-			data: [ { x: 0, y: 20 }, { x: 1, y: 15 }, { x: 2, y: 62 }, { x: 3, y: 42 }, { x: 4, y: 3 } ]
-      , color: 'green'
+			data: [ { x: 0, y: 40 }, { x: 1, y: 49 }, { x: 2, y: 38 }, { x: 3, y: 30 }, { x: 4, y: 32 } ]
+			, color: 'steelblue'
+			, renderer: 'bar'
+		        , name: 'sample1'
 		}
-    ,{
-			data: [ { x: 0, y: 60 }, { x: 1, y: 3 }, { x: 2, y: 14 }, { x: 3, y: 52 }, { x: 4, y: 21 } ]
-			, color: 'red'
+		,{
+			data: [ { x: 0, y: 20 }, { x: 1, y: 15 }, { x: 2, y: 22 }, { x: 3, y: 72 }, { x: 4, y: 3 } ]
+			, color: 'green'
+			, renderer: 'line'
+		        , name: 'sample2'
 		}
 	]
 } );
+
 graph.render();
 
-</script>
+var hoverDetailMulti = new Rickshaw.Graph.HoverDetail.Multi( {
+    graph: graph,
+    option: 
+    {
+        area:{
+            xFormatter: function(x) { return x + "seconds" },
+            yFormatter: function(y) { return Math.floor(y) + " percent" },
+            onShow : function () {},
+            onHide : function () {},
+            onRender : function () {}
+        }
+    }
+} );
 
+var legend = new Rickshaw.Graph.Legend({
+    graph: graph,
+    element: document.querySelector('#legend')
+});
+
+var shelving = new Rickshaw.Graph.Behavior.Series.Toggle({
+    graph: graph,
+    legend: legend
+});
+
+var order = new Rickshaw.Graph.Behavior.Series.Order({
+    graph: graph,
+    legend: legend
+});
+
+var highlighter = new Rickshaw.Graph.Behavior.Series.Highlight({
+    graph: graph,
+    legend: legend
+});
+
+</script>
