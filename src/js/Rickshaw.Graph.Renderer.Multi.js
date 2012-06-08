@@ -15,6 +15,7 @@ Rickshaw.Graph.Renderer.Multi = Rickshaw.Class.create( Rickshaw.Graph.Renderer, 
 
   render: function(){
     var graph = this.graph;
+    var status = this.getStatus();
     var defaultRenderer = graph.defaultRenderer || 'line';
     var seriesGroup = {};
     var rendererOrder = ['stack', 'area', 'line', 'scatterplot', 'bar'];
@@ -58,6 +59,40 @@ Rickshaw.Graph.Renderer.Multi = Rickshaw.Class.create( Rickshaw.Graph.Renderer, 
 
       graph.render();
     });
+    this.putStatus(status);
+  },
+
+  getStatus: function() {
+    var origin_renderer = graph.renderer;
+    var origin_series = graph.series;
+    var origin_vis = graph.vis;
+    var origin_stackedData = graph.stackedData;
+    var origin_x = graph.x;
+    var origin_y = graph.y;
+
+    return {
+      renderer:    origin_renderer,
+      series:      origin_series,
+      vis:     origin_vis,
+      stackedData: origin_stackedData,
+      x: origin_x,
+      y: origin_y
+    };
+  },
+
+  putStatus: function(status) {
+    if (status.hasOwnProperty('renderer')) 
+      graph.renderer = status['renderer'];
+    if (status.hasOwnProperty('series')) 
+      graph.series = status['series'];
+    if (status.hasOwnProperty('vis')) 
+      graph.vis = status['vis'];
+    if (status.hasOwnProperty('stackedData')) 
+      graph.stackedData = status['stackedData'];
+    if (status.hasOwnProperty('x')) 
+      graph.x = status['x'];
+    if (status.hasOwnProperty('y')) 
+      graph.y = status['y'];
   }
 } );
 
