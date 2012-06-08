@@ -4,7 +4,7 @@ Rickshaw.Graph = function(args) {
 
 	this.element = args.element;
 	this.series = args.series;
-	this.order = args.order;
+	this.order = args.order || [];
 
 	this.defaults = {
 		interpolation: 'cardinal',

@@ -23,14 +23,6 @@ Rickshaw.Graph.Renderer.Multi = Rickshaw.Class.create( Rickshaw.Graph.Renderer, 
     //seriesGroup[defaultRenderer] =
     //  {series: [], element: null};
 
-    graph.order.forEach(function(order){
-      var index = rendererOrder.indexOf(order);
-      if (index >= 0) {
-        rendererOrder.splice(index, 1);
-        rendererOrder.push(order);
-      }
-    });
-
     graph.series.forEach(function(series){
       if (series.disabled) return;
       var rendererName = defaultRenderer;
@@ -42,6 +34,19 @@ Rickshaw.Graph.Renderer.Multi = Rickshaw.Class.create( Rickshaw.Graph.Renderer, 
           {series: [], element: null};
       }
       seriesGroup[rendererName].series.push(series);
+      var index = rendererOrder.indexOf(rendererName);
+      if (index >= 0) {
+        rendererOrder.splice(index, 1);
+        rendererOrder.push(rendererName);
+      }
+    });
+
+    graph.order.forEach(function(order){
+      var index = rendererOrder.indexOf(order);
+      if (index >= 0) {
+        rendererOrder.splice(index, 1);
+        rendererOrder.push(order);
+      }
     });
 
     graph.vis.selectAll('*').remove();
