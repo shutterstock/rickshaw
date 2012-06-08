@@ -22,6 +22,14 @@ Rickshaw.Graph.Renderer.Multi = Rickshaw.Class.create( Rickshaw.Graph.Renderer, 
     //seriesGroup[defaultRenderer] =
     //  {series: [], element: null};
 
+    graph.order.forEach(function(order){
+      var index = rendererOrder.indexOf(order);
+      if (index >= 0) {
+        rendererOrder.splice(index, 1);
+        rendererOrder.push(order);
+      }
+    });
+
     graph.series.forEach(function(series){
       var rendererName = defaultRenderer;
       if(series.hasOwnProperty('renderer')){
