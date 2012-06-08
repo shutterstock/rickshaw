@@ -17,11 +17,10 @@ Rickshaw.Graph.Renderer.Multi = Rickshaw.Class.create( Rickshaw.Graph.Renderer, 
     var graph = this.graph;
     var defaultRenderer = graph.defaultRenderer || 'line';
     var seriesGroup = {};
-
-    seriesGroup[defaultRenderer] =
-      {series: [], element: null};
-
     var rendererOrder = ['stack', 'area', 'line', 'scatterplot', 'bar'];
+
+    //seriesGroup[defaultRenderer] =
+    //  {series: [], element: null};
 
     graph.series.forEach(function(series){
       var rendererName = defaultRenderer;
