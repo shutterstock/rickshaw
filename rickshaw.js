@@ -563,7 +563,7 @@ Rickshaw.Graph = function(args) {
 			this[k] = args[k] || this.defaults[k];
 		}, this );
 
-		this.setRenderer(args.renderer || graph.renderer.name, args);
+		this.setRenderer(args.renderer || this.renderer.name, args);
 	};
 
 	this.setRenderer = function(name, args) {
@@ -800,49 +800,49 @@ Rickshaw.Fixtures.Time = function() {
 	this.months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
 	this.units = [
-		{ 
+		{
 			name: 'decade',
 			seconds: 86400 * 365.25 * 10,
 			formatter: function(d) { return (parseInt(d.getUTCFullYear() / 10) * 10) }
-		}, { 
+		}, {
 			name: 'year',
 			seconds: 86400 * 365.25,
-			formatter: function(d) { return d.getUTCFullYear() } 
-		}, { 
+			formatter: function(d) { return d.getUTCFullYear() }
+		}, {
 			name: 'month',
 			seconds: 86400 * 30.5,
 			formatter: function(d) { return self.months[d.getUTCMonth()] }
-		}, { 
+		}, {
 			name: 'week',
-			seconds: 86400 * 7, 
+			seconds: 86400 * 7,
 			formatter: function(d) { return self.formatDate(d) }
-		}, { 
+		}, {
 			name: 'day',
 			seconds: 86400,
 			formatter: function(d) { return d.getUTCDate() }
-		}, { 
+		}, {
 			name: '6 hour',
-			seconds: 3600 * 6, 
+			seconds: 3600 * 6,
 			formatter: function(d) { return self.formatTime(d) }
-		}, { 
+		}, {
 			name: 'hour',
-			seconds: 3600, 
+			seconds: 3600,
 			formatter: function(d) { return self.formatTime(d) }
-		}, { 
-			name: '15 minute', 
+		}, {
+			name: '15 minute',
 			seconds: 60 * 15,
 			formatter: function(d) { return self.formatTime(d) }
-		}, { 
-			name: 'minute', 
+		}, {
+			name: 'minute',
 			seconds: 60,
 			formatter: function(d) { return d.getUTCMinutes() }
-		}, { 
-			name: '15 second', 
-			seconds: 15, 
+		}, {
+			name: '15 second',
+			seconds: 15,
 			formatter: function(d) { return d.getUTCSeconds() + 's' }
-		}, { 
-			name: 'second', 
-			seconds: 1, 
+		}, {
+			name: 'second',
+			seconds: 1,
 			formatter: function(d) { return d.getUTCSeconds() + 's' }
 		}
 	];
@@ -860,11 +860,11 @@ Rickshaw.Fixtures.Time = function() {
 	};
 
 	this.ceil = function(time, unit) {
-		
+
 		if (unit.name == 'month') {
 			var nearFuture = new Date((time + unit.seconds - 1) * 1000);
 			return new Date(nearFuture.getUTCFullYear(), nearFuture.getUTCMonth() + 1, 1, 0, 0, 0, 0).getTime() / 1000;
-		} 
+		}
 
 		if (unit.name == 'year') {
 			var nearFuture = new Date((time + unit.seconds - 1) * 1000);
@@ -907,10 +907,41 @@ Rickshaw.Color.Palette = function(args) {
 
 	this.scheme = color.schemes[args.scheme] || args.scheme || color.schemes.colorwheel;
 	this.runningIndex = 0;
+	this.generatorIndex = 0;
+
+  if (args.interpolatedStopCount) {
+    var schemeCount = this.scheme.length - 1;
+    var i, j, scheme = [];
+    for (i = 0; i < schemeCount; i++) {
+      scheme.push(this.scheme[i]);
+      var generator = d3.interpolateHsl(this.scheme[i], this.scheme[i + 1]);
+      for (j = 1; j < args.interpolatedStopCount; j++) {
+        scheme.push(generator((1 / args.interpolatedStopCount) * j));
+      }
+    }
+    scheme.push(this.scheme[this.scheme.length - 1]);
+    this.scheme = scheme;
+  }
+  this.rotateCount = this.scheme.length;
 
 	this.color = function(key) {
-		return this.scheme[key] || this.scheme[this.runningIndex++] || '#808080';
+		return this.scheme[key] || this.scheme[this.runningIndex++] || this.interpolateColor() || '#808080';
 	};
+
+  this.interpolateColor = function() {
+    var color;
+    if (this.generatorIndex == this.rotateCount * 2 - 1) {
+      color = d3.interpolateHsl(this.scheme[this.generatorIndex], this.scheme[0])(0.5);
+      this.generatorIndex = 0;
+      this.rotateCount *= 2;
+    } else {
+      color = d3.interpolateHsl(this.scheme[this.generatorIndex], this.scheme[this.generatorIndex + 1])(0.5);
+      this.generatorIndex++;
+    }
+    this.scheme.push(color);
+    return color;
+  };
+
 };
 Rickshaw.namespace('Graph.Ajax');
 
@@ -1134,7 +1165,7 @@ Rickshaw.Graph.Axis.Y = function(args) {
 		this.graph = args.graph;
 		this.orientation = args.orientation || 'right';
 
-		var pixelsPerTick = 75;
+		var pixelsPerTick = args.pixelsPerTick || 75;
 		this.ticks = args.ticks || Math.floor(this.graph.height / pixelsPerTick);
 		this.tickSize = args.tickSize || 4;
 		this.ticksTreatment = args.ticksTreatment || 'plain';
@@ -1451,7 +1482,7 @@ Rickshaw.Graph.HoverDetail = Rickshaw.Class.create({
 		this.formatter = args.formatter || this.formatter;
 	},
 
-	formatter: function(series, x, y, formattedX, formattedY) {
+	formatter: function(series, x, y, formattedX, formattedY, d) {
 		return series.name + ':&nbsp;' + formattedY;
 	},
 
@@ -1478,7 +1509,7 @@ Rickshaw.Graph.HoverDetail = Rickshaw.Class.create({
 			.range([0, topSeriesData.length]);
 
 		var approximateIndex = Math.floor(domainIndexScale(domainX));
-		var dataIndex = approximateIndex || 0;
+		var dataIndex = Math.min(approximateIndex || 0, stackedData[0].length - 1);
 
 		for (var i = approximateIndex; i < stackedData[0].length - 1;) {
 
@@ -1576,7 +1607,7 @@ Rickshaw.Graph.HoverDetail = Rickshaw.Class.create({
 
 			var item = document.createElement('div');
 			item.className = 'item';
-			item.innerHTML = this.formatter(d.series, domainX, d.value.y, formattedXValue, d.formattedYValue);
+			item.innerHTML = this.formatter(d.series, domainX, d.value.y, formattedXValue, d.formattedYValue, d);
 			item.style.top = this.graph.y(d.value.y0 + d.value.y) + 'px';
 
 			this.element.appendChild(item);
@@ -2217,7 +2248,7 @@ Rickshaw.Graph.Renderer.ScatterPlot = Rickshaw.Class.create( Rickshaw.Graph.Rend
 				.enter().append("svg:circle")
 				.attr("cx", function(d) { return graph.x(d.x) })
 				.attr("cy", function(d) { return graph.y(d.y) })
-				.attr("r", this.dotSize);
+				.attr("r", function(d) { return ("r" in d) ? d.r : graph.renderer.dotSize});
 
 			Array.prototype.forEach.call(nodes[0], function(n) {
 				n.setAttribute('fill', series.color);
