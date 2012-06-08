@@ -112,12 +112,14 @@ Once you have a basic graph, extensions let you add functionality.  See the [ove
 
 Rickshaw comes with a few color schemes. Instantiate a palette and specify a scheme name, and then call color() on the palette to get each next color.
 
-    var palette = new Rickshaw.Color.Palette( { scheme: 'spectrum2001' } );
+```
+var palette = new Rickshaw.Color.Palette( { scheme: 'spectrum2001' } );
     
-    palette.color() // => first color in the palette
-    palette.color() // => next color in the palette...
+palette.color() // => first color in the palette
+palette.color() // => next color in the palette...
+```
 
-Available color schemes:
+#### Color Schemes
 
   * classic9
   * colorwheel
@@ -127,6 +129,9 @@ Available color schemes:
   * spectrum2000
   * spectrum2001
 
+#### Interpolation
+
+For graphs with more series than palettes have colors, sepcify an `interpolatedStopsCount` to the palette constructor.
 
 ## Rickshaw and Cross-Browser Support
 

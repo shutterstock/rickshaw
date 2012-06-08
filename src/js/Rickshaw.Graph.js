@@ -190,7 +190,7 @@ Rickshaw.Graph = function(args) {
 			this[k] = args[k] || this.defaults[k];
 		}, this );
 
-		this.setRenderer(args.renderer || graph.renderer.name, args);
+		this.setRenderer(args.renderer || this.renderer.name, args);
 	};
 
 	this.setRenderer = function(name, args) {
