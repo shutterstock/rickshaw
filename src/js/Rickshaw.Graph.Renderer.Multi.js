@@ -32,6 +32,7 @@ Rickshaw.Graph.Renderer.Multi = Rickshaw.Class.create( Rickshaw.Graph.Renderer, 
     });
 
     graph.series.forEach(function(series){
+      if (series.disabled) return;
       var rendererName = defaultRenderer;
       if(series.hasOwnProperty('renderer')){
         rendererName = series.renderer;
@@ -43,13 +44,14 @@ Rickshaw.Graph.Renderer.Multi = Rickshaw.Class.create( Rickshaw.Graph.Renderer, 
       seriesGroup[rendererName].series.push(series);
     });
 
+    graph.vis.selectAll('*').remove();
     rendererOrder.forEach(function(rendererName){
       if(!seriesGroup.hasOwnProperty(rendererName))
         return;
 
       var series = seriesGroup[rendererName];
       var renderer = graph._renderers[rendererName];
-      var element = d3.select('svg').append('svg:g').attr('class', rendererName);
+      var element = status['vis'].append('svg:g').attr('class', rendererName);
       series.element = element;
       
       graph.renderer = renderer;
