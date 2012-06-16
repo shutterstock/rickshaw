@@ -1,0 +1,91 @@
+<!doctype>
+<head>
+	<link type="text/css" rel="stylesheet" href="../src/css/graph.css">
+	<link type="text/css" rel="stylesheet" href="../src/css/detail.css">
+	<link type="text/css" rel="stylesheet" href="../src/css/legend.css">
+
+	<script src="../vendor/d3.min.js"></script>
+	<script src="../vendor/d3.layout.min.js"></script>
+
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
+
+	<script src="../rickshaw.js"></script>
+
+	<style>
+		body { 
+			font-family: Arial, sans-serif 
+		}
+		#chart_container {
+			width: 960px;
+		}
+		.swatch {
+			display: inline-block;
+			width: 10px;
+			height: 10px;
+			margin: 0 8px 0 0;
+		}
+		.label {
+			display: inline-block;
+		}
+		.line {
+			display: inline-block;
+			margin: 0 0 0 30px;
+		}
+		#legend {
+			text-align: center;
+		}
+		.rickshaw_graph .detail {
+			background: none;
+		}
+	</style>
+</head>
+<body>
+
+<div id="chart_container">
+	<div id="chart"></div><br>
+	<div id="legend"></div>
+</div>
+
+<script>
+
+// set up our data series with 50 random data points
+
+var seriesData = [];
+
+for (i = 0; i < 50; i++) {
+	seriesData.push([]);
+}
+
+var random = new Rickshaw.Fixtures.RandomData(150);
+
+for (var i = 0; i < 150; i++) {
+	random.addData(seriesData);
+}
+
+// instantiate our graph!
+
+var palette = new Rickshaw.Color.Palette( { scheme: 'spectrum2001', interpolatedStopCount: 4 } );
+
+var series = seriesData.map(function(s) {
+	return {
+		data: s,
+		color: palette.color()
+	}
+});
+
+var graph = new Rickshaw.Graph( {
+	element: document.getElementById("chart"),
+	width: 960,
+	height: 500,
+	stroke: true,
+	renderer: 'area',
+	series: series
+} );
+
+graph.render();
+
+var legend = document.querySelector('#legend');
+
+</script>
+
+</body>
