@@ -187,7 +187,9 @@ Rickshaw.Graph = function(args) {
 		}
 
 		Rickshaw.keys(this.defaults).forEach( function(k) {
-			this[k] = args[k] || this.defaults[k];
+			this[k] = k in args ? args[k]
+				: k in this ? this[k]
+				: this.defaults[k];
 		}, this );
 
 		this.setRenderer(args.renderer || this.renderer.name, args);
