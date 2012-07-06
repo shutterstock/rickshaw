@@ -49,9 +49,13 @@ Rickshaw.Graph.Axis.Y = function(args) {
 				var elementHeight = parseInt(style.getPropertyValue('height'));
 			}
 		}
+		if (!this.width) {
+			this.width = args.width || elementWidth || this.graph.width * berthRate;
+		}
 
-		this.width = args.width || elementWidth || this.graph.width * berthRate;
-		this.height = args.height || elementHeight || this.graph.height;
+		if (!this.height) {
+			this.height = args.height || elementHeight || this.graph.height;
+		}
 
 		this.vis
 			.attr('width', this.width)
