@@ -399,7 +399,7 @@ yAxis.render();
 
 Override time units on the x-axis:
 <pre>
-var time = new Rickshaw.Fixtures.time();
+var time = new Rickshaw.Fixtures.Time();
 var seconds = time.unit('seconds');
 
 var xAxis = new Rickshaw.Graph.Axis.Time({
@@ -412,7 +412,7 @@ xAxis.render();
 
 Format tick values on the y-axis:
 <pre>
-var yAxis = new Rickshaw.Graph.Axis.Y{{
+var yAxis = new Rickshaw.Graph.Axis.Y({
     graph: graph,
     tickFormat: Rickshaw.Fixtures.Number.formatKMBT
 });
