@@ -560,7 +560,9 @@ Rickshaw.Graph = function(args) {
 		}
 
 		Rickshaw.keys(this.defaults).forEach( function(k) {
-			this[k] = args[k] || this.defaults[k];
+			this[k] = k in args ? args[k]
+				: k in this ? this[k]
+				: this.defaults[k];
 		}, this );
 
 		this.setRenderer(args.renderer || this.renderer.name, args);
@@ -862,13 +864,35 @@ Rickshaw.Fixtures.Time = function() {
 	this.ceil = function(time, unit) {
 
 		if (unit.name == 'month') {
+
 			var nearFuture = new Date((time + unit.seconds - 1) * 1000);
-			return new Date(nearFuture.getUTCFullYear(), nearFuture.getUTCMonth() + 1, 1, 0, 0, 0, 0).getTime() / 1000;
+
+			var rounded = new Date(0);
+			rounded.setUTCFullYear(nearFuture.getUTCFullYear());
+			rounded.setUTCMonth(nearFuture.getUTCMonth());
+			rounded.setUTCDate(1);
+			rounded.setUTCHours(0);
+			rounded.setUTCMinutes(0);
+			rounded.setUTCSeconds(0);
+			rounded.setUTCMilliseconds(0);
+
+			return rounded.getTime() / 1000;
 		}
 
 		if (unit.name == 'year') {
+
 			var nearFuture = new Date((time + unit.seconds - 1) * 1000);
-			return new Date(nearFuture.getUTCFullYear(), 1, 1, 0, 0, 0, 0).getTime() / 1000;
+
+			var rounded = new Date(0);
+			rounded.setUTCFullYear(nearFuture.getUTCFullYear());
+			rounded.setUTCMonth(0);
+			rounded.setUTCDate(1);
+			rounded.setUTCHours(0);
+			rounded.setUTCMinutes(0);
+			rounded.setUTCSeconds(0);
+			rounded.setUTCMilliseconds(0);
+
+			return rounded.getTime() / 1000;
 		}
 
 		return Math.ceil(time / unit.seconds) * unit.seconds;
@@ -1492,7 +1516,7 @@ Rickshaw.Graph.HoverDetail = Rickshaw.Class.create({
 		if (!e) return;
 		this.lastEvent = e;
 
-		if (e.target.nodeName != 'path' && e.target.nodeName != 'svg') return;
+		if (!e.target.nodeName.match(/^(path|svg|rect)$/)) return;
 
 		var graph = this.graph;
 
@@ -1521,7 +1545,7 @@ Rickshaw.Graph.HoverDetail = Rickshaw.Class.create({
 				dataIndex = i;
 				break;
 			}
-			if (stackedData[0][i + 1] < domainX) { i++ } else { i-- }
+			if (stackedData[0][i + 1] <= domainX) { i++ } else { i-- }
 		}
 
 		var domainX = stackedData[0][dataIndex].x;
@@ -2361,6 +2385,12 @@ Rickshaw.Series = Rickshaw.Class.create( Array, {
 		this.timeBase = typeof(options.timeBase) === 'undefined' ? 
 			Math.floor(new Date().getTime() / 1000) : 
 			options.timeBase;
+
+		var timeInterval = typeof(options.timeInterval) == 'undefined' ?
+			1000 :
+			options.timeInterval;
+
+		this.setTimeInterval(timeInterval);
 
 		if (data && (typeof(data) == "object") && (data instanceof Array)) {
 			data.forEach( function(item) { this.addItem(item) }, this );
