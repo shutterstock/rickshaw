@@ -12,6 +12,12 @@ Rickshaw.Series = Rickshaw.Class.create( Array, {
 			Math.floor(new Date().getTime() / 1000) : 
 			options.timeBase;
 
+		var timeInterval = typeof(options.timeInterval) == 'undefined' ?
+			1000 :
+			options.timeInterval;
+
+		this.setTimeInterval(timeInterval);
+
 		if (data && (typeof(data) == "object") && (data instanceof Array)) {
 			data.forEach( function(item) { this.addItem(item) }, this );
 		}
