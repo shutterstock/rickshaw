@@ -6,6 +6,17 @@
 <link rel="stylesheet" type="text/css" href="css/index.css?v=101">
 <link rel="stylesheet" type="text/css" href="vendor/prettify/prettify.css">
 
+<script src="vendor/absinthe.min.js"></script>
+<script src="http://li246-79.members.linode.com:3400/api/experiments"></script>
+
+<script>
+Absinthe.config = {
+	server: 'li246-79.members.linode.com:3400',
+	cookie: { name: 'abvid', length: 365 * 86400 }
+};
+Absinthe.initialize();
+</script>
+
 <title>Rickshaw: A JavaScript toolkit for creating interactive time-series graphs</title>
 
 <meta name="description" content="Rickshaw is an open-source JavaScript toolkit for creating interactive time-series graphs and charts">
@@ -465,5 +476,13 @@ yAxis.render();
 Array.prototype.forEach.call(document.querySelectorAll('.documentation pre'), function(e) {
 	e.innerHTML = prettyPrintOne(e.innerHTML);
 });
+</script>
+<script>
+document.querySelector(".welcome a.button").addEventListener('mousedown', function() { Absinthe.recordEvent('main_button') }, true);
+window.addEventListener('load', function() {
+	window.setTimeout(function() {
+		Absinthe.recordEvent('engaged')
+	}, 10000);
+}, true);
 </script>
 <script src="js/footer.js"></script>
