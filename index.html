@@ -30,22 +30,22 @@ Absinthe.initialize();
 			<h1>Rickshaw is a JavaScript toolkit for creating interactive time series graphs.</h1>
 			<a class="button red large" href="https://github.com/shutterstock/rickshaw">Rickshaw on GitHub</a>
 		</div>
-		<img src="guide/images/graph_example.png">
+		<img id="hero_image" src="guide/images/graph_example.png">
 		<div class="clear"></div>
 	</div>
 
 	<div class="intro">
 		<section>
 			<h4>Graphing Toolkit</h4>
-			<p>Rickshaw provides the elements you need to create interactive graphs: renderers, legends, hovers, range selectors, etc.  You put the pieces together. <a href="examples/extensions.html">See Demo &rarr;</span></a></p>
+			<p>Rickshaw provides the elements you need to create interactive graphs: renderers, legends, hovers, range selectors, etc.  You put the pieces together. <a id="demo_link" href="examples/extensions.html">See Demo &rarr;</span></a></p>
 		</section>
 		<section>
 			<h4>Built on d3.js</h4>
-			<p>It's all based on <a href="http://mbostock.github.com/d3/">d3</a> underneath, so graphs are drawn with standard SVG and styled with CSS.  Customize all you like with techniques you already know.</p>
+			<p>It's all based on <a id="d3_link" href="http://mbostock.github.com/d3/">d3</a> underneath, so graphs are drawn with standard SVG and styled with CSS.  Customize all you like with techniques you already know.</p>
 		</section>
 		<section>
 			<h4>Open Source</h4>
-			<p>Rickshaw is free and open source, available under the MIT license.  Developed at Shutterstock.  <a href="http://www.shutterstock.com/jobs.mhtml">We're Hiring!</a></p>
+			<p>Rickshaw is free and open source, available under the MIT license.  Developed at Shutterstock.  <a id="hiring_link" href="http://www.shutterstock.com/jobs.mhtml">We're Hiring!</a></p>
 		</section>
 		<div class="clear"></div>
 	</div>
@@ -463,7 +463,7 @@ yAxis.render();
 				<img src="examples/screenshots/extensions.png">
 				<img src="examples/screenshots/status.png">
 			</div>
-			<h5><a href="examples/">Examples</a></h5>
+			<h5><a id="examples_link" href="examples/">Examples</a></h5>
 			<p>See working examples exercising extensions.  Add legends, annotations, axes and labels, get data via AJAX, etc.</p>
 		</section>
 		<div style="clear: both"></div>
@@ -485,4 +485,17 @@ window.addEventListener('load', function() {
 	}, 10000);
 }, true);
 </script>
+
+<script src="//li246-79.members.linode.com:8000/lilbro.js"></script>
+
+<script>
+var lilBro = new LilBro({
+  element: document.body,
+  server: 'li246-79.members.linode.com:8000',
+  ssl_server: 'li246-79.members.linode.com:8443',
+  track_focus: true
+});
+lilBro.write({event_type: 'page_load'});
+</script>
+
 <script src="js/footer.js"></script>
