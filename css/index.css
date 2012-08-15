@@ -217,4 +217,13 @@ footer {
 	top: 50px;
 	left: 10px;
 }
+#hero img {
+	box-shadow: none;
+	position: relative;
+	top: 30px;
+}
+#hero .welcome h1 {
+	font-size: 32px;
+	height: 4em;
+}
 
