@@ -31,6 +31,7 @@ Rickshaw.Color.Palette = function(args) {
 	};
 
   this.interpolateColor = function() {
+    if (!Array.isArray(this.scheme)) return;
     var color;
     if (this.generatorIndex == this.rotateCount * 2 - 1) {
       color = d3.interpolateHsl(this.scheme[this.generatorIndex], this.scheme[0])(0.5);
