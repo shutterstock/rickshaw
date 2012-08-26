@@ -129,6 +129,22 @@
 .rickshaw_graph .annotation_line.active {
 	display: block;
 }
+
+.rickshaw_graph .annotation_range {
+        background: rgba(0, 0, 0, 0.1);
+        display: none;
+        position: absolute;
+        top: 0;
+        bottom: -6px;
+        z-index: -10;
+}
+.rickshaw_graph .annotation_range.active {
+        display: block;
+}
+.rickshaw_graph .annotation_range.active.offscreen {
+        display: none;
+}
+
 .rickshaw_annotation_timeline .annotation .content {
 	background: white;
 	color: black;

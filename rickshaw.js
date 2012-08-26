@@ -480,8 +480,10 @@ Rickshaw.Graph = function(args) {
 		this.x = d3.scale.linear().domain(domain.x).range([0, this.width]);
 
 		this.y = d3.scale.linear().domain(domain.y).range([this.height, 0]);
-		this.y.magnitude = d3.scale.linear().domain(domain.y).range([0, this.height]);
 
+		this.y.magnitude = d3.scale.linear()
+			.domain([domain.y[0] - domain.y[0], domain.y[1] - domain.y[0]])
+			.range([0, this.height]);
 	};
 
 	this.render = function() {
@@ -768,7 +770,7 @@ Rickshaw.Fixtures.RandomData = function(timeInterval) {
 
 	var lastRandomValue = 200;
 
-	var timeBase = Math.floor(new Date().getTime() / 1000);
+	var timeBase = 0; //Math.floor(new Date().getTime() / 1000);
 
 	this.addData = function(data) {
 
@@ -933,38 +935,39 @@ Rickshaw.Color.Palette = function(args) {
 	this.runningIndex = 0;
 	this.generatorIndex = 0;
 
-  if (args.interpolatedStopCount) {
-    var schemeCount = this.scheme.length - 1;
-    var i, j, scheme = [];
-    for (i = 0; i < schemeCount; i++) {
-      scheme.push(this.scheme[i]);
-      var generator = d3.interpolateHsl(this.scheme[i], this.scheme[i + 1]);
-      for (j = 1; j < args.interpolatedStopCount; j++) {
-        scheme.push(generator((1 / args.interpolatedStopCount) * j));
-      }
-    }
-    scheme.push(this.scheme[this.scheme.length - 1]);
-    this.scheme = scheme;
-  }
-  this.rotateCount = this.scheme.length;
+	if (args.interpolatedStopCount) {
+		var schemeCount = this.scheme.length - 1;
+		var i, j, scheme = [];
+		for (i = 0; i < schemeCount; i++) {
+			scheme.push(this.scheme[i]);
+			var generator = d3.interpolateHsl(this.scheme[i], this.scheme[i + 1]);
+			for (j = 1; j < args.interpolatedStopCount; j++) {
+				scheme.push(generator((1 / args.interpolatedStopCount) * j));
+			}
+		}
+		scheme.push(this.scheme[this.scheme.length - 1]);
+		this.scheme = scheme;
+	}
+	this.rotateCount = this.scheme.length;
 
 	this.color = function(key) {
 		return this.scheme[key] || this.scheme[this.runningIndex++] || this.interpolateColor() || '#808080';
 	};
 
-  this.interpolateColor = function() {
-    var color;
-    if (this.generatorIndex == this.rotateCount * 2 - 1) {
-      color = d3.interpolateHsl(this.scheme[this.generatorIndex], this.scheme[0])(0.5);
-      this.generatorIndex = 0;
-      this.rotateCount *= 2;
-    } else {
-      color = d3.interpolateHsl(this.scheme[this.generatorIndex], this.scheme[this.generatorIndex + 1])(0.5);
-      this.generatorIndex++;
-    }
-    this.scheme.push(color);
-    return color;
-  };
+	this.interpolateColor = function() {
+		if (!Array.isArray(this.scheme)) return;
+		var color;
+		if (this.generatorIndex == this.rotateCount * 2 - 1) {
+			color = d3.interpolateHsl(this.scheme[this.generatorIndex], this.scheme[0])(0.5);
+			this.generatorIndex = 0;
+			this.rotateCount *= 2;
+		} else {
+			color = d3.interpolateHsl(this.scheme[this.generatorIndex], this.scheme[this.generatorIndex + 1])(0.5);
+			this.generatorIndex++;
+		}
+		this.scheme.push(color);
+		return color;
+	};
 
 };
 Rickshaw.namespace('Graph.Ajax');
@@ -1037,9 +1040,9 @@ Rickshaw.Graph.Annotate = function(args) {
 
 	this.elements.timeline.classList.add('rickshaw_annotation_timeline');
 
-	this.add = function(time, content) {
+	this.add = function(time, content, end_time) {
 		self.data[time] = self.data[time] || {'boxes': []};
-		self.data[time].boxes.push({content: content});
+		self.data[time].boxes.push({content: content, end: end_time});
 	};
 
 	this.update = function() {
@@ -1051,8 +1054,14 @@ Rickshaw.Graph.Annotate = function(args) {
 
 			if (left < 0 || left > self.graph.x.range()[1]) {
 				if (annotation.element) {
+					annotation.line.classList.add('offscreen');
 					annotation.element.style.display = 'none';
 				}
+
+				annotation.boxes.forEach( function(box) {
+					if ( box.rangeElement ) box.rangeElement.classList.add('offscreen');
+				});
+
 				return;
 			}
 
@@ -1063,6 +1072,9 @@ Rickshaw.Graph.Annotate = function(args) {
 				element.addEventListener('click', function(e) {
 					element.classList.toggle('active');
 					annotation.line.classList.toggle('active');
+					annotation.boxes.forEach( function(box) {
+						if ( box.rangeElement ) box.rangeElement.classList.toggle('active');
+					});
 				}, false);
 					
 			}
@@ -1071,6 +1083,7 @@ Rickshaw.Graph.Annotate = function(args) {
 			annotation.element.style.display = 'block';
 
 			annotation.boxes.forEach( function(box) {
+
 
 				var element = box.element;
 
@@ -1083,8 +1096,35 @@ Rickshaw.Graph.Annotate = function(args) {
 					annotation.line = document.createElement('div');
 					annotation.line.classList.add('annotation_line');
 					self.graph.element.appendChild(annotation.line);
+
+					if ( box.end ) {
+						box.rangeElement = document.createElement('div');
+						box.rangeElement.classList.add('annotation_range');
+						self.graph.element.appendChild(box.rangeElement);
+					}
+
 				}
 
+				if ( box.end ) {
+
+					var annotationRangeStart = left;
+					var annotationRangeEnd   = Math.min( self.graph.x(box.end), self.graph.x.range()[1] );
+
+					// annotation makes more sense at end
+					if ( annotationRangeStart > annotationRangeEnd ) {
+						annotationRangeEnd   = left;
+						annotationRangeStart = Math.max( self.graph.x(box.end), self.graph.x.range()[0] );
+					}
+
+					var annotationRangeWidth = annotationRangeEnd - annotationRangeStart;
+
+					box.rangeElement.style.left  = annotationRangeStart + 'px';
+					box.rangeElement.style.width = annotationRangeWidth + 'px'
+
+					box.rangeElement.classList.remove('offscreen');
+				}
+
+				annotation.line.classList.remove('offscreen');
 				annotation.line.style.left = left + 'px';
 			} );
 		}, this );
@@ -2100,6 +2140,12 @@ Rickshaw.Graph.Renderer.Bar = Rickshaw.Class.create( Rickshaw.Graph.Renderer, {
 		var activeSeriesCount = graph.series.filter( function(s) { return !s.disabled; } ).length;
 		var seriesBarWidth = this.unstack ? barWidth / activeSeriesCount : barWidth;
 
+		var transform = function(d) {
+			// add a matrix transform for negative values
+			var matrix = [ 1, 0, 0, (d.y < 0 ? -1 : 1), 0, (d.y < 0 ? graph.y.magnitude(Math.abs(d.y)) * 2 : 0) ];
+			return "matrix(" + matrix.join(',') + ")";
+		};
+
 		graph.series.forEach( function(series) {
 
 			if (series.disabled) return;
@@ -2108,9 +2154,10 @@ Rickshaw.Graph.Renderer.Bar = Rickshaw.Class.create( Rickshaw.Graph.Renderer, {
 				.data(series.stack)
 				.enter().append("svg:rect")
 				.attr("x", function(d) { return graph.x(d.x) + barXOffset })
-				.attr("y", function(d) { return graph.y(d.y0 + d.y) })
+				.attr("y", function(d) { return (graph.y(d.y0 + Math.abs(d.y))) * (d.y < 0 ? -1 : 1 ) })
 				.attr("width", seriesBarWidth)
-				.attr("height", function(d) { return graph.y.magnitude(d.y) });
+				.attr("height", function(d) { return graph.y.magnitude(Math.abs(d.y)) })
+				.attr("transform", transform);
 
 			Array.prototype.forEach.call(nodes[0], function(n) {
 				n.setAttribute('fill', series.color);
