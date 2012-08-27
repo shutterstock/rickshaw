@@ -1,0 +1,29 @@
+#chart_container{
+}
+#legend_container{
+	float: right;
+	position: relative;
+	top: 200px;
+	width: auto;
+}
+fieldset{
+	border: 1px solid #DDD;
+	-webkit-border-radius: 4px;
+	-moz-border-radius: 4px;
+	border-radius: 4px;
+	padding: 10px;
+}
+#technical_form{
+	float: right;
+}
+#technical_form button{
+	display: block;
+}
+
+
+.rickshaw_legend span.label{
+	background: transparent;
+}
+.rickshaw_legend a.action{
+	color: #fff;
+}
