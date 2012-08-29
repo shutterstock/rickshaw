@@ -9,7 +9,7 @@ Rickshaw.Graph.Renderer.Stack = Rickshaw.Class.create( Rickshaw.Graph.Renderer, 
 		return Rickshaw.extend( $super(), {
 			fill: true,
 			stroke: false,
-			unstack: false,
+			unstack: false
 		} );
 	},
 
