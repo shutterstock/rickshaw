@@ -382,7 +382,7 @@ Rickshaw.Graph = function(args) {
 		interpolation: 'cardinal',
 		offset: 'zero',
 		min: undefined,
-		max: undefined,
+		max: undefined
 	};
 
 	Rickshaw.keys(this.defaults).forEach( function(k) {
@@ -770,7 +770,7 @@ Rickshaw.Fixtures.RandomData = function(timeInterval) {
 
 	var lastRandomValue = 200;
 
-	var timeBase = 0; //Math.floor(new Date().getTime() / 1000);
+	var timeBase = Math.floor(new Date().getTime() / 1000);
 
 	this.addData = function(data) {
 
@@ -1853,7 +1853,7 @@ Rickshaw.Graph.RangeSlider = function(args) {
 			max: graph.dataDomain()[1],
 			values: [ 
 				graph.dataDomain()[0],
-				graph.dataDomain()[1],
+				graph.dataDomain()[1]
 			],
 			slide: function( event, ui ) {
 
@@ -2068,7 +2068,7 @@ Rickshaw.Graph.Renderer.Stack = Rickshaw.Class.create( Rickshaw.Graph.Renderer, 
 		return Rickshaw.extend( $super(), {
 			fill: true,
 			stroke: false,
-			unstack: false,
+			unstack: false
 		} );
 	},
 
@@ -2094,7 +2094,7 @@ Rickshaw.Graph.Renderer.Bar = Rickshaw.Class.create( Rickshaw.Graph.Renderer, {
 
 		var defaults = Rickshaw.extend( $super(), {
 			gapSize: 0.05,
-			unstack: false,
+			unstack: false
 		} );
 
 		delete defaults.tension;
@@ -2512,7 +2512,7 @@ Rickshaw.Series = Rickshaw.Class.create( Array, {
 		var data = {
 			timeBase: this.timeBase,
 			timeInterval: this.timeInterval,
-			items: [],
+			items: []
 		};
 
 		this.forEach( function(item) {
