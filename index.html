@@ -13,17 +13,6 @@
 
 <script src="js/header.js?v=101"></script>
 
-<script src="vendor/absinthe.min.js"></script>
-<script src="http://li246-79.members.linode.com:3400/api/experiments"></script>
-
-<script>
-Absinthe.config = {
-	server: 'li246-79.members.linode.com:3400',
-	cookie: { name: 'abvid', length: 365 * 86400 }
-};
-Absinthe.initialize();
-</script>
-
 <div id="content">
 	<div id="hero">
 		<div class="welcome">
@@ -494,20 +483,5 @@ lilBro.write({event_type: 'page_load'});
 setInterval(function() { lilBro.write({event_type: 'engaged'}) }, 2000);
 
 </script>
-
-<script>
-
-document.querySelector(".welcome a.button").addEventListener('mousedown', function() { Absinthe.recordEvent('main_button') }, true);
-document.querySelector("#demo_link").addEventListener('mousedown', function() { Absinthe.recordEvent('demo_click') }, true);
-document.querySelector("#hero_image").addEventListener('mousedown', function() { Absinthe.recordEvent('hero_click') }, true);
-
-window.addEventListener('load', function() {
-	window.setTimeout(function() {
-		Absinthe.recordEvent('engaged')
-	}, 10000);
-}, true);
-
-</script>
-
 
 <script src="js/footer.js"></script>
