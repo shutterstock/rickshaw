@@ -19,17 +19,7 @@
 	<script src="../src/js/Rickshaw.Graph.Technicals.js"></script>
 </head>
 <body>
-	<div id="technical_form">
-		<form>
-			<fieldset>
-				<label for="period">Period</label>
-				<input name="period" id="tech_period" />
-				<label for="datum">Datum</label>
-				<select name="datum"></select>
-				<button class="btn">Submit</button>
-			</fieldset>
-		</form>
-	</div>
+	<div id="technical_form"></div>
 	<div id="legend_container">
 		<div id="smoother" title="Smoothing"></div>
 		<div id="legend"></div>
@@ -79,38 +69,25 @@ graph.render();
 
 var hoverDetail = new Rickshaw.Graph.HoverDetail( {
 	graph: graph
-} );
+});
 
 var legend = new Rickshaw.Graph.Legend( {
 	graph: graph,
 	element: document.getElementById('legend')
-
-} );
+});
 
 var shelving = new Rickshaw.Graph.Behavior.Series.Toggle( {
 	graph: graph,
 	legend: legend
-} );
+});
 
 var axes = new Rickshaw.Graph.Axis.Time( {
 	graph: graph
-} );
+});
 axes.render();
 
 $(document).ready(function(e){
-	var markup;
-	for(var i = 0; i<graph.series.length; i++){
-		markup += "<option value='" + i + "'>" + graph.series[i].name + "</option>";
-	}
-	$('#technical_form form select').html(markup);
-	$('#technical_form form button').on('click', function(e){
-		e.preventDefault();
-		var f_stochastic = new Rickshaw.Graph.Technicals.f_stochastic({
-			graph: graph,
-			datum: $('#technical_form form select option:selected').val(),
-			period: $('#technical_form form input[name=period]').val()
-		});
-	});
+	var f_stochastic = new Rickshaw.Graph.Technicals.f_stochastic($('#technical_form'), graph);
 });
 </script>
 
