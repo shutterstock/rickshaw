@@ -1,38 +1,115 @@
+"use strict"
 Rickshaw.namespace('Rickshaw.Graph.Technicals');
 
 Rickshaw.Graph.Technicals = {
 	
-	renderForm : function(fields, elem){
-		$('technical_form').html('');
+	renderForm : function(formula, elem, graph){
+		// set up shop
+		var tech = this.tech = eval(Rickshaw.Graph.Technicals[formula]);
+		var elem = this.elem = elem;
+		var graph = this.graph = graph;
+		var calc_obj;
+		var datum = this.datum = null;
+		var curve_sel = false;
+		elem.html('');
+
+		// start building the form
 		var form_top = '<form><fieldset>';
 		var form_fields = '';
 		var form_bottom = '<button class="btn">Submit</button></fieldset></form>';
-		for(var key in fields){
-			var obj = fields[key];
+		for(var key in tech.fields){
+			var obj = tech.fields[key];
 			form_fields += '<label for="' + obj.name + '">' + obj.name + '</label>';
 			if(obj.type == 'int'){
 				form_fields += '<input name="' + obj.name + '" id="' + obj.name + '" />';
 			}
 			if(obj.curve_sel){
-				form_fields += 	'<label for="datum">Datum</label><select name="datum"></select>';
+				curve_sel = true;
 			}
 		}
-		elem.html(form_top + form_fields + form_bottom);
-		var markup='';
-		for(var i = 0; i<graph.series.length; i++){
-			markup += "<option value='" + i + "'>" + graph.series[i].name + "</option>";
+		// loop through lines of passed graph and add them to <select>
+		if(curve_sel){
+			form_fields += 	'<label for="datum">Datum</label>';
 		}
-		elem.find('form select').html(markup);
-		return elem.find('button');
-	},
+		form_fields += '<select name="datum">';
+		for(var i = 0; i<graph.series.length; i++){
+			if(i==0)
+				form_fields += "<option value='" + i + "' selected>" + graph.series[i].name + "</option>";
+			else
+				form_fields += "<option value='" + i + "'>" + graph.series[i].name + "</option>";
+		}
+		form_fields += '</select>';
+		// drop the form in the passed element
+		elem.html(form_top + form_fields + form_bottom);
 
+		// Listen to the form submission and process data accordingly
+		var self = this;
+		elem.find('form').on('submit', function(e){
+			e.preventDefault();
+			var datum = self.elem.find('form select option:selected').val();
+			var data = tech.calc({
+				datum: self.graph.series[datum].data,
+				period: elem.find('form input[name=period]').val()
+			});
+			self.calc_obj = {
+				color: d3.rgb(graph.series[datum].color).brighter().toString(),
+				data: data,
+				name: graph.series[datum].name + ' ' + tech.name
+			};
+			// Draw the data on the passed graph or a new graph
+			var tech_graph = Rickshaw.Graph.Technicals.draw({
+				graph : graph,
+				tech : tech,
+				datum : self.calc_obj
+			});
+		});
+	},
+	draw : function(args){
+		var graph = this.graph = args.graph;
+		var tech = this.tech = args.tech;
+		var datum = this.datum = args.datum;
+
+		if(!tech.independant){
+			graph.series.push(datum);
+			graph.render();
+			legend.addLine(graph.series[graph.series.length-1]);
+			shelving.addAnchor(legend.lines[legend.lines.length-1]);		
+		}
+		else{
+			// new graph
+			$('body').append("<div id='tech_chart'></div>");
+			var tech_chart = new Rickshaw.Graph( {
+				element: document.getElementById("tech_chart"),
+				width: graph.width,
+				height: 100,
+				renderer: 'line',
+				series: [datum]
+			});
+			tech_chart.render();
+
+			var ticksTreatment = 'glow';
+			var xAxis = new Rickshaw.Graph.Axis.Time( {
+				graph: tech_chart
+			});
+			xAxis.render();
+			var yAxis = new Rickshaw.Graph.Axis.Y( {
+				graph: tech_chart,
+				tickFormat: Rickshaw.Fixtures.Number.formatKMBT,
+				ticksTreatment: ticksTreatment
+			} );
+			yAxis.render();	
+			var hoverDetail = new Rickshaw.Graph.HoverDetail( {
+				graph: tech_chart
+			});	
+		}
+	},
 	// Fast stochastic oscillator is a momentum indicator that uses support and resistance levels
 	// %K = 100((curr - L)/(H-L))
-	f_stochastic : function(elem, graph) {
+	f_stochastic : {
 		// constructor
-		var name = this.name = "fast stochastic";
-		var graph = this.graph = graph;
-		this.fields = [{
+		name : "fast stochastic",
+		independant : true,
+		fields : [{
 				name : "%K period",
 				type : "int",
 				curve_sel : true
@@ -42,30 +119,18 @@ Rickshaw.Graph.Technicals = {
 				type : "int",
 				curve_sel : false
 			}
-		];
-		var self = this;
-		Rickshaw.Graph.Technicals.renderForm(this.fields, elem).on('click', function(e){
-			e.preventDefault();
-			self.calc({
-				graph: self.graph,
-				datum: elem.find('form select option:selected').val(),
-				period: elem.find('form input[name=period]').val()
-			});
-		});
-
-		this.calc = function(args){
-			var graph = this.graph = args.graph;
+		],
+		calc : function(args){
 			var period = this.period = args.period;
 			var datum = this.datum = args.datum;
-
 			var nums = [];
 			var res_arr = [];
-			var length = graph.series[datum].data.length;
+			var length = datum.length;
 			var period_high, period_low;
 	
 			for(var ele = 0; ele<length; ele++){
-				var curr_obj = graph.series[datum].data[ele];
-				nums.push(graph.series[datum].data[ele].y);
+				var curr_obj = datum[ele];
+				nums.push(datum[ele].y);
 		        if (nums.length > period)
 		            nums.splice(0,1);  // remove the first element of the array
 		        
@@ -78,95 +143,51 @@ Rickshaw.Graph.Technicals = {
 				if(isNaN(k)) k=0;
 				res_arr.push({ x: curr_obj.x, y0: curr_obj.y0, y: k });
 			}
-			
-			var res_obj = {
-				color: d3.rgb(graph.series[datum].color).brighter().toString(),
-				data: res_arr,
-				name: graph.series[datum].name + ' fast stochastic'
-			}
-			return res_obj;
-		}
-		this.draw = function(args){
-			$('body').append("<div id='f_stochastic_chart'></div>");
-			var f_stochastic_chart = new Rickshaw.Graph( {
-				element: document.getElementById("f_stochastic_chart"),
-				width: graph.width,
-				height: 100,
-				renderer: 'line',
-				series: [res_obj]
-			});
-			f_stochastic_chart.render();
-			var momentum_axes = new Rickshaw.Graph.Axis.Time( {
-				graph: f_stochastic_chart
-			});
+			return res_arr;
 		}
 	},
 	// Momentum is the absolute difference m = d(today) - d(n days ago)
 	momentum : {
 		name : "mementum",
-		fields : {
+		independant : true,
+		fields : [{
 			name : "period",
 			type : "int",
 			curve_sel : true
-		}, 
+		}], 
 		calc : function(args) {
-			var element = this.element = args.element;
-			var graph = this.graph = args.graph;
 			var period = this.period = args.period;
 			var datum = this.datum = args.datum;
-			var self = this;
-
 			var nums = [];
 			var res_arr = [];
-			var length = graph.series[datum].data.length;
+			var length = datum.length;
 			for(var ele = 0; ele<length; ele++){
 				if(ele < period)
-					res_arr.push({ x: graph.series[datum].data[ele].x, y0: graph.series[datum].data[ele].y0, y: 0 });
+					res_arr.push({ x: datum[ele].x, y0: datum[ele].y0, y: 0 });
 				else
-					res_arr.push({ x: graph.series[datum].data[ele].x, y0: graph.series[datum].data[ele].y0, y: graph.series[datum].data[ele].y - graph.series[datum].data[ele-period].y });
+					res_arr.push({ x: datum[ele].x, y0: datum[ele].y0, y: datum[ele].y - datum[ele-period].y });
 			}
-			
-			var res_obj = {
-				color: d3.rgb(graph.series[datum].color).brighter().toString(),
-				data: res_arr,
-				name: graph.series[datum].name + ' momentum'
-			}
-
-			$('body').append("<div id='momentum_chart'></div>");
-			var momentum_chart = new Rickshaw.Graph( {
-				element: document.getElementById("momentum_chart"),
-				width: graph.width,
-				height: 100,
-				renderer: 'line',
-				series: [res_obj]
-			});
-			momentum_chart.render();
-			var momentum_axes = new Rickshaw.Graph.Axis.Time( {
-				graph: momentum_chart
-			})
+			return res_arr;
 		}
 	},
 
 	// Simple moving average
 	sma : {
+		independant : false,
 		name : "simple moving average",
-		fields : {
+		fields : [{
 			name : "period",
 			type : "int",
 			curve_sel : true
-		}, 
+		}], 
 		calc : function(args) {
-			var element = this.element = args.element;
-			var graph = this.graph = args.graph;
 			var period = this.period = args.period;
 			var datum = this.datum = args.datum;
-			var self = this;
-
 			var nums = [];
 			var res_arr = [];
-			var length = graph.series[datum].data.length;
+			var length = datum.length;
 			for(var ele = 0; ele<length; ele++){
-				nums.push(graph.series[datum].data[ele].y);
+				nums.push(datum[ele].y);
 		        if (nums.length > period)
 		            nums.splice(0,1);  // remove the first element of the array
 		        var sum = 0;
@@ -175,19 +196,13 @@ Rickshaw.Graph.Technicals = {
 		        var n = period;
 		        if (nums.length < period)
 		            n = nums.length;
-		        res_arr.push({ x: graph.series[datum].data[ele].x, y0: graph.series[datum].data[ele].y0, y: sum/n});
+
+		        if(ele < period)
+					res_arr.push({ x: datum[ele].x, y0: datum[ele].y0, y: 0 });
+		        else
+		        	res_arr.push({ x: datum[ele].x, y0: datum[ele].y0, y: sum/n});
 			}
-			
-			var res_obj = {
-				color: d3.rgb(graph.series[datum].color).brighter().toString(),
-				data: res_arr,
-				name: graph.series[datum].name + ' momentum'
-			}
-			
-			graph.series.push(res_obj);
-			graph.render();
-			legend.addLine(graph.series[graph.series.length-1]);
-			shelving.addAnchor(legend.lines[legend.lines.length-1]);
+			return res_arr;
 		}
 	}
 }

@@ -5,8 +5,8 @@
 	<link type="text/css" rel="stylesheet" href="../src/css/detail.css">
 	<link type="text/css" rel="stylesheet" href="../src/css/legend.css">
 	<link type="text/css" rel="stylesheet" href="css/lines.css">
-	<link type="text/css" rel="stylesheet" href="../src/css/bootstrap.min.css">
-	<link type="text/css" rel="stylesheet" href="../src/css/bootstrap-responsive.min.css">
+	<link type="text/css" rel="stylesheet" href="../src/css/bootstrap.css">
+	<link type="text/css" rel="stylesheet" href="../src/css/bootstrap-responsive.css">
 	<link type="text/css" rel="stylesheet" href="../src/css/technicals.css">
 
 	<script src="../vendor/d3.min.js"></script>
@@ -20,10 +20,7 @@
 </head>
 <body>
 	<div id="technical_form"></div>
-	<div id="legend_container">
-		<div id="smoother" title="Smoothing"></div>
-		<div id="legend"></div>
-	</div>
+	<div id="legend"></div>
 	<div id="chart_container">
 		<div id="chart"></div>
 
@@ -39,6 +36,9 @@ var random = new Rickshaw.Fixtures.RandomData(150);
 
 for (var i = 0; i < 150; i++) {
 	random.addData(seriesData);
+}
+for (var i = 0; i < seriesData[2].length; i++) {
+	seriesData[2][i].y = i;
 }
 
 // instantiate our graph!
@@ -81,13 +81,24 @@ var shelving = new Rickshaw.Graph.Behavior.Series.Toggle( {
 	legend: legend
 });
 
-var axes = new Rickshaw.Graph.Axis.Time( {
+var ticksTreatment = 'glow';
+var xAxis = new Rickshaw.Graph.Axis.Time( {
 	graph: graph
 });
-axes.render();
+xAxis.render();
+var yAxis = new Rickshaw.Graph.Axis.Y( {
+	graph: graph,
+	tickFormat: Rickshaw.Fixtures.Number.formatKMBT,
+	ticksTreatment: ticksTreatment
+} );
+yAxis.render();
 
 $(document).ready(function(e){
-	var f_stochastic = new Rickshaw.Graph.Technicals.f_stochastic($('#technical_form'), graph);
+	var momentum = new Rickshaw.Graph.Technicals.renderForm('sma', $('#technical_form'), graph);
+	console.log(Rickshaw.Graph.Technicals.f_stochastic.calc({
+		datum: seriesData[0], 
+		period: 5
+	}));
 });
 </script>
 
