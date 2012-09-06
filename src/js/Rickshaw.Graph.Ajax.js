@@ -7,12 +7,13 @@ Rickshaw.Graph.Ajax = function(args) {
 
 	$.ajax( {
 		url: this.dataURL,
-		complete: function(response, status) {
-
-			if (status === 'error') {
-				console.log("error loading dataURL: " + this.dataURL);
+		error: function(response, status, errorThrown) {
+			console.log("error loading dataURL (" + args.dataURL + "): " + errorThrown);
+			if (typeof args.onError === 'function') {
+				args.onError(self);
 			}
-
+		},
+		success: function(data, status, response) {
 			var data = JSON.parse(response.responseText);	
 
 			if (typeof args.onData === 'function') {
