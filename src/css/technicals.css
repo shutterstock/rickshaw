@@ -1,4 +1,5 @@
 #chart_container{
+	border-bottom: 1px solid #aaa;
 }
 #legend_container{
 	float: right;
@@ -26,4 +27,14 @@ fieldset{
 }
 .rickshaw_legend a.action{
 	color: #fff;
+}
+input, select, label{
+	display: block;
+}
+.tech_chart{
+	float: left;
+	margin-top: 15px;
+}
+.tech_chart .x_tick .title{
+	display: none;
 }

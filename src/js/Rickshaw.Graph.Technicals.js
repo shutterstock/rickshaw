@@ -8,7 +8,6 @@ Rickshaw.Graph.Technicals = {
 		var tech = this.tech = eval(Rickshaw.Graph.Technicals[formula]);
 		var elem = this.elem = elem;
 		var graph = this.graph = graph;
-		var calc_obj = this.calc_obj = [];
 		var datum = this.datum = null;
 		var curve_sel = false;
 		elem.html('');
@@ -16,7 +15,7 @@ Rickshaw.Graph.Technicals = {
 		// start building the form
 		var form_top = '<form><fieldset>';
 		var form_fields = '';
-		var form_bottom = '<button class="btn">Submit</button></fieldset></form>';
+		var form_bottom = '<input type="submit" class="btn" /></fieldset></form>';
 		for(var key in tech.fields){
 			var obj = tech.fields[key];
 			form_fields += '<label for="' + obj.name + '">' + obj.name + '</label>';
@@ -47,7 +46,9 @@ Rickshaw.Graph.Technicals = {
 		elem.find('form').on('submit', function(e){
 			e.preventDefault();
 			var datum = self.elem.find('form select option:selected').val();
+			var calc_obj = [];
 			var period = [];
+			// could be multiple periods so we need to loop
 			elem.find('form input.period').each(function(index) {
 				period[$(this).attr('id')] = $(this).val();
 			});
@@ -56,8 +57,9 @@ Rickshaw.Graph.Technicals = {
 				datum: self.graph.series[datum].data,
 				period: period
 			});
+			// create the series object that will be drawn on the graph
 			for(var key in data){
-				self.calc_obj.push({
+				calc_obj.push({
 					//color: d3.rgb(graph.series[datum].color).brighter().toString(),
 					color: '#'+Math.floor(Math.random()*16777215).toString(16),
 					data: data[key],
@@ -68,7 +70,7 @@ Rickshaw.Graph.Technicals = {
 			var tech_graph = Rickshaw.Graph.Technicals.draw({
 				graph : graph,
 				tech : tech,
-				series : self.calc_obj
+				series : calc_obj
 			});
 		});
 	},
@@ -85,11 +87,15 @@ Rickshaw.Graph.Technicals = {
 		}
 		else{
 			// new graph
-			$('body').append("<div id='tech_chart'></div>");
+			if($('.tech_chart').length == 0)
+				$('body').append("<div class='tech_chart'></div>");
+			else 
+				$('.tech_chart').html('');
 			var tech_chart = new Rickshaw.Graph( {
-				element: document.getElementById("tech_chart"),
+				element: document.getElementsByClassName("tech_chart")[0],
 				width: graph.width,
-				height: 100,
+				height: 200,
+				min : 'auto',
 				renderer: 'line',
 				series: series
 			});
@@ -169,6 +175,7 @@ Rickshaw.Graph.Technicals = {
 		independant : true,
 		fields : [{
 			name : "period",
+			id : "p",
 			type : "int",
 			curve_sel : true
 		}], 
@@ -179,10 +186,10 @@ Rickshaw.Graph.Technicals = {
 			var res_arr = [];
 			var length = datum.length;
 			for(var ele = 0; ele<length; ele++){
-				if(ele < period)
+				if(ele < period['p'])
 					res_arr.push({ x: datum[ele].x, y0: datum[ele].y0, y: 0 });
 				else
-					res_arr.push({ x: datum[ele].x, y0: datum[ele].y0, y: datum[ele].y - datum[ele-period].y });
+					res_arr.push({ x: datum[ele].x, y0: datum[ele].y0, y: datum[ele].y - datum[ele-period['p']].y });
 			}
 			return {
 				'momentum' : res_arr

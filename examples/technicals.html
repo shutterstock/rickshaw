@@ -94,10 +94,13 @@ var yAxis = new Rickshaw.Graph.Axis.Y( {
 yAxis.render();
 
 $(document).ready(function(e){
-	var momentum = new Rickshaw.Graph.Technicals.renderForm('f_stochastic', $('#technical_form'), graph);
+	var momentum = new Rickshaw.Graph.Technicals.renderForm('momentum', $('#technical_form'), graph);
+	var period = [];
+	period['%k'] = 14;
+	period['%d'] = 3;
 	console.log(Rickshaw.Graph.Technicals.f_stochastic.calc({
 		datum: seriesData[0], 
-		period: 5
+		period: period
 	}));
 });
 </script>
