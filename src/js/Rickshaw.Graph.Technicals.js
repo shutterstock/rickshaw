@@ -3,6 +3,9 @@ Rickshaw.namespace('Rickshaw.Graph.Technicals');
 
 Rickshaw.Graph.Technicals = {
 	
+	// list of available technicals
+	formulas : ['f_stochastic', 'momentum', 'sma'],
+
 	renderForm : function(formula, elem, graph){
 		// set up shop
 		var tech = this.tech = eval(Rickshaw.Graph.Technicals[formula]);
@@ -10,42 +13,67 @@ Rickshaw.Graph.Technicals = {
 		var graph = this.graph = graph;
 		var datum = this.datum = null;
 		var curve_sel = false;
+		var self = this;
 		elem.html('');
 
 		// start building the form
 		var form_top = '<form><fieldset>';
 		var form_fields = '';
-		var form_bottom = '<input type="submit" class="btn" /></fieldset></form>';
-		for(var key in tech.fields){
-			var obj = tech.fields[key];
-			form_fields += '<label for="' + obj.name + '">' + obj.name + '</label>';
-			if(obj.type == 'int'){
-				form_fields += '<input name="' + obj.name + '" id="' + obj.id + '" class="period" />';
-			}
-			if(obj.curve_sel){
-				curve_sel = true;
-			}
-		}
-		// loop through lines of passed graph and add them to <select>
-		if(curve_sel){
-			form_fields += 	'<label for="datum">Datum</label>';
-		}
-		form_fields += '<select name="datum">';
-		for(var i = 0; i<graph.series.length; i++){
-			if(i==0)
-				form_fields += "<option value='" + i + "' selected>" + graph.series[i].name + "</option>";
-			else
-				form_fields += "<option value='" + i + "'>" + graph.series[i].name + "</option>";
+		var form_bottom = '</fieldset></form>';
+
+		// loop through formulas and create select
+		form_fields += '<label for"technical">Select Technical:</label><select name="technical" id="tech-selector"><option value="-" selected></option>';
+		for(var key in Rickshaw.Graph.Technicals.formulas){
+			form_fields += "<option value='" + Rickshaw.Graph.Technicals.formulas[key] + "'>" + Rickshaw.Graph.Technicals.formulas[key] + "</option>";
 		}
 		form_fields += '</select>';
+
 		// drop the form in the passed element
 		elem.html(form_top + form_fields + form_bottom);
 
+		// listen to technical select change
+		elem.find('select').on('change', function(e){
+			// clean existing form
+			$('#tech-selector').nextAll().each(function(index) {
+				$(this).remove();
+			});
+			tech = eval(Rickshaw.Graph.Technicals[this.value]);
+			var form_fields = '';
+
+			// loop through fields in selected technical
+			for(var key in tech.fields){
+				var obj = tech.fields[key];
+				form_fields += '<label for="' + obj.name + '">' + obj.name + '</label>';
+				if(obj.type == 'int'){
+					form_fields += '<input name="' + obj.name + '" id="' + obj.id + '" class="period" />';
+				}
+				if(obj.curve_sel){
+					curve_sel = true;
+				}
+			}
+			// loop through lines of passed graph and add them to <select>
+			if(curve_sel){
+				form_fields += 	'<label for="datum">Datum</label>';
+			}
+			form_fields += '<select name="datum" id="datum_sel">';
+			for(var i = 0; i<graph.series.length; i++){
+				if(i==0)
+					form_fields += "<option value='" + i + "' selected>" + graph.series[i].name + "</option>";
+				else
+					form_fields += "<option value='" + i + "'>" + graph.series[i].name + "</option>";
+			}
+			form_fields += '</select>';
+			form_fields += '<input type="submit" class="btn" />';
+
+			elem.find('fieldset').append(form_fields);
+		});
+
+
+
 		// Listen to the form submission and process data accordingly
-		var self = this;
 		elem.find('form').on('submit', function(e){
 			e.preventDefault();
-			var datum = self.elem.find('form select option:selected').val();
+			var datum = $('#datum_sel').val();
 			var calc_obj = [];
 			var period = [];
 			// could be multiple periods so we need to loop
