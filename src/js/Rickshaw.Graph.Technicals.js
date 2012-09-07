@@ -8,7 +8,7 @@ Rickshaw.Graph.Technicals = {
 		var tech = this.tech = eval(Rickshaw.Graph.Technicals[formula]);
 		var elem = this.elem = elem;
 		var graph = this.graph = graph;
-		var calc_obj;
+		var calc_obj = this.calc_obj = [];
 		var datum = this.datum = null;
 		var curve_sel = false;
 		elem.html('');
@@ -21,7 +21,7 @@ Rickshaw.Graph.Technicals = {
 			var obj = tech.fields[key];
 			form_fields += '<label for="' + obj.name + '">' + obj.name + '</label>';
 			if(obj.type == 'int'){
-				form_fields += '<input name="' + obj.name + '" id="' + obj.name + '" />';
+				form_fields += '<input name="' + obj.name + '" id="' + obj.id + '" class="period" />';
 			}
 			if(obj.curve_sel){
 				curve_sel = true;
@@ -47,30 +47,38 @@ Rickshaw.Graph.Technicals = {
 		elem.find('form').on('submit', function(e){
 			e.preventDefault();
 			var datum = self.elem.find('form select option:selected').val();
+			var period = [];
+			elem.find('form input.period').each(function(index) {
+				period[$(this).attr('id')] = $(this).val();
+			});
+			// Run the calculator
 			var data = tech.calc({
 				datum: self.graph.series[datum].data,
-				period: elem.find('form input[name=period]').val()
+				period: period
 			});
-			self.calc_obj = {
-				color: d3.rgb(graph.series[datum].color).brighter().toString(),
-				data: data,
-				name: graph.series[datum].name + ' ' + tech.name
-			};
+			for(var key in data){
+				self.calc_obj.push({
+					//color: d3.rgb(graph.series[datum].color).brighter().toString(),
+					color: '#'+Math.floor(Math.random()*16777215).toString(16),
+					data: data[key],
+					name: key
+				})
+			}
 			// Draw the data on the passed graph or a new graph
 			var tech_graph = Rickshaw.Graph.Technicals.draw({
 				graph : graph,
 				tech : tech,
-				datum : self.calc_obj
+				series : self.calc_obj
 			});
 		});
 	},
 	draw : function(args){
 		var graph = this.graph = args.graph;
 		var tech = this.tech = args.tech;
-		var datum = this.datum = args.datum;
+		var series = this.series = args.series;
 
 		if(!tech.independant){
-			graph.series.push(datum);
+			graph.series.push(series);
 			graph.render();
 			legend.addLine(graph.series[graph.series.length-1]);
 			shelving.addAnchor(legend.lines[legend.lines.length-1]);		
@@ -83,7 +91,7 @@ Rickshaw.Graph.Technicals = {
 				width: graph.width,
 				height: 100,
 				renderer: 'line',
-				series: [datum]
+				series: series
 			});
 			tech_chart.render();
 
@@ -98,24 +106,27 @@ Rickshaw.Graph.Technicals = {
 				ticksTreatment: ticksTreatment
 			} );
 			yAxis.render();	
-			var hoverDetail = new Rickshaw.Graph.HoverDetail( {
+			var hover = new Rickshaw.Graph.HoverDetail( {
 				graph: tech_chart
 			});	
 		}
 	},
 	// Fast stochastic oscillator is a momentum indicator that uses support and resistance levels
 	// %K = 100((curr - L)/(H-L))
+	// %D = 3-day SMA of %K
 	f_stochastic : {
 		// constructor
 		name : "fast stochastic",
 		independant : true,
 		fields : [{
 				name : "%K period",
+				id : "%k",
 				type : "int",
 				curve_sel : true
 			},
 			{
 				name : "%D period",
+				id: "%d",
 				type : "int",
 				curve_sel : false
 			}
@@ -131,7 +142,7 @@ Rickshaw.Graph.Technicals = {
 			for(var ele = 0; ele<length; ele++){
 				var curr_obj = datum[ele];
 				nums.push(datum[ele].y);
-		        if (nums.length > period)
+		        if (nums.length > period['%k'])
 		            nums.splice(0,1);  // remove the first element of the array
 		        
 		        for (var i in nums){
@@ -143,7 +154,13 @@ Rickshaw.Graph.Technicals = {
 				if(isNaN(k)) k=0;
 				res_arr.push({ x: curr_obj.x, y0: curr_obj.y0, y: k });
 			}
-			return res_arr;
+			return {
+				'%k' : res_arr,
+				'%d' : Rickshaw.Graph.Technicals.sma.calc({
+					datum: res_arr, 
+					period: period['%d']
+				})['sma']
+			}
 		}
 	},
 	// Momentum is the absolute difference m = d(today) - d(n days ago)
@@ -167,7 +184,9 @@ Rickshaw.Graph.Technicals = {
 				else
 					res_arr.push({ x: datum[ele].x, y0: datum[ele].y0, y: datum[ele].y - datum[ele-period].y });
 			}
-			return res_arr;
+			return {
+				'momentum' : res_arr
+			}
 		}
 	},
 
@@ -199,10 +218,16 @@ Rickshaw.Graph.Technicals = {
 
 		        if(ele < period)
 					res_arr.push({ x: datum[ele].x, y0: datum[ele].y0, y: 0 });
-		        else
-		        	res_arr.push({ x: datum[ele].x, y0: datum[ele].y0, y: sum/n});
+		        else{
+		        	if(isNaN(sum/n))
+		        		res_arr.push({ x: datum[ele].x, y0: datum[ele].y0, y: 0 });
+		        	else 
+		        		res_arr.push({ x: datum[ele].x, y0: datum[ele].y0, y: sum/n });
+		        }
 			}
-			return res_arr;
+			return {
+				'sma' : res_arr
+			}
 		}
 	}
 }
