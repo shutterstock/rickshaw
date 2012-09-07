@@ -188,11 +188,13 @@ Rickshaw.Graph.Technicals = {
 				if(isNaN(k)) k=0;
 				res_arr.push({ x: curr_obj.x, y0: curr_obj.y0, y: k });
 			}
+			var sma_period = [];
+			sma_period['p'] = period['%d'];
 			return {
 				'%k' : res_arr,
 				'%d' : Rickshaw.Graph.Technicals.sma.calc({
 					datum: res_arr, 
-					period: period['%d']
+					period: sma_period
 				})['sma']
 			}
 		}
@@ -208,16 +210,16 @@ Rickshaw.Graph.Technicals = {
 			curve_sel : true
 		}], 
 		calc : function(args) {
-			var period = this.period = args.period;
+			var period = this.period = args.period['p'];
 			var datum = this.datum = args.datum;
 			var nums = [];
 			var res_arr = [];
 			var length = datum.length;
 			for(var ele = 0; ele<length; ele++){
-				if(ele < period['p'])
+				if(ele < period)
 					res_arr.push({ x: datum[ele].x, y0: datum[ele].y0, y: 0 });
 				else
-					res_arr.push({ x: datum[ele].x, y0: datum[ele].y0, y: datum[ele].y - datum[ele-period['p']].y });
+					res_arr.push({ x: datum[ele].x, y0: datum[ele].y0, y: datum[ele].y - datum[ele-period].y });
 			}
 			return {
 				'momentum' : res_arr
@@ -231,11 +233,12 @@ Rickshaw.Graph.Technicals = {
 		name : "simple moving average",
 		fields : [{
 			name : "period",
+			id : "p",
 			type : "int",
 			curve_sel : true
 		}], 
 		calc : function(args) {
-			var period = this.period = args.period;
+			var period = this.period = args.period['p'];
 			var datum = this.datum = args.datum;
 			var nums = [];
 			var res_arr = [];

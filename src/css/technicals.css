@@ -33,7 +33,7 @@ input, select, label{
 }
 .tech_chart{
 	float: left;
-	margin-top: 15px;
+	margin: 15px 0;
 }
 .tech_chart .x_tick .title{
 	display: none;
