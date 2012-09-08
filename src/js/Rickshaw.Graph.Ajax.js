@@ -13,7 +13,7 @@ Rickshaw.Graph.Ajax = function(args) {
 				console.log("error loading dataURL: " + this.dataURL);
 			}
 
-			var data = JSON.parse(response.responseText);	
+			var data = JSON.parse(response.responseText);
 
 			if (typeof args.onData === 'function') {
 				var processedData = args.onData(data);
@@ -26,12 +26,12 @@ Rickshaw.Graph.Ajax = function(args) {
 
 					var seriesKey = s.key || s.name;
 					if (!seriesKey) throw "series needs a key or a name";
-					
+
 					data.forEach( function(d) {
 
 						var dataKey = d.key || d.name;
 						if (!dataKey) throw "data needs a key or a name";
-		
+
 						if (seriesKey == dataKey) {
 							var properties = ['color', 'name', 'data'];
 							properties.forEach( function(p) {
