@@ -1,57 +1,74 @@
-Rickshaw.namespace('Graph.Ajax');
+Rickshaw.namespace('Rickshaw.Graph.Ajax');
 
-Rickshaw.Graph.Ajax = function(args) {
+Rickshaw.Graph.Ajax = Rickshaw.Class.create( {
 
-	var self = this;
-	this.dataURL = args.dataURL;
+	initialize: function(args) {
 
-	$.ajax( {
-		url: this.dataURL,
-		complete: function(response, status) {
+		this.dataURL = args.dataURL;
 
-			if (status === 'error') {
-				console.log("error loading dataURL: " + this.dataURL);
-			}
+		this.onData = args.onData || function(d) { return d };
+		this.onComplete = args.onComplete || function() {};
+		this.onError = args.onError || function() {};
 
-			var data = JSON.parse(response.responseText);	
+		this.args = args; // pass through to Rickshaw.Graph
 
-			if (typeof args.onData === 'function') {
-				var processedData = args.onData(data);
-				data = processedData;
-			}
+		this.request();
+	},
 
-			if (args.series) {
+	request: function() {
 
-				args.series.forEach( function(s) {
+		$.ajax( {
+			url: this.dataURL,
+			dataType: 'json',
+			success: this.success.bind(this),
+			error: this.error.bind(this)
+		} );
+	},
 
-					var seriesKey = s.key || s.name;
-					if (!seriesKey) throw "series needs a key or a name";
-					
-					data.forEach( function(d) {
+	error: function() {
 
-						var dataKey = d.key || d.name;
-						if (!dataKey) throw "data needs a key or a name";
-		
-						if (seriesKey == dataKey) {
-							var properties = ['color', 'name', 'data'];
-							properties.forEach( function(p) {
-								s[p] = s[p] || d[p];
-							} );
-						}
+		console.log("error loading dataURL: " + this.dataURL);
+		this.onError(this);
+	},
+
+	success: function(data, status) {
+
+		data = this.onData(data);
+		this.args.series = this._splice({ data: data, series: this.args.series });
+
+		this.graph = new Rickshaw.Graph(this.args);
+		this.graph.render();
+
+		this.onComplete(this);
+	},
+
+	_splice: function(args) {
+
+		var data = args.data;
+		var series = args.series;
+
+		if (!args.series) return data;
+
+		series.forEach( function(s) {
+
+			var seriesKey = s.key || s.name;
+			if (!seriesKey) throw "series needs a key or a name";
+
+			data.forEach( function(d) {
+
+				var dataKey = d.key || d.name;
+				if (!dataKey) throw "data needs a key or a name";
+
+				if (seriesKey == dataKey) {
+					var properties = ['color', 'name', 'data'];
+					properties.forEach( function(p) {
+						s[p] = s[p] || d[p];
 					} );
-				} );
+				}
+			} );
+		} );
 
-			} else {
-				args.series = data;
-			}
-
-			self.graph = new Rickshaw.Graph(args);
-			self.graph.render();
-
-			if (typeof args.onComplete == 'function') {
-				args.onComplete(self);
-			}
-		}
-	} );
-};
+		return series;
+	}
+} );
 

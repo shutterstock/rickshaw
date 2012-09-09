@@ -8,7 +8,7 @@ Rickshaw.Graph.Renderer.Bar = Rickshaw.Class.create( Rickshaw.Graph.Renderer, {
 
 		var defaults = Rickshaw.extend( $super(), {
 			gapSize: 0.05,
-			unstack: false,
+			unstack: false
 		} );
 
 		delete defaults.tension;

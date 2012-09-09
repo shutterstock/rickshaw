@@ -13,7 +13,7 @@ Rickshaw.Graph.RangeSlider = function(args) {
 			max: graph.dataDomain()[1],
 			values: [ 
 				graph.dataDomain()[0],
-				graph.dataDomain()[1],
+				graph.dataDomain()[1]
 			],
 			slide: function( event, ui ) {
 
