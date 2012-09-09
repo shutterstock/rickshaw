@@ -6,9 +6,9 @@ Rickshaw.Graph.JSONP = Rickshaw.Class.create( Rickshaw.Graph.Ajax, {
 
 		$.ajax( {
 			url: this.dataURL,
-			dataType: 'jsonp'
+			dataType: 'jsonp',
 			success: this.success.bind(this),
-			error: this.error.bind(this),
+			error: this.error.bind(this)
 		} );
 	}
 } );
