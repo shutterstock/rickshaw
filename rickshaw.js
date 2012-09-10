@@ -32,6 +32,11 @@ Rickshaw = {
 	}
 };
 
+if(typeof module !== 'undefined' && module.exports) {
+   var d3 = require('d3');
+   module.exports = Rickshaw;
+}
+
 /* Adapted from https://github.com/Jakobo/PTClass */
 
 /*
@@ -363,7 +368,7 @@ Rickshaw.Compat.ClassList = function() {
 		elemCtrProto.__defineGetter__(classListProp, classListGetter);
 	}
 
-	}(self));
+	}(window));
 
 	}
 };
