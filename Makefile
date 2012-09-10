@@ -59,6 +59,7 @@ rickshaw.css:
 
 rickshaw.js:
 	cat $(JS_FILES) > rickshaw.js
+	cat $(JS_FILES) > lib/rickshaw.js
 
 rickshaw.min.css: $(CSS_MIN) rickshaw.css
 	$(CSS_MIN) rickshaw.css > rickshaw.min.css
