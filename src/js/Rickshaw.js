@@ -1,13 +1,10 @@
-Rickshaw = {
+var Rickshaw = {
 
 	namespace: function(namespace, obj) {
 
 		var parts = namespace.split('.');
 
-		// for rudimentary compatibility w/ node
-		var root = typeof global != 'undefined' ? global : window;
-
-		var parent = root.Rickshaw;
+		var parent = Rickshaw;
 
 		for(var i = 1, length = parts.length; i < length; i++) {
 			currentPart = parts[i];
@@ -31,4 +28,9 @@ Rickshaw = {
 		return destination;
 	}
 };
+
+if (typeof module !== 'undefined' && module.exports) {
+	var d3 = require('d3');
+	module.exports = Rickshaw;
+}
 

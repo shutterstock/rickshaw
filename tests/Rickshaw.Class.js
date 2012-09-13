@@ -1,5 +1,4 @@
-require('../src/js/Rickshaw');
-require('../src/js/Rickshaw.Class');
+var Rickshaw = require('../rickshaw');
 
 exports.load = function(test) {
 
