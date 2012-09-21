@@ -7,8 +7,9 @@ Rickshaw.Graph.Technicals = {
 	formulas : ['f_stochastic', 'momentum', 'sma'],
 
 	renderForm : function(formula, elem, graph){
+		"use strict";
 		// set up shop
-		var tech = this.tech = eval(Rickshaw.Graph.Technicals[formula]);
+		var tech = this.tech = Rickshaw.Graph.Technicals[formula];
 		var elem = this.elem = elem;
 		var graph = this.graph = graph;
 		var datum = this.datum = null;
@@ -87,12 +88,22 @@ Rickshaw.Graph.Technicals = {
 			});
 			// create the series object that will be drawn on the graph
 			for(var key in data){
-				calc_obj.push({
-					//color: d3.rgb(graph.series[datum].color).brighter().toString(),
-					color: '#'+Math.floor(Math.random()*16777215).toString(16),
-					data: data[key],
-					name: key
-				})
+				// a technical can generate one or more lines
+				if(Object.keys(data).length == 1){
+					calc_obj = {
+						//color: d3.rgb(graph.series[datum].color).brighter().toString(),
+						color: '#'+Math.floor(Math.random()*16777215).toString(16),
+						data: data[key],
+						name: key
+					};
+				} else{
+					calc_obj.push({
+						//color: d3.rgb(graph.series[datum].color).brighter().toString(),
+						color: '#'+Math.floor(Math.random()*16777215).toString(16),
+						data: data[key],
+						name: key
+					});					
+				}
 			}
 			// Draw the data on the passed graph or a new graph
 			var tech_graph = Rickshaw.Graph.Technicals.draw({
