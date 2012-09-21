@@ -5,13 +5,12 @@ Rickshaw.Graph.Technicals = {
 	// list of available technicals
 	formulas : ['f_stochastic', 'momentum', 'sma'],
 
-	renderForm : function(formula, elem, graph){
+	renderForm : function(formula, elem, graph, legend, shelving){
 		"use strict";
 		// set up shop
 		var tech = this.tech = Rickshaw.Graph.Technicals[formula];
 		this.elem = elem;
 		this.graph = graph;
-		var datum = this.datum = null;
 		var curve_sel = false;
 		var self = this;
 		elem.html('');
@@ -105,10 +104,12 @@ Rickshaw.Graph.Technicals = {
 				}
 			}
 			// Draw the data on the passed graph or a new graph
-			var tech_graph = Rickshaw.Graph.Technicals.draw({
+			Rickshaw.Graph.Technicals.draw({
 				graph : graph,
 				tech : tech,
-				series : calc_obj
+				series : calc_obj,
+				legend : legend,
+				shelving : shelving
 			});
 		});
 	},
@@ -116,6 +117,8 @@ Rickshaw.Graph.Technicals = {
 		var graph = this.graph = args.graph;
 		var tech = this.tech = args.tech;
 		var series = this.series = args.series;
+		var legend = this.legend = args.legend;
+		var shelving = this.shelving = args.shelving;
 
 		if(!tech.independant){
 			graph.series.push(series);
@@ -188,14 +191,14 @@ Rickshaw.Graph.Technicals = {
 			for(var ele = 0; ele<length; ele++){
 				var curr_obj = datum[ele];
 				nums.push(datum[ele].y);
-		        if (nums.length > period['%k'])
-		            nums.splice(0,1);  // remove the first element of the array
-		        
-		        for (var i in nums){
-		        	if(typeof period_high == "undefined" || nums[i] > period_high) period_high = nums[i]; 
-					if(typeof period_low == "undefined" || nums[i] < period_low) period_low = nums[i];
-		        }
-		       
+				if (nums.length > period['%k'])
+					nums.splice(0,1);  // remove the first element of the array
+
+				for (var i in nums){
+					if(typeof period_high === "undefined" || nums[i] > period_high) period_high = nums[i]; 
+					if(typeof period_low === "undefined" || nums[i] < period_low) period_low = nums[i];
+				}
+
 				var k = 100*(curr_obj.y - period_low)/(period_high - period_low);
 				if(isNaN(k)) k=0;
 				res_arr.push({ x: curr_obj.x, y0: curr_obj.y0, y: k });
@@ -208,7 +211,7 @@ Rickshaw.Graph.Technicals = {
 					datum: res_arr, 
 					period: sma_period
 				})['sma']
-			}
+			};
 		}
 	},
 	// Momentum is the absolute difference m = d(today) - d(n days ago)
@@ -224,7 +227,6 @@ Rickshaw.Graph.Technicals = {
 		calc : function(args) {
 			var period = this.period = args.period['p'];
 			var datum = this.datum = args.datum;
-			var nums = [];
 			var res_arr = [];
 			var length = datum.length;
 			for(var ele = 0; ele<length; ele++){
@@ -235,7 +237,7 @@ Rickshaw.Graph.Technicals = {
 			}
 			return {
 				'momentum' : res_arr
-			}
+			};
 		}
 	},
 
@@ -257,27 +259,27 @@ Rickshaw.Graph.Technicals = {
 			var length = datum.length;
 			for(var ele = 0; ele<length; ele++){
 				nums.push(datum[ele].y);
-		        if (nums.length > period)
-		            nums.splice(0,1);  // remove the first element of the array
-		        var sum = 0;
-		        for (var i in nums)
-		            sum += nums[i];
-		        var n = period;
-		        if (nums.length < period)
-		            n = nums.length;
+				if (nums.length > period)
+					nums.splice(0,1);  // remove the first element of the array
+				var sum = 0;
+				for (var i in nums)
+					sum += nums[i];
+				var n = period;
+				if (nums.length < period)
+					n = nums.length;
 
-		        if(ele < period)
+				if(ele < period)
 					res_arr.push({ x: datum[ele].x, y0: datum[ele].y0, y: 0 });
-		        else{
-		        	if(isNaN(sum/n))
-		        		res_arr.push({ x: datum[ele].x, y0: datum[ele].y0, y: 0 });
-		        	else 
-		        		res_arr.push({ x: datum[ele].x, y0: datum[ele].y0, y: sum/n });
-		        }
+				else{
+					if(isNaN(sum/n))
+						res_arr.push({ x: datum[ele].x, y0: datum[ele].y0, y: 0 });
+					else 
+						res_arr.push({ x: datum[ele].x, y0: datum[ele].y0, y: sum/n });
+				}
 			}
 			return {
 				'sma' : res_arr
-			}
+			};
 		}
 	}
-}
+};
