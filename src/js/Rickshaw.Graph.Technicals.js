@@ -1,4 +1,3 @@
-"use strict"
 Rickshaw.namespace('Rickshaw.Graph.Technicals');
 
 Rickshaw.Graph.Technicals = {
@@ -10,8 +9,8 @@ Rickshaw.Graph.Technicals = {
 		"use strict";
 		// set up shop
 		var tech = this.tech = Rickshaw.Graph.Technicals[formula];
-		var elem = this.elem = elem;
-		var graph = this.graph = graph;
+		this.elem = elem;
+		this.graph = graph;
 		var datum = this.datum = null;
 		var curve_sel = false;
 		var self = this;
@@ -38,14 +37,14 @@ Rickshaw.Graph.Technicals = {
 			$('#tech-selector').nextAll().each(function(index) {
 				$(this).remove();
 			});
-			tech = eval(Rickshaw.Graph.Technicals[this.value]);
+			tech = Rickshaw.Graph.Technicals[this.value];
 			var form_fields = '';
 
 			// loop through fields in selected technical
 			for(var key in tech.fields){
 				var obj = tech.fields[key];
 				form_fields += '<label for="' + obj.name + '">' + obj.name + '</label>';
-				if(obj.type == 'int'){
+				if(obj.type === 'int'){
 					form_fields += '<input name="' + obj.name + '" id="' + obj.id + '" class="period" />';
 				}
 				if(obj.curve_sel){
@@ -54,11 +53,11 @@ Rickshaw.Graph.Technicals = {
 			}
 			// loop through lines of passed graph and add them to <select>
 			if(curve_sel){
-				form_fields += 	'<label for="datum">Datum</label>';
+				form_fields += '<label for="datum">Datum</label>';
 			}
 			form_fields += '<select name="datum" id="datum_sel">';
 			for(var i = 0; i<graph.series.length; i++){
-				if(i==0)
+				if(i===0)
 					form_fields += "<option value='" + i + "' selected>" + graph.series[i].name + "</option>";
 				else
 					form_fields += "<option value='" + i + "'>" + graph.series[i].name + "</option>";
@@ -89,7 +88,7 @@ Rickshaw.Graph.Technicals = {
 			// create the series object that will be drawn on the graph
 			for(var key in data){
 				// a technical can generate one or more lines
-				if(Object.keys(data).length == 1){
+				if(Object.keys(data).length === 1){
 					calc_obj = {
 						//color: d3.rgb(graph.series[datum].color).brighter().toString(),
 						color: '#'+Math.floor(Math.random()*16777215).toString(16),
@@ -125,8 +124,10 @@ Rickshaw.Graph.Technicals = {
 			shelving.addAnchor(legend.lines[legend.lines.length-1]);		
 		}
 		else{
+			// if there is only one series, put it in an array
+			if(series.length === undefined) series = [series];
 			// new graph
-			if($('.tech_chart').length == 0)
+			if($('.tech_chart').length === 0)
 				$('body').append("<div class='tech_chart'></div>");
 			else 
 				$('.tech_chart').html('');
