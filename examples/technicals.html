@@ -38,7 +38,8 @@ for (var i = 0; i < 150; i++) {
 	random.addData(seriesData);
 }
 for (var i = 0; i < seriesData[2].length; i++) {
-	seriesData[2][i].y = i;
+	if(i > 100) seriesData[2].shift();
+	else seriesData[2][i].y = i;
 }
 
 // instantiate our graph!
@@ -94,14 +95,15 @@ var yAxis = new Rickshaw.Graph.Axis.Y( {
 yAxis.render();
 
 $(document).ready(function(e){
-	var momentum = new Rickshaw.Graph.Technicals.renderForm('momentum', $('#technical_form'), graph);
+	var momentum = new Rickshaw.Graph.Technicals.renderForm('momentum', $('#technical_form'), graph, legend, shelving);
 	var period = [];
 	period['%k'] = 14;
 	period['%d'] = 3;
-	// console.log(Rickshaw.Graph.Technicals.f_stochastic.calc({
-	// 	datum: seriesData[0], 
-	// 	period: period
-	// }));
+	period = 30;
+	console.log(Rickshaw.Graph.Technicals.sma.calc({
+		datum: seriesData[0], 
+		period: period
+	}));
 });
 </script>
 
