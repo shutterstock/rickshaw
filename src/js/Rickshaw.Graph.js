@@ -76,7 +76,7 @@ Rickshaw.Graph = function(args) {
 
 			pointsCount = pointsCount || s.data.length;
 
-			if (pointsCount && s.data.length != pointsCount) {
+			if (!args.multiLength && pointsCount && s.data.length != pointsCount) {
 				throw "series cannot have differing numbers of points: " +
 					pointsCount	+ " vs " + s.data.length + "; see Rickshaw.Series.zeroFill()";
 			}
@@ -137,10 +137,15 @@ Rickshaw.Graph = function(args) {
 			data = entry.f.apply(self, [data]);
 		} );
 
-		var layout = d3.layout.stack();
-		layout.offset( self.offset );
+		var stackedData;
 
-		var stackedData = layout(data);
+		if (!this.renderer.unstack) {
+			var layout = d3.layout.stack();
+			layout.offset( self.offset );
+			stackedData = layout(data);
+		}
+
+		stackedData = stackedData || data;
 
 		this.stackData.hooks.after.forEach( function(entry) {
 			stackedData = entry.f.apply(self, [data]);
