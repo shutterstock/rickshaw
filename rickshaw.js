@@ -2,7 +2,7 @@ var Rickshaw = {
 
 	namespace: function(namespace, obj) {
 
-		var parts = namespace.split('.');
+		var parts = namespace.split('.'), currentPart;
 
 		var parent = Rickshaw;
 
@@ -1604,7 +1604,7 @@ Rickshaw.Graph.HoverDetail = Rickshaw.Class.create({
 				dataIndex = i;
 				break;
 			}
-			if (stackedData[0][i + 1] <= domainX) { i++ } else { i-- }
+			if (stackedData[0][i + 1].x <= domainX) { i++ } else { i-- }
 		}
 
 		var domainX = stackedData[0][dataIndex].x;

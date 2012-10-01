@@ -2,7 +2,7 @@ var Rickshaw = {
 
 	namespace: function(namespace, obj) {
 
-		var parts = namespace.split('.');
+		var parts = namespace.split('.'), currentPart;
 
 		var parent = Rickshaw;
 
