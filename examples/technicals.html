@@ -16,10 +16,26 @@
 	<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.15/jquery-ui.min.js"></script>
 
 	<script src="../rickshaw.js"></script>
-	<script src="../src/js/Rickshaw.Graph.Technicals.js"></script>
+	<script src="../src/js/Technicals/Rickshaw.Technicals.calcs.js"></script>
+	<script src="../src/js/Technicals/Rickshaw.Technicals.view.js"></script>
 </head>
 <body>
-	<div id="technical_form"></div>
+	<div id="technical_form">
+		<form>
+			<fieldset>
+				<label for="period">Period</label>
+				<input name="period" id="period" class="period" />
+								
+				<label for="datum">Datum</label>
+				<select name="datum" id="datum_sel">
+					<option value='0' selected>New York</option>
+					<option value='1' selected>London</option>
+					<option value='2' selected>Toyko</option>
+				</select>
+				<input type="submit" class="btn" />
+			</fieldset>
+		</form>
+	</div>
 	<div id="legend"></div>
 	<div id="chart_container">
 		<div id="chart"></div>
@@ -37,10 +53,10 @@ var random = new Rickshaw.Fixtures.RandomData(150);
 for (var i = 0; i < 150; i++) {
 	random.addData(seriesData);
 }
-for (var i = 0; i < seriesData[2].length; i++) {
-	if(i > 100) seriesData[2].shift();
-	else seriesData[2][i].y = i;
-}
+// for (var i = 0; i < seriesData[2].length; i++) {
+// 	if(i > 100) seriesData[2].shift();
+// 	else seriesData[2][i].y = i;
+// }
 
 // instantiate our graph!
 
@@ -95,15 +111,66 @@ var yAxis = new Rickshaw.Graph.Axis.Y( {
 yAxis.render();
 
 $(document).ready(function(e){
-	var momentum = new Rickshaw.Graph.Technicals.renderForm('momentum', $('#technical_form'), graph, legend, shelving);
+	// var momentum = new Rickshaw.Graph.Technicals.renderForm('momentum', $('#technical_form'), graph, legend, shelving);
 	var period = [];
 	period['%k'] = 14;
 	period['%d'] = 3;
 	period = 30;
-	console.log(Rickshaw.Graph.Technicals.sma.calc({
+	console.log(Rickshaw.Technicals.calcs.sma.calc({
 		datum: seriesData[0], 
 		period: period
 	}));
+
+	"use strict";
+	// set up shop
+	var tech = this.tech = Rickshaw.Technicals.calcs['sma'];
+	var elem = $('#technical_form');
+	this.graph = graph;
+	var self = this;
+	
+	// Listen to the form submission and process data accordingly
+	elem.find('form').on('submit', function(e){
+		e.preventDefault();
+		var datum = $('#datum_sel').val();
+		var calc_obj = [];
+		var period = [];
+		// could be multiple periods so we need to loop
+		elem.find('form input.period').each(function(index) {
+			period[$(this).attr('id')] = $(this).val();
+		});
+		// Run the calculator
+		var data = tech.calc({
+			datum: self.graph.series[datum].data,
+			period: period
+		});
+		// create the series object that will be drawn on the graph
+		for(var key in data){
+			// a technical can generate one or more lines
+			if(Object.keys(data).length === 1){
+				calc_obj = {
+					//color: d3.rgb(graph.series[datum].color).brighter().toString(),
+					color: '#'+Math.floor(Math.random()*16777215).toString(16),
+					data: data[key],
+					name: key
+				};
+			} else{
+				calc_obj.push({
+					//color: d3.rgb(graph.series[datum].color).brighter().toString(),
+					color: '#'+Math.floor(Math.random()*16777215).toString(16),
+					data: data[key],
+					name: key
+				});					
+			}
+		}
+		// Draw the data on the passed graph or a new graph
+		Rickshaw.Technicals.view.draw({
+			graph : graph,
+			tech : tech,
+			series : calc_obj,
+			legend : legend,
+			shelving : shelving
+		});
+	});
 });
 </script>
 
