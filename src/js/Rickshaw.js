@@ -7,7 +7,7 @@ var Rickshaw = {
 		var parent = Rickshaw;
 
 		for(var i = 1, length = parts.length; i < length; i++) {
-			currentPart = parts[i];
+			var currentPart = parts[i];
 			parent[currentPart] = parent[currentPart] || {};
 			parent = parent[currentPart];
 		}
