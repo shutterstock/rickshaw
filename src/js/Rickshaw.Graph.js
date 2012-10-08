@@ -76,9 +76,9 @@ Rickshaw.Graph = function(args) {
 
 			pointsCount = pointsCount || s.data.length;
 
-			if (!args.multiLength && pointsCount && s.data.length != pointsCount) {
+			if (pointsCount && s.data.length != pointsCount) {
 				throw "series cannot have differing numbers of points: " +
-					pointsCount	+ " vs " + s.data.length + "; see Rickshaw.Series.zeroFill()";
+					pointsCount	+ " vs " + s.data.length + "; see Rickshaw.Series.fill()";
 			}
 
 			var x = s.data[0].x;
@@ -88,7 +88,8 @@ Rickshaw.Graph = function(args) {
 				throw "x and y properties of points should be numbers instead of " +
 					(typeof x) + " and " + (typeof y)
 			}
-		} );
+
+		}, this );
 	};
 
 	this.dataDomain = function() {
