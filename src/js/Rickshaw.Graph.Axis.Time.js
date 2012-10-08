@@ -41,7 +41,7 @@ Rickshaw.Graph.Axis.Time = function(args) {
 
 		for (var i = 0; i < count; i++) {
 
-			tickValue = time.ceil(runningTick, unit);
+			var tickValue = time.ceil(runningTick, unit);
 			runningTick = tickValue + unit.seconds / 2;
 
 			offsets.push( { value: tickValue, unit: unit } );

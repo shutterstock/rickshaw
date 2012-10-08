@@ -1,9 +1,4 @@
-require('../src/js/Rickshaw');
-require('../src/js/Rickshaw.Class');
-require('../src/js/Rickshaw.Fixtures.Color');
-require('../src/js/Rickshaw.Color.Palette');
-require('../src/js/Rickshaw.Series');
-require('../src/js/Rickshaw.Series.FixedDuration');
+var Rickshaw = require("../rickshaw");
 
 function seriesData() {
 	return {

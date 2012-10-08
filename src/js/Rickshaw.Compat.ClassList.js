@@ -125,7 +125,7 @@ Rickshaw.Compat.ClassList = function() {
 		elemCtrProto.__defineGetter__(classListProp, classListGetter);
 	}
 
-	}(self));
+	}(window));
 
 	}
 };

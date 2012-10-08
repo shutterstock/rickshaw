@@ -1,8 +1,4 @@
-require('../src/js/Rickshaw');
-require('../src/js/Rickshaw.Class');
-require('../src/js/Rickshaw.Series');
-require('../src/js/Rickshaw.Fixtures.Color');
-require('../src/js/Rickshaw.Color.Palette');
+var Rickshaw = require("../rickshaw");
 
 function seriesData() {
 	return {
@@ -85,7 +81,7 @@ exports.dump = function(test) {
 		series.dump(),
 		{
 			"timeBase":0,
-			"timeInterval": undefined,
+			"timeInterval": 1,
 			"items":[{
 				"color":"red",
 				"name":"series1",

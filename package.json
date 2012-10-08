@@ -1,0 +1,12 @@
+{
+   "name": "rickshaw",
+   "version": "1.1.2",
+   "dependencies": {
+      "d3": ">= 2.10.1"
+   },
+   "keywords": ["d3", "charts", "rickshaw", "svg", "graph"],
+   "main": "./rickshaw",
+   "engines": {
+      "node": ">= 0.8.0"
+   }
+}
