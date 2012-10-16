@@ -1,0 +1,48 @@
+<!doctype>
+<head>
+	<link type="text/css" rel="stylesheet" href="../src/css/graph.css">
+	<link type="text/css" rel="stylesheet" href="../src/css/detail.css">
+
+	<script src="../vendor/d3.v2.js"></script>
+
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
+
+	<script src="../rickshaw.js"></script>
+</head>
+<body>
+
+<div id="chart_container">
+	<div id="chart"></div>
+</div>
+
+<script>
+
+new Rickshaw.Graph.Ajax( {
+
+	element: document.getElementById("chart"),
+	width: 235,
+	height: 85,
+	renderer: 'line',
+	dataURL: 'data.json',
+	onData: function(d) { d[0].data[0].y = 80; return d },
+	onComplete: function(transport) {
+		var graph = transport.graph;
+		var detail = new Rickshaw.Graph.HoverDetail({ graph: graph });
+	},
+	series: [
+		{
+			name: 'New York',
+			color: '#c05020',
+		}, {
+			name: 'London',
+			color: '#30c020',
+		}, {
+			name: 'Tokyo',
+			color: '#6060c0'
+		}
+	]
+} );
+
+</script>
+
+</body>

@@ -1,0 +1,14 @@
+﻿@font-face {font-family:"UnDotumWeb";src:url("UnDotum.eot?") format("eot"),url("UnDotum.woff") format("woff"),url("UnDotum.ttf") format("truetype"),url("UnDotum.svg#UnDotum") format("svg");font-weight:normal;font-style:normal;}
+
+@font-face {
+    font-family: 'WebSymbolsRegular';
+    src: url('websymbols-regular-webfont.eot');
+    src: url('websymbols-regular-webfont.eot?#iefix') format('embedded-opentype'),
+         url('websymbols-regular-webfont.woff') format('woff'),
+         url('websymbols-regular-webfont.ttf') format('truetype'),
+         url('websymbols-regular-webfont.svg#WebSymbolsRegular') format('svg');
+    font-weight: normal;
+    font-style: normal;
+
+}
+

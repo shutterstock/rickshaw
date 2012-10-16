@@ -1,12 +1,17 @@
 <!doctype>
+<link rel="stylesheet" href="../css/style.css">
 <style>
 body {
-	width: 780px;
-	margin: auto;
 	font-family: Arial, Helvetica, sans-serif;
 	font-size: 13px;
 	color: #282828;
 	line-height: 135%;
+	margin: 0;
+}
+.content {
+	width: 780px;
+	margin: auto;
+	display: block;
 }
 section img {
 	width: 25%;
@@ -40,6 +45,7 @@ h2 {
 section {
 	border-top: 1px solid #e0e0e0;
 	padding: 1.8em 0;
+	display: block;
 }
 span {
 	clear: both;
@@ -56,7 +62,15 @@ hr {
 	border: none;
 	border-bottom: 1px solid #e0e0e0;
 }
+img {
+	border: none;
+}
 </style>
+
+<script src="../js/header.js"></script>
+
+<div class="content">
+
 <h1>Rickshaw Examples</h1>
 
 <section>
@@ -149,6 +163,39 @@ hr {
 	</div>
 </section>
 
+<section>
+	<a href="fixed.html"><img src="screenshots/fixed.png"></a>
+	<div>
+		<h2><a href="fixed.html">Fixed Window Series for Streaming Data</a></h2>
+		<span>
+			Fixed-size time window, useful for real-time graphs with socket.io.
+		</span>
+	</div>
+</section>
+
+<section>
+	<a href="formatter.html"><img src="screenshots/formatter.png"></a>
+	<div>
+		<h2><a href="formatter.html">Hover Details Custom Formatting</a></h2>
+		<span>
+			Send a custom formatter callback for finer control in hover details.
+		</span>
+	</div>
+</section>
+
+<section>
+	<a href="hover.html"><img src="screenshots/hover.png"></a>
+	<div>
+		<h2><a href="hover.html">Subclassed Hover Behavior + Bottom Legend</a></h2>
+		<span>
+			Subclass hovers to provide an alternate legend at the bottom of the graph.
+		</span>
+	</div>
+</section>
+
 <hr>
 <br>
+</div>
+
+<script src="../js/footer.js"></script>
 

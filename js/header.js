@@ -1,0 +1,1 @@
+document.write( '<header> <h5><a href="/rickshaw/">Rickshaw</a></h5> <a href="/rickshaw/tutorial/introduction.html">Tutorial</a> | <a href="/rickshaw/examples/">Examples</a> | <a href="https://github.com/shutterstock/rickshaw">Code</a> </header>' );

@@ -1,0 +1,30 @@
+header {
+	font-size: 14px;
+	border-bottom: 1px solid #f0f0f0;
+	color: #e0e0e0;
+	margin-bottom: 43px;
+	display: block;
+}
+header h5 {
+	display: inline-block;
+	margin: 0;
+}
+header h5 a {
+	color: #404040;
+	font-size: 18px;
+	padding: 0.7em 1em;
+	display: inline-block;
+	font-weight: normal;
+}
+header h5 a:hover {
+	color: #808080;	
+}
+header a {
+	color: #909090;
+	padding: 0 0.5em;
+}
+footer {
+	padding: 1.5em;
+	text-align: center;
+	color: #a0a0a0;
+}
