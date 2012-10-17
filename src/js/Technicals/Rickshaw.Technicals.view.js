@@ -9,6 +9,7 @@ Rickshaw.Technicals.view = {
 		var series = this.series = args.series;
 		var legend = this.legend = args.legend;
 		var shelving = this.shelving = args.shelving;
+		var ele = this.ele = args.ele;
 
 		if(!tech.independant){
 			graph.series.push(series);
@@ -20,12 +21,11 @@ Rickshaw.Technicals.view = {
 			// if there is only one series, put it in an array
 			if(series.length === undefined) series = [series];
 			// new graph
-			if($('.tech_chart').length === 0)
-				$('body').append("<div class='tech_chart'></div>");
-			else 
+			if(ele.length !== 0)
 				$('.tech_chart').html('');
+			
 			var tech_chart = new Rickshaw.Graph( {
-				element: document.getElementsByClassName("tech_chart")[0],
+				element: ele,
 				width: graph.width,
 				height: 200,
 				min : 'auto',
