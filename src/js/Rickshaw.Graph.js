@@ -78,17 +78,18 @@ Rickshaw.Graph = function(args) {
 
 			if (pointsCount && s.data.length != pointsCount) {
 				throw "series cannot have differing numbers of points: " +
-					pointsCount	+ " vs " + s.data.length + "; see Rickshaw.Series.zeroFill()";
+					pointsCount	+ " vs " + s.data.length + "; see Rickshaw.Series.fill()";
 			}
 
-			var dataTypeX = typeof s.data[0].x;
-			var dataTypeY = typeof s.data[0].y;
+			var x = s.data[0].x;
+			var y = s.data[0].y;
 
-			if (dataTypeX != 'number' || dataTypeY != 'number') {
+			if (typeof x != 'number' || ( typeof y != 'number' && y !== null ) ) {
 				throw "x and y properties of points should be numbers instead of " +
-					dataTypeX + " and " + dataTypeY;
+					(typeof x) + " and " + (typeof y)
 			}
-		} );
+
+		}, this );
 	};
 
 	this.dataDomain = function() {
@@ -137,10 +138,15 @@ Rickshaw.Graph = function(args) {
 			data = entry.f.apply(self, [data]);
 		} );
 
-		var layout = d3.layout.stack();
-		layout.offset( self.offset );
+		var stackedData;
 
-		var stackedData = layout(data);
+		if (!this.renderer.unstack) {
+			var layout = d3.layout.stack();
+			layout.offset( self.offset );
+			stackedData = layout(data);
+		}
+
+		stackedData = stackedData || data;
 
 		this.stackData.hooks.after.forEach( function(entry) {
 			stackedData = entry.f.apply(self, [data]);

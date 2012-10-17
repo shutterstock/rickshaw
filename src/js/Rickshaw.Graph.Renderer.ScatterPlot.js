@@ -30,7 +30,7 @@ Rickshaw.Graph.Renderer.ScatterPlot = Rickshaw.Class.create( Rickshaw.Graph.Rend
 			if (series.disabled) return;
 
 			var nodes = graph.vis.selectAll("path")
-				.data(series.stack)
+				.data(series.stack.filter( function(d) { return d.y !== null } ))
 				.enter().append("svg:circle")
 				.attr("cx", function(d) { return graph.x(d.x) })
 				.attr("cy", function(d) { return graph.y(d.y) })

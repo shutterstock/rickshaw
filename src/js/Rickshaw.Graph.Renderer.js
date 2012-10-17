@@ -30,25 +30,36 @@ Rickshaw.Graph.Renderer = Rickshaw.Class.create( {
 
 	domain: function() {
 
-		var values = [];
+		var values = { xMin: [], xMax: [], y: [] };
+
 		var stackedData = this.graph.stackedData || this.graph.stackData();
+		var firstPoint = stackedData[0][0];
 
-		var topSeriesData = this.unstack ? stackedData : [ stackedData.slice(-1).shift() ];
+		var xMin = firstPoint.x;
+		var xMax = firstPoint.x
 
-		topSeriesData.forEach( function(series) {
+		var yMin = firstPoint.y + firstPoint.y0;
+		var yMax = firstPoint.y + firstPoint.y0;
+
+		stackedData.forEach( function(series) {
+
 			series.forEach( function(d) {
-				values.push( d.y + d.y0 );
-			} );
-		} );
 
-		var xMin = stackedData[0][0].x;
-		var xMax = stackedData[0][ stackedData[0].length - 1 ].x;
+				var y = d.y + d.y0;
+
+				if (y < yMin) yMin = y;
+				if (y > yMax) yMax = y;
+			} );
+
+			if (series[0].x < xMin) xMin = series[0].x;
+			if (series[series.length - 1].x > xMax) xMax = series[series.length - 1].x;
+		} );
 
 		xMin -= (xMax - xMin) * this.padding.left;
 		xMax += (xMax - xMin) * this.padding.right;
 
-		var yMin = this.graph.min === 'auto' ? d3.min( values ) : this.graph.min || 0;
-		var yMax = this.graph.max || d3.max( values );
+		yMin = this.graph.min === 'auto' ? yMin : this.graph.min || 0;
+		yMax = this.graph.max || yMax;
 
 		if (this.graph.min === 'auto' || yMin < 0) {
 			yMin -= (yMax - yMin) * this.padding.bottom;
