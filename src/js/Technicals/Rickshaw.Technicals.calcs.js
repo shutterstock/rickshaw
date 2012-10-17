@@ -38,7 +38,7 @@ Rickshaw.Technicals.calcs = {
 			curve_sel : true
 		}], 
 		calc : function(args) {
-			var period = this.period = args.period['p'];
+			var period = this.period = args.period['period'];
 			var datum = this.datum = args.datum;
 			var nums = [];
 			var res_arr = [];
