@@ -6,21 +6,22 @@ Rickshaw is a JavaScript toolkit for creating interactive time series graphs, de
 
 Getting started with a simple graph is straightforward.  Here's the gist:
 
-    var graph = new Rickshaw.Graph( {
-      element: document.querySelector('#graph'),
-      series: [
-        {
-          color: 'steelblue',
-          data: [ { x: 0, y: 23}, { x: 1, y: 15 }, { x: 2, y: 79 } ],
-        }, {
-          color: 'lightblue',
-          data: [ { x: 0, y: 30}, { x: 1, y: 20 }, { x: 2, y: 64 } ],
-        }
-      ]
-    } );
+```javascript
+var graph = new Rickshaw.Graph( {
+  element: document.querySelector('#graph'),
+  series: [
+    {
+      color: 'steelblue',
+      data: [ { x: 0, y: 23}, { x: 1, y: 15 }, { x: 2, y: 79 } ]
+    }, {
+      color: 'lightblue',
+      data: [ { x: 0, y: 30}, { x: 1, y: 20 }, { x: 2, y: 64 } ]
+    }
+  ]
+} );
 
-    graph.render();
-
+graph.render();
+```
 See the [overview](http://code.shutterstock.com/rickshaw/), [tutorial](http://shutterstock.github.com/rickshaw/tutorial/introduction.html), and [examples](http://shutterstock.github.com/rickshaw/examples/) for more.
 
 ## Rickshaw.Graph 
@@ -112,7 +113,7 @@ Once you have a basic graph, extensions let you add functionality.  See the [ove
 
 Rickshaw comes with a few color schemes. Instantiate a palette and specify a scheme name, and then call color() on the palette to get each next color.
 
-```
+```javascript
 var palette = new Rickshaw.Color.Palette( { scheme: 'spectrum2001' } );
     
 palette.color() // => first color in the palette
@@ -155,7 +156,7 @@ This library was developed by David Chester, Douglas Hunter, and Silas Sewell at
 
 ## License
 
-Copyright (C) 2011 by Shutterstock Images, LLC
+Copyright (C) 2011-2012 by Shutterstock Images, LLC
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 

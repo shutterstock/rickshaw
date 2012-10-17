@@ -9,7 +9,7 @@ Rickshaw.Graph = function(args) {
 		interpolation: 'cardinal',
 		offset: 'zero',
 		min: undefined,
-		max: undefined,
+		max: undefined
 	};
 
 	Rickshaw.keys(this.defaults).forEach( function(k) {

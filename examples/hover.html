@@ -4,8 +4,7 @@
 	<link type="text/css" rel="stylesheet" href="../src/css/detail.css">
 	<link type="text/css" rel="stylesheet" href="../src/css/legend.css">
 
-	<script src="../vendor/d3.min.js"></script>
-	<script src="../vendor/d3.layout.min.js"></script>
+	<script src="../vendor/d3.v2.js"></script>
 
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
 
@@ -112,7 +111,7 @@ var Hover = Rickshaw.Class.create(Rickshaw.Graph.HoverDetail, {
 			var dot = document.createElement('div');
 			dot.className = 'dot';
 			dot.style.top = graph.y(d.value.y0 + d.value.y) + 'px';
-			dot.style.backgroundColor = d.series.color;
+			dot.style.borderColor = d.series.color;
 
 			this.element.appendChild(dot);
 

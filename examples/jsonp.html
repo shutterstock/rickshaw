@@ -3,18 +3,11 @@
 	<link type="text/css" rel="stylesheet" href="../src/css/graph.css">
 	<link type="text/css" rel="stylesheet" href="css/lines.css">
 
-	<script src="../vendor/d3.min.js"></script>
-	<script src="../vendor/d3.layout.min.js"></script>
+	<script src="../vendor/d3.v2.js"></script>
 
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.1/jquery.min.js"></script>
 
-	<script src="../src/js/Rickshaw.js"></script>
-	<script src="../src/js/Rickshaw.Compat.ClassList.js"></script>
-	<script src="../src/js/Rickshaw.Graph.js"></script>
-	<script src="../src/js/Rickshaw.Series.js"></script>
-	<script src="../src/js/Rickshaw.Graph.JSONP.js"></script>
-	<script src="../src/js/Rickshaw.Graph.Unstacker.js"></script>
-	<script src="../src/js/Rickshaw.Graph.Renderer.Line.js"></script>
+	<script src="../rickshaw.js"></script>
 </head>
 <body>
 
@@ -24,13 +17,27 @@
 
 <script>
 
-var jsonpGraph = new Rickshaw.Graph.JSONP( {
+// subclass to hard-code callback name so we can call this in a static context
+
+Rickshaw.Graph.JSONP.Static = Rickshaw.Class.create( Rickshaw.Graph.JSONP, {
+	request: function() {
+		$.ajax( {
+			url: this.dataURL,
+			success: this.success.bind(this),
+			error: this.error.bind(this),
+			dataType: 'jsonp',
+			jsonpCallback: 'callback'
+		} );
+	}
+} );
+
+var jsonpGraph = new Rickshaw.Graph.JSONP.Static( {
 
 	element: document.getElementById("chart"),
 	width: 400,
 	height: 200,
 	renderer: 'line',
-	dataURL: '/examples/data/sample.jsonp',
+	dataURL: 'data/data.jsonp',
 	onData: function(d) { Rickshaw.Series.zeroFill(d); return d },
 	series: [
 		{
