@@ -112,10 +112,10 @@ Rickshaw.Technicals.calcs = {
 				res_arr.push({ x: curr_obj.x, y0: curr_obj.y0, y: k });
 			}
 			var sma_period = [];
-			sma_period['p'] = period['%d'];
+			sma_period['period'] = period['%d'];
 			return {
 				'%k' : res_arr,
-				'%d' : Rickshaw.Graph.Technicals.sma.calc({
+				'%d' : Rickshaw.Technicals.calcs.sma.calc({
 					datum: res_arr, 
 					period: sma_period
 				})['sma']
