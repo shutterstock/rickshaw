@@ -5,10 +5,9 @@
 	<link type="text/css" rel="stylesheet" href="../src/css/graph.css">
 	<link type="text/css" rel="stylesheet" href="../src/css/detail.css">
 	<link type="text/css" rel="stylesheet" href="../src/css/legend.css">
+
 	<link type="text/css" rel="stylesheet" href="css/lines.css">
-	<link type="text/css" rel="stylesheet" href="../src/css/bootstrap.css">
-	<link type="text/css" rel="stylesheet" href="../src/css/bootstrap-responsive.css">
-	<link type="text/css" rel="stylesheet" href="../src/css/technicals.css">
+	<link type="text/css" rel="stylesheet" href="css/technicals.css">
 
 	<script src="../vendor/d3.min.js"></script>
 	<script src="../vendor/d3.layout.min.js"></script>
@@ -17,9 +16,7 @@
 	<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.15/jquery-ui.min.js"></script>
 
 	<script src="../rickshaw.js"></script>
-	<script src="../src/js/Technicals/Rickshaw.Technicals.calcs.js"></script>
-	<script src="../src/js/Technicals/Rickshaw.Technicals.view.js"></script>
-	<script src="../dist/rickshaw.technicals.min.j"></script>
+	<script src="js/technicals.js"></script>
 </head>
 <body>
 	<div id="technical_form">
@@ -113,14 +110,18 @@
 			var period = new Array()
 			period['%k'] = 15;
 			period['%d'] = 3;
+/*
 			console.log(Rickshaw.Technicals.calcs.sma.calc({
 				datum: seriesData[0], 
 				period: period
 			}));
+*/
 
 			"use strict";
 			// set up shop
-			var tech = this.tech = Rickshaw.Technicals.calcs['f_stochastic'];
+
+			var tech = this.tech = new Rickshaw.Technicals.FStochastic();
+
 			var elem = $('#technical_form');
 			this.graph = graph;
 			var self = this;
