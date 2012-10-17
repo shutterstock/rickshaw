@@ -3,13 +3,13 @@ module.exports = function(grunt) {
 
   // Project configuration.
   grunt.initConfig({
+    pkg: '<json:package.json>',
     meta: {
-      version: '0.1.0',
-      banner: '/*! PROJECT_NAME - v<%= meta.version %> - ' +
-        '<%= grunt.template.today("yyyy-mm-dd") %>\n' +
-        '* http://PROJECT_WEBSITE/\n' +
-        '* Copyright (c) <%= grunt.template.today("yyyy") %> ' +
-        'YOUR_NAME; Licensed MIT */'
+	banner: '/*! PROJECT_NAME - v<%= meta.version %> - ' +
+        	'<%= grunt.template.today("yyyy-mm-dd") %>\n' +
+        	'* http://PROJECT_WEBSITE/\n' +
+        	'* Copyright (c) <%= grunt.template.today("yyyy") %> ' +
+        	'YOUR_NAME; Licensed MIT */'
     },
     lint: {
       //files: ['grunt.js', 'src/js/*.js', 'tests/**/*.js']
@@ -21,7 +21,7 @@ module.exports = function(grunt) {
     concat: {
       dist: {
         src: ['<banner:meta.banner>', 'src/js/Technicals/*.js'],
-        dest: 'dist/rickshaw.js'
+        dest: 'dist/rickshaw.technicals.min.js'
       }
     },
     min: {
