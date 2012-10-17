@@ -31,10 +31,10 @@ fieldset{
 input, select, label{
 	display: block;
 }
-.tech_chart{
+#tech_chart{
 	float: left;
 	margin: 15px 0;
 }
-.tech_chart .x_tick .title{
+#tech_chart .x_tick .title{
 	display: none;
 }
