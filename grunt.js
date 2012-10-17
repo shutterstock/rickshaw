@@ -13,21 +13,21 @@ module.exports = function(grunt) {
     },
     lint: {
       //files: ['grunt.js', 'src/js/*.js', 'tests/**/*.js']
-      files: ['src/js/Rickshaw.Graph.Technicals.js']
+	all: ['src/js/Technicals/*.js']
     },
     qunit: {
       files: ['tests/**/*.html']
     },
     concat: {
       dist: {
-        src: ['<banner:meta.banner>', 'src/js/*.js'],
+        src: ['<banner:meta.banner>', 'src/js/Technicals/*.js'],
         dest: 'dist/rickshaw.js'
       }
     },
     min: {
       dist: {
-        src: ['<banner:meta.banner>', '<config:concat.dist.dest>'],
-        dest: 'dist/rickshaw.min.js'
+        src: ['<banner:meta.banner>', 'src/js/Technicals/*.js'],
+        dest: 'dist/rickshaw.technicals.min.js'
       }
     },
     watch: {
