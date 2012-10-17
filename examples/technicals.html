@@ -23,7 +23,7 @@
 </head>
 <body>
 	<div id="technical_form">
-		<h4>Simple Moving Average</h4>
+		<h4>Fast Stochastic</h4>
 		<form>
 			<fieldset>
 				<label for="%k">%K</label>
@@ -142,20 +142,11 @@
 				});
 				// create the series object that will be drawn on the graph
 				for(var key in data){
-					// a technical can generate one or more lines
-					if(Object.keys(data).length === 1){
-						calc_obj = {
-							color: '#'+Math.floor(Math.random()*16777215).toString(16),
-							data: data[key],
-							name: key
-						};
-					} else{
-						calc_obj.push({
-							color: '#'+Math.floor(Math.random()*16777215).toString(16),
-							data: data[key],
-							name: key
-						});					
-					}
+					calc_obj.push({
+						color: '#'+Math.floor(Math.random()*16777215).toString(16),
+						data: data[key],
+						name: key
+					});					
 				}
 				// Draw the data on the passed graph or a new graph
 				Rickshaw.Technicals.view.draw({

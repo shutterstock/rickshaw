@@ -11,7 +11,7 @@ Rickshaw.Technicals.view = {
 		var shelving = this.shelving = args.shelving;
 		var ele = this.ele = args.ele;
 
-		if(!tech.independant){
+		if(!tech.independent){
 			graph.series.push(series);
 			graph.render();
 			legend.addLine(graph.series[graph.series.length-1]);

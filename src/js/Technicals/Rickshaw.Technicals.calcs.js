@@ -3,8 +3,8 @@ Rickshaw.namespace('Rickshaw.Technicals.calcs');
 Rickshaw.Technicals.calcs = {
 	// Momentum is the absolute difference m = d(today) - d(n days ago)
 	momentum : {
-		name : "mementum",
-		independant : true,
+		name : "momentum",
+		independent : true,
 		fields : [{
 			name : "period",
 			id : "p",
@@ -12,7 +12,7 @@ Rickshaw.Technicals.calcs = {
 			curve_sel : true
 		}], 
 		calc : function(args) {
-			var period = this.period = args.period['p'];
+			var period = this.period = args.period['period'];
 			var datum = this.datum = args.datum;
 			var res_arr = [];
 			var length = datum.length;
@@ -29,7 +29,7 @@ Rickshaw.Technicals.calcs = {
 	},
 	// Simple moving average
 	sma : {
-		independant : false,
+		independent : false,
 		name : "simple moving average",
 		fields : [{
 			name : "period",
@@ -74,7 +74,7 @@ Rickshaw.Technicals.calcs = {
 	f_stochastic : {
 		// constructor
 		name : "fast stochastic",
-		independant : true,
+		independent : true,
 		fields : [{
 				name : "%K period",
 				id : "%k",
