@@ -19,14 +19,17 @@
 	<script src="../rickshaw.js"></script>
 	<script src="../src/js/Technicals/Rickshaw.Technicals.calcs.js"></script>
 	<script src="../src/js/Technicals/Rickshaw.Technicals.view.js"></script>
+	<script src="../dist/rickshaw.technicals.min.j"></script>
 </head>
 <body>
 	<div id="technical_form">
 		<h4>Simple Moving Average</h4>
 		<form>
 			<fieldset>
-				<label for="period">Period</label>
-				<input name="period" id="period" class="period" />
+				<label for="%k">%K</label>
+				<input name="%k" id="%k" class="period" />
+				<label for="%d">%D</label>
+				<input name="%d" id="%d" class="period" />
 								
 				<label for="datum">Datum</label>
 				<select name="datum" id="datum_sel">
@@ -43,6 +46,7 @@
 		<div id="chart"></div>
 		<div id="slider"></div>
 	</div>
+	<div id='tech_chart'></div>
 
 	<script type="text/javascript">
 		// set up our data series with 50 random data points
@@ -106,7 +110,9 @@
 
 		$(document).ready(function(e){
 			// you can use this to only get the values
-			period['period'] = 30;
+			var period = new Array()
+			period['%k'] = 15;
+			period['%d'] = 3;
 			console.log(Rickshaw.Technicals.calcs.sma.calc({
 				datum: seriesData[0], 
 				period: period
@@ -114,7 +120,7 @@
 
 			"use strict";
 			// set up shop
-			var tech = this.tech = Rickshaw.Technicals.calcs['sma'];
+			var tech = this.tech = Rickshaw.Technicals.calcs['f_stochastic'];
 			var elem = $('#technical_form');
 			this.graph = graph;
 			var self = this;
@@ -127,7 +133,7 @@
 				var period = [];
 				// could be multiple periods so we need to loop
 				elem.find('form input.period').each(function(index) {
-					period[$(this).attr('id')] = $(this).val();
+					period[$(this).attr('name')] = $(this).val();
 				});
 				// Run the calculator
 				var data = tech.calc({
@@ -157,7 +163,8 @@
 					tech : tech,
 					series : calc_obj,
 					legend : legend,
-					shelving : shelving
+					shelving : shelving,
+					ele: document.getElementById("tech_chart")
 				});
 			});
 		});
