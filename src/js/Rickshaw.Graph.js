@@ -74,13 +74,6 @@ Rickshaw.Graph = function(args) {
 				throw "series data is not an array: " + JSON.stringify(s.data);
 			}
 
-			pointsCount = pointsCount || s.data.length;
-
-			if (pointsCount && s.data.length != pointsCount) {
-				throw "series cannot have differing numbers of points: " +
-					pointsCount	+ " vs " + s.data.length + "; see Rickshaw.Series.fill()";
-			}
-
 			var x = s.data[0].x;
 			var y = s.data[0].y;
 
@@ -141,6 +134,9 @@ Rickshaw.Graph = function(args) {
 		var stackedData;
 
 		if (!this.renderer.unstack) {
+
+			this._validateStackable();
+
 			var layout = d3.layout.stack();
 			layout.offset( self.offset );
 			stackedData = layout(data);
@@ -160,6 +156,23 @@ Rickshaw.Graph = function(args) {
 
 		this.stackedData = stackedData;
 		return stackedData;
+	};
+
+	this._validateStackable = function() {
+
+		var series = this.series;
+		var pointsCount;
+
+		series.forEach( function(s) {
+
+			pointsCount = pointsCount || s.data.length;
+
+			if (pointsCount && s.data.length != pointsCount) {
+				throw "stacked series cannot have differing numbers of points: " +
+					pointsCount + " vs " + s.data.length + "; see Rickshaw.Series.fill()";
+			}
+
+		}, this );
 	};
 
 	this.stackData.hooks = { data: [], after: [] };
