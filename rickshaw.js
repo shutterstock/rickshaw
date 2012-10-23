@@ -7,7 +7,7 @@ var Rickshaw = {
 		var parent = Rickshaw;
 
 		for(var i = 1, length = parts.length; i < length; i++) {
-			currentPart = parts[i];
+			var currentPart = parts[i];
 			parent[currentPart] = parent[currentPart] || {};
 			parent = parent[currentPart];
 		}
@@ -1194,7 +1194,7 @@ Rickshaw.Graph.Axis.Time = function(args) {
 
 		for (var i = 0; i < count; i++) {
 
-			tickValue = time.ceil(runningTick, unit);
+			var tickValue = time.ceil(runningTick, unit);
 			runningTick = tickValue + unit.seconds / 2;
 
 			offsets.push( { value: tickValue, unit: unit } );
@@ -1604,7 +1604,7 @@ Rickshaw.Graph.HoverDetail = Rickshaw.Class.create({
 				dataIndex = i;
 				break;
 			}
-			if (stackedData[0][i + 1] <= domainX) { i++ } else { i-- }
+			if (stackedData[0][i + 1].x <= domainX) { i++ } else { i-- }
 		}
 
 		var domainX = stackedData[0][dataIndex].x;
@@ -1786,7 +1786,7 @@ Rickshaw.Graph.Legend = function(args) {
 		line.appendChild(swatch);
 
 		var label = document.createElement('span');
-		label.className = 'label';
+		label.className = 'rickshaw_label';
 		label.innerHTML = series.name;
 
 		line.appendChild(label);
