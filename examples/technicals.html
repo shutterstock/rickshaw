@@ -9,8 +9,7 @@
 	<link type="text/css" rel="stylesheet" href="css/lines.css">
 	<link type="text/css" rel="stylesheet" href="css/technicals.css">
 
-	<script src="../vendor/d3.min.js"></script>
-	<script src="../vendor/d3.layout.min.js"></script>
+	<script src="../vendor/d3.v2.js"></script>
 
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8/jquery.min.js"></script>
 	<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.15/jquery-ui.min.js"></script>
@@ -110,17 +109,11 @@
 			var period = new Array()
 			period['%k'] = 15;
 			period['%d'] = 3;
-/*
-			console.log(Rickshaw.Technicals.calcs.sma.calc({
-				datum: seriesData[0], 
-				period: period
-			}));
-*/
 
 			"use strict";
 			// set up shop
 
-			var tech = this.tech = new Rickshaw.Technicals.FStochastic();
+			var tech = new Rickshaw.Technicals.FStochastic();
 
 			var elem = $('#technical_form');
 			this.graph = graph;
