@@ -106,9 +106,18 @@
 
 		$(document).ready(function(e){
 			// you can use this to only get the values
-			var period = new Array()
+			var period = new Array();
 			period['%k'] = 15;
 			period['%d'] = 3;
+      
+      var period = new Array();
+      period['p'] = 1;
+      var tech = new Rickshaw.Technicals.Momentum();
+	    var data = tech.calc({
+        datum: [ {x: 0, y: 0, y0: 0}, {x: 1, y: 1, y0: 0}, { x: 2, y: 2, y0: 0} , { x: 3, y: 3, y0: 0}, { x: 4, y: 4, y0: 0}],
+		    period: period
+	    });
+console.log(data);
 
 			"use strict";
 			// set up shop
@@ -116,8 +125,6 @@
 			var tech = new Rickshaw.Technicals.FStochastic();
 
 			var elem = $('#technical_form');
-			this.graph = graph;
-			var self = this;
 			
 			// Listen to the form submission and process data accordingly
 			elem.find('form').on('submit', function(e){
@@ -131,7 +138,7 @@
 				});
 				// Run the calculator
 				var data = tech.calc({
-					datum: self.graph.series[datum].data,
+					datum: graph.series[datum].data,
 					period: period
 				});
 				// create the series object that will be drawn on the graph
