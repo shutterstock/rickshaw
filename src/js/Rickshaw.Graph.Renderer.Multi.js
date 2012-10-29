@@ -70,6 +70,7 @@ Rickshaw.Graph.Renderer.Multi = Rickshaw.Class.create( Rickshaw.Graph.Renderer, 
   },
 
   getStatus: function() {
+    var graph = this.graph;
     var origin_renderer = graph.renderer;
     var origin_series = graph.series;
     var origin_vis = graph.vis;
@@ -88,6 +89,7 @@ Rickshaw.Graph.Renderer.Multi = Rickshaw.Class.create( Rickshaw.Graph.Renderer, 
   },
 
   putStatus: function(status) {
+    var graph = this.graph;
     if (status.hasOwnProperty('renderer')) 
       graph.renderer = status['renderer'];
     if (status.hasOwnProperty('series')) 

@@ -313,6 +313,7 @@ Rickshaw.Graph.HoverDetail.Multi = Rickshaw.Class.create({
 	},
 
 	getStatus: function() {
+	  var graph=this.graph;
 		var origin_renderer = graph.renderer;
 		var origin_series = graph.series;
 		var origin_vis = graph.vis;
@@ -331,6 +332,7 @@ Rickshaw.Graph.HoverDetail.Multi = Rickshaw.Class.create({
 	},
 
 	putStatus: function(status) {
+	  var graph=this.graph;
 		if (status.hasOwnProperty('renderer')) 
 			graph.renderer = status['renderer'];
 		if (status.hasOwnProperty('series')) 
