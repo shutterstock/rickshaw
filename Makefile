@@ -27,6 +27,7 @@ JS_FILES=\
 	src/js/Rickshaw.Graph.Behavior.Series.Order.js\
 	src/js/Rickshaw.Graph.Behavior.Series.Toggle.js\
 	src/js/Rickshaw.Graph.HoverDetail.js\
+	src/js/Rickshaw.Graph.HoverDetail.Multi.js\
 	src/js/Rickshaw.Graph.JSONP.js\
 	src/js/Rickshaw.Graph.Legend.js\
 	src/js/Rickshaw.Graph.RangeSlider.js\
@@ -36,6 +37,7 @@ JS_FILES=\
 	src/js/Rickshaw.Graph.Renderer.Bar.js\
 	src/js/Rickshaw.Graph.Renderer.Area.js\
 	src/js/Rickshaw.Graph.Renderer.ScatterPlot.js\
+	src/js/Rickshaw.Graph.Renderer.Multi.js\
 	src/js/Rickshaw.Graph.Smoother.js\
 	src/js/Rickshaw.Graph.Unstacker.js\
 	src/js/Rickshaw.Series.js\
