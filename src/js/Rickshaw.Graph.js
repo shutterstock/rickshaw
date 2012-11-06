@@ -113,6 +113,12 @@ Rickshaw.Graph = function(args) {
 			.range([0, this.height]);
 	};
 
+	this.resizeSVG = function(){
+		d3.select(this.element.firstChild)
+			.attr("height",this.height)
+			.attr("width",this.width);
+	};
+
 	this.render = function() {
 
 		var stackedData = this.stackData();
@@ -123,6 +129,7 @@ Rickshaw.Graph = function(args) {
 		this.updateCallbacks.forEach( function(callback) {
 			callback();
 		} );
+		this.resizeSVG();
 	};
 
 	this.update = this.render;
