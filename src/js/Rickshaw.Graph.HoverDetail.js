@@ -54,7 +54,7 @@ Rickshaw.Graph.HoverDetail = Rickshaw.Class.create({
 
 		var domainIndexScale = d3.scale.linear()
 			.domain([topSeriesData[0].x, topSeriesData.slice(-1).shift().x])
-			.range([0, topSeriesData.length]);
+			.range([0, graph.renderer.name == 'bar' ? topSeriesData.length - 1 : topSeriesData.length]);
 
 		var approximateIndex = Math.floor(domainIndexScale(domainX));
 		var dataIndex = Math.min(approximateIndex || 0, stackedData[0].length - 1);
