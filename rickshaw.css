@@ -246,7 +246,7 @@
 	color: white;
 	background: #404040;
 	display: inline-block;
-	padding: 12px 5px; 
+	padding: 12px 5px;
 	border-radius: 2px;
 	position: relative;
 }
@@ -268,7 +268,7 @@
 	margin-right: 3px;
 	border-radius: 2px;
 }
-.rickshaw_legend .label {
+.rickshaw_legend .rickshaw_label {
 	white-space: nowrap;
 	display: inline;
 }

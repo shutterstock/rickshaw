@@ -29,7 +29,7 @@ Rickshaw.Graph.Legend = function(args) {
 		line.appendChild(swatch);
 
 		var label = document.createElement('span');
-		label.className = 'label';
+		label.className = 'rickshaw_label';
 		label.innerHTML = series.name;
 
 		line.appendChild(label);
