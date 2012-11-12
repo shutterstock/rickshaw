@@ -135,7 +135,6 @@ Rickshaw.Series = Rickshaw.Class.create( Array, {
 } );
 
 Rickshaw.Series.zeroFill = function(series) {
-	console.log('zeroFill');
 	Rickshaw.Series.fill(series, 0);
 };
 
