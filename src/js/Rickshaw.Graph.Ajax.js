@@ -62,7 +62,7 @@ Rickshaw.Graph.Ajax = Rickshaw.Class.create( {
 				if (seriesKey == dataKey) {
 					var properties = ['color', 'name', 'data'];
 					properties.forEach( function(p) {
-						s[p] = s[p] || d[p];
+						if (d[p]) s[p] = d[p];
 					} );
 				}
 			} );
