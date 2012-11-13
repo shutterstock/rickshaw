@@ -140,6 +140,7 @@ Rickshaw.Graph.HoverDetail = Rickshaw.Class.create({
 
 	render: function(args) {
 
+		var graph = this.graph;
 		var points = args.points;
 		var point = points.filter( function(p) { return p.active } ).shift();
 
