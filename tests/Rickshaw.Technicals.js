@@ -10,15 +10,22 @@ var sample_data = {
   },
   results : {
     sma : {
-      constant : [ {x: 0, y: null, y0: 0}, {x: 1, y: null, y0: 0}, { x: 2, y: 1, y0: 0} , { x: 3, y: 2, y0: 0}, { x: 4, y: 3, y0: 0}, { x: 5, y: 4, y0: 0}, { x: 6, y: 5,y0: 0}, { x: 7, y: 6, y0: 0}, { x: 8, y: 7, y0: 0}],
-      fib : [ {x: 0, y: null, y0: 0}, {x: 1, y: null, y0: 0}, { x: 1, y: null, y0: 0} , { x: 2, y: null, y0: 0}, { x: 3, y: 1.4, y0: 0}, { x: 5, y: 2.4, y0: 0}, { x: 8, y: 3.8,y0: 0}, { x: 13, y: 6.2, y0: 0}, { x: 21, y: 10, y0: 0}],
+      constant : [ {x: 0, y: null, y0: 0}, {x: 1, y: null, y0: 0}, { x: 2, y: null, y0: 0} , { x: 3, y: 2, y0: 0}, { x: 4, y: 3, y0: 0}, { x: 5, y: 4, y0: 0}, { x: 6, y: 5,y0: 0}, { x: 7, y: 6, y0: 0}, { x: 8, y: 7, y0: 0}],
+      fib : [ {x: 0, y: null, y0: 0}, {x: 1, y: null, y0: 0}, { x: 1, y: null, y0: 0} , { x: 2, y: null, y0: 0}, { x: 3, y: null, y0: 0}, { x: 5, y: 2.4, y0: 0}, { x: 8, y: 3.8,y0: 0}, { x: 13, y: 6.2, y0: 0}, { x: 21, y: 10, y0: 0}],
       prime : [ {x: 2, y: null, y0: 0}, {x: 3, y: null, y0: 0}, { x: 5, y: null, y0: 0} , { x: 7, y: null, y0: 0}, { x: 11, y: 5.6, y0: 0}, { x: 13, y: 7.8, y0: 0}, { x: 17, y: 10.6,y0: 0}, { x: 19, y: 13.4, y0: 0}, { x: 23, y: 16.6, y0: 0}]
     },
     stochastic : {
-      constant : [ {x: 0, y: null, y0: 0}, {x: 1, y: null, y0: 0}, { x: 2, y: 1, y0: 0} , { x: 3, y: 2, y0: 0}, { x: 4, y: 3, y0: 0}, { x: 5, y: 4, y0: 0}, { x: 6, y: 5,y0: 0}, { x: 7, y: 6, y0: 0}, { x: 8, y: 7, y0: 0}],
-      fib : [ {x: 0, y: null, y0: 0}, {x: 1, y: null, y0: 0}, { x: 1, y: null, y0: 0} , { x: 2, y: null, y0: 0}, { x: 3, y: 1.4, y0: 0}, { x: 5, y: 2.4, y0: 0}, { x: 8, y: 3.8,y0: 0}, { x: 13, y: 6.2, y0: 0}, { x: 21, y: 10, y0: 0}],
-      prime : [ {x: 2, y: null, y0: 0}, {x: 3, y: null, y0: 0}, { x: 5, y: null, y0: 0} , { x: 7, y: null, y0: 0}, { x: 11, y: 5.6, y0: 0}, { x: 13, y: 7.8, y0: 0}, { x: 17, y: 10.6,y0: 0}, { x: 19, y: 13.4, y0: 0}, { x: 23, y: 16.6, y0: 0}]
-    }
+			k : {
+      	constant : [ {x: 0, y: null, y0: 0}, {x: 1, y: null, y0: 0}, { x: 2, y: 100, y0: 0} , { x: 3, y: 100, y0: 0}, { x: 4, y: 100, y0: 0}, { x: 5, y: 100, y0: 0}, { x: 6, y: 100,y0: 0}, { x: 7, y: 100, y0: 0}, { x: 8, y: 100, y0: 0}],
+      	fib : [ {x: 0, y: null, y0: 0}, {x: 1, y: null, y0: 0}, { x: 1, y: null, y0: 0} , { x: 2, y: null, y0: 0}, { x: 3, y: 1.4, y0: 0}, { x: 5, y: 2.4, y0: 0}, { x: 8, y: 3.8,y0: 0}, { x: 13, y: 6.2, y0: 0}, { x: 21, y: 10, y0: 0}],
+      	prime : [ {x: 2, y: null, y0: 0}, {x: 3, y: null, y0: 0}, { x: 5, y: null, y0: 0} , { x: 7, y: null, y0: 0}, { x: 11, y: 5.6, y0: 0}, { x: 13, y: 7.8, y0: 0}, { x: 17, y: 10.6,y0: 0}, { x: 19, y: 13.4, y0: 0}, { x: 23, y: 16.6, y0: 0}]
+    	},
+			d : {
+				constant : [ {x: 0, y: null, y0: 0}, {x: 1, y: null, y0: 0}, { x: 2, y: 100, y0: 0} , { x: 3, y: 100, y0: 0}, { x: 4, y: 100, y0: 0}, { x: 5, y: 100, y0: 0}, { x: 6, y: 100,y0: 0}, { x: 7, y: 100, y0: 0}, { x: 8, y: 100, y0: 0}],
+      	fib : [ {x: 0, y: null, y0: 0}, {x: 1, y: null, y0: 0}, { x: 1, y: null, y0: 0} , { x: 2, y: null, y0: 0}, { x: 3, y: 1.4, y0: 0}, { x: 5, y: 2.4, y0: 0}, { x: 8, y: 3.8,y0: 0}, { x: 13, y: 6.2, y0: 0}, { x: 21, y: 10, y0: 0}],
+      	prime : [ {x: 2, y: null, y0: 0}, {x: 3, y: null, y0: 0}, { x: 5, y: null, y0: 0} , { x: 7, y: null, y0: 0}, { x: 11, y: 5.6, y0: 0}, { x: 13, y: 7.8, y0: 0}, { x: 17, y: 10.6,y0: 0}, { x: 19, y: 13.4, y0: 0}, { x: 23, y: 16.6, y0: 0}]
+			}
+		}
   }
   //return data[arg];
 };
@@ -93,32 +100,43 @@ exports.primesma = function(test) {
 ////////////   stochastic
 function stochastic(data_set, period, test, msg){
   var tech = new Rickshaw.Technicals.FStochastic();
-	var results = sample_data.results.stochastic[data_set];
+	var results_k = sample_data.results.stochastic.k[data_set];
+	var results_d = sample_data.results.stochastic.d[data_set];
   var data = tech.calc({
     datum: sample_data.data[data_set],
     period: period
 	});
-  for(var i in data.stochastic){
-	  test.equal(data.stochastic[i].y, results[i].y, msg);
+console.log(data); 
+ 	for(var i in data['%k']){
+	  test.equal(data['%k'][i].y, results_k[i].y, msg);
   }
-  test.done();
+ 	for(var i in data['%d']){
+	  test.equal(data['%d'][i].y, results_d[i].y, msg);
+  }
+	test.done();
 }
-
+/*
 exports.constantstochastic = function(test) {
   var period = new Array();
-  period['p'] = 3;
-  sma('constant', period, test, 'constant stochastic');
+	period['%k'] = 3;
+	period['%d'] = 2;
+  stochastic('constant', period, test, 'constant stochastic');
 };
+
+
+
 
 exports.fibstochastic = function(test) {
   var period = new Array();
-  period['p'] = 5;
+	period['%k'] = 15;
+	period['%d'] = 3;
   sma('fib', period, test, 'fib stochastic');
 };
 
 exports.primestochastic = function(test) {
   var period = new Array();
-  period['p'] = 5;
+	period['%k'] = 15;
+	period['%d'] = 3;
   sma('prime', period, test, 'prime stochastic');
 };
-
+*/

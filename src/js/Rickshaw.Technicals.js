@@ -17,7 +17,7 @@ Rickshaw.Technicals.Momentum = Rickshaw.Class.create(Rickshaw.Technicals, {
 		var length = datum.length;
 		for(var ele = 0; ele<length; ele++){
 			if(ele < period)
-				res_arr.push({ x: datum[ele].x, y0: datum[ele].y0, y: 0 });
+				res_arr.push({ x: datum[ele].x, y0: datum[ele].y0, y: null });
 			else
 				res_arr.push({ x: datum[ele].x, y0: datum[ele].y0, y: datum[ele].y - datum[ele-period].y });
 		}
@@ -38,30 +38,53 @@ Rickshaw.Technicals.SMA = Rickshaw.Class.create(Rickshaw.Technicals, {
 		curve_sel : true
 	}], 
 	calc : function(args) {
-		var period = this.period = args.period['period'];
+		var period = this.period = args.period['p'];
 		var datum = this.datum = args.datum;
 		var nums = [];
 		var res_arr = [];
 		var length = datum.length;
+	
+		// Is there enough data?
+		if(datum.length < period)
+			throw new Error("Data lenght must me at least the size of the period.");	
+
 		for(var ele = 0; ele<length; ele++){
+			var sum=0, num_nulls=0;
+			
+			// get elements on to the work arr
 			nums.push(datum[ele].y);
+
+			// Is it too soon?
+			if(ele < period-1){
+				res_arr.push({ x: datum[ele].x, y0: datum[ele].y0, y: null });
+				continue;
+			}
+			
+			// The work arr lenght has reached the period and needs to be trimed
 			if (nums.length > period)
 				nums.splice(0,1);  // remove the first element of the array
-			var sum = 0;
-			for (var i in nums)
+			
+			// loop through and look for nulls as well as add up a sum
+			for (var i in nums){
+				if(!nums[i])
+				 	num_nulls++;
 				sum += nums[i];
-			var n = period;
-			if (nums.length < period)
-				n = nums.length;
-
-			if(ele < period)
-				res_arr.push({ x: datum[ele].x, y0: datum[ele].y0, y: 0 });
-			else{
-				if(isNaN(sum/n))
-					res_arr.push({ x: datum[ele].x, y0: datum[ele].y0, y: 0 });
-				else 
-					res_arr.push({ x: datum[ele].x, y0: datum[ele].y0, y: sum/n });
 			}
+
+			// return a null if there are any nulls in the work array
+			if(num_nulls > 0){
+				res_arr.push({ x: datum[ele].x, y0: datum[ele].y0, y: null });
+				continue;
+			}
+
+//console.log(sum + '/' + period + '=' + (sum/period) + ' ele:' + ele);
+
+			// Something went wrong, calc is broken
+			if(isNaN(sum/period))
+				throw new Error("Something is wrong, the calc returned NaN");	
+			
+			// All good, return the calc already!
+			res_arr.push({ x: datum[ele].x, y0: datum[ele].y0, y: sum/period });
 		}
 		return {
 			'sma' : res_arr
@@ -109,10 +132,14 @@ Rickshaw.Technicals.FStochastic = Rickshaw.Class.create(Rickshaw.Technicals, {
 
 			var k = 100*(curr_obj.y - period_low)/(period_high - period_low);
 			if(isNaN(k)) k=0;
-			res_arr.push({ x: curr_obj.x, y0: curr_obj.y0, y: k });
+
+			if(nums.length < period['%k'])
+				res_arr.push({ x: datum[ele].x, y0: datum[ele].y0, y: null });
+			else
+				res_arr.push({ x: curr_obj.x, y0: curr_obj.y0, y: k });
 		}
 		var sma_period = [];
-		sma_period['period'] = period['%d'];
+		sma_period['p'] = period['%d'];
 		return {
 			'%k' : res_arr,
 			'%d' : new Rickshaw.Technicals.SMA().calc({
