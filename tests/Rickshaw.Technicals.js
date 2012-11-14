@@ -21,7 +21,7 @@ var sample_data = {
       	prime : [ {x: 2, y: null, y0: 0}, {x: 3, y: null, y0: 0}, { x: 5, y: null, y0: 0} , { x: 7, y: null, y0: 0}, { x: 11, y: 5.6, y0: 0}, { x: 13, y: 7.8, y0: 0}, { x: 17, y: 10.6,y0: 0}, { x: 19, y: 13.4, y0: 0}, { x: 23, y: 16.6, y0: 0}]
     	},
 			d : {
-				constant : [ {x: 0, y: null, y0: 0}, {x: 1, y: null, y0: 0}, { x: 2, y: 100, y0: 0} , { x: 3, y: 100, y0: 0}, { x: 4, y: 100, y0: 0}, { x: 5, y: 100, y0: 0}, { x: 6, y: 100,y0: 0}, { x: 7, y: 100, y0: 0}, { x: 8, y: 100, y0: 0}],
+				constant : [ {x: 0, y: null, y0: 0}, {x: 1, y: null, y0: 0}, { x: 2, y: null, y0: 0} , { x: 3, y: 100, y0: 0}, { x: 4, y: 100, y0: 0}, { x: 5, y: 100, y0: 0}, { x: 6, y: 100,y0: 0}, { x: 7, y: 100, y0: 0}, { x: 8, y: 100, y0: 0}],
       	fib : [ {x: 0, y: null, y0: 0}, {x: 1, y: null, y0: 0}, { x: 1, y: null, y0: 0} , { x: 2, y: null, y0: 0}, { x: 3, y: 1.4, y0: 0}, { x: 5, y: 2.4, y0: 0}, { x: 8, y: 3.8,y0: 0}, { x: 13, y: 6.2, y0: 0}, { x: 21, y: 10, y0: 0}],
       	prime : [ {x: 2, y: null, y0: 0}, {x: 3, y: null, y0: 0}, { x: 5, y: null, y0: 0} , { x: 7, y: null, y0: 0}, { x: 11, y: 5.6, y0: 0}, { x: 13, y: 7.8, y0: 0}, { x: 17, y: 10.6,y0: 0}, { x: 19, y: 13.4, y0: 0}, { x: 23, y: 16.6, y0: 0}]
 			}
@@ -115,7 +115,7 @@ console.log(data);
   }
 	test.done();
 }
-/*
+
 exports.constantstochastic = function(test) {
   var period = new Array();
 	period['%k'] = 3;
@@ -125,7 +125,7 @@ exports.constantstochastic = function(test) {
 
 
 
-
+/*
 exports.fibstochastic = function(test) {
   var period = new Array();
 	period['%k'] = 15;
