@@ -46,7 +46,7 @@ Rickshaw.Technicals.SMA = Rickshaw.Class.create(Rickshaw.Technicals, {
 	
 		// Is there enough data?
 		if(datum.length < period)
-			throw new Error("Data lenght must me at least the size of the period.");	
+			throw new Error("Data length must me at least the size of the period.");	
 
 		for(var ele = 0; ele<length; ele++){
 			var sum=0, num_nulls=0;
@@ -55,7 +55,7 @@ Rickshaw.Technicals.SMA = Rickshaw.Class.create(Rickshaw.Technicals, {
 			nums.push(datum[ele].y);
 
 			// is it too soon?
-			if(ele < period-1){
+			if(ele < period){
 				res_arr.push({ x: datum[ele].x, y0: datum[ele].y0, y: null });
 				continue;
 			}
@@ -66,8 +66,8 @@ Rickshaw.Technicals.SMA = Rickshaw.Class.create(Rickshaw.Technicals, {
 			
 			// loop through and look for nulls as well as add up a sum
 			for (var i in nums){
-				if(nums[i] == null)
-				 	num_nulls++;
+				if(nums[i] === null)
+					num_nulls++;
 				sum += nums[i];
 			}
 

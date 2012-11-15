@@ -1,5 +1,5 @@
 var Rickshaw = require('../rickshaw'), assert = require('assert');
-
+//var Rickshaw = require('../dist/js/rickshaw-1.1.2.min.js'), assert = require('assert');
 
 ////////////   UTILS
 var sample_data = {
@@ -12,7 +12,7 @@ var sample_data = {
     sma : {
       constant : [ {x: 0, y: null, y0: 0}, {x: 1, y: null, y0: 0}, { x: 2, y: null, y0: 0} , { x: 3, y: 2, y0: 0}, { x: 4, y: 3, y0: 0}, { x: 5, y: 4, y0: 0}, { x: 6, y: 5,y0: 0}, { x: 7, y: 6, y0: 0}, { x: 8, y: 7, y0: 0}],
       fib : [ {x: 0, y: null, y0: 0}, {x: 1, y: null, y0: 0}, { x: 1, y: null, y0: 0} , { x: 2, y: null, y0: 0}, { x: 3, y: null, y0: 0}, { x: 5, y: 2.4, y0: 0}, { x: 8, y: 3.8,y0: 0}, { x: 13, y: 6.2, y0: 0}, { x: 21, y: 10, y0: 0}],
-      prime : [ {x: 2, y: null, y0: 0}, {x: 3, y: null, y0: 0}, { x: 5, y: null, y0: 0} , { x: 7, y: null, y0: 0}, { x: 11, y: 5.6, y0: 0}, { x: 13, y: 7.8, y0: 0}, { x: 17, y: 10.6,y0: 0}, { x: 19, y: 13.4, y0: 0}, { x: 23, y: 16.6, y0: 0}]
+      prime : [ {x: 2, y: null, y0: 0}, {x: 3, y: null, y0: 0}, { x: 5, y: null, y0: 0} , { x: 7, y: null, y0: 0}, { x: 11, y: null, y0: 0}, { x: 13, y: 7.8, y0: 0}, { x: 17, y: 10.6,y0: 0}, { x: 19, y: 13.4, y0: 0}, { x: 23, y: 16.6, y0: 0}]
     },
     stochastic : {
 			k : {
@@ -27,7 +27,6 @@ var sample_data = {
 			}
 		}
   }
-  //return data[arg];
 };
 
 
