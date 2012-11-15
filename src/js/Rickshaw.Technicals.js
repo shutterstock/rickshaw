@@ -54,19 +54,19 @@ Rickshaw.Technicals.SMA = Rickshaw.Class.create(Rickshaw.Technicals, {
 			// get elements on to the work arr
 			nums.push(datum[ele].y);
 
-			// Is it too soon?
+			// is it too soon?
 			if(ele < period-1){
 				res_arr.push({ x: datum[ele].x, y0: datum[ele].y0, y: null });
 				continue;
 			}
 			
-			// The work arr lenght has reached the period and needs to be trimed
+			// the work arr length has reached the period and needs to be trimed
 			if (nums.length > period)
 				nums.splice(0,1);  // remove the first element of the array
 			
 			// loop through and look for nulls as well as add up a sum
 			for (var i in nums){
-				if(!nums[i])
+				if(nums[i] == null)
 				 	num_nulls++;
 				sum += nums[i];
 			}
@@ -117,24 +117,40 @@ Rickshaw.Technicals.FStochastic = Rickshaw.Class.create(Rickshaw.Technicals, {
 		var length = datum.length;
 		var period_high, period_low;
 
+		// Is there enough data?
+		if(datum.length < period)
+			throw new Error("Data lenght must me at least the size of the period.");	
+		
 		for(var ele = 0; ele<length; ele++){
-			var curr_obj = datum[ele];
-			nums.push(datum[ele].y);
-			if (nums.length > period['%k'])
-				nums.splice(0,1);  // remove the first element of the array
+			var sum=0, num_nulls=0, curr_obj = datum[ele];
 
+			// get elements on to the work arr
+			nums.push(curr_obj.y);
+
+			// is it too soon?
+			if(ele < period['%k']-1){
+				res_arr.push({ x: curr_obj.x, y0: curr_obj.y0, y: null });
+				continue;
+			}
+			
+			// the work arr length has reached the period and needs to be trimed
+			if (nums.length > period)
+				nums.splice(0,1);  // remove the first element of the array
+			
 			for (var i in nums){
 				if(typeof period_high === "undefined" || nums[i] > period_high) period_high = nums[i]; 
 				if(typeof period_low === "undefined" || nums[i] < period_low) period_low = nums[i];
 			}
 
+			// the calc
 			var k = 100*(curr_obj.y - period_low)/(period_high - period_low);
-			if(isNaN(k)) k=0;
-
-			if(nums.length < period['%k'])
-				res_arr.push({ x: datum[ele].x, y0: datum[ele].y0, y: null });
-			else
-				res_arr.push({ x: curr_obj.x, y0: curr_obj.y0, y: k });
+			
+			// Something went wrong, calc is broken
+			if(isNaN(k))
+				throw new Error("Something is wrong, the calc returned NaN");	
+			
+			// throw it on the array
+			res_arr.push({ x: curr_obj.x, y0: curr_obj.y0, y: k });
 		}
 		var sma_period = [];
 		sma_period['p'] = period['%d'];
