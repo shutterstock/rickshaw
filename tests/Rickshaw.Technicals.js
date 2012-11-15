@@ -109,7 +109,7 @@ function stochastic(data_set, period, test, msg){
  	for(var i in data['%k']){
 	  test.equal(data['%k'][i].y, results_k[i].y, msg);
   }
- 	for(var i in data['%d']){
+	for(var i in data['%d']){
 	  test.equal(data['%d'][i].y, results_d[i].y, msg);
   }
 	test.done();
