@@ -77,8 +77,6 @@ Rickshaw.Technicals.SMA = Rickshaw.Class.create(Rickshaw.Technicals, {
 				continue;
 			}
 
-//console.log(sum + '/' + period + '=' + (sum/period) + ' ele:' + ele);
-
 			// Something went wrong, calc is broken
 			if(isNaN(sum/period))
 				throw new Error("Something is wrong, the calc returned NaN");	
