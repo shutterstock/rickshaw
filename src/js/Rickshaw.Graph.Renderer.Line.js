@@ -22,7 +22,7 @@ Rickshaw.Graph.Renderer.Line = Rickshaw.Class.create( Rickshaw.Graph.Renderer, {
 			.y( function(d) { return graph.y(d.y) } )
 			.interpolate(this.graph.interpolation).tension(this.tension)
 
-		factory.defined( function(d) { return d.y !== null } );
+		factory.defined && factory.defined( function(d) { return d.y !== null } );
 		return factory;
 	}
 } );

@@ -65,7 +65,7 @@ Rickshaw.Graph.Renderer.Bar = Rickshaw.Class.create( Rickshaw.Graph.Renderer, {
 			if (series.disabled) return;
 
 			var nodes = graph.vis.selectAll("path")
-				.data(series.stack)
+				.data(series.stack.filter( function(d) { return d.y !== null } ))
 				.enter().append("svg:rect")
 				.attr("x", function(d) { return graph.x(d.x) + barXOffset })
 				.attr("y", function(d) { return (graph.y(d.y0 + Math.abs(d.y))) * (d.y < 0 ? -1 : 1 ) })

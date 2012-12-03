@@ -23,7 +23,7 @@ Rickshaw.Graph.Renderer.Area = Rickshaw.Class.create( Rickshaw.Graph.Renderer, {
 			.y1( function(d) { return graph.y(d.y + d.y0) } )
 			.interpolate(graph.interpolation).tension(this.tension)
 
-		factory.defined( function(d) { return d.y !== null } );
+		factory.defined && factory.defined( function(d) { return d.y !== null } );
 		return factory;
 	},
 
@@ -36,7 +36,7 @@ Rickshaw.Graph.Renderer.Area = Rickshaw.Class.create( Rickshaw.Graph.Renderer, {
 			.y( function(d) { return graph.y(d.y + d.y0) } )
 			.interpolate(graph.interpolation).tension(this.tension)
 
-		factory.defined( function(d) { return d.y !== null } );
+		factory.defined && factory.defined( function(d) { return d.y !== null } );
 		return factory;
 	},
 
@@ -46,9 +46,12 @@ Rickshaw.Graph.Renderer.Area = Rickshaw.Class.create( Rickshaw.Graph.Renderer, {
 
 		graph.vis.selectAll('*').remove();
 
+		// insert or stacked areas so strokes lay on top of areas
+		var method = this.unstack ? 'append' : 'insert';
+
 		var nodes = graph.vis.selectAll("path")
 			.data(this.graph.stackedData)
-			.enter().insert("svg:g", 'g');
+			.enter()[method]("svg:g", 'g');
 
 		nodes.append("svg:path")
 			.attr("d", this.seriesPathFactory())
