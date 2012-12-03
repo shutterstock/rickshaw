@@ -65,7 +65,7 @@ Rickshaw.Graph.HoverDetail = Rickshaw.Class.create({
 			var approximateIndex = Math.floor(domainIndexScale(domainX));
 			var dataIndex = Math.min(approximateIndex || 0, data.length - 1);
 
-			for (var i = approximateIndex; i < data.length - 1;) {
+			for (var i = approximateIndex, l = data.length - 1; i < l;) {
 
 				if (!data[i] || !data[i + 1]) break;
 				if (data[i].x <= domainX && data[i + 1].x > domainX) { dataIndex = i; break }
