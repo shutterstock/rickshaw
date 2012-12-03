@@ -1,12 +1,6 @@
 #chart_container{
 	border-bottom: 1px solid #aaa;
 }
-#legend_container{
-	float: right;
-	position: relative;
-	top: 200px;
-	width: auto;
-}
 fieldset{
 	border: 1px solid #DDD;
 	-webkit-border-radius: 4px;
@@ -17,11 +11,6 @@ fieldset{
 #technical_form{
 	float: right;
 }
-#technical_form button{
-	display: block;
-}
-
-
 .rickshaw_legend span.label{
 	background: transparent;
 }
