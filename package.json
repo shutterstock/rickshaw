@@ -1,14 +1,10 @@
 {
    "name": "rickshaw",
    "version": "1.1.2",
-   "url" : "http://code.shutterstock.com/rickshaw/",
-   "copyright" : "Shutterstock Inc.",
-   "contributors": ["David Chester", "Douglas Hunter", "Silas Sewell"],
-   "keywords": ["d3", "charts", "rickshaw", "svg", "graph"],
-
    "dependencies": {
       "d3": ">= 2.10.1"
    },
+   "keywords": ["d3", "charts", "rickshaw", "svg", "graph"],
    "main": "./rickshaw",
    "engines": {
       "node": ">= 0.8.0"
