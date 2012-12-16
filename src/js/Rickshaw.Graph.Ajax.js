@@ -36,7 +36,7 @@ Rickshaw.Graph.Ajax = Rickshaw.Class.create( {
 		data = this.onData(data);
 		this.args.series = this._splice({ data: data, series: this.args.series });
 
-		this.graph = new Rickshaw.Graph(this.args);
+		this.graph = this.graph || new Rickshaw.Graph(this.args);
 		this.graph.render();
 
 		this.onComplete(this);
