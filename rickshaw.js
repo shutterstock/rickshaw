@@ -1822,6 +1822,56 @@ Rickshaw.Graph.RangeSlider = function(args) {
 	var element = this.element = args.element;
 	var graph = this.graph = args.graph;
 
+	if(graph.constructor === Array){
+	$( function() {
+		$(element).slider( {
+
+			range: true,
+			min: graph[0].dataDomain()[0],
+			max: graph[0].dataDomain()[1],
+			values: [ 
+				graph[0].dataDomain()[0],
+				graph[0].dataDomain()[1]
+			],
+			slide: function( event, ui ) {
+
+				for(var i = 0; i < graph.length; i++){
+				graph[i].window.xMin = ui.values[0];
+				graph[i].window.xMax = ui.values[1];
+				graph[i].update();
+
+				// if we're at an extreme, stick there
+				if (graph[i].dataDomain()[0] == ui.values[0]) {
+					graph[i].window.xMin = undefined;
+				}
+				if (graph[i].dataDomain()[1] == ui.values[1]) {
+					graph[i].window.xMax = undefined;
+				}
+				}
+			}
+		} );
+	} );
+
+	element[0].style.width = graph.width + 'px';
+
+	graph[0].onUpdate( function() {
+
+		var values = $(element).slider('option', 'values');
+
+		$(element).slider('option', 'min', graph[0].dataDomain()[0]);
+		$(element).slider('option', 'max', graph[0].dataDomain()[1]);
+
+		if (graph[0].window.xMin == undefined) {
+			values[0] = graph[0].dataDomain()[0];
+		}
+		if (graph[0].window.xMax == undefined) {
+			values[1] = graph[0].dataDomain()[1];
+		}
+
+		$(element).slider('option', 'values', values);
+
+	} );
+	}else{
 	$( function() {
 		$(element).slider( {
 
@@ -1862,12 +1912,13 @@ Rickshaw.Graph.RangeSlider = function(args) {
 			values[0] = graph.dataDomain()[0];
 		}
 		if (graph.window.xMax == undefined) {
-			values[1] = graph.dataDomain()[1];
+			values[1] = graphdataDomain()[1];
 		}
 
 		$(element).slider('option', 'values', values);
 
-	} );
+	} );	
+	}
 };
 
 Rickshaw.namespace("Rickshaw.Graph.Renderer");
@@ -2136,7 +2187,8 @@ Rickshaw.Graph.Renderer.Bar = Rickshaw.Class.create( Rickshaw.Graph.Renderer, {
 				.attr("height", function(d) { return graph.y.magnitude(Math.abs(d.y)) })
 				.attr("transform", transform);
 
-			Array.prototype.forEach.call(nodes[0], function(n) {
+			Array.prototype.forEach.call(nodes[0], function(n, i) {
+				series.color = series.data[i].color || series.color;
 				n.setAttribute('fill', series.color);
 			} );
 
