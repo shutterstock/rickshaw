@@ -6,7 +6,8 @@ var sample_data = {
   data : {
 	  constant : [ {x: 0, y: 0, y0: 0}, {x: 1, y: 1, y0: 0}, { x: 2, y: 2, y0: 0} , { x: 3, y: 3, y0: 0}, { x: 4, y: 4, y0: 0}, { x: 5, y: 5, y0: 0}, { x: 6, y: 6,y0: 0}, { x: 7, y: 7, y0: 0}, { x: 8, y: 8, y0: 0}],
     fib : [ {x: 0, y: 0, y0: 0}, {x: 1, y: 1, y0: 0}, { x: 1, y: 1, y0: 0} , { x: 2, y: 2, y0: 0}, { x: 3, y: 3, y0: 0}, { x: 5, y: 5, y0: 0}, { x: 8, y: 8,y0: 0}, { x: 13, y: 13, y0: 0}, { x: 21, y: 21, y0: 0}],
-    prime : [ {x: 2, y: 2, y0: 0}, {x: 3, y: 3, y0: 0}, { x: 5, y: 5, y0: 0} , { x: 7, y: 7, y0: 0}, { x: 11, y: 11, y0: 0}, { x: 13, y: 13, y0: 0}, { x: 17, y: 17,y0: 0}, { x: 19, y: 19, y0: 0}, { x: 23, y: 23, y0: 0}]
+    prime : [ {x: 2, y: 2, y0: 0}, {x: 3, y: 3, y0: 0}, { x: 5, y: 5, y0: 0} , { x: 7, y: 7, y0: 0}, { x: 11, y: 11, y0: 0}, { x: 13, y: 13, y0: 0}, { x: 17, y: 17,y0: 0}, { x: 19, y: 19, y0: 0}, { x: 23, y: 23, y0: 0}],
+    rand : [ {x: 60, y: 66.6, y0: 0}, {x: 70, y: 67.1, y0: 0}, { x: 80, y: 70, y0: 0} , { x: 90, y: 71.8, y0: 0}, { x: 100, y: 74.4, y0: 0}, { x: 103, y: 74.8, y0: 0}]
   },
   results : {
     sma : {
@@ -25,7 +26,13 @@ var sample_data = {
       	fib : [ {x: 0, y: null, y0: 0}, {x: 1, y: null, y0: 0}, { x: 1, y: null, y0: 0} , { x: 2, y: 100, y0: 0}, { x: 3, y: 100, y0: 0}, { x: 5, y: 100, y0: 0}, { x: 8, y: 100,y0: 0}, { x: 13, y: 100, y0: 0}, { x: 21, y: 100, y0: 0}],
       	prime : [ {x: 2, y: null, y0: 0}, {x: 3, y: null, y0: 0}, { x: 5, y: null, y0: 0} , { x: 7, y: 100, y0: 0}, { x: 11, y: 100, y0: 0}, { x: 13, y: 100, y0: 0}, { x: 17, y: 100,y0: 0}, { x: 19, y: 100, y0: 0}, { x: 23, y: 100, y0: 0}]
 			}
-		}
+		},
+    linreg : {
+      constant : [ {x: 0, y: 0, y0: 0}, {x: 1, y: 1, y0: 0}, { x: 2, y: 2, y0: 0} , { x: 3, y: 3, y0: 0}, { x: 4, y: 4, y0: 0}, { x: 5, y: 5, y0: 0}, { x: 6, y: 6,y0: 0}, { x: 7, y: 7, y0: 0}, { x: 8, y: 8, y0: 0}],
+      fib : [ {x: 0, y:0, y0: 0}, {x: 1, y: 1, y0: 0}, { x: 1, y: 1, y0: 0} , { x: 2, y: 2, y0: 0}, { x: 3, y: 3, y0: 0}, { x: 5, y: 5, y0: 0}, { x: 8, y: 8, y0: 0}, { x: 13, y: 13, y0: 0}, { x: 21, y: 21, y0: 0}],
+      prime : [ {x: 2, y: 2, y0: 0}, {x: 3, y: 3, y0: 0}, { x: 5, y: 5, y0: 0} , { x: 7, y: 7, y0: 0}, { x: 11, y: 11, y0: 0}, { x: 13, y: 13, y0: 0}, { x: 17, y: 17,y0: 0}, { x: 19, y: 19, y0: 0}, { x: 23, y: 23, y0: 0}],
+      rand : [ {x: 60, y: 65.89729323308275, y0: 0}, {x: 70, y: 67.94737998843264, y0: 0}, { x: 80, y: 69.99746674378255, y0: 0} , { x: 90, y: 72.04755349913245, y0: 0}, { x: 100, y: 74.09764025448234, y0: 0}, { x: 103, y: 74.71266628108732, y0: 0}]
+    }
   }
 };
 
@@ -135,3 +142,37 @@ exports.primestochastic = function(test) {
   stochastic('prime', period, test, 'prime stochastic');
 };
 
+////////////   linear regression
+function linreg(data_set, period, test, msg){
+  var tech = new Rickshaw.Technicals.Linreg();
+	var results = sample_data.results.linreg[data_set];
+  var data = tech.calc({
+    datum: sample_data.data[data_set]
+	});
+	for(var i in data.linreg){
+	  test.equal(data.linreg[i].y, results[i].y, msg);
+  }
+  test.done();
+}
+
+exports.constantlinreg = function(test) {
+  var period = new Array();
+  period['p'] = 3;
+  linreg('constant', period, test, 'constant linreg');
+};
+
+exports.fiblinreg = function(test) {
+  var period = new Array();
+  period['p'] = 3;
+  linreg('fib', period, test, 'fib linreg');
+};
+exports.primelinreg = function(test) {
+  var period = new Array();
+  period['p'] = 3;
+  linreg('prime', period, test, 'prime linreg');
+};
+exports.randlinreg = function(test) {
+  var period = new Array();
+  period['p'] = 3;
+  linreg('rand', period, test, 'rand linreg');
+};
