@@ -1,0 +1,54 @@
+<!doctype html>
+	<head>
+		<link type="text/css" rel="stylesheet" href="../src/css/graph.css">
+
+		<script src="../vendor/d3.v2.js"></script>
+		<script src="../rickshaw.js"></script>
+	</head>
+	<body>
+		<div id="chart"></div>
+
+		<script type="text/javascript">
+			// set up our data series with 50 random data points
+			var seriesData = [ [], [], [] ];
+			var random = new Rickshaw.Fixtures.RandomData(150);
+			
+			for (var i = 0; i < 500; i++) {
+				random.addData(seriesData);
+			}
+			
+			// instantiate our graph!
+			
+			var graph = new Rickshaw.Graph( {
+				element: document.getElementById("chart"),
+				width: 960,
+				height: 500,
+				renderer: 'scatterplot',
+				series: [
+					{
+						color: "#ff9030",
+						data: seriesData[0],
+					}, {
+						color: "#ff4040",
+						data: seriesData[1],
+					}
+				]
+			} );
+
+  		var tech = new Rickshaw.Technicals.Linreg();
+  		var data = tech.calc({
+  		  datum: seriesData[0] 
+			});
+
+			var calc_obj = {
+				color: '#'+Math.floor(Math.random()*16777215).toString(16),
+				data: data['linreg'],
+				name: 'linear regression'
+			};				
+			graph.series.push(calc_obj);	
+
+			graph.renderer.dotSize = 6;
+			graph.render();
+		</script>
+	</body>
+</html>
