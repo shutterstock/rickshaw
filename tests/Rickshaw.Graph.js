@@ -99,6 +99,18 @@ exports.inconsistent = function(test) {
 
 	}, null, "throw for inconsistent stacked series for stack renderer" );
 
+	test.throws( function() {
+
+		var graph = new Rickshaw.Graph({
+			element: null,
+			width: 960,
+			height: 500,
+			renderer: 'stack',
+			series: series
+		});
+
+	}, null, "throw an error for undefined element reference" );
+
 	test.done();
 }
 

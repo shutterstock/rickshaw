@@ -14,7 +14,10 @@ Rickshaw.Graph.Legend = function(args) {
 
 	var series = graph.series
 		.map( function(s) { return s } )
-		.reverse();
+
+	if (!args.naturalOrder) {
+		series = series.reverse();
+	}
 
 	this.lines = [];
 
