@@ -27,6 +27,51 @@ Rickshaw.Technicals.Momentum = Rickshaw.Class.create(Rickshaw.Technicals, {
 	}
 });
 
+// This is a regression using least squares fitting
+// Derived from Jan Schütze's article: http://dracoblue.net/dev/linear-least-squares-in-javascript/159/
+Rickshaw.Technicals.Linreg = Rickshaw.Class.create(Rickshaw.Technicals, {
+	name : "linreg",
+	independent : false,
+	fields : [{
+		curve_sel : true
+	}], 
+	calc : function(args) {
+		var datum = this.datum = args.datum;
+		// Nothing to do.
+		if (datum.length === 0) {
+				throw new Error("ERROR: The data is empty.");	
+		}
+		
+		var res_arr = [], sum_x = 0, sum_y = 0, sum_xy = 0, sum_xx = 0, count = 0, x = 0, y = 0;
+		
+		// Calculate the sum for each of the parts necessary.
+		for (var i = datum.length-1; i >=0; i--) {
+			x = datum[i].x;
+			y = datum[i].y;
+			sum_x += x;
+			sum_y += y;
+			sum_xx += x*x;
+			sum_xy += x*y;
+			count++;
+		}
+		
+		// Calculate m and b for the formula:
+		// y = x * m + b
+		var m = (count*sum_xy - sum_x*sum_y) / (count*sum_xx - sum_x*sum_x);
+		var b = (sum_y/count) - (m*sum_x)/count;
+		
+		for (var v = 0; v < datum.length; v++) {
+			x = datum[v].x;
+			y = x * m + b;
+			res_arr.push({ x: x, y0: datum[v].y0, y: y });
+		}
+		
+		return {
+			'linreg' : res_arr
+		};
+	}
+});
+
 // Simple moving average
 Rickshaw.Technicals.SMA = Rickshaw.Class.create(Rickshaw.Technicals, {
 	independent : false,
