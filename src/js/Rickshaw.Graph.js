@@ -2,6 +2,8 @@ Rickshaw.namespace('Rickshaw.Graph');
 
 Rickshaw.Graph = function(args) {
 
+	if (!args.element) throw "Rickshaw.Graph needs a reference to an element";
+
 	this.element = args.element;
 	this.series = args.series;
 
