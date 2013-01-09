@@ -40,6 +40,7 @@ JS_FILES=\
 	src/js/Rickshaw.Graph.Unstacker.js\
 	src/js/Rickshaw.Series.js\
 	src/js/Rickshaw.Series.FixedDuration.js\
+	src/js/Rickshaw.Graph.Axis.X.js\
 
 .PHONY: clean build
 
