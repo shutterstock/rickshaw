@@ -4,24 +4,29 @@ Rickshaw.Graph.Smoother = function(args) {
 
 	this.graph = args.graph;
 	this.element = args.element;
-
+	this.controller = args.controller;
 	var self = this;
 
 	this.aggregationScale = 1;
-
-	if (this.element) {
-
-		$( function() {
-			$(self.element).slider( {
-				min: 1,
-				max: 100,
-				slide: function( event, ui ) {
-					self.setScale(ui.value);
-					self.graph.update();
-				}
-			} );
-		} );
+	if (!this.controller) {
+	    this.controller = {smootherCreate: function(element, graph, extension){
+	        this.graph = graph;
+	        this.extension = extension;
+	        if (element) {
+	            $( function() {
+	                $(element).slider( {
+	                    min: 1,
+	                    max: 100,
+	                    slide: function( event, ui ) {
+	                        self.setScale(ui.value);
+	                        self.graph.update();
+	                    }
+	                } );
+	            } );
+	        }
+	    }}
 	}
+	this.controller.smootherCreate(self.element, graph, self)
 
 	self.graph.stackData.hooks.data.push( {
 		name: 'smoother',
