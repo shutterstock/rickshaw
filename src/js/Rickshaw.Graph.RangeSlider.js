@@ -8,26 +8,29 @@ Rickshaw.Graph.RangeSlider = function(args) {
 
     if (!controller) {
         var slider_create = function(element){
-            var slider = $(element).slider({
-
-                range : true,
-                min : graph.dataDomain()[0],
-                max : graph.dataDomain()[1],
-                values : [ graph.dataDomain()[0], graph.dataDomain()[1] ],
-                slide : function(event, ui) {
-
-                    graph.window.xMin = ui.values[0];
-                    graph.window.xMax = ui.values[1];
-                    graph.update();
-
-                    // if we're at an extreme, stick there
-                    if (graph.dataDomain()[0] == ui.values[0]) {
-                        graph.window.xMin = undefined;
+            var slider;
+            $( function() {
+                slider = $(element).slider({
+    
+                    range : true,
+                    min : graph.dataDomain()[0],
+                    max : graph.dataDomain()[1],
+                    values : [ graph.dataDomain()[0], graph.dataDomain()[1] ],
+                    slide : function(event, ui) {
+    
+                        graph.window.xMin = ui.values[0];
+                        graph.window.xMax = ui.values[1];
+                        graph.update();
+    
+                        // if we're at an extreme, stick there
+                        if (graph.dataDomain()[0] == ui.values[0]) {
+                            graph.window.xMin = undefined;
+                        }
+                        if (graph.dataDomain()[1] == ui.values[1]) {
+                            graph.window.xMax = undefined;
+                        }
                     }
-                    if (graph.dataDomain()[1] == ui.values[1]) {
-                        graph.window.xMax = undefined;
-                    }
-                }
+                });
             });
             this.slider = slider;
         }
