@@ -2,54 +2,56 @@ Rickshaw.namespace('Rickshaw.Graph.RangeSlider');
 
 Rickshaw.Graph.RangeSlider = function(args) {
 
-	var element = this.element = args.element;
-	var graph = this.graph = args.graph;
+    var element = this.element = args.element;
+    var graph = this.graph = args.graph;
+    var controller = this.controller = args.controller;
 
-	$( function() {
-		$(element).slider( {
+    if (!controller) {
+        var slider_create = function(element){
+            var slider = $(element).slider({
 
-			range: true,
-			min: graph.dataDomain()[0],
-			max: graph.dataDomain()[1],
-			values: [ 
-				graph.dataDomain()[0],
-				graph.dataDomain()[1]
-			],
-			slide: function( event, ui ) {
+                range : true,
+                min : graph.dataDomain()[0],
+                max : graph.dataDomain()[1],
+                values : [ graph.dataDomain()[0], graph.dataDomain()[1] ],
+                slide : function(event, ui) {
 
-				graph.window.xMin = ui.values[0];
-				graph.window.xMax = ui.values[1];
-				graph.update();
+                    graph.window.xMin = ui.values[0];
+                    graph.window.xMax = ui.values[1];
+                    graph.update();
 
-				// if we're at an extreme, stick there
-				if (graph.dataDomain()[0] == ui.values[0]) {
-					graph.window.xMin = undefined;
-				}
-				if (graph.dataDomain()[1] == ui.values[1]) {
-					graph.window.xMax = undefined;
-				}
-			}
-		} );
-	} );
+                    // if we're at an extreme, stick there
+                    if (graph.dataDomain()[0] == ui.values[0]) {
+                        graph.window.xMin = undefined;
+                    }
+                    if (graph.dataDomain()[1] == ui.values[1]) {
+                        graph.window.xMax = undefined;
+                    }
+                }
+            });
+            this.slider = slider;
+        }
+        var slider_update = function() {
+            var values = $(element).slider('option', 'values');
 
-	element[0].style.width = graph.width + 'px';
+            $(element).slider('option', 'min', graph.dataDomain()[0]);
+            $(element).slider('option', 'max', graph.dataDomain()[1]);
 
-	graph.onUpdate( function() {
+            if (graph.window.xMin == undefined) {
+                values[0] = graph.dataDomain()[0];
+            }
+            if (graph.window.xMax == undefined) {
+                values[1] = graph.dataDomain()[1];
+            }
 
-		var values = $(element).slider('option', 'values');
+            $(element).slider('option', 'values', values);
 
-		$(element).slider('option', 'min', graph.dataDomain()[0]);
-		$(element).slider('option', 'max', graph.dataDomain()[1]);
+        }   
+        
+        controller = { slider_create:slider_create, slider_update:slider_update};
+    }
+    controller.slider_create(element);
 
-		if (graph.window.xMin == undefined) {
-			values[0] = graph.dataDomain()[0];
-		}
-		if (graph.window.xMax == undefined) {
-			values[1] = graph.dataDomain()[1];
-		}
-
-		$(element).slider('option', 'values', values);
-
-	} );
+    element.style.width = graph.width + 'px';
+    graph.onUpdate(function(){controller.slider_update()});
 };
-
