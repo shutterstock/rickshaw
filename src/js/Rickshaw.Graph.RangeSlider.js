@@ -6,12 +6,12 @@ Rickshaw.Graph.RangeSlider = function(args) {
     var graph = this.graph = args.graph;
     var controller = this.controller = args.controller;
 
-    if (!controller) {
-        var sliderCreate = function(element){
-            var slider;
+    if (!controller) {        
+        controller = {sliderCreate:function(element, graph){
+            this.graph = graph;
+            var self = this;
             $( function() {
-                slider = $(element).slider({
-    
+                self.slider = $(element).slider({
                     range : true,
                     min : graph.dataDomain()[0],
                     max : graph.dataDomain()[1],
@@ -32,11 +32,9 @@ Rickshaw.Graph.RangeSlider = function(args) {
                     }
                 });
             });
-            this.slider = slider;
-        }
-        var sliderUpdate = function() {
+        },
+        sliderUpdate:function() {
             var values = $(element).slider('option', 'values');
-
             $(element).slider('option', 'min', graph.dataDomain()[0]);
             $(element).slider('option', 'max', graph.dataDomain()[1]);
 
@@ -49,11 +47,9 @@ Rickshaw.Graph.RangeSlider = function(args) {
 
             $(element).slider('option', 'values', values);
 
-        }   
-        
-        controller = { sliderCreate:sliderCreate, sliderUpdate:sliderUpdate};
+        }   };
     }
-    controller.sliderCreate(element);
+    controller.sliderCreate(element, graph);
 
     element.style.width = graph.width + 'px';
     graph.onUpdate(function(){controller.sliderUpdate()});
