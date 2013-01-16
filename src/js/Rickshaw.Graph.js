@@ -208,7 +208,6 @@ Rickshaw.Graph = function(args) {
 		if (args.width || args.height) {
 			this.setSize(args);
 		}
-
 		Rickshaw.keys(this.defaults).forEach( function(k) {
 			this[k] = k in args ? args[k]
 				: k in this ? this[k]
@@ -216,6 +215,14 @@ Rickshaw.Graph = function(args) {
 		}, this );
 
 		this.setRenderer(args.renderer || this.renderer.name, args);
+		
+        if (args.series) {
+            this.series = args.series;
+            this.validateSeries(args.series);
+            this.series.active = function() { return self.series.filter( function(s) { return !s.disabled } ) };
+            this.discoverRange();
+        }
+		
 	};
 
 	this.setRenderer = function(name, args) {
