@@ -26,7 +26,7 @@ Rickshaw.Graph.Smoother = function(args) {
 	        }
 	    }}
 	}
-	this.controller.smootherCreate(self.element, graph, self)
+	this.controller.smootherCreate(self.element, this.graph, self);
 
 	self.graph.stackData.hooks.data.push( {
 		name: 'smoother',
