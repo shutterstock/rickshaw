@@ -89,7 +89,7 @@ Add a callback to run when the graph is rendered
 ## Extensions
 
 Once you have a basic graph, extensions let you add functionality.  See the [overview](http://code.shutterstock.com/rickshaw/) and [examples](http://shutterstock.github.com/rickshaw/examples/) listing for more.
- 
+
 * __Rickshaw.Graph.Legend__ - add a basic legend
 
 * __Rickshaw.Graph.HoverDetail__ - show details on hover
@@ -100,7 +100,11 @@ Once you have a basic graph, extensions let you add functionality.  See the [ove
 
 * __Rickshaw.Graph.RangeSlider__ - dynamically zoom on the x-axis with a slider
 
-* __Rickshaw.Graph.Axis.Time__ - add x-axis time labels
+* __Rickshaw.Graph.Axis.Time__ - add x-axis and grid lines with time labels
+
+* __Rickshaw.Graph.Axis.X__ - add an x-axis and grid lines with arbitrary labels
+
+* __Rickshaw.Graph.Axis.Y__ - add a y-axis and grid lines
 
 * __Rickshaw.Graph.Behavior.Series.Highlight__ - highlight series on legend hover
 
