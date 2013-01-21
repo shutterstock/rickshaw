@@ -1,0 +1,80 @@
+<!doctype html>
+
+<link type="text/css" rel="stylesheet" href="../src/css/graph.css">
+<link type="text/css" rel="stylesheet" href="css/lines.css">
+
+<script src="../vendor/d3.v2.js"></script>
+<script src="../rickshaw.js"></script>
+
+<style>
+#chart {
+	position: relative;
+	left: 40px;
+	display: block;
+}
+#y_axis {
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	width: 40px;
+}
+#x_axis {
+	position: relative;
+	left: 40px;
+	height: 40px;
+}
+</style>
+
+<div id="chart_container">
+	<div id="y_axis"></div>
+	<div id="chart"></div>
+	<div id="x_axis"></div>
+</div>
+
+<script>
+
+// instantiate our graph!
+
+var graph = new Rickshaw.Graph( {
+	element: document.getElementById("chart"),
+	renderer: 'line',
+	height: 300,
+	width: 800,
+	series: [
+		{
+			data: [ { x: 0, y: 120 }, { x: 1, y: 890 }, { x: 2, y: 38 }, { x: 3, y: 70 }, { x: 4, y: 32 } ],
+			color: "#c05020"
+		}, {
+			data: [ { x: 0, y: 80 }, { x: 1, y: 200 }, { x: 2, y: 100 }, { x: 3, y: 520 }, { x: 4, y: 133 } ],
+			color: "#30c020"
+		}, {
+			data: [ { x: 0, y: 200 }, { x: 1, y: 390 }, { x: 2, y: 1000 }, { x: 3, y: 200 }, { x: 4, y: 230 } ],
+			color: "#6060c0"
+		}
+	]
+} );
+
+var format = function(n) {
+
+	var map = {
+		0: 'zero',
+		1: 'first',
+		2: 'second',
+		3: 'third',
+		4: 'fourth'
+	};
+
+	return map[n];
+}
+
+var x_ticks = new Rickshaw.Graph.Axis.X( {
+	graph: graph,
+	orientation: 'bottom',
+	element: document.getElementById('x_axis'),
+	pixelsPerTick: 200,
+	tickFormat: format
+} );
+
+graph.render();
+
+</script>
