@@ -11,7 +11,7 @@ Rickshaw.Graph.HoverDetail = Rickshaw.Class.create({
 		};
 
 		this.yFormatter = args.yFormatter || function(y) {
-			return y.toFixed(2);
+			return y === null ? y : y.toFixed(2);
 		};
 
 		var element = this.element = document.createElement('div');
@@ -28,6 +28,7 @@ Rickshaw.Graph.HoverDetail = Rickshaw.Class.create({
 		this.onRender = args.onRender;
 
 		this.formatter = args.formatter || this.formatter;
+
 	},
 
 	formatter: function(series, x, y, formattedX, formattedY, d) {
@@ -47,75 +48,76 @@ Rickshaw.Graph.HoverDetail = Rickshaw.Class.create({
 		var eventX = e.offsetX || e.layerX;
 		var eventY = e.offsetY || e.layerY;
 
-		var domainX = graph.x.invert(eventX);
-		var stackedData = graph.stackedData;
+		var j = 0;
+		var points = [];
+		var nearestPoint;
 
-		var topSeriesData = stackedData.slice(-1).shift();
+		this.graph.series.active().forEach( function(series) {
 
-		var domainIndexScale = d3.scale.linear()
-			.domain([topSeriesData[0].x, topSeriesData.slice(-1).shift().x])
-			.range([0, topSeriesData.length]);
+			var data = this.graph.stackedData[j++];
 
-		var approximateIndex = Math.floor(domainIndexScale(domainX));
-		var dataIndex = Math.min(approximateIndex || 0, stackedData[0].length - 1);
+			var domainX = graph.x.invert(eventX);
 
-		for (var i = approximateIndex; i < stackedData[0].length - 1;) {
+			var domainIndexScale = d3.scale.linear()
+				.domain([data[0].x, data.slice(-1)[0].x])
+				.range([0, data.length]);
 
-			if (!stackedData[0][i] || !stackedData[0][i + 1]) {
-				break;
+			var approximateIndex = Math.floor(domainIndexScale(domainX));
+			var dataIndex = Math.min(approximateIndex || 0, data.length - 1);
+
+			for (var i = approximateIndex; i < data.length - 1;) {
+
+				if (!data[i] || !data[i + 1]) break;
+				if (data[i].x <= domainX && data[i + 1].x > domainX) { dataIndex = i; break }
+
+				if (data[i + 1].x <= domainX) { i++ } else { i-- }
 			}
 
-			if (stackedData[0][i].x <= domainX && stackedData[0][i + 1].x > domainX) {
-				dataIndex = i;
-				break;
+			var value = data[dataIndex];
+
+			var distance = Math.sqrt(
+				Math.pow(Math.abs(graph.x(value.x) - eventX), 2) +
+				Math.pow(Math.abs(graph.y(value.y + value.y0) - eventY), 2)
+			);
+
+			var xFormatter = series.xFormatter || this.xFormatter;
+			var yFormatter = series.yFormatter || this.yFormatter;
+
+			var point = {
+				formattedXValue: xFormatter(value.x),
+				formattedYValue: yFormatter(value.y),
+				series: series,
+				value: value,
+				distance: distance,
+				order: j,
+				name: series.name
+			};
+
+			if (!nearestPoint || distance < nearestPoint.distance) {
+				nearestPoint = point;
 			}
-			if (stackedData[0][i + 1].x <= domainX) { i++ } else { i-- }
-		}
 
-		var domainX = stackedData[0][dataIndex].x;
-		var formattedXValue = this.xFormatter(domainX);
-		var graphX = graph.x(domainX);
-		var order = 0;
-
-		var detail = graph.series.active()
-			.map( function(s) { return { order: order++, series: s, name: s.name, value: s.stack[dataIndex] } } );
-
-		var activeItem;
-
-		var sortFn = function(a, b) {
-			return (a.value.y0 + a.value.y) - (b.value.y0 + b.value.y);
-		};
-
-		var domainMouseY = graph.y.magnitude.invert(graph.element.offsetHeight - eventY);
-
-		detail.sort(sortFn).forEach( function(d) {
-
-			d.formattedYValue = (this.yFormatter.constructor == Array) ?
-				this.yFormatter[detail.indexOf(d)](d.value.y) :
-				this.yFormatter(d.value.y);
-
-			d.graphX = graphX;
-			d.graphY = graph.y(d.value.y0 + d.value.y);
-
-			if (domainMouseY > d.value.y0 && domainMouseY < d.value.y0 + d.value.y && !activeItem) {
-				activeItem = d;
-				d.active = true;
-			}
+			points.push(point);
 
 		}, this );
+
+
+		nearestPoint.active = true;
+
+		var domainX = nearestPoint.value.x;
+		var formattedXValue = nearestPoint.formattedXValue;
 
 		this.element.innerHTML = '';
 		this.element.style.left = graph.x(domainX) + 'px';
 
-		if (this.visible) {
-			this.render( {
-				detail: detail,
-				domainX: domainX,
-				formattedXValue: formattedXValue,
-				mouseX: eventX,
-				mouseY: eventY
-			} );
-		}
+		this.visible && this.render( {
+			points: points,
+			detail: points, // for backwards compatibility
+			mouseX: eventX,
+			mouseY: eventY,
+			formattedXValue: formattedXValue,
+			domainX: domainX
+		} );
 	},
 
 	hide: function() {
@@ -138,41 +140,44 @@ Rickshaw.Graph.HoverDetail = Rickshaw.Class.create({
 
 	render: function(args) {
 
-		var detail = args.detail;
-		var domainX = args.domainX;
+		var graph = this.graph;
+		var points = args.points;
+		var point = points.filter( function(p) { return p.active } ).shift();
 
-		var mouseX = args.mouseX;
-		var mouseY = args.mouseY;
+		if (point.value.y === null) return;
 
-		var formattedXValue = args.formattedXValue;
+		var formattedXValue = this.xFormatter(point.value.x);
+		var formattedYValue = this.yFormatter(point.value.y);
+
+		this.element.innerHTML = '';
+		this.element.style.left = graph.x(point.value.x) + 'px';
 
 		var xLabel = document.createElement('div');
+
 		xLabel.className = 'x_label';
 		xLabel.innerHTML = formattedXValue;
 		this.element.appendChild(xLabel);
 
-		detail.forEach( function(d) {
+		var item = document.createElement('div');
 
-			var item = document.createElement('div');
-			item.className = 'item';
-			item.innerHTML = this.formatter(d.series, domainX, d.value.y, formattedXValue, d.formattedYValue, d);
-			item.style.top = this.graph.y(d.value.y0 + d.value.y) + 'px';
+		item.className = 'item';
+		item.innerHTML = this.formatter(point.series, point.value.x, point.value.y, formattedXValue, formattedYValue, point);
+		item.style.top = this.graph.y(point.value.y0 + point.value.y) + 'px';
 
-			this.element.appendChild(item);
+		this.element.appendChild(item);
 
-			var dot = document.createElement('div');
-			dot.className = 'dot';
-			dot.style.top = item.style.top;
-			dot.style.borderColor = d.series.color;
+		var dot = document.createElement('div');
 
-			this.element.appendChild(dot);
+		dot.className = 'dot';
+		dot.style.top = item.style.top;
+		dot.style.borderColor = point.series.color;
 
-			if (d.active) {
-				item.className = 'item active';
-				dot.className = 'dot active';
-			}
+		this.element.appendChild(dot);
 
-		}, this );
+		if (point.active) {
+			item.className = 'item active';
+			dot.className = 'dot active';
+		}
 
 		this.show();
 

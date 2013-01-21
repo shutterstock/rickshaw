@@ -1,0 +1,50 @@
+<!doctype html>
+<head>
+
+	<link type="text/css" rel="stylesheet" href="../rickshaw.css">
+
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.1/jquery.min.js"></script>
+
+	<script src="../vendor/d3.v2.js"></script>
+	<script src="../rickshaw.js"></script>
+</head>
+<body>
+
+<div id="chart_container">
+	<div id="chart"></div>
+	<button id="refresh">refresh</button>
+</div>
+
+<script>
+
+var dataURLs = ['data/data.json', 'data/data2.json'];
+
+var ajaxGraph = new Rickshaw.Graph.Ajax( {
+
+	element: document.getElementById("chart"),
+	width: 400,
+	height: 200,
+	renderer: 'line',
+	dataURL: 'data/data.json',
+	series: [
+		{
+			name: 'New York',
+			color: '#c05020',
+		}, {
+			name: 'London',
+			color: '#30c020',
+		}, {
+			name: 'Tokyo',
+			color: '#6060c0'
+		}
+	]
+} );
+
+document.querySelector('#refresh').addEventListener('click', function() {
+	ajaxGraph.dataURL = ajaxGraph.dataURL === dataURLs[0] ? dataURLs[1] : dataURLs[0];
+	ajaxGraph.request();
+});
+
+</script>
+
+</body>

@@ -22,6 +22,7 @@ JS_FILES=\
 	src/js/Rickshaw.Graph.Ajax.js\
 	src/js/Rickshaw.Graph.Annotate.js\
 	src/js/Rickshaw.Graph.Axis.Time.js\
+	src/js/Rickshaw.Graph.Axis.X.js\
 	src/js/Rickshaw.Graph.Axis.Y.js\
 	src/js/Rickshaw.Graph.Behavior.Series.Highlight.js\
 	src/js/Rickshaw.Graph.Behavior.Series.Order.js\

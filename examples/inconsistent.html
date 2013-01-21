@@ -1,0 +1,46 @@
+<!doctype html>
+
+<link type="text/css" rel="stylesheet" href="../src/css/graph.css">
+<link type="text/css" rel="stylesheet" href="css/lines.css">
+<link type="text/css" rel="stylesheet" href="../rickshaw.css">
+
+<script src="../vendor/d3.v2.js"></script>
+
+<script src="../rickshaw.js"></script>
+
+<div id="chart"></div>
+
+<script>
+
+var palette = new Rickshaw.Color.Palette();
+
+var graph = new Rickshaw.Graph( {
+	element: document.getElementById("chart"),
+	renderer: 'line',
+	interpolation: 'cardinal',
+	series: [
+		{
+			data: [ { x: 0, y: 19 }, { x: 1, y: 30 }, { x: 2, y: 22 }, { x: 3, y: 29 }, { x: 4, y: 26 }, { x: 5, y: 35 } ],
+			name: 'new york',
+			color: palette.color()
+		}, {
+			data: [ { x: 0, y: 49 }, { x: 1, y: 35 }, { x: 2, y: 32 }, { x: 3, y: 38 }, { x: 4, y: 37 } ],
+			name: 'boston',
+			color: palette.color()
+		}, {
+			data: [ { x: 0, y: 19 }, { x: 1, y: 22 }, { x: 2, y: 10 }, { x: 4, y: 21 }, { x: 5, y: 17 } ],
+			name: 'los angeles',
+			color: palette.color()
+		}, {
+			data: [ { x: 1, y: 9 }, { x: 2, y: 3 }, { x: 3, y: 8 }, { x: 4, y: 14 }, { x: 5, y: 13 } ],
+			name: 'san francisco',
+			color: palette.color()
+		}
+	]
+} );
+
+graph.render();
+
+new Rickshaw.Graph.HoverDetail({ graph: graph });
+
+</script>

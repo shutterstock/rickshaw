@@ -135,6 +135,10 @@ Rickshaw.Series = Rickshaw.Class.create( Array, {
 } );
 
 Rickshaw.Series.zeroFill = function(series) {
+	Rickshaw.Series.fill(series, 0);
+};
+
+Rickshaw.Series.fill = function(series, fill) {
 
 	var x;
 	var i = 0;
@@ -151,10 +155,11 @@ Rickshaw.Series.zeroFill = function(series) {
 
 		data.forEach( function(d) {
 			if (!d[i] || d[i].x != x) {
-				d.splice(i, 0, { x: x, y: 0 });
+				d.splice(i, 0, { x: x, y: fill });
 			}
 		} );
 
 		i++;
 	}
 };
+

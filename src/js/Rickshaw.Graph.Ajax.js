@@ -36,7 +36,7 @@ Rickshaw.Graph.Ajax = Rickshaw.Class.create( {
 		data = this.onData(data);
 		this.args.series = this._splice({ data: data, series: this.args.series });
 
-		this.graph = new Rickshaw.Graph(this.args);
+		this.graph = this.graph || new Rickshaw.Graph(this.args);
 		this.graph.render();
 
 		this.onComplete(this);
@@ -62,7 +62,7 @@ Rickshaw.Graph.Ajax = Rickshaw.Class.create( {
 				if (seriesKey == dataKey) {
 					var properties = ['color', 'name', 'data'];
 					properties.forEach( function(p) {
-						s[p] = s[p] || d[p];
+						if (d[p]) s[p] = d[p];
 					} );
 				}
 			} );

@@ -2,6 +2,8 @@ Rickshaw.namespace('Rickshaw.Graph');
 
 Rickshaw.Graph = function(args) {
 
+	if (!args.element) throw "Rickshaw.Graph needs a reference to an element";
+
 	this.element = args.element;
 	this.series = args.series;
 
@@ -74,21 +76,15 @@ Rickshaw.Graph = function(args) {
 				throw "series data is not an array: " + JSON.stringify(s.data);
 			}
 
-			pointsCount = pointsCount || s.data.length;
+			var x = s.data[0].x;
+			var y = s.data[0].y;
 
-			if (pointsCount && s.data.length != pointsCount) {
-				throw "series cannot have differing numbers of points: " +
-					pointsCount	+ " vs " + s.data.length + "; see Rickshaw.Series.zeroFill()";
-			}
-
-			var dataTypeX = typeof s.data[0].x;
-			var dataTypeY = typeof s.data[0].y;
-
-			if (dataTypeX != 'number' || dataTypeY != 'number') {
+			if (typeof x != 'number' || ( typeof y != 'number' && y !== null ) ) {
 				throw "x and y properties of points should be numbers instead of " +
-					dataTypeX + " and " + dataTypeY;
+					(typeof x) + " and " + (typeof y)
 			}
-		} );
+
+		}, this );
 	};
 
 	this.dataDomain = function() {
@@ -137,10 +133,18 @@ Rickshaw.Graph = function(args) {
 			data = entry.f.apply(self, [data]);
 		} );
 
-		var layout = d3.layout.stack();
-		layout.offset( self.offset );
+		var stackedData;
 
-		var stackedData = layout(data);
+		if (!this.renderer.unstack) {
+
+			this._validateStackable();
+
+			var layout = d3.layout.stack();
+			layout.offset( self.offset );
+			stackedData = layout(data);
+		}
+
+		stackedData = stackedData || data;
 
 		this.stackData.hooks.after.forEach( function(entry) {
 			stackedData = entry.f.apply(self, [data]);
@@ -154,6 +158,23 @@ Rickshaw.Graph = function(args) {
 
 		this.stackedData = stackedData;
 		return stackedData;
+	};
+
+	this._validateStackable = function() {
+
+		var series = this.series;
+		var pointsCount;
+
+		series.forEach( function(s) {
+
+			pointsCount = pointsCount || s.data.length;
+
+			if (pointsCount && s.data.length != pointsCount) {
+				throw "stacked series cannot have differing numbers of points: " +
+					pointsCount + " vs " + s.data.length + "; see Rickshaw.Series.fill()";
+			}
+
+		}, this );
 	};
 
 	this.stackData.hooks = { data: [], after: [] };

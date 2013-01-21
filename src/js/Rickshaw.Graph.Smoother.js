@@ -28,10 +28,12 @@ Rickshaw.Graph.Smoother = function(args) {
 		orderPosition: 50,
 		f: function(data) {
 
+			if (self.aggregationScale == 1) return data;
+
 			var aggregatedData = [];
 
 			data.forEach( function(seriesData) {
-				
+
 				var aggregatedSeriesData = [];
 
 				while (seriesData.length) {

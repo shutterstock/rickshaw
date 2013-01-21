@@ -94,6 +94,42 @@ exports.dump = function(test) {
 	test.done();
 }
 
+exports.zeroFill = function(test) {
+
+	var series = [
+		{ name: "series1", data: [{ x: 1, y: 22 }, { x: 3, y: 29 }] },
+		{ name: "series2", data: [{ x: 2, y: 49 }] }
+	];
+
+	Rickshaw.Series.zeroFill(series);
+
+	var expectedSeries = [
+		{ name: "series1", data: [{ x: 1, y: 22 }, { x: 2, y: 0 }, { x: 3, y: 29 }] },
+		{ name: "series2", data: [{ x: 1, y: 0}, { x: 2, y: 49 }, { x: 3, y: 0 }] }
+	];
+
+	test.deepEqual(series, expectedSeries, "zero fill fills in zeros"); 
+	test.done();
+}
+
+exports.nullFill = function(test) {
+
+	var series = [
+		{ name: "series1", data: [{ x: 1, y: 22 }, { x: 3, y: 29 }] },
+		{ name: "series2", data: [{ x: 2, y: 49 }] }
+	];
+
+	Rickshaw.Series.fill(series, null);
+
+	var expectedSeries = [
+		{ name: "series1", data: [{ x: 1, y: 22 }, { x: 2, y: null }, { x: 3, y: 29 }] },
+		{ name: "series2", data: [{ x: 1, y: null}, { x: 2, y: 49 }, { x: 3, y: null }] }
+	];
+
+	test.deepEqual(series, expectedSeries, "null fill fills in nulls"); 
+	test.done();
+}
+
 exports.load = function(test) {
 
 	var series = new Rickshaw.Series([], 'spectrum2001', {timeBase: 0});	
@@ -111,3 +147,5 @@ exports.load = function(test) {
 	test.equal(series[0].data.length, 3, 'series data made it in');
 	test.done();
 }
+/*
+*/
