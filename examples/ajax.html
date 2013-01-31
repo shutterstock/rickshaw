@@ -39,6 +39,20 @@ var ajaxGraph = new Rickshaw.Graph.Ajax( {
 	]
 } );
 
+/*
+   The Ajax graph also includes additional callbacks that can be used. These include:
+
+   - onComplete(ajaxGraph) -    Called when the data is successfully retrieved from 
+                                the server and the graph has been rendered.
+                          args: Passes the instance of the ajax graph.
+   - onError(ajaxGraph) -       Called when there is an error retrieving the data
+                                from the dataUrl.
+                          args: Passes the instance of the ajax graph.
+   - onPreRenderGraph(graph) -  Called just before the underlying graph is rendered. 
+                                This allows you to modify the properties of the graph
+                                before it is rendered.
+                          args: Passes the underlying graph that the ajax graph creates. 
+*/
 </script>
 
 </body>

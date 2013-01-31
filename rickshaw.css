@@ -269,8 +269,16 @@
 	border-radius: 2px;
 }
 .rickshaw_legend .label {
+	margin: 0;
 	white-space: nowrap;
 	display: inline;
+	font-size: inherit;
+	background-color: transparent;
+	color: inherit;
+	font-weight: normal;
+	line-height: normal;
+	padding: 0px;
+	text-shadow: none;
 }
 .rickshaw_legend .action:hover {
 	opacity: 0.6;

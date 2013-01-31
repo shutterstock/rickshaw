@@ -9,6 +9,7 @@ Rickshaw.Graph.Ajax = Rickshaw.Class.create( {
 		this.onData = args.onData || function(d) { return d };
 		this.onComplete = args.onComplete || function() {};
 		this.onError = args.onError || function() {};
+		this.onPreRenderGraph = args.onPreRenderGraph || function(){};
 
 		this.args = args; // pass through to Rickshaw.Graph
 
@@ -37,6 +38,9 @@ Rickshaw.Graph.Ajax = Rickshaw.Class.create( {
 		this.args.series = this._splice({ data: data, series: this.args.series });
 
 		this.graph = this.graph || new Rickshaw.Graph(this.args);
+		
+		this.onPreRenderGraph(this.graph )
+		
 		this.graph.render();
 
 		this.onComplete(this);
