@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<link type="text/css" rel="stylesheet" href="../src/css/graph.css">
+		<link type="text/css" rel="stylesheet" href="css/lines.css">
+
+		<script src="../vendor/d3.v2.js"></script>
+
+		<script src="../rickshaw.js"></script>
+		
+		<style>
+		#chart_container {
+			margin: 30px;
+		}
+		#y_axis {
+			float: left;
+			width: 40px;
+		}
+		#y_axis_selector {
+			float: left;
+		}		
+		#update_container {
+			clear: left;
+			margin-left: 150px;
+		}
+		#update_container span {
+			font-style: italic;
+			font-weight: bold;
+		}
+		</style>
+	</head>
+	<body>
+		<div id="chart_container">
+			<div id="y_axis_selector"></div>
+			<div id="y_axis"></div>
+			<div id="chart"></div>
+		</div>
+		<div id="update_container">
+			Pre drag value: <span id="pre_drag_value">Not dragged yet...</span>, Post drag value: <span id="post_drag_value">Not dragged yet...</span>
+		</div>
+		
+		<script>
+		
+			var onBeforeDrag = function(value) {
+				document.getElementById("pre_drag_value").innerHTML = value;
+			};
+		
+			var onAfterDrag = function(value) {
+				document.getElementById("post_drag_value").innerHTML = value;				
+			};
+			
+			// instantiate our graph!
+
+			var graph = new Rickshaw.Graph( {
+				element: document.getElementById("chart"),
+				renderer: 'line',
+				height: 300,
+				width: 800,
+				series: [
+					{
+						data: [ { x: 0, y: 120 }, { x: 1, y: 890 }, { x: 2, y: 38 }, { x: 3, y: 70 }, { x: 4, y: 32 } ],
+						color: "#c05020"
+					}, {
+						data: [ { x: 0, y: 80 }, { x: 1, y: 200 }, { x: 2, y: 100 }, { x: 3, y: 520 }, { x: 4, y: 133 } ],
+						color: "#30c020"
+					}, {
+						data: [ { x: 0, y: 200 }, { x: 1, y: 390 }, { x: 2, y: 1000 }, { x: 3, y: 200 }, { x: 4, y: 230 } ],
+						color: "#6060c0"
+					}
+				]
+			} );
+
+			var y_ticks = new Rickshaw.Graph.Axis.Y( {
+				graph: graph,
+				orientation: 'left',
+				tickFormat: Rickshaw.Fixtures.Number.formatKMBT,
+				element: document.getElementById('y_axis'),
+			} );
+			
+			var yAxisSelector = new Rickshaw.Graph.Axis.Y.Selector( {
+				graph: graph,
+			    element: document.getElementById("y_axis_selector"),
+			    width: 90,
+			    unit: "%",
+			    color: "black",
+			    textColor: "white",
+			    lineDashArray: ("5,2"),
+				onDragStart: onBeforeDrag,
+				onDragComplete: onAfterDrag,
+				labelDecimalPlaces: 0
+			});
+			
+			graph.render();
+			
+		</script>
+	</body>
+</html>
