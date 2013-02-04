@@ -52,8 +52,7 @@
 
 	var x_ticks = new Rickshaw.Graph.Axis.X( {
 		graph: graph,
-		segmentDecimalPlaces: 2,
-		segments: 10
+		segmentation: 0.20	//Value must be between 0 - 1.  Used to divide up the range into segments
 	} );
 
 	graph.render();

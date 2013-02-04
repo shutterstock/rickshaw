@@ -1273,8 +1273,7 @@ Rickshaw.Graph.Axis.X = function(args) {
 	
 		this.graph = args.graph;
 		this.elements = [];
-		this.segments = typeof args.segments === 'undefined' ? 10 : args.segments;
-		this.segmentDecimalPlaces = typeof args.segmentDecimalPlaces  === 'undefined' ? 2 : args.segmentDecimalPlaces;
+		this.segmentation = typeof args.segmentation === 'undefined' || args.segmentation > 1 || args.segmentation < 0 ? 0.25 : args.segmentation;
 	};
 
 	this.tickOffsets = function() {
@@ -1282,15 +1281,16 @@ Rickshaw.Graph.Axis.X = function(args) {
 		var domain = self.graph.x.domain();
 
 		var range = Math.ceil(domain[1] - domain[0]);
-		var segment = range / self.segments;
+		var segmentSize = range * self.segmentation;
+		var numberOfSegments = range / segmentSize;
 
 		var runningTick = domain[0];
 
 		var offsets = [];
 
-		for (var i = 0; i <= self.segments; i++) 
+		for (var i = 0; i <= numberOfSegments; i++) 
 		{			
-			runningTick = round(domain[0] + (i * segment), self.segmentDecimalPlaces);
+			runningTick = round(domain[0] + (i * segmentSize), self.segmentDecimalPlaces);
 			offsets.push( { value: runningTick } );
 		}
 
@@ -1327,9 +1327,9 @@ Rickshaw.Graph.Axis.X = function(args) {
 		} );
 	};
 
-	var round = function(number, decimalPlaces) {
+	var round = function(number) {
 
-		var multiplier = Math.pow(10, decimalPlaces);
+		var multiplier = 100;
 
 		var roundedNumber = number * multiplier;
 		roundedNumber = Math.round(roundedNumber);
