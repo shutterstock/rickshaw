@@ -1273,7 +1273,6 @@ Rickshaw.Graph.Axis.X = function(args) {
 	
 		this.graph = args.graph;
 		this.elements = [];
-		this.ticksTreatment = args.ticksTreatment || 'plain';
 		this.segments = typeof args.segments === 'undefined' ? 10 : args.segments;
 		this.segmentDecimalPlaces = typeof args.segmentDecimalPlaces  === 'undefined' ? 2 : args.segmentDecimalPlaces;
 	};
@@ -1292,7 +1291,7 @@ Rickshaw.Graph.Axis.X = function(args) {
 		for (var i = 0; i <= self.segments; i++) 
 		{			
 			runningTick = round(domain[0] + (i * segment), self.segmentDecimalPlaces);
-			offsets.push( { value: runningTick, unit: runningTick } );
+			offsets.push( { value: runningTick } );
 		}
 
 		return offsets;
