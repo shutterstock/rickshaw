@@ -4,31 +4,30 @@ Rickshaw.Graph.Axis.X = function(args) {
 
 	var self = this;
 	
-	this.initialise = function() {
+	this.initialize = function() {
 	
 		this.graph = args.graph;
 		this.elements = [];
 		this.ticksTreatment = args.ticksTreatment || 'plain';
-		this.xSegments = args.xSegments || 10;
-		
+		this.segments = typeof args.segments === 'undefined' ? 10 : args.segments;
+		this.segmentDecimalPlaces = typeof args.segmentDecimalPlaces  === 'undefined' ? 2 : args.segmentDecimalPlaces;
 	};
 
 	this.tickOffsets = function() {
 
-		var domain = this.graph.x.domain();
+		var domain = self.graph.x.domain();
 
 		var range = Math.ceil(domain[1] - domain[0]);
-		var segment = range / self.xSegments;
-		var unit = self.graph.
+		var segment = range / self.segments;
 
 		var runningTick = domain[0];
 
 		var offsets = [];
 
-		for (var i = 0; i < self.xSegments; i++) 
+		for (var i = 0; i <= self.segments; i++) 
 		{			
-			runningTick = domain[0] + (i * segment);
-			offsets.push( { value: runningTick, unit: unit } );
+			runningTick = round(domain[0] + (i * segment), self.segmentDecimalPlaces);
+			offsets.push( { value: runningTick, unit: runningTick } );
 		}
 
 		return offsets;
@@ -36,13 +35,13 @@ Rickshaw.Graph.Axis.X = function(args) {
 
 	this.render = function() {
 
-		this.elements.forEach( function(e) {
+		self.elements.forEach( function(e) {
 			e.parentNode.removeChild(e);
 		} );
 
-		this.elements = [];
+		self.elements = [];
 
-		var offsets = this.tickOffsets();
+		var offsets = self.tickOffsets();
 
 		offsets.forEach( function(o) 
 		{			
@@ -55,7 +54,7 @@ Rickshaw.Graph.Axis.X = function(args) {
 
 			var title = document.createElement('div');
 			title.classList.add('title');
-			title.innerHTML = o.unit.formatter(new Date(o.value * 1000));
+			title.innerHTML = o.value;
 			element.appendChild(title);
 
 			self.graph.element.appendChild(element);
@@ -64,6 +63,18 @@ Rickshaw.Graph.Axis.X = function(args) {
 		} );
 	};
 
+	var round = function(number, decimalPlaces) {
+
+		var multiplier = Math.pow(10, decimalPlaces);
+
+		var roundedNumber = number * multiplier;
+		roundedNumber = Math.round(roundedNumber);
+		roundedNumber = Math.ceil(roundedNumber);
+
+		return roundedNumber / multiplier;
+	};
+
+	this.initialize();
 	this.graph.onUpdate( function() { self.render() } );
 };
 

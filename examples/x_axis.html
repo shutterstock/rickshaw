@@ -1,0 +1,63 @@
+<!doctype>
+<html>
+<head>
+	<link type="text/css" rel="stylesheet" href="../src/css/graph.css">
+	<link type="text/css" rel="stylesheet" href="css/lines.css">
+
+	<script src="../vendor/d3.v2.js"></script>
+
+	<script src="../rickshaw.js"></script>
+
+	<style>
+		#chart {
+			position: relative;
+			left: 40px;
+			top: 40px;
+		}
+		#y_axis {
+			position: absolute;
+			top: 0;
+			bottom: 0;
+			width: 40px;
+		}
+	</style>
+</head>
+<body>
+	<div id="chart_container">
+		<div id="chart"></div>
+	</div>
+
+	<script>
+
+	// instantiate our graph!
+
+	var graph = new Rickshaw.Graph( {
+		element: document.getElementById("chart"),
+		renderer: 'line',
+		height: 300,
+		width: 800,
+		series: [
+			{
+				data: [ { x: 0, y: 120 }, { x: 1, y: 890 }, { x: 2, y: 38 }, { x: 3, y: 70 }, { x: 4, y: 32 } ],
+				color: "#c05020"
+			}, {
+				data: [ { x: 0, y: 80 }, { x: 1, y: 200 }, { x: 2, y: 100 }, { x: 3, y: 520 }, { x: 4, y: 133 } ],
+				color: "#30c020"
+			}, {
+				data: [ { x: 0, y: 200 }, { x: 1, y: 390 }, { x: 2, y: 1000 }, { x: 3, y: 200 }, { x: 4, y: 230 } ],
+				color: "#6060c0"
+			}
+			]
+		} );
+
+	var x_ticks = new Rickshaw.Graph.Axis.X( {
+		graph: graph,
+		tickFormat: Rickshaw.Fixtures.Number.formatKMBT,
+		segmentDecimalPlaces: 2,
+		segments: 10
+	} );
+
+	graph.render();
+
+	</script>
+</body>
