@@ -1273,7 +1273,7 @@ Rickshaw.Graph.Axis.X = function(args) {
 	
 		this.graph = args.graph;
 		this.elements = [];
-		this.segmentation = typeof args.segmentation === 'undefined' || args.segmentation > 1 || args.segmentation < 0 ? 0.25 : args.segmentation;
+		this.segmentation = typeof args.segmentation === 'undefined' || args.segmentation > 1 || args.segmentation <= 0 ? 0.25 : args.segmentation;
 	};
 
 	this.tickOffsets = function() {
@@ -1281,7 +1281,7 @@ Rickshaw.Graph.Axis.X = function(args) {
 		var domain = self.graph.x.domain();
 
 		var range = Math.ceil(domain[1] - domain[0]);
-		var segmentSize = range * self.segmentation;
+		var segmentSize = Math.ceil(range * self.segmentation);
 		var numberOfSegments = range / segmentSize;
 
 		var runningTick = domain[0];
@@ -1290,7 +1290,7 @@ Rickshaw.Graph.Axis.X = function(args) {
 
 		for (var i = 0; i <= numberOfSegments; i++) 
 		{			
-			runningTick = round(domain[0] + (i * segmentSize), self.segmentDecimalPlaces);
+			runningTick = Math.ceil(domain[0] + (i * segmentSize));
 			offsets.push( { value: runningTick } );
 		}
 
@@ -1325,17 +1325,6 @@ Rickshaw.Graph.Axis.X = function(args) {
 			self.elements.push(element);
 
 		} );
-	};
-
-	var round = function(number) {
-
-		var multiplier = 100;
-
-		var roundedNumber = number * multiplier;
-		roundedNumber = Math.round(roundedNumber);
-		roundedNumber = Math.ceil(roundedNumber);
-
-		return roundedNumber / multiplier;
 	};
 
 	this.initialize();
@@ -1440,7 +1429,81 @@ Rickshaw.Graph.Axis.Y = function(args) {
 	this.initialize(args);
 };
 
-Rickshaw.namespace('Rickshaw.Graph.Axis.Y.Selector');
+Rickshaw.namespace('Rickshaw.Graph.Bar.HoverDetail');
+
+Rickshaw.Graph.Bar.HoverDetail = function(arguments)
+{	
+	var self = this;
+	var legend = null;
+	
+	this.initialize = function(args)
+	{
+        if(!args.graph)
+        {
+            throw {
+                name: "No graph exception",
+                message: "You must associate this component with a graph."
+            };
+        }
+        
+        this.graph = args.graph;
+        this.legendId = args.legendId || 'floating_legend';
+        this.cssClasses = args.cssClasses || '';
+        this.cssLeftOffset = args.cssLeftOffset || 20;
+        this.cssTopOffset = args.cssTopOffset || 20;
+        this.legendBuilder = args.legendBuilder || function(graph, data) { return data.name; };
+        this.onItemClick = args.onItemClick || function(){};
+        
+        this.graph.onUpdate(self.render);
+	};
+	
+	this.render = function()
+	{
+		if(legend)
+		{
+			legend.remove();
+		}
+		
+		var items = self.graph.vis.selectAll('rect')
+			.on('mouseover', self.onMouseOver)
+			.on('mousemove', self.onMouseMove)
+			.on('mouseout', self.onMouseOut);
+		
+		if(self.onItemClick)
+		{
+			items
+				.attr('class', 'clickable')
+				.on('click', self.onItemClick);
+		}
+	}
+	
+	this.onMouseOver = function(d, i)
+	{
+		var barData = d3.select(this)[0][0].__data__;
+		
+		legend = $("<div id='floating_legend'></div>");
+		legend.html(self.legendBuilder(self.graph, barData));
+		legend.addClass(self.cssClasses);
+		legend.css('left', d3.event.clientX + self.cssLeftOffset + "px");
+		legend.css('top', d3.event.clientY + self.cssTopOffset + "px");	
+		
+		//$(self.graph.element.parentNode).append(legend);
+		$("body").append(legend);
+	};
+	
+	this.onMouseMove = function(d, i)
+	{
+		legend.css('left', d3.event.clientX + self.cssLeftOffset + "px");
+		legend.css('top', d3.event.clientY + self.cssTopOffset + "px");	
+	};
+	
+	this.onMouseOut = function(d, i)
+	{
+		legend.remove();		
+	};
+	
+	this.initialize(arguments);
+};Rickshaw.namespace('Rickshaw.Graph.Axis.Y.Selector');
 
 Rickshaw.Graph.Axis.Y.Selector = function(args) {
 
@@ -2163,7 +2226,59 @@ Rickshaw.Graph.Legend = function(args) {
 
 	graph.onUpdate( function() {} );
 };
-Rickshaw.namespace('Rickshaw.Graph.RangeSlider');
+Rickshaw.namespace('Rickshaw.Graph.Line.XEqualsY');
+
+Rickshaw.Graph.Line.XEqualsY = function(args) {
+
+	var self = this;
+	
+	this.initialize = function(args) {
+	
+        if(!args.graph)
+        {
+            throw {
+                name: "No graph exception",
+                message: "You must associate this component with a graph."
+            };
+        }
+        
+		this.graph = args.graph;
+        this.color = args.color || "black";
+        this.lineOpacity = args.lineOpacity || 0.9;
+        this.lineDashArray = args.lineDashArray || ('1,0');
+
+        this.graph.onUpdate(function () {
+            self.render();
+        });
+		
+	},
+	
+	this.render = function() {
+		
+		if(self.line)
+		{
+			self.line.remove();
+		}
+		
+		var x = self.graph.x;
+		var y = self.graph.y;
+		
+		var xy1 = Math.ceil(Math.max(x.domain()[1], y.domain()[1]));
+		
+		self.line = self.graph.vis
+            .append("svg:line")
+            .attr("x1", x(0))
+            .attr("y1", y(0))
+            .attr("x2", x(xy1))
+            .attr("y2", y(xy1))
+            .attr("opacity", self.lineOpacity)
+            .style("stroke", self.color)
+            .style("stroke-width", "1")
+            .style("stroke-dasharray", self.lineDashArray);
+	}
+	
+	this.initialize(args);
+};Rickshaw.namespace('Rickshaw.Graph.RangeSlider');
 
 Rickshaw.Graph.RangeSlider = function(args) {
 
