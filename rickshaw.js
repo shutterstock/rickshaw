@@ -1429,9 +1429,9 @@ Rickshaw.Graph.Axis.Y = function(args) {
 	this.initialize(args);
 };
 
-Rickshaw.namespace('Rickshaw.Graph.Bar.HoverDetail');
+Rickshaw.namespace('Rickshaw.Graph.Bar.HoverDetail2');
 
-Rickshaw.Graph.Bar.HoverDetail = function(arguments)
+Rickshaw.Graph.HoverDetail2 = function(arguments)
 {	
 	var self = this;
 	var legend = null;
@@ -1447,6 +1447,7 @@ Rickshaw.Graph.Bar.HoverDetail = function(arguments)
         }
         
         this.graph = args.graph;
+		this.itemsToSelect = args.itemsToSelect || 'rect';
         this.legendId = args.legendId || 'floating_legend';
         this.cssClasses = args.cssClasses || '';
         this.cssLeftOffset = args.cssLeftOffset || 20;
@@ -1464,7 +1465,7 @@ Rickshaw.Graph.Bar.HoverDetail = function(arguments)
 			legend.remove();
 		}
 		
-		var items = self.graph.vis.selectAll('rect')
+		var items = self.graph.vis.selectAll(self.itemsToSelect)
 			.on('mouseover', self.onMouseOver)
 			.on('mousemove', self.onMouseMove)
 			.on('mouseout', self.onMouseOut);
