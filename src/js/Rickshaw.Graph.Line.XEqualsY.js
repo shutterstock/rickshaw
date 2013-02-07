@@ -40,8 +40,8 @@ Rickshaw.Graph.Line.XEqualsY = function(args) {
 				
 		self.line = self.graph.vis
             .append("svg:line")
-            .attr("x1", xy0)
-            .attr("y1", xy0)
+            .attr("x1", x(xy0))
+            .attr("y1", y(xy0))
             .attr("x2", x(xy1))
             .attr("y2", y(xy1))
             .attr("opacity", self.lineOpacity)
