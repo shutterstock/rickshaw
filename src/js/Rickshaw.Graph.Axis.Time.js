@@ -1,5 +1,9 @@
 Rickshaw.namespace('Rickshaw.Graph.Axis.Time');
 
+function createDateAsUTC(date) {
+    return new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate(), date.getHours(), date.getMinutes(), date.getSeconds(), date.getMilliseconds()));
+    }
+
 Rickshaw.Graph.Axis.Time = function(args) {
 
 	var self = this;
@@ -71,7 +75,7 @@ Rickshaw.Graph.Axis.Time = function(args) {
 
 			var title = document.createElement('div');
 			title.classList.add('title');
-			title.innerHTML = o.unit.formatter(new Date(o.value * 1000));
+			title.innerHTML = o.unit.formatter(createDateAsUTC(new Date(o.value * 1000)));
 			element.appendChild(title);
 
 			self.graph.element.appendChild(element);
