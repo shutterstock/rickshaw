@@ -5,6 +5,8 @@ Rickshaw.Graph.HoverDetail2 = function(arguments)
 	var self = this;
 	var legend = null;
 	
+	var emptyFunction = function(){};
+	
 	this.initialize = function(args)
 	{
         if(!args.graph)
@@ -22,7 +24,7 @@ Rickshaw.Graph.HoverDetail2 = function(arguments)
         this.cssLeftOffset = args.cssLeftOffset || 20;
         this.cssTopOffset = args.cssTopOffset || 20;
         this.legendBuilder = args.legendBuilder || function(graph, data) { return data.name; };
-        this.onItemClick = args.onItemClick || function(){};
+        this.onItemClick = args.onItemClick || emptyFunction;
         
         this.graph.onUpdate(self.render);
 	};
@@ -39,7 +41,7 @@ Rickshaw.Graph.HoverDetail2 = function(arguments)
 			.on('mousemove', self.onMouseMove)
 			.on('mouseout', self.onMouseOut);
 		
-		if(self.onItemClick)
+		if(self.onItemClick !== emptyFunction)
 		{
 			items
 				.attr('class', 'clickable')

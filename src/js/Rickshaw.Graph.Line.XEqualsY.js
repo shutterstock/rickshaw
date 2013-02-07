@@ -35,12 +35,13 @@ Rickshaw.Graph.Line.XEqualsY = function(args) {
 		var x = self.graph.x;
 		var y = self.graph.y;
 		
+		var xy0 = Math.floor(Math.min(x.domain()[0], y.domain()[0]));		
 		var xy1 = Math.ceil(Math.max(x.domain()[1], y.domain()[1]));
-		
+				
 		self.line = self.graph.vis
             .append("svg:line")
-            .attr("x1", x(0))
-            .attr("y1", y(0))
+            .attr("x1", xy0)
+            .attr("y1", xy0)
             .attr("x2", x(xy1))
             .attr("y2", y(xy1))
             .attr("opacity", self.lineOpacity)

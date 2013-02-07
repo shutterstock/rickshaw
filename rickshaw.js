@@ -1436,6 +1436,8 @@ Rickshaw.Graph.HoverDetail2 = function(arguments)
 	var self = this;
 	var legend = null;
 	
+	var emptyFunction = function(){};
+	
 	this.initialize = function(args)
 	{
         if(!args.graph)
@@ -1453,7 +1455,7 @@ Rickshaw.Graph.HoverDetail2 = function(arguments)
         this.cssLeftOffset = args.cssLeftOffset || 20;
         this.cssTopOffset = args.cssTopOffset || 20;
         this.legendBuilder = args.legendBuilder || function(graph, data) { return data.name; };
-        this.onItemClick = args.onItemClick || function(){};
+        this.onItemClick = args.onItemClick || emptyFunction;
         
         this.graph.onUpdate(self.render);
 	};
@@ -1470,7 +1472,7 @@ Rickshaw.Graph.HoverDetail2 = function(arguments)
 			.on('mousemove', self.onMouseMove)
 			.on('mouseout', self.onMouseOut);
 		
-		if(self.onItemClick)
+		if(self.onItemClick !== emptyFunction)
 		{
 			items
 				.attr('class', 'clickable')
@@ -2264,12 +2266,13 @@ Rickshaw.Graph.Line.XEqualsY = function(args) {
 		var x = self.graph.x;
 		var y = self.graph.y;
 		
+		var xy0 = Math.floor(Math.min(x.domain()[0], y.domain()[0]));		
 		var xy1 = Math.ceil(Math.max(x.domain()[1], y.domain()[1]));
-		
+				
 		self.line = self.graph.vis
             .append("svg:line")
-            .attr("x1", x(0))
-            .attr("y1", y(0))
+            .attr("x1", xy0)
+            .attr("y1", xy0)
             .attr("x2", x(xy1))
             .attr("y2", y(xy1))
             .attr("opacity", self.lineOpacity)
