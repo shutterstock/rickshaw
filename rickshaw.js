@@ -2325,7 +2325,8 @@ Rickshaw.Graph.Renderer.Bar = Rickshaw.Class.create( Rickshaw.Graph.Renderer, {
 				.attr("height", function(d) { return graph.y.magnitude(Math.abs(d.y)) })
 				.attr("transform", transform);
 
-			Array.prototype.forEach.call(nodes[0], function(n) {
+			Array.prototype.forEach.call(nodes[0], function(n, i) {
+				series.color = series.data[i].color || series.color;
 				n.setAttribute('fill', series.color);
 			} );
 
