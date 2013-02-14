@@ -12,14 +12,13 @@ Rickshaw.Graph.Legend = function(args) {
 	var list = this.list = document.createElement('ul');
 	element.appendChild(list);
 
-	var series = graph.series
-		.map( function(s) { return s } )
-
-	if (!args.naturalOrder) {
-		series = series.reverse();
-	}
-
 	this.lines = [];
+
+	this.reset = function()
+	{
+		this.lines = [];
+		this.list.innerHTML = '';
+	};
 
 	this.addLine = function (series) {
 		var line = document.createElement('li');
@@ -55,9 +54,29 @@ Rickshaw.Graph.Legend = function(args) {
 		self.lines.push(_line);
 	};
 
-	series.forEach( function(s) {
-		self.addLine(s);
-	} );
+	this.addLines = function(series)
+	{
+		series.forEach( function(s) {
+			self.addLine(s);
+		} );
+	};
 
-	graph.onUpdate( function() {} );
+	this.prepareSeries = function(series)
+	{
+		var series = series.map( function(s) { return s } )
+
+		if (!args.naturalOrder) {
+			series = series.reverse();
+		}
+
+		return series;
+	};
+
+	graph.onUpdate(function()
+	{
+		self.reset();
+		self.addLines(self.prepareSeries(graph.series));
+	});
+
+	this.addLines(this.prepareSeries(graph.series));
 };
