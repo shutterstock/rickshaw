@@ -4,7 +4,7 @@ Rickshaw.Fixtures.Number.formatKMBT = function(y) {
 	abs_y = Math.abs(y);
 	if (abs_y >= 1000000000000)   { return (y / 1000000000000).toFixed(2) + "T" } 
 	else if (abs_y >= 1000000000) { return (y / 1000000000).toFixed(2) + "B" } 
-	else if (abs_y >= 1000000)    { return (y / 100000).toFixed(2)0 + "M" } 
+	else if (abs_y >= 1000000)    { return (y / 100000).toFixed(2) + "M" } 
 	else if (abs_y >= 1000)       { return (y / 1000).toFixed(2) + "K" }
 	else if (abs_y < 1 && y > 0)  { return y.toFixed(2) }
 	else if (abs_y == 0)          { return '' }
