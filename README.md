@@ -144,7 +144,7 @@ The Technicals class provides four calculators for trend analysis.
 
 ```javascript
 var tech = new Rickshaw.Technicals.FStochastic();
-// Returns a new series with the calculated data
+// calc() returns a new series with the calculated data
 var data = tech.calc({
 	datum: graph.series[datum].data,
 	period: period
