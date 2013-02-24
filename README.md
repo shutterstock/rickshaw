@@ -138,6 +138,27 @@ palette.color() // => next color in the palette...
 
 For graphs with more series than palettes have colors, sepcify an `interpolatedStopsCount` to the palette constructor.
 
+## Rickshaw.Technicals
+
+The Technicals class provides four calculators for trend analysis.
+
+```javascript
+var tech = new Rickshaw.Technicals.FStochastic();
+// Returns a new series with the calculated data
+var data = tech.calc({
+	datum: graph.series[datum].data,
+	period: period
+});
+```
+
+#### Calculators
+
+  * Momentum (rate of acceleration)
+  * Linear Regression (least squares fitting)
+  * Simple Moving Average (finite impulse response filter used to analyze a series of averages)
+  * Stochastic oscillator (a momentum indicator that uses a value range over a given period)
+
+
 ## Rickshaw and Cross-Browser Support
 
 This library works in modern browsers and Internet Explorer 9.
