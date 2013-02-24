@@ -184,30 +184,36 @@
 	display: block;
 	z-index: 50;
 }
-.rickshaw_graph .y_axis {
+.rickshaw_graph .y_axis,
+.rickshaw_graph  .x_axis_d3 {
 	fill: none;
 }
-.rickshaw_graph .y_ticks .tick {
+.rickshaw_graph .y_ticks .tick,
+.rickshaw_graph .x_ticks_d3 .tick {
 	stroke: rgba(0, 0, 0, 0.16);
 	stroke-width: 2px;
 	shape-rendering: crisp-edges;
 	pointer-events: none;
 }
-.rickshaw_graph .y_grid .tick {
+.rickshaw_graph .y_grid .tick,
+.rickshaw_graph .x_grid_d3 .tick {
 	z-index: -1;
 	stroke: rgba(0, 0, 0, 0.20);
 	stroke-width: 1px;
 	stroke-dasharray: 1 1;
 }
-.rickshaw_graph .y_grid path {
+.rickshaw_graph .y_grid path,
+.rickshaw_graph .x_grid_d3 path  {
 	fill: none;
 	stroke: none;
 }
-.rickshaw_graph .y_ticks path {
+.rickshaw_graph .y_ticks path,
+.rickshaw_graph .x_ticks_d3 path {
 	fill: none;
 	stroke: #808080;
 }
-.rickshaw_graph .y_ticks text {
+.rickshaw_graph .y_ticks text,
+.rickshaw_graph .x_ticks_d3 text {
 	opacity: 0.5;
 	font-size: 12px;
 	pointer-events: none;
@@ -269,8 +275,16 @@
 	border-radius: 2px;
 }
 .rickshaw_legend .label {
+	margin: 0;
 	white-space: nowrap;
 	display: inline;
+	font-size: inherit;
+	background-color: transparent;
+	color: inherit;
+	font-weight: normal;
+	line-height: normal;
+	padding: 0px;
+	text-shadow: none;
 }
 .rickshaw_legend .action:hover {
 	opacity: 0.6;
