@@ -247,6 +247,12 @@ Rickshaw.Graph = function(args) {
 			.attr('width', this.width)
 			.attr('height', this.height);
 	}
+	
+	this.setSeries = function(seriesdata){
+		this.validateSeries(seriesdata);
+		seriesdata.active = self.series.active;
+		self.series = seriesdata;
+	}
 
 	this.initialize(args);
 };
