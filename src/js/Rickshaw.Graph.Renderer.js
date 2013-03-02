@@ -45,10 +45,13 @@ Rickshaw.Graph.Renderer = Rickshaw.Class.create( {
 
 			series.forEach( function(d) {
 
-				var y = d.y + d.y0;
+				if (d.y) {
 
-				if (y < yMin) yMin = y;
-				if (y > yMax) yMax = y;
+					var y = d.y + d.y0;
+
+					if (y < yMin) yMin = y;
+					if (y > yMax) yMax = y;
+				}
 			} );
 
 			if (series[0].x < xMin) xMin = series[0].x;
