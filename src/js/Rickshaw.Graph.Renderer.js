@@ -45,6 +45,8 @@ Rickshaw.Graph.Renderer = Rickshaw.Class.create( {
 
 			series.forEach( function(d) {
 
+				if (d.y == undefined) return;
+
 				var y = d.y + d.y0;
 
 				if (y < yMin) yMin = y;
