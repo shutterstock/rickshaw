@@ -73,6 +73,7 @@ Rickshaw.Graph.HoverDetail = Rickshaw.Class.create({
 				if (data[i + 1].x <= domainX) { i++ } else { i-- }
 			}
 
+			if (dataIndex < 0) dataIndex = 0;
 			var value = data[dataIndex];
 
 			var distance = Math.sqrt(
