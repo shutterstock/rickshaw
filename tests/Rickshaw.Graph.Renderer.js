@@ -62,6 +62,28 @@ exports.domain = function(test) {
 	domain = graph.renderer.domain();
 	test.deepEqual(domain, { x: [ 0, 5 ], y: [ -72, 49 ] }, 'multiple length series extents match');
 
+	// null values and auto
+
+	graph.series.splice(0, graph.series.length);
+	graph.series.push({ data: [ { x: 1, y: 27 }, { x: 2, y: 49 }, { x: 3, y: 14 } ] });
+	graph.series.push({ data: [ { x: 1, y: null }, { x: 2, y: 9 }, { x: 3, y: 3 } ] });
+
+	graph.configure({ min: 'auto' });
+	graph.stackData();
+
+	domain = graph.renderer.domain();
+	test.deepEqual(domain, { x: [ 1, 3 ], y: [ 3, 49 ] }, "null values don't set min to zero");
+
+	// max of zero
+
+	graph.series.push({ data: [ { x: 1, y: -29 }, { x: 2, y: -9 }, { x: 3, y: -3 } ] });
+
+	graph.configure({ max: 0 });
+	graph.stackData();
+	
+	domain = graph.renderer.domain();
+	test.deepEqual(domain, { x: [ 1, 3 ], y: [ -29, 0 ] }, "explicit zero max doesn't fall through");
+
 	test.done();
 };
 
