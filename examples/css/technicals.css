@@ -1,0 +1,29 @@
+#chart_container{
+	border-bottom: 1px solid #aaa;
+}
+fieldset{
+	border: 1px solid #DDD;
+	-webkit-border-radius: 4px;
+	-moz-border-radius: 4px;
+	border-radius: 4px;
+	padding: 10px;
+}
+#technical_form{
+	float: right;
+}
+.rickshaw_legend span.label{
+	background: transparent;
+}
+.rickshaw_legend a.action{
+	color: #fff;
+}
+input, select, label{
+	display: block;
+}
+#tech_chart{
+	float: left;
+	margin: 15px 0;
+}
+#tech_chart .x_tick .title{
+	display: none;
+}

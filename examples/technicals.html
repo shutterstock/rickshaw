@@ -1,0 +1,147 @@
+<!doctype>
+<head>
+	<title>Technicals - Simple Moving Average</title>
+	<link type="text/css" rel="stylesheet" href="http://code.jquery.com/ui/1.8.23/themes/base/jquery-ui.css">
+	<link type="text/css" rel="stylesheet" href="../src/css/graph.css">
+	<link type="text/css" rel="stylesheet" href="../src/css/detail.css">
+	<link type="text/css" rel="stylesheet" href="../src/css/legend.css">
+
+	<link type="text/css" rel="stylesheet" href="css/lines.css">
+	<link type="text/css" rel="stylesheet" href="css/technicals.css">
+
+	<script src="../vendor/d3.v2.js"></script>
+
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8/jquery.min.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.15/jquery-ui.min.js"></script>
+
+	<script src="../rickshaw.js"></script>
+	<script src="js/technicals.js"></script>
+</head>
+<body>
+	<div id="technical_form">
+		<h4>Fast Stochastic</h4>
+		<form>
+			<fieldset>
+				<label for="%k">%K</label>
+				<input name="%k" id="%k" class="period" />
+				<label for="%d">%D</label>
+				<input name="%d" id="%d" class="period" />
+								
+				<label for="datum">Datum</label>
+				<select name="datum" id="datum_sel">
+					<option value='0' selected>New York</option>
+					<option value='1' selected>London</option>
+					<option value='2' selected>Toyko</option>
+				</select>
+				<input type="submit" class="btn" />
+			</fieldset>
+		</form>
+	</div>
+	<div id="legend"></div>
+	<div id="chart_container">
+		<div id="chart"></div>
+		<div id="slider"></div>
+	</div>
+	<div id='tech_chart'></div>
+
+	<script type="text/javascript">
+		// set up our data series with 50 random data points
+		var seriesData = [ [], [], [] ];
+		var random = new Rickshaw.Fixtures.RandomData(150);
+
+		for (var i = 0; i < 150; i++) {
+			random.addData(seriesData);
+		}
+
+		// instantiate our graph!
+		var graph = new Rickshaw.Graph( {
+			element: document.getElementById("chart"),
+			width: 960,
+			height: 500,
+			renderer: 'line',
+			series: [
+				{
+					color: "#c05020",
+					data: seriesData[0],
+					name: 'New York'
+				}, {
+					color: "#30c020",
+					data: seriesData[1],
+					name: 'London'
+				}, {
+					color: "#6060c0",
+					data: seriesData[2],
+					name: 'Tokyo'
+				}
+			]
+		} );
+
+		graph.render();
+
+		var hoverDetail = new Rickshaw.Graph.HoverDetail( {
+			graph: graph
+		});
+
+		var legend = new Rickshaw.Graph.Legend( {
+			graph: graph,
+			element: document.getElementById('legend')
+		});
+
+		var shelving = new Rickshaw.Graph.Behavior.Series.Toggle( {
+			graph: graph,
+			legend: legend
+		});
+
+		var ticksTreatment = 'glow';
+		var xAxis = new Rickshaw.Graph.Axis.Time( {
+			graph: graph
+		});
+		xAxis.render();
+		var yAxis = new Rickshaw.Graph.Axis.Y( {
+			graph: graph,
+			tickFormat: Rickshaw.Fixtures.Number.formatKMBT,
+			ticksTreatment: ticksTreatment
+		} );
+		yAxis.render();
+
+		$(document).ready(function(e){
+			var tech = new Rickshaw.Technicals.FStochastic();
+			var elem = $('#technical_form');
+			
+			// Listen to the form submission and process data accordingly
+			elem.find('form').on('submit', function(e){
+				e.preventDefault();
+				var datum = $('#datum_sel').val();
+				var calc_obj = [];
+				var period = [];
+				// could be multiple periods so we need to loop
+				elem.find('form input.period').each(function(index) {
+					period[$(this).attr('name')] = $(this).val();
+				});
+				// Run the calculator
+				var data = tech.calc({
+					datum: graph.series[datum].data,
+					period: period
+				});
+				
+				// create the series object that will be drawn on the graph
+				for(var key in data){
+					calc_obj.push({
+						color: '#'+Math.floor(Math.random()*16777215).toString(16),
+						data: data[key],
+						name: key
+					});					
+				}
+				// Draw the data on the passed graph or a new graph
+				Rickshaw.Technicals.view.draw({
+					graph : graph,
+					tech : tech,
+					series : calc_obj,
+					legend : legend,
+					shelving : shelving,
+					ele: document.getElementById("tech_chart")
+				});
+			});
+		});
+	</script>
+</body>
