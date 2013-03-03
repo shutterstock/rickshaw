@@ -166,6 +166,9 @@ section.topic-2 .documentation pre {
 	height: 3px;
 	font-family: WebSymbolsRegular;
 }
+.gist .line-numbers {
+	display: none;
+}
 .gist-meta {
 	display: none;
 }
