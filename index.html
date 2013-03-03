@@ -383,6 +383,7 @@ new Rickshaw.Graph.JSONP({
 				<ul>
 				<li><a href="https://github.com/shutterstock/rickshaw/blob/master/src/js/Rickshaw.Graph.Axis.Time.js">Rickshaw.Graph.Axis.Time</a></li>
 				<li><a href="https://github.com/shutterstock/rickshaw/blob/master/src/js/Rickshaw.Graph.Axis.Y.js">Rickshaw.Graph.Axis.Y</a></li>
+				<li><a href="https://github.com/shutterstock/rickshaw/blob/master/src/js/Rickshaw.Graph.Axis.X.js">Rickshaw.Graph.Axis.X</a></li>
 				<li><a href="https://github.com/shutterstock/rickshaw/blob/master/src/js/Rickshaw.Fixtures.Time.js">Rickshaw.Fixtures.Time</a></li>
 				<li><a href="https://github.com/shutterstock/rickshaw/blob/master/src/js/Rickshaw.Fixtures.Number.js">Rickshaw.Fixtures.Number</a></li>
 				</ul>
@@ -441,6 +442,13 @@ var yAxis = new Rickshaw.Graph.Axis.Y( {
 
 yAxis.render();
 </pre>
+
+For x-axes with numeric or other non-time values:
+<pre>
+var xAxis = new Rickshaw.Graph.Axis.X( {
+    graph: graph
+} );
+</pre>
 		</div>
 	</section>
 
@@ -451,18 +459,20 @@ yAxis.render();
 
 		<section>
 			<div class="preview">
-				<img src="examples/screenshots/tutorial.png">
+				<a href="tutorial/introduction.html"><img src="examples/screenshots/tutorial.png"></a>
 			</div>
 			<h5><a href="tutorial/introduction.html">Tutorial</a></h5>
 			<p>Get a simple graph on the page, add real data from the U.S. Census, and break that data down to draw some conclusions</p>
 		</section>
 		<section>
-			<div class="preview group">
-				<img src="examples/screenshots/start.png">
-				<img src="examples/screenshots/lines.png">
-				<img src="examples/screenshots/extensions.png">
-				<img src="examples/screenshots/status.png">
-			</div>
+			<a href="examples/" id="examples_block_link">
+				<div class="preview group">
+					<img src="examples/screenshots/start.png">
+					<img src="examples/screenshots/lines.png">
+					<img src="examples/screenshots/extensions.png">
+					<img src="examples/screenshots/status.png">
+				</div>
+			</a>
 			<h5><a id="examples_link" href="examples/">Examples</a></h5>
 			<p>See working examples exercising extensions.  Add legends, annotations, axes and labels, get data via AJAX, etc.</p>
 		</section>

@@ -233,4 +233,9 @@ footer {
 	font-size: 32px;
 	height: 4em;
 }
-
+#examples_block_link {
+	display: block;
+}
+#examples_block_link .preview {
+	border: none;
+}
