@@ -30,7 +30,11 @@ section p, a.light {
 #hero .welcome .button {
 	box-shadow: 0 0 30px rgba(0,0,0,0.12);
 }
+#hero_link:hover {
+	opacity: 0.8;
+}
 #hero img {
+	border: none;
 	width: 48%;
 	box-shadow: 5px 5px 10px rgba(0,0,0,0.12);
 }
