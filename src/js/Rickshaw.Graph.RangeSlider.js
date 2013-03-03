@@ -32,7 +32,7 @@ Rickshaw.Graph.RangeSlider = function(args) {
 		} );
 	} );
 
-	element[0].style.width = graph.width + 'px';
+	$(element)[0].style.width = graph.width + 'px';
 
 	graph.onUpdate( function() {
 

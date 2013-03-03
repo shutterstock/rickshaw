@@ -15,6 +15,39 @@ Rickshaw.Graph.Annotate = function(args) {
 		self.data[time] = self.data[time] || {'boxes': []};
 		self.data[time].boxes.push({content: content, end: end_time});
 	};
+        
+        this.showLines = args.showLines;
+        this.disableClick = args.disableClick;
+
+        this.clickHandler = function(element, annotation, e) {
+          if (!this.showLines) {
+            annotation.line.classList.toggle('active');
+          }
+
+	  element.classList.toggle('active');
+          annotation.boxes.forEach( function(box) {
+	    if ( box.rangeElement ) box.rangeElement.classList.toggle('active');
+	  });
+        };
+
+        this.hide = function() {
+          Rickshaw.keys(self.data).forEach(function(time) {
+            var annotation = self.data[time];
+
+            if (annotation.element) {
+	      annotation.line.classList.add('offscreen');
+              annotation.line.classList.remove('active')
+	      annotation.element.style.display = 'none';
+	    }
+
+	    annotation.boxes.forEach( function(box) {
+	      if ( box.rangeElement ) {
+                box.rangeElement.classList.add('offscreen');
+                box.rangeElement.classList.remove('active');
+              }
+	    });
+          });
+        };
 
 	this.update = function() {
 
@@ -40,14 +73,9 @@ Rickshaw.Graph.Annotate = function(args) {
 				var element = annotation.element = document.createElement('div');
 				element.classList.add('annotation');
 				this.elements.timeline.appendChild(element);
-				element.addEventListener('click', function(e) {
-					element.classList.toggle('active');
-					annotation.line.classList.toggle('active');
-					annotation.boxes.forEach( function(box) {
-						if ( box.rangeElement ) box.rangeElement.classList.toggle('active');
-					});
-				}, false);
-					
+				if (!self.disableClick) {
+                                  element.addEventListener('click', self.clickHandler.bind(self, element, annotation), false);
+                                }
 			}
 
 			annotation.element.style.left = left + 'px';
@@ -75,6 +103,10 @@ Rickshaw.Graph.Annotate = function(args) {
 					}
 
 				}
+
+                                if (self.showLines) {
+                                  annotation.line.classList.add('active');
+                                }
 
 				if ( box.end ) {
 
