@@ -5,6 +5,8 @@ Rickshaw.Graph.Behavior.Series.Toggle = function(args) {
 	this.graph = args.graph;
 	this.legend = args.legend;
 
+	this.sortable = args.sortable == undefined ? true : args.sortable;
+
 	var self = this;
 
 	this.addAnchor = function(line) {
@@ -72,20 +74,23 @@ Rickshaw.Graph.Behavior.Series.Toggle = function(args) {
 
 	if (this.legend) {
 
-                $(this.legend.list).sortable( {
-                        start: function(event, ui) {
-                                ui.item.bind('no.onclick',
-                                        function(event) {
-                                                event.preventDefault();
-                                        }
-                                );
-                        },
-                        stop: function(event, ui) {
-                                setTimeout(function(){
-                                        ui.item.unbind('no.onclick');
-                                }, 250);
-                        }
-                })
+		if (this.sortable) {
+
+			$(this.legend.list).sortable( {
+				start: function(event, ui) {
+					ui.item.bind('no.onclick',
+						function(event) {
+							event.preventDefault();
+						}
+					);
+				},
+				stop: function(event, ui) {
+					setTimeout(function(){
+						ui.item.unbind('no.onclick');
+					}, 250);
+				}
+			})
+		}
 
 		this.legend.lines.forEach( function(l) {
 			self.addAnchor(l);
