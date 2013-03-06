@@ -1,62 +1,41 @@
 Rickshaw.namespace('Rickshaw.Graph.Smoother');
 
-Rickshaw.Graph.Smoother = function(args) {
+Rickshaw.Graph.Smoother = Rickshaw.Class.create({
 
-	this.graph = args.graph;
-	this.element = args.element;
+	initialize: function(args) {
 
-	var self = this;
+		this.graph = args.graph;
+		this.element = args.element;
+		this.aggregationScale = 1;
 
-	this.aggregationScale = 1;
+		this.build();
 
-	if (this.element) {
-
-		$( function() {
-			$(self.element).slider( {
-				min: 1,
-				max: 100,
-				slide: function( event, ui ) {
-					self.setScale(ui.value);
-					self.graph.update();
-				}
-			} );
+		this.graph.stackData.hooks.data.push( {
+			name: 'smoother',
+			orderPosition: 50,
+			f: this.transformer.bind(this)
 		} );
-	}
+	},
 
-	self.graph.stackData.hooks.data.push( {
-		name: 'smoother',
-		orderPosition: 50,
-		f: function(data) {
+	build: function() {
 
-			if (self.aggregationScale == 1) return data;
+		var self = this;
 
-			var aggregatedData = [];
-
-			data.forEach( function(seriesData) {
-
-				var aggregatedSeriesData = [];
-
-				while (seriesData.length) {
-
-					var avgX = 0, avgY = 0;
-					var slice = seriesData.splice(0, self.aggregationScale);
-
-					slice.forEach( function(d) {
-						avgX += d.x / slice.length;
-						avgY += d.y / slice.length;
-					} );
-
-					aggregatedSeriesData.push( { x: avgX, y: avgY } );
-				}
-
-				aggregatedData.push(aggregatedSeriesData);
+		if (this.element) {
+			$( function() {
+				$(self.element).slider( {
+					min: 1,
+					max: 100,
+					slide: function( event, ui ) {
+						self.setScale(ui.value);
+						self.graph.update();
+					}
+				} );
 			} );
-
-			return aggregatedData;
 		}
-	} );
+	},
 
-	this.setScale = function(scale) {
+	setScale: function(scale) {
 
 		if (scale < 1) {
 			throw "scale out of range: " + scale;
@@ -64,6 +43,36 @@ Rickshaw.Graph.Smoother = function(args) {
 
 		this.aggregationScale = scale;
 		this.graph.update();
+	},
+
+	transformer: function(data) {
+
+		if (this.aggregationScale == 1) return data;
+
+		var aggregatedData = [];
+
+		data.forEach( function(seriesData) {
+
+			var aggregatedSeriesData = [];
+
+			while (seriesData.length) {
+
+				var avgX = 0, avgY = 0;
+				var slice = seriesData.splice(0, this.aggregationScale);
+
+				slice.forEach( function(d) {
+					avgX += d.x / slice.length;
+					avgY += d.y / slice.length;
+				} );
+
+				aggregatedSeriesData.push( { x: avgX, y: avgY } );
+			}
+
+			aggregatedData.push(aggregatedSeriesData);
+
+		}.bind(this) );
+
+		return aggregatedData;
 	}
-};
+});
 
