@@ -3,6 +3,7 @@ NODE_MODULES=$(NODE_PREFIX)/node_modules
 
 CSS_MIN=$(NODE_MODULES)/.bin/cleancss
 JS_MIN=$(NODE_MODULES)/.bin/uglifyjs
+JS_HINT=$(NODE_MODULES)/.bin/jshint
 
 CSS_FILES=\
 	src/css/detail.css\
@@ -49,6 +50,9 @@ build: rickshaw.min.css rickshaw.min.js
 clean:
 	rm -rf rickshaw.css rickshaw.js rickshaw.min.*
 
+$(JS_HINT):
+	npm install jshint
+
 $(CSS_MIN):
 	npm install clean-css
 
@@ -58,7 +62,8 @@ $(JS_MIN):
 rickshaw.css: $(CSS_FILES)
 	cat $(CSS_FILES) > rickshaw.css
 
-rickshaw.js: $(JS_FILES)
+rickshaw.js: $(JS_FILES) $(JS_HINT)
+	$(JS_HINT) src/js
 	cat $(JS_FILES) > rickshaw.js
 
 rickshaw.min.css: $(CSS_MIN) rickshaw.css
