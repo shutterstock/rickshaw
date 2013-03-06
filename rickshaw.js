@@ -1759,9 +1759,9 @@ Rickshaw.Graph.HoverDetail = Rickshaw.Class.create({
 
 			var domainIndexScale = d3.scale.linear()
 				.domain([data[0].x, data.slice(-1)[0].x])
-				.range([0, data.length]);
+				.range([0, data.length - 1]);
 
-			var approximateIndex = Math.floor(domainIndexScale(domainX));
+			var approximateIndex = Math.round(domainIndexScale(domainX));
 			var dataIndex = Math.min(approximateIndex || 0, data.length - 1);
 
 			for (var i = approximateIndex; i < data.length - 1;) {
@@ -1772,6 +1772,7 @@ Rickshaw.Graph.HoverDetail = Rickshaw.Class.create({
 				if (data[i + 1].x <= domainX) { i++ } else { i-- }
 			}
 
+			if (dataIndex < 0) dataIndex = 0;
 			var value = data[dataIndex];
 
 			var distance = Math.sqrt(
@@ -1950,6 +1951,9 @@ Rickshaw.Graph.Legend = function(args) {
 	this.addLine = function (series) {
 		var line = document.createElement('li');
 		line.className = 'line';
+		if (series.disabled) {
+			line.className += ' disabled';
+		}
 
 		var swatch = document.createElement('div');
 		swatch.className = 'swatch';
@@ -2089,6 +2093,8 @@ Rickshaw.Graph.Renderer = Rickshaw.Class.create( {
 
 			series.forEach( function(d) {
 
+				if (d.y == undefined) return;
+
 				var y = d.y + d.y0;
 
 				if (y < yMin) yMin = y;
@@ -2103,7 +2109,7 @@ Rickshaw.Graph.Renderer = Rickshaw.Class.create( {
 		xMax += (xMax - xMin) * this.padding.right;
 
 		yMin = this.graph.min === 'auto' ? yMin : this.graph.min || 0;
-		yMax = this.graph.max || yMax;
+		yMax = this.graph.max === undefined ? yMax : this.graph.max;
 
 		if (this.graph.min === 'auto' || yMin < 0) {
 			yMin -= (yMax - yMin) * this.padding.bottom;
