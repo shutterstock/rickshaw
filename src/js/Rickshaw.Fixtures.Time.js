@@ -12,7 +12,7 @@ Rickshaw.Fixtures.Time = function() {
 		{
 			name: 'decade',
 			seconds: 86400 * 365.25 * 10,
-			formatter: function(d) { return (parseInt(d.getUTCFullYear() / 10) * 10) }
+			formatter: function(d) { return (parseInt(d.getUTCFullYear() / 10, 10) * 10) }
 		}, {
 			name: 'year',
 			seconds: 86400 * 365.25,
@@ -70,11 +70,14 @@ Rickshaw.Fixtures.Time = function() {
 
 	this.ceil = function(time, unit) {
 
+		var nearFuture;
+		var rounded;
+
 		if (unit.name == 'month') {
 
-			var nearFuture = new Date((time + unit.seconds - 1) * 1000);
+			nearFuture = new Date((time + unit.seconds - 1) * 1000);
 
-			var rounded = new Date(0);
+			rounded = new Date(0);
 			rounded.setUTCFullYear(nearFuture.getUTCFullYear());
 			rounded.setUTCMonth(nearFuture.getUTCMonth());
 			rounded.setUTCDate(1);
@@ -88,9 +91,9 @@ Rickshaw.Fixtures.Time = function() {
 
 		if (unit.name == 'year') {
 
-			var nearFuture = new Date((time + unit.seconds - 1) * 1000);
+			nearFuture = new Date((time + unit.seconds - 1) * 1000);
 
-			var rounded = new Date(0);
+			rounded = new Date(0);
 			rounded.setUTCFullYear(nearFuture.getUTCFullYear());
 			rounded.setUTCMonth(0);
 			rounded.setUTCDate(1);

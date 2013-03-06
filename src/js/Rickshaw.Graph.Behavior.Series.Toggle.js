@@ -23,7 +23,7 @@ Rickshaw.Graph.Behavior.Series.Toggle = function(args) {
 				line.series.disable();
 				line.element.classList.add('disabled');
 			}
-		}
+		};
 		
                 var label = line.element.getElementsByTagName('span')[0];
                 label.onclick = function(e){

@@ -26,7 +26,7 @@ Rickshaw.Graph.Renderer.Bar = Rickshaw.Class.create( Rickshaw.Graph.Renderer, {
 		var domain = $super();
 
 		var frequentInterval = this._frequentInterval();
-		domain.x[1] += parseInt(frequentInterval.magnitude);
+		domain.x[1] += parseInt(frequentInterval.magnitude, 10);
 
 		return domain;
 	},
