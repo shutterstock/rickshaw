@@ -7,7 +7,7 @@ Rickshaw.Fixtures.Number.formatKMBT = function(y) {
 	else if (abs_y >= 1000000)    { return y / 1000000 + "M" } 
 	else if (abs_y >= 1000)       { return y / 1000 + "K" }
 	else if (abs_y < 1 && y > 0)  { return y.toFixed(2) }
-	else if (abs_y == 0)          { return '' }
+	else if (abs_y === 0)         { return '' }
 	else                      { return y }
 };
 
@@ -19,6 +19,6 @@ Rickshaw.Fixtures.Number.formatBase1024KMGTP = function(y) {
     else if (abs_y >= 1048576)      { return y / 1048576 + "M" }
     else if (abs_y >= 1024)         { return y / 1024 + "K" }
     else if (abs_y < 1 && y > 0)    { return y.toFixed(2) }
-    else if (abs_y == 0)            { return '' }
+    else if (abs_y === 0)           { return '' }
     else                        { return y }
 };

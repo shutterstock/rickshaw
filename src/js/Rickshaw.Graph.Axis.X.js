@@ -61,12 +61,13 @@ Rickshaw.Graph.Axis.X = function(args) {
 		axis.tickFormat( args.tickFormat || function(x) { return x } );
 
 		var berth = Math.floor(this.width * berthRate / 2) || 0;
+		var transform;
 
 		if (this.orientation == 'top') {
 			var yOffset = this.height || this.graph.height;
-			var transform = 'translate(' + berth + ',' + yOffset + ')';
+			transform = 'translate(' + berth + ',' + yOffset + ')';
 		} else {
-			var transform = 'translate(' + berth + ', 0)';
+			transform = 'translate(' + berth + ', 0)';
 		}
 
 		if (this.element) {
@@ -94,10 +95,10 @@ Rickshaw.Graph.Axis.X = function(args) {
 		if (typeof window !== 'undefined') {
 
 			var style = window.getComputedStyle(element, null);
-			var elementHeight = parseInt(style.getPropertyValue('height'));
+			var elementHeight = parseInt(style.getPropertyValue('height'), 10);
 
 			if (!args.auto) {
-				var elementWidth = parseInt(style.getPropertyValue('width'));
+				var elementWidth = parseInt(style.getPropertyValue('width'), 10);
 			}
 		}
 

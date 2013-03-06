@@ -13,7 +13,7 @@ Rickshaw.Graph.Legend = function(args) {
 	element.appendChild(list);
 
 	var series = graph.series
-		.map( function(s) { return s } )
+		.map( function(s) { return s } );
 
 	if (!args.naturalOrder) {
 		series = series.reverse();
