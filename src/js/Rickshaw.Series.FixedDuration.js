@@ -4,7 +4,7 @@ Rickshaw.Series.FixedDuration = Rickshaw.Class.create(Rickshaw.Series, {
 
 	initialize: function (data, palette, options) {
 
-		var options = options || {}
+		options = options || {};
 
 		if (typeof(options.timeInterval) === 'undefined') {
 			throw new Error('FixedDuration series requires timeInterval');
@@ -52,7 +52,7 @@ Rickshaw.Series.FixedDuration = Rickshaw.Class.create(Rickshaw.Series, {
 
 	addData: function($super, data) {
 
-		$super(data)
+		$super(data);
 
 		this.currentSize += 1;
 		this.currentIndex += 1;

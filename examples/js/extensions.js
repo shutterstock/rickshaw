@@ -32,7 +32,7 @@ var RenderControls = function(args) {
 				config.unstack = true;
 				config.offset = 'zero';
 			} else if (this.settings.offset == 'expand') {
-				config.unstack = true;
+				config.unstack = false;
 				config.offset = this.settings.offset;
 			} else {
 				config.unstack = false;

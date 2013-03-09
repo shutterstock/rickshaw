@@ -43,10 +43,10 @@ Rickshaw.Graph.Axis.Y = function(args) {
 		if (typeof window !== 'undefined') {
 
 			var style = window.getComputedStyle(this.element.parentNode, null);
-			var elementWidth = parseInt(style.getPropertyValue('width'));
+			var elementWidth = parseInt(style.getPropertyValue('width'), 10);
 
 			if (!args.auto) {
-				var elementHeight = parseInt(style.getPropertyValue('height'));
+				var elementHeight = parseInt(style.getPropertyValue('height'), 10);
 			}
 		}
 
@@ -81,7 +81,7 @@ Rickshaw.Graph.Axis.Y = function(args) {
 			.append("svg:g")
 			.attr("class", ["y_ticks", this.ticksTreatment].join(" "))
 			.attr("transform", transform)
-			.call(axis.ticks(this.ticks).tickSubdivide(0).tickSize(this.tickSize))
+			.call(axis.ticks(this.ticks).tickSubdivide(0).tickSize(this.tickSize));
 
 		var gridSize = (this.orientation == 'right' ? 1 : -1) * this.graph.width;
 

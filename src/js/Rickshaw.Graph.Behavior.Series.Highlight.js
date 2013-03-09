@@ -53,7 +53,7 @@ Rickshaw.Graph.Behavior.Series.Highlight = function(args) {
 
 					var series = self.graph.series.pop();
 					self.graph.series.splice(line.originalIndex, 0, series);
-					delete line['originalIndex'];
+					delete line.originalIndex;
 				}
 
 				if (colorSafe[line.series.name]) {

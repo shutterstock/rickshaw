@@ -36,7 +36,7 @@ Rickshaw.Graph.Renderer = Rickshaw.Class.create( {
 		var firstPoint = stackedData[0][0];
 
 		var xMin = firstPoint.x;
-		var xMax = firstPoint.x
+		var xMax = firstPoint.x;
 
 		var yMin = firstPoint.y + firstPoint.y0;
 		var yMax = firstPoint.y + firstPoint.y0;
@@ -45,7 +45,7 @@ Rickshaw.Graph.Renderer = Rickshaw.Class.create( {
 
 			series.forEach( function(d) {
 
-				if (d.y == undefined) return;
+				if (d.y == null) return;
 
 				var y = d.y + d.y0;
 

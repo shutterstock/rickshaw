@@ -90,7 +90,7 @@ Rickshaw.Graph.Annotate = function(args) {
 					var annotationRangeWidth = annotationRangeEnd - annotationRangeStart;
 
 					box.rangeElement.style.left  = annotationRangeStart + 'px';
-					box.rangeElement.style.width = annotationRangeWidth + 'px'
+					box.rangeElement.style.width = annotationRangeWidth + 'px';
 
 					box.rangeElement.classList.remove('offscreen');
 				}

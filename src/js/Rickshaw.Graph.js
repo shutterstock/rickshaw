@@ -11,7 +11,8 @@ Rickshaw.Graph = function(args) {
 		interpolation: 'cardinal',
 		offset: 'zero',
 		min: undefined,
-		max: undefined
+		max: undefined,
+		preserve: false
 	};
 
 	Rickshaw.keys(this.defaults).forEach( function(k) {
@@ -81,7 +82,7 @@ Rickshaw.Graph = function(args) {
 
 			if (typeof x != 'number' || ( typeof y != 'number' && y !== null ) ) {
 				throw "x and y properties of points should be numbers instead of " +
-					(typeof x) + " and " + (typeof y)
+					(typeof x) + " and " + (typeof y);
 			}
 
 		}, this );
@@ -128,6 +129,8 @@ Rickshaw.Graph = function(args) {
 		var data = this.series.active()
 			.map( function(d) { return d.data } )
 			.map( function(d) { return d.filter( function(d) { return this._slice(d) }, this ) }, this);
+
+		data = this.preserve ? Rickshaw.clone(data) : data;
 
 		this.stackData.hooks.data.forEach( function(entry) {
 			data = entry.f.apply(self, [data]);
@@ -236,8 +239,8 @@ Rickshaw.Graph = function(args) {
 
 		if (typeof window !== undefined) {
 			var style = window.getComputedStyle(this.element, null);
-			var elementWidth = parseInt(style.getPropertyValue('width'));
-			var elementHeight = parseInt(style.getPropertyValue('height'));
+			var elementWidth = parseInt(style.getPropertyValue('width'), 10);
+			var elementHeight = parseInt(style.getPropertyValue('height'), 10);
 		}
 
 		this.width = args.width || elementWidth || 400;
@@ -246,7 +249,7 @@ Rickshaw.Graph = function(args) {
 		this.vis && this.vis
 			.attr('width', this.width)
 			.attr('height', this.height);
-	}
+	};
 
 	this.initialize(args);
 };
