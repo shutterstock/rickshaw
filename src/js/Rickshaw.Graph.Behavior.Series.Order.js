@@ -11,8 +11,8 @@ Rickshaw.Graph.Behavior.Series.Order = function(args) {
 		throw "couldn't find jQuery at window.$";
 	}
 
-	if (typeof window.$.sortable == 'undefined') {
-		throw "couldn't find jQuery UI sortable at window.$.sortable";
+	if (typeof window.$.ui == 'undefined') {
+		throw "couldn't find jQuery UI at window.$.ui";
 	}
 
 	$(function() {
