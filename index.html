@@ -211,16 +211,16 @@ var shelving = new Rickshaw.Graph.Behavior.Series.Toggle({
     legend: legend
 });
 </pre>
-Add drag-and-drop functionality to re-order the stack:
+Highlight each series on hover within the legend:
 <pre>
-var order = new Rickshaw.Graph.Behavior.Series.Order({
+var highlighter = new Rickshaw.Graph.Behavior.Series.Highlight({
     graph: graph,
     legend: legend
 });
 </pre>
-Highlight each series on hover within the legend:
+Add drag-and-drop functionality to re-order the stack (requires jQueryUI):
 <pre>
-var highlighter = new Rickshaw.Graph.Behavior.Series.Highlight({
+var order = new Rickshaw.Graph.Behavior.Series.Order({
     graph: graph,
     legend: legend
 });
