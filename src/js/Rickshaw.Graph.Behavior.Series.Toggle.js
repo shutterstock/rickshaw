@@ -1,19 +1,47 @@
 Rickshaw.namespace('Rickshaw.Graph.Behavior.Series.Toggle');
 
-Rickshaw.Graph.Behavior.Series.Toggle = function(args) {
+Rickshaw.Graph.Behavior.Series.Toggle = Rickshaw.Class.create({
 
-	this.graph = args.graph;
-	this.legend = args.legend;
+	initialize: function(args) {
 
-	var self = this;
+		this.graph = args.graph;
+		this.legend = args.legend;
 
-	this.addAnchor = function(line) {
+		this._interceptSortable();
+		this._addAnchors();
+		this._addBehavior();
+
+		this._lines = {};
+
+		this.updateBehaviour = this._addBehavior;
+
+		this.graph.onSeriesChange(function() {
+			this._addAnchors();
+			this._addBehavior();
+
+		}.bind(this));
+	},
+
+	_addAnchors: function() {
+
+		this.legend.lines.forEach(function(l) {
+			this.addAnchor(l);
+		}.bind(this));
+	},
+
+	addAnchor: function(line) {
+
+		if (line._hasToggleEvents) return;
+		line._hasToggleEvents = true;
+
 		var anchor = document.createElement('a');
 		anchor.innerHTML = '&#10004;';
 		anchor.classList.add('action');
+
 		line.element.insertBefore(anchor, line.element.firstChild);
 
-		anchor.onclick = function(e) {
+		anchor.addEventListener('click', function() {
+
 			if (line.series.disabled) {
 				line.series.enable();
 				line.element.classList.remove('disabled');
@@ -21,102 +49,95 @@ Rickshaw.Graph.Behavior.Series.Toggle = function(args) {
 				line.series.disable();
 				line.element.classList.add('disabled');
 			}
-		};
+
+		}.bind(this));
 		
                 var label = line.element.getElementsByTagName('span')[0];
-                label.onclick = function(e){
+
+                label.addEventListener('click', function() {
 
                         var disableAllOtherLines = line.series.disabled;
-                        if ( ! disableAllOtherLines ) {
-                                for ( var i = 0; i < self.legend.lines.length; i++ ) {
-                                        var l = self.legend.lines[i];
-                                        if ( line.series === l.series ) {
-                                                // noop
-                                        } else if ( l.series.disabled ) {
-                                                // noop
-                                        } else {
-                                                disableAllOtherLines = true;
-                                                break;
-                                        }
-                                }
-                        }
 
-                        // show all or none
+                        if ( ! disableAllOtherLines ) {
+
+				this.legend.lines.forEach(function(l) {
+
+                                        if ( line.series === l.series ) return;
+                                        if ( l.series.disabled ) return;
+
+					disableAllOtherLines = true;
+				});
+			}
+
                         if ( disableAllOtherLines ) {
 
-                                // these must happen first or else we try ( and probably fail ) to make a no line graph
                                 line.series.enable();
                                 line.element.classList.remove('disabled');
 
-                                self.legend.lines.forEach(function(l){
-                                        if ( line.series === l.series ) {
-                                                // noop
-                                        } else {
-                                                l.series.disable();
-                                                l.element.classList.add('disabled');
-                                        }
+                                this.legend.lines.forEach(function(l) {
+
+                                        if ( line.series === l.series ) return;
+
+					l.series.disable();
+					l.element.classList.add('disabled');
                                 });
 
                         } else {
 
-                                self.legend.lines.forEach(function(l){
+                                this.legend.lines.forEach(function(l){
                                         l.series.enable();
                                         l.element.classList.remove('disabled');
                                 });
-
                         }
 
-                };
+                }.bind(this));
+	},
 
-	};
+	_interceptSortable: function() {
 
-	if (this.legend) {
+		if (this.legend) {
 
-		if (typeof $ != 'undefined' && $(this.legend.list).sortable) {
+			if (typeof $ != 'undefined' && $(this.legend.list).sortable) {
 
-			$(this.legend.list).sortable( {
-				start: function(event, ui) {
-					ui.item.bind('no.onclick',
-						function(event) {
-							event.preventDefault();
-						}
-					);
-				},
-				stop: function(event, ui) {
-					setTimeout(function(){
-						ui.item.unbind('no.onclick');
-					}, 250);
-				}
-			});
+				$(this.legend.list).sortable( {
+					start: function(event, ui) {
+						ui.item.bind('no.onclick',
+							function(event) {
+								event.preventDefault();
+							}
+						);
+					},
+					stop: function(event, ui) {
+						setTimeout(function(){
+							ui.item.unbind('no.onclick');
+						}, 250);
+					}
+				});
+			}
+
 		}
+	},
 
-		this.legend.lines.forEach( function(l) {
-			self.addAnchor(l);
-		} );
-	}
-
-	this._addBehavior = function() {
+	_addBehavior: function() {
 
 		this.graph.series.forEach( function(s) {
 			
 			s.disable = function() {
 
-				if (self.graph.series.length <= 1) {
+				if (this.graph.series.length <= 1) {
 					throw('only one series left');
 				}
 				
 				s.disabled = true;
-				self.graph.update();
-			};
+				this.graph.update();
+
+			}.bind(this);
 
 			s.enable = function() {
 				s.disabled = false;
-				self.graph.update();
-			};
+				this.graph.update();
+
+			}.bind(this);
 		} );
-	};
-	this._addBehavior();
-
-	this.updateBehaviour = function () { this._addBehavior() };
-
-};
+	}
+});

@@ -22,6 +22,7 @@ Rickshaw.Graph = function(args) {
 	this.window = {};
 
 	this.updateCallbacks = [];
+	this.seriesChangeCallbacks = [];
 
 	var self = this;
 
@@ -201,6 +202,10 @@ Rickshaw.Graph = function(args) {
 		this.updateCallbacks.push(callback);
 	};
 
+	this.onSeriesChange = function(callback) {
+		this.seriesChangeCallbacks.push(callback);
+	};
+
 	this.registerRenderer = function(renderer) {
 		this._renderers = this._renderers || {};
 		this._renderers[renderer.name] = renderer;
@@ -249,6 +254,17 @@ Rickshaw.Graph = function(args) {
 		this.vis && this.vis
 			.attr('width', this.width)
 			.attr('height', this.height);
+	};
+
+	this.setSeries = function(series) {
+
+		this.validateSeries(series);
+		series.active = self.series.active;
+		self.series = series;
+
+		this.seriesChangeCallbacks.forEach(function(callback) {
+			callback();
+		});
 	};
 
 	this.initialize(args);
