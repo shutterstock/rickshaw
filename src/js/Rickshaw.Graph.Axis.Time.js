@@ -77,6 +77,11 @@ Rickshaw.Graph.Axis.Time = function(args) {
 			self.graph.element.appendChild(element);
 			self.elements.push(element);
 
+			var graphWidth = $(self.graph.element).width();
+			var titlePosition = $(title).parent().position().left;
+			if (titlePosition + $(title).width() > graphWidth) {
+				element.removeChild(title);
+			}
 		} );
 	};
 
