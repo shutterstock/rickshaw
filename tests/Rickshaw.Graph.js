@@ -114,3 +114,36 @@ exports.inconsistent = function(test) {
 	test.done();
 }
 
+exports.emptyData = function(test){
+
+	var jsdom		= require("jsdom").jsdom;
+	global.document = jsdom("<html><head></head><body></body></html>");
+	global.window	 = global.document.createWindow();
+
+	var Rickshaw = require('../rickshaw');
+	new Rickshaw.Compat.ClassList();
+
+	var el = document.createElement("div");
+
+	var series = [
+		{
+			color: 'steelblue',
+			data: [],
+		}
+	];
+
+	test.doesNotThrow( function() {
+
+		var graph = new Rickshaw.Graph({
+			element: el,
+			width: 960,
+			height: 500,
+			renderer: 'line',
+			series: series
+		});
+
+	}, "we don't throw for 0 length series" );
+
+	test.done()
+
+}

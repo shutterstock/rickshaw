@@ -77,12 +77,14 @@ Rickshaw.Graph = function(args) {
 				throw "series data is not an array: " + JSON.stringify(s.data);
 			}
 
-			var x = s.data[0].x;
-			var y = s.data[0].y;
+			if (s.data.length > 0) {
+				var x = s.data[0].x;
+				var y = s.data[0].y;
 
-			if (typeof x != 'number' || ( typeof y != 'number' && y !== null ) ) {
-				throw "x and y properties of points should be numbers instead of " +
-					(typeof x) + " and " + (typeof y);
+				if (typeof x != 'number' || ( typeof y != 'number' && y !== null ) ) {
+					throw "x and y properties of points should be numbers instead of " +
+						(typeof x) + " and " + (typeof y);
+				}
 			}
 
 		}, this );
