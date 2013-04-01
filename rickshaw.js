@@ -1,4 +1,6 @@
 var Rickshaw = {
+	
+	version: '1.1.2',
 
 	namespace: function(namespace, obj) {
 
