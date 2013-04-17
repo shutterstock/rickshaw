@@ -1,12 +1,28 @@
 {
-   "name": "rickshaw",
-   "version": "1.1.2",
-   "dependencies": {
-      "d3": ">= 2.10.1"
-   },
-   "keywords": ["d3", "charts", "rickshaw", "svg", "graph"],
-   "main": "./rickshaw",
-   "engines": {
-      "node": ">= 0.8.0"
-   }
+  "name": "rickshaw",
+  "version": "1.1.2",
+  "dependencies": {
+    "d3": "~2.10.1"
+  },
+  "keywords": [
+    "d3",
+    "charts",
+    "rickshaw",
+    "svg",
+    "graph"
+  ],
+  "main": "./rickshaw",
+  "engines": {
+    "node": ">= 0.8.0"
+  },
+  "devDependencies": {
+    "jsdom": "~0.5.4",
+    "nodeunit": "~0.7.4",
+    "clean-css": "~0.10.2",
+    "uglify-js": "~2.2.5",
+    "jshint": "~1.1.0"
+  },
+  "scripts": {
+    "test": "nodeunit tests"
+  }
 }
