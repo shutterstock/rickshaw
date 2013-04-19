@@ -437,7 +437,7 @@ Rickshaw.Graph = function(args) {
 
 	this.validateSeries = function(series) {
 
-		if (!(series instanceof Array) && !(series instanceof Rickshaw.Series)) {
+		if (!Array.isArray(series) && !(series instanceof Rickshaw.Series)) {
 			var seriesSignature = Object.prototype.toString.apply(series);
 			throw "series is not an array: " + seriesSignature;
 		}
@@ -452,7 +452,7 @@ Rickshaw.Graph = function(args) {
 			if (!(s.data)) {
 				throw "series has no data: " + JSON.stringify(s);
 			}
-			if (!(s.data instanceof Array)) {
+			if (!Array.isArray(s.data)) {
 				throw "series data is not an array: " + JSON.stringify(s.data);
 			}
 
@@ -936,10 +936,10 @@ Rickshaw.Fixtures.Time = function() {
 Rickshaw.namespace('Rickshaw.Fixtures.Number');
 
 Rickshaw.Fixtures.Number.formatKMBT = function(y) {
-	abs_y = Math.abs(y);
-	if (abs_y >= 1000000000000)   { return y / 1000000000000 + "T" } 
-	else if (abs_y >= 1000000000) { return y / 1000000000 + "B" } 
-	else if (abs_y >= 1000000)    { return y / 1000000 + "M" } 
+	var abs_y = Math.abs(y);
+	if (abs_y >= 1000000000000)   { return y / 1000000000000 + "T" }
+	else if (abs_y >= 1000000000) { return y / 1000000000 + "B" }
+	else if (abs_y >= 1000000)    { return y / 1000000 + "M" }
 	else if (abs_y >= 1000)       { return y / 1000 + "K" }
 	else if (abs_y < 1 && y > 0)  { return y.toFixed(2) }
 	else if (abs_y === 0)         { return '' }
@@ -947,7 +947,7 @@ Rickshaw.Fixtures.Number.formatKMBT = function(y) {
 };
 
 Rickshaw.Fixtures.Number.formatBase1024KMGTP = function(y) {
-    abs_y = Math.abs(y);
+    var abs_y = Math.abs(y);
     if (abs_y >= 1125899906842624)  { return y / 1125899906842624 + "P" }
     else if (abs_y >= 1099511627776){ return y / 1099511627776 + "T" }
     else if (abs_y >= 1073741824)   { return y / 1073741824 + "G" }
@@ -2671,7 +2671,7 @@ Rickshaw.Series = Rickshaw.Class.create( Array, {
 
 		this.setTimeInterval(timeInterval);
 
-		if (data && (typeof(data) == "object") && (data instanceof Array)) {
+		if (data && (typeof(data) == "object") && Array.isArray(data)) {
 			data.forEach( function(item) { this.addItem(item) }, this );
 		}
 	},
@@ -2847,7 +2847,7 @@ Rickshaw.Series.FixedDuration = Rickshaw.Class.create(Rickshaw.Series, {
 		this.maxDataPoints = options.maxDataPoints;
 
 
-		if (data && (typeof(data) == "object") && (data instanceof Array)) {
+		if (data && (typeof(data) == "object") && Array.isArray(data)) {
 			data.forEach( function (item) { this.addItem(item) }, this );
 			this.currentSize  += 1;
 			this.currentIndex += 1;
