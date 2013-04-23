@@ -58,7 +58,7 @@ Rickshaw.Graph = function(args) {
 
 	this.validateSeries = function(series) {
 
-		if (!(series instanceof Array) && !(series instanceof Rickshaw.Series)) {
+		if (!Array.isArray(series) && !(series instanceof Rickshaw.Series)) {
 			var seriesSignature = Object.prototype.toString.apply(series);
 			throw "series is not an array: " + seriesSignature;
 		}
@@ -73,7 +73,7 @@ Rickshaw.Graph = function(args) {
 			if (!(s.data)) {
 				throw "series has no data: " + JSON.stringify(s);
 			}
-			if (!(s.data instanceof Array)) {
+			if (!Array.isArray(s.data)) {
 				throw "series data is not an array: " + JSON.stringify(s.data);
 			}
 
