@@ -31,6 +31,7 @@
 	<script src="../src/js/Rickshaw.Graph.Smoother.js"></script>
 	<script src="../src/js/Rickshaw.Graph.Unstacker.js"></script>
 	<script src="../src/js/Rickshaw.Fixtures.Time.js"></script>
+	<script src="../src/js/Rickshaw.Fixtures.LocalTime.js"></script>
 	<script src="../src/js/Rickshaw.Fixtures.Number.js"></script>
 	<script src="../src/js/Rickshaw.Fixtures.RandomData.js"></script>
 	<script src="../src/js/Rickshaw.Fixtures.Color.js"></script>
@@ -208,7 +209,8 @@ var ticksTreatment = 'glow';
 
 var xAxis = new Rickshaw.Graph.Axis.Time( {
 	graph: graph,
-	ticksTreatment: ticksTreatment
+	ticksTreatment: ticksTreatment,
+	timeFixtures: new Rickshaw.Fixtures.LocalTime()
 } );
 
 xAxis.render();
