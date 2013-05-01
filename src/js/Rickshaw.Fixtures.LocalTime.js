@@ -78,13 +78,13 @@ Rickshaw.Fixtures.LocalTime = function() {
 			nearFuture = new Date((time + unit.seconds - 1) * 1000);
 
 			rounded = new Date(0);
-			rounded.setFullYear(nearFuture.getFullYear());
-			rounded.setMonth(nearFuture.getMonth());
-			rounded.setDate(nearFuture.getDate());
-			rounded.setHours(0);
-			rounded.setMinutes(0);
-			rounded.setSeconds(0);
 			rounded.setMilliseconds(0);
+			rounded.setSeconds(0);
+			rounded.setMinutes(0);
+			rounded.setHours(0);
+			rounded.setDate(nearFuture.getDate());
+			rounded.setMonth(nearFuture.getMonth());
+			rounded.setFullYear(nearFuture.getFullYear());
 
 			return rounded.getTime() / 1000;
 		}
@@ -94,13 +94,13 @@ Rickshaw.Fixtures.LocalTime = function() {
 			nearFuture = new Date((time + unit.seconds - 1) * 1000);
 
 			rounded = new Date(0);
-			rounded.setFullYear(nearFuture.getFullYear());
-			rounded.setMonth(nearFuture.getMonth());
-			rounded.setDate(1);
-			rounded.setHours(0);
-			rounded.setMinutes(0);
-			rounded.setSeconds(0);
 			rounded.setMilliseconds(0);
+			rounded.setSeconds(0);
+			rounded.setMinutes(0);
+			rounded.setHours(0);
+			rounded.setDate(1);
+			rounded.setMonth(nearFuture.getMonth());
+			rounded.setFullYear(nearFuture.getFullYear());
 
 			return rounded.getTime() / 1000;
 		}
@@ -111,12 +111,12 @@ Rickshaw.Fixtures.LocalTime = function() {
 
 			rounded = new Date(0);
 			rounded.setFullYear(nearFuture.getFullYear());
-			rounded.setMonth(0);
-			rounded.setDate(1);
-			rounded.setHours(0);
-			rounded.setMinutes(0);
-			rounded.setSeconds(0);
 			rounded.setMilliseconds(0);
+			rounded.setSeconds(0);
+			rounded.setMinutes(0);
+			rounded.setHours(0);
+			rounded.setDate(1);
+			rounded.setMonth(0);
 
 			return rounded.getTime() / 1000;
 		}
