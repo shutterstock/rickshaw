@@ -23,12 +23,12 @@ exports.instantiation = function(test) {
 	Rickshaw.namespace('Rickshaw.Sample.Class.Prefix');
 
 	Rickshaw.Sample.Subclass = Rickshaw.Class.create( Rickshaw.Sample.Class, {
-		name: 'sampler',
+		name: 'sampler'
 	});
 
 	var sampler = new Rickshaw.Sample.Subclass();
 	test.equal(sampler.concat('polka'), 'sampler polka');
-	
+
 	test.done();
 };
 
