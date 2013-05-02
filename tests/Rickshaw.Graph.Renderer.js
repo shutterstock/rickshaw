@@ -80,10 +80,9 @@ exports.domain = function(test) {
 
 	graph.configure({ max: 0 });
 	graph.stackData();
-	
+
 	domain = graph.renderer.domain();
 	test.deepEqual(domain, { x: [ 1, 3 ], y: [ -29, 0 ] }, "explicit zero max doesn't fall through");
 
 	test.done();
 };
-

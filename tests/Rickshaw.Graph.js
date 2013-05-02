@@ -12,19 +12,19 @@ exports.svg = function(test) {
 	var el = document.createElement("div");
 
 	var graph = new Rickshaw.Graph({
-	   element: el,
-	   width: 960,
-	   height: 500,
-	   renderer: 'scatterplot',
-	   series: [{
-		color: 'steelblue',
-		data: [
-		    { x: 0, y: 40 },
-		    { x: 1, y: 49 },
-		    { x: 2, y: 38 },
-		    { x: 3, y: 30 },
-		    { x: 4, y: 32 } ]
-	    }]
+		element  : el,
+		width    : 960,
+		height   : 500,
+		renderer : 'scatterplot',
+		series   : [{
+			color : 'steelblue',
+			data  : [
+				{ x: 0, y: 40 },
+				{ x: 1, y: 49 },
+				{ x: 2, y: 38 },
+				{ x: 3, y: 30 },
+				{ x: 4, y: 32 } ]
+			}]
 	} );
 
 	graph.renderer.dotSize = 6;
@@ -38,7 +38,7 @@ exports.svg = function(test) {
 	test.equal(generatedSVG, exampleSVG, "simple graph svg content matches");
 
 	test.done();
-}
+};
 
 exports.inconsistent = function(test) {
 
@@ -54,10 +54,10 @@ exports.inconsistent = function(test) {
 	var series = [
 		{
 			color: 'steelblue',
-			data: [ { x: 0, y: 40 }, { x: 1, y: 49 }, { x: 2, y: 38 } ],
+			data: [ { x: 0, y: 40 }, { x: 1, y: 49 }, { x: 2, y: 38 } ]
 		}, {
 			color: 'red',
-			data: [ { x: 0, y: 40 }, { x: 1, y: 49 }, { x: 2, y: 38 } ],
+			data: [ { x: 0, y: 40 }, { x: 1, y: 49 }, { x: 2, y: 38 } ]
 		}
 	];
 
@@ -112,5 +112,4 @@ exports.inconsistent = function(test) {
 	}, null, "throw an error for undefined element reference" );
 
 	test.done();
-}
-
+};

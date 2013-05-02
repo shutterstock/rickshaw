@@ -19,28 +19,28 @@ exports.initialize = function(test) {
 	function instantiateMalformed() {
 
 		var series = new Rickshaw.Series.FixedDuration(
-			[seriesData()], 
-			'spectrum2001', 
+			[seriesData()],
+			'spectrum2001',
 			{ timeBase: 0, maxDataPoints: 2000 }
 		);
 	}
 
 	test.throws(instantiateMalformed, 'FixedDuration series requires timeInterval', 'we die without a timeInterval');
 
-	function instantiateMalformed() {
+	function instantiateMalformed2() {
 
 		var series = new Rickshaw.Series.FixedDuration(
-			[seriesData()], 
-			'spectrum2001', 
+			[seriesData()],
+			'spectrum2001',
 			{ timeBase: 0, timeInterval: 30 }
 		);
 	}
 
-	test.throws(instantiateMalformed, 'FixedDuration series requires maxDataPoints', 'we die without maxDataPoints');
+	test.throws(instantiateMalformed2, 'FixedDuration series requires maxDataPoints', 'we die without maxDataPoints');
 
 	var series = new Rickshaw.Series.FixedDuration(
-		[seriesData()], 
-		'spectrum2001', 
+		[seriesData()],
+		'spectrum2001',
 		{
 			timeBase: 0,
 			timeInterval: 30,
@@ -51,13 +51,13 @@ exports.initialize = function(test) {
 	test.ok(series instanceof Rickshaw.Series.FixedDuration);
 	test.ok(series instanceof Array);
 	test.done();
-}
+};
 
 exports.addData = function(test) {
 
 	var series = new Rickshaw.Series.FixedDuration(
-		[seriesData()], 
-		'spectrum2001', 
+		[seriesData()],
+		'spectrum2001',
 		{
 			timeBase: 0,
 			timeInterval: 1,
@@ -66,10 +66,10 @@ exports.addData = function(test) {
 	);
 
 	for (var i = 0; i < 300; i++) {
-		series.addData({series1: 42});	
+		series.addData({series1: 42});
 	}
 
 	test.equal(series[0].data.length, 20 + 2, 'series length stuck around maxDataPoints');
 	test.equal(series.currentSize, 20, 'series.currentSize is stuck at maxDataPoints');
 	test.done();
-}
+};
