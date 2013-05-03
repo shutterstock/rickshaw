@@ -1,2 +1,5 @@
+node_modules/
+**/vendor/
+**/*[.-]min.js
 src/js/Rickshaw.Class.js
 src/js/Rickshaw.Compat.ClassList.js
