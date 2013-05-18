@@ -61,11 +61,11 @@ Rickshaw.Fixtures.LocalTime = function() {
 	};
 
 	this.formatDate = function(d) {
-		return d.toString().match(/, (\w+ \w+ \w+)/)[1];
+		return d.toDateString();
 	};
 
 	this.formatTime = function(d) {
-		return d.toString().match(/(\d+:\d+):/)[1];
+		return d.toTimeString();
 	};
 
 	this.ceil = function(time, unit) {
