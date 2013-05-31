@@ -221,12 +221,16 @@ Rickshaw.Graph = function(args) {
 		this.setRenderer(args.renderer || this.renderer.name, args);
 	};
 
-	this.setRenderer = function(name, args) {
-
-		if (!this._renderers[name]) {
-			throw "couldn't find renderer " + name;
+	this.setRenderer = function(r, args) {
+		if (typeof r == 'function') {
+			this.renderer = new r( { graph: self } );
+			this.registerRenderer(this.renderer);
+		} else {
+			if (!this._renderers[r]) {
+				throw "couldn't find renderer " + r;
+			}
+			this.renderer = this._renderers[r];
 		}
-		this.renderer = this._renderers[name];
 
 		if (typeof args == 'object') {
 			this.renderer.configure(args);
