@@ -130,7 +130,29 @@ Rickshaw.Graph = function(args) {
 			.map( function(d) { return d.data } )
 			.map( function(d) { return d.filter( function(d) { return this._slice(d) }, this ) }, this);
 
-		data = this.preserve ? Rickshaw.clone(data) : data;
+		var preserve = this.preserve;
+		if (!preserve) {
+			this.series.forEach( function(series) {
+				if (series.scale) {
+					// data must be preserved when a scale is used
+					preserve = true;
+				}
+			} );
+		}
+
+		data = preserve ? Rickshaw.clone(data) : data;
+
+		var i = 0;
+		this.series.forEach( function(series) {
+			if (series.scale) {
+				// apply scale to each series
+				var seriesData = data[i];
+				seriesData.forEach( function(d) {
+					d.y = series.scale(d.y);
+				} );
+			}
+			i++;
+		} );
 
 		this.stackData.hooks.data.forEach( function(entry) {
 			data = entry.f.apply(self, [data]);
@@ -153,7 +175,7 @@ Rickshaw.Graph = function(args) {
 			stackedData = entry.f.apply(self, [data]);
 		} );
 
-		var i = 0;
+		i = 0;
 		this.series.forEach( function(series) {
 			if (series.disabled) return;
 			series.stack = stackedData[i++];
