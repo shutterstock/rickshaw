@@ -7,6 +7,14 @@ Rickshaw.Graph.Behavior.Series.Order = function(args) {
 
 	var self = this;
 
+	if (typeof window.$ == 'undefined') {
+		throw "couldn't find jQuery at window.$";
+	}
+
+	if (typeof window.$.ui == 'undefined') {
+		throw "couldn't find jQuery UI at window.$.ui";
+	}
+
 	$(function() {
 		$(self.legend.list).sortable( { 
 			containment: 'parent',

@@ -22,10 +22,10 @@ exports.initialize = function(test) {
 	test.ok(series instanceof Array);
 
 	test.deepEqual(
-		series[0].data, 
+		series[0].data,
 		[ { x: 0, y: 20 },
-		  { x: 1, y: 21 },
-		  { x: 2, y: 15 } ],
+			{ x: 1, y: 21 },
+			{ x: 2, y: 15 } ],
 		'data made it in as we expect'
 	);
 
@@ -43,13 +43,13 @@ exports.addItem = function(test) {
 
 	test.equal(series.length, 2, 'series has two items');
 	test.done();
-}
+};
 
 exports.addData = function(test) {
 
 	var series = new Rickshaw.Series([seriesData()], 'spectrum2001', {timeBase: 0});
 
-	series.addData( { series1: 22, } );
+	series.addData( { series1: 22 } );
 
 	test.equal(series[0].data.length, 4, 'first series has four data points');
 	test.equal(series[0].data[3].y, 22, 'first series last data point made it in');
@@ -62,7 +62,7 @@ exports.addData = function(test) {
 	test.equal(series[1].data[4].y, 57, 'second series last data point made it in');
 
 	test.done();
-}
+};
 
 exports.itemByName = function(test) {
 
@@ -71,7 +71,7 @@ exports.itemByName = function(test) {
 	test.strictEqual(series.itemByName('series1'), series[0], 'we get the right item');
 	test.strictEqual(series.itemByName('series1').name, 'series1', 'item by name is right');
 	test.done();
-}
+};
 
 exports.dump = function(test) {
 
@@ -92,7 +92,7 @@ exports.dump = function(test) {
 	);
 
 	test.done();
-}
+};
 
 exports.zeroFill = function(test) {
 
@@ -108,9 +108,9 @@ exports.zeroFill = function(test) {
 		{ name: "series2", data: [{ x: 1, y: 0}, { x: 2, y: 49 }, { x: 3, y: 0 }] }
 	];
 
-	test.deepEqual(series, expectedSeries, "zero fill fills in zeros"); 
+	test.deepEqual(series, expectedSeries, "zero fill fills in zeros");
 	test.done();
-}
+};
 
 exports.nullFill = function(test) {
 
@@ -126,13 +126,13 @@ exports.nullFill = function(test) {
 		{ name: "series2", data: [{ x: 1, y: null}, { x: 2, y: 49 }, { x: 3, y: null }] }
 	];
 
-	test.deepEqual(series, expectedSeries, "null fill fills in nulls"); 
+	test.deepEqual(series, expectedSeries, "null fill fills in nulls");
 	test.done();
-}
+};
 
 exports.load = function(test) {
 
-	var series = new Rickshaw.Series([], 'spectrum2001', {timeBase: 0});	
+	var series = new Rickshaw.Series([], 'spectrum2001', {timeBase: 0});
 
 	series.load({
 		items: [ seriesData() ],
@@ -146,6 +146,4 @@ exports.load = function(test) {
 	test.equal(series.timeInterval, 3, 'time interval made it in');
 	test.equal(series[0].data.length, 3, 'series data made it in');
 	test.done();
-}
-/*
-*/
+};

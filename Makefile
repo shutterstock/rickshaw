@@ -25,6 +25,7 @@ JS_FILES=\
 	src/js/Rickshaw.Graph.Axis.Time.js\
 	src/js/Rickshaw.Graph.Axis.X.js\
 	src/js/Rickshaw.Graph.Axis.Y.js\
+	src/js/Rickshaw.Graph.Axis.Y.Scaled.js\
 	src/js/Rickshaw.Graph.Behavior.Series.Highlight.js\
 	src/js/Rickshaw.Graph.Behavior.Series.Order.js\
 	src/js/Rickshaw.Graph.Behavior.Series.Toggle.js\

@@ -1,0 +1,100 @@
+<!doctype html>
+
+<link type="text/css" rel="stylesheet" href="../src/css/graph.css">
+<link type="text/css" rel="stylesheet" href="css/lines.css">
+<link type="text/css" rel="stylesheet" href="../src/css/detail.css">
+
+<script src="../vendor/d3.v2.js"></script>
+<script src="../rickshaw.js"></script>
+
+<style>
+#chart {
+  position: relative;
+  left: 40px;
+  width: 800px;
+  height: 300px;
+}
+#y_axis {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 40px;
+}
+#y_axis_2 {
+  position: absolute;
+  top: 0;
+  left: 840px;
+  width: 40px;
+}
+</style>
+
+<div id="chart_container">
+  <div id="y_axis"></div>
+  <div id="chart"></div>
+  <div id="y_axis_2"></div>
+</div>
+
+<script>
+
+var random = new Rickshaw.Fixtures.RandomData(12 * 60 * 60);
+
+var series = [[]];
+
+for (var i = 0; i < 300; i++) {
+  random.addData(series);
+}
+var data = series[0]
+
+var min = Number.MAX_VALUE;
+var max = Number.MIN_VALUE;
+for (i = 0; i < series[0].length; i++) {
+  min = Math.min(min, series[0][i].y);
+  max = Math.max(max, series[0][i].y);
+}
+
+var logScale = d3.scale.log().domain([min/4, max]);
+var linearScale = d3.scale.linear().domain([min, max]).range(logScale.range());
+var graph = new Rickshaw.Graph( {
+  element: document.getElementById("chart"),
+  renderer: 'line',
+  series: [
+    {
+      color: 'blue',
+      data: JSON.parse(JSON.stringify(data)),
+      name: 'Log View',
+      scale: logScale
+    },
+    {
+      color: 'red',
+      data: JSON.parse(JSON.stringify(data)),
+      name: 'Linear View',
+      scale: linearScale
+    }
+  ]
+} );
+
+new Rickshaw.Graph.Axis.Y.Scaled( {
+  graph: graph,
+  orientation: 'left',
+  tickFormat: Rickshaw.Fixtures.Number.formatKMBT,
+  element: document.getElementById('y_axis'),
+  scale: logScale
+} );
+
+new Rickshaw.Graph.Axis.Y.Scaled( {
+  graph: graph,
+  orientation: 'right',
+  tickFormat: Rickshaw.Fixtures.Number.formatKMBT,
+  element: document.getElementById('y_axis_2'),
+  scale: linearScale,
+  grid: false
+} );
+
+new Rickshaw.Graph.HoverDetail(
+{
+  graph: graph
+} );
+
+graph.render();
+
+</script>
