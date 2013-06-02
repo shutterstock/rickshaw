@@ -84,7 +84,7 @@ graph = new Rickshaw.Graph({
   ]
 });
 
-new Rickshaw.Graph.Axis.Scaled({
+new Rickshaw.Graph.Axis.Y.Scaled({
   element: document.getElementById('axis0'),
   graph: graph,
   orientation: 'left',
@@ -92,7 +92,7 @@ new Rickshaw.Graph.Axis.Scaled({
   tickFormat: Rickshaw.Fixtures.Number.formatKMBT
 });
 
-new Rickshaw.Graph.Axis.Scaled({
+new Rickshaw.Graph.Axis.Y.Scaled({
   element: document.getElementById('axis1'),
   graph: graph,
   grid: false,

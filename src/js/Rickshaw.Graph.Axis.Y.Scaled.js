@@ -1,6 +1,6 @@
-Rickshaw.namespace('Rickshaw.Graph.Axis.Scaled');
+Rickshaw.namespace('Rickshaw.Graph.Axis.Y.Scaled');
 
-Rickshaw.Graph.Axis.Scaled = Rickshaw.Class.create( Rickshaw.Graph.Axis.Y, {
+Rickshaw.Graph.Axis.Y.Scaled = Rickshaw.Class.create( Rickshaw.Graph.Axis.Y, {
 
   initialize: function($super, args) {
 
