@@ -142,16 +142,14 @@ Rickshaw.Graph = function(args) {
 
 		data = preserve ? Rickshaw.clone(data) : data;
 
-		var i = 0;
-		this.series.forEach( function(series) {
+		this.series.forEach( function(series, index) {
 			if (series.scale) {
 				// apply scale to each series
-				var seriesData = data[i];
+				var seriesData = data[index];
 				seriesData.forEach( function(d) {
 					d.y = series.scale(d.y);
 				} );
 			}
-			i++;
 		} );
 
 		this.stackData.hooks.data.forEach( function(entry) {
@@ -175,10 +173,9 @@ Rickshaw.Graph = function(args) {
 			stackedData = entry.f.apply(self, [data]);
 		} );
 
-		i = 0;
-		this.series.forEach( function(series) {
+		this.series.forEach( function(series, index) {
 			if (series.disabled) return;
-			series.stack = stackedData[i++];
+			series.stack = stackedData[index];
 		} );
 
 		this.stackedData = stackedData;
