@@ -437,7 +437,7 @@ Rickshaw.Graph = function(args) {
 
 	this.validateSeries = function(series) {
 
-		if (!(series instanceof Array) && !(series instanceof Rickshaw.Series)) {
+		if (!Array.isArray(series) && !(series instanceof Rickshaw.Series)) {
 			var seriesSignature = Object.prototype.toString.apply(series);
 			throw "series is not an array: " + seriesSignature;
 		}
@@ -452,7 +452,7 @@ Rickshaw.Graph = function(args) {
 			if (!(s.data)) {
 				throw "series has no data: " + JSON.stringify(s);
 			}
-			if (!(s.data instanceof Array)) {
+			if (!Array.isArray(s.data)) {
 				throw "series data is not an array: " + JSON.stringify(s.data);
 			}
 
@@ -509,7 +509,27 @@ Rickshaw.Graph = function(args) {
 			.map( function(d) { return d.data } )
 			.map( function(d) { return d.filter( function(d) { return this._slice(d) }, this ) }, this);
 
-		data = this.preserve ? Rickshaw.clone(data) : data;
+		var preserve = this.preserve;
+		if (!preserve) {
+			this.series.forEach( function(series) {
+				if (series.scale) {
+					// data must be preserved when a scale is used
+					preserve = true;
+				}
+			} );
+		}
+
+		data = preserve ? Rickshaw.clone(data) : data;
+
+		this.series.forEach( function(series, index) {
+			if (series.scale) {
+				// apply scale to each series
+				var seriesData = data[index];
+				seriesData.forEach( function(d) {
+					d.y = series.scale(d.y);
+				} );
+			}
+		} );
 
 		this.stackData.hooks.data.forEach( function(entry) {
 			data = entry.f.apply(self, [data]);
@@ -532,10 +552,9 @@ Rickshaw.Graph = function(args) {
 			stackedData = entry.f.apply(self, [data]);
 		} );
 
-		var i = 0;
-		this.series.forEach( function(series) {
+		this.series.forEach( function(series, index) {
 			if (series.disabled) return;
-			series.stack = stackedData[i++];
+			series.stack = stackedData[index];
 		} );
 
 		this.stackedData = stackedData;
@@ -600,12 +619,16 @@ Rickshaw.Graph = function(args) {
 		this.setRenderer(args.renderer || this.renderer.name, args);
 	};
 
-	this.setRenderer = function(name, args) {
-
-		if (!this._renderers[name]) {
-			throw "couldn't find renderer " + name;
+	this.setRenderer = function(r, args) {
+		if (typeof r == 'function') {
+			this.renderer = new r( { graph: self } );
+			this.registerRenderer(this.renderer);
+		} else {
+			if (!this._renderers[r]) {
+				throw "couldn't find renderer " + r;
+			}
+			this.renderer = this._renderers[r];
 		}
-		this.renderer = this._renderers[name];
 
 		if (typeof args == 'object') {
 			this.renderer.configure(args);
@@ -936,10 +959,10 @@ Rickshaw.Fixtures.Time = function() {
 Rickshaw.namespace('Rickshaw.Fixtures.Number');
 
 Rickshaw.Fixtures.Number.formatKMBT = function(y) {
-	abs_y = Math.abs(y);
-	if (abs_y >= 1000000000000)   { return y / 1000000000000 + "T" } 
-	else if (abs_y >= 1000000000) { return y / 1000000000 + "B" } 
-	else if (abs_y >= 1000000)    { return y / 1000000 + "M" } 
+	var abs_y = Math.abs(y);
+	if (abs_y >= 1000000000000)   { return y / 1000000000000 + "T" }
+	else if (abs_y >= 1000000000) { return y / 1000000000 + "B" }
+	else if (abs_y >= 1000000)    { return y / 1000000 + "M" }
 	else if (abs_y >= 1000)       { return y / 1000 + "K" }
 	else if (abs_y < 1 && y > 0)  { return y.toFixed(2) }
 	else if (abs_y === 0)         { return '' }
@@ -947,7 +970,7 @@ Rickshaw.Fixtures.Number.formatKMBT = function(y) {
 };
 
 Rickshaw.Fixtures.Number.formatBase1024KMGTP = function(y) {
-    abs_y = Math.abs(y);
+    var abs_y = Math.abs(y);
     if (abs_y >= 1125899906842624)  { return y / 1125899906842624 + "P" }
     else if (abs_y >= 1099511627776){ return y / 1099511627776 + "T" }
     else if (abs_y >= 1073741824)   { return y / 1073741824 + "G" }
@@ -1382,12 +1405,9 @@ Rickshaw.Graph.Axis.X = function(args) {
 
 Rickshaw.namespace('Rickshaw.Graph.Axis.Y');
 
-Rickshaw.Graph.Axis.Y = function(args) {
+Rickshaw.Graph.Axis.Y = Rickshaw.Class.create( {
 
-	var self = this;
-	var berthRate = 0.10;
-
-	this.initialize = function(args) {
+	initialize: function(args) {
 
 		this.graph = args.graph;
 		this.orientation = args.orientation || 'right';
@@ -1396,6 +1416,9 @@ Rickshaw.Graph.Axis.Y = function(args) {
 		this.ticks = args.ticks || Math.floor(this.graph.height / pixelsPerTick);
 		this.tickSize = args.tickSize || 4;
 		this.ticksTreatment = args.ticksTreatment || 'plain';
+		this.tickFormat = args.tickFormat || function(y) { return y };
+
+		this.berthRate = 0.10;
 
 		if (args.element) {
 
@@ -1413,10 +1436,11 @@ Rickshaw.Graph.Axis.Y = function(args) {
 			this.vis = this.graph.vis;
 		}
 
+		var self = this;
 		this.graph.onUpdate( function() { self.render() } );
-	};
+	},
 
-	this.setSize = function(args) {
+	setSize: function(args) {
 
 		args = args || {};
 
@@ -1432,26 +1456,37 @@ Rickshaw.Graph.Axis.Y = function(args) {
 			}
 		}
 
-		this.width = args.width || elementWidth || this.graph.width * berthRate;
+		this.width = args.width || elementWidth || this.graph.width * this.berthRate;
 		this.height = args.height || elementHeight || this.graph.height;
 
 		this.vis
 			.attr('width', this.width)
-			.attr('height', this.height * (1 + berthRate));
+			.attr('height', this.height * (1 + this.berthRate));
 
-		var berth = this.height * berthRate;
-		this.element.style.top = -1 * berth + 'px';
-	};
+		var berth = this.height * this.berthRate;
 
-	this.render = function() {
+		if (this.orientation == 'left') {
+			this.element.style.top = -1 * berth + 'px';
+		}
+	},
+
+	render: function() {
 
 		if (this.graph.height !== this._renderHeight) this.setSize({ auto: true });
 
-		var axis = d3.svg.axis().scale(this.graph.y).orient(this.orientation);
-		axis.tickFormat( args.tickFormat || function(y) { return y } );
+		var axis = this._drawAxis(this.graph.y);
+
+		this._drawGrid(axis);
+
+		this._renderHeight = this.graph.height;
+	},
+
+	_drawAxis: function(scale) {
+		var axis = d3.svg.axis().scale(scale).orient(this.orientation);
+		axis.tickFormat(this.tickFormat);
 
 		if (this.orientation == 'left') {
-			var berth = this.height * berthRate;
+			var berth = this.height * this.berthRate;
 			var transform = 'translate(' + this.width + ', ' + berth + ')';
 		}
 
@@ -1465,19 +1500,54 @@ Rickshaw.Graph.Axis.Y = function(args) {
 			.attr("transform", transform)
 			.call(axis.ticks(this.ticks).tickSubdivide(0).tickSize(this.tickSize));
 
+		return axis;
+	},
+
+	_drawGrid: function(axis) {
 		var gridSize = (this.orientation == 'right' ? 1 : -1) * this.graph.width;
 
 		this.graph.vis
 			.append("svg:g")
 			.attr("class", "y_grid")
 			.call(axis.ticks(this.ticks).tickSubdivide(0).tickSize(gridSize));
+	}
+} );
+Rickshaw.namespace('Rickshaw.Graph.Axis.Y.Scaled');
 
-		this._renderHeight = this.graph.height;
-	};
+Rickshaw.Graph.Axis.Y.Scaled = Rickshaw.Class.create( Rickshaw.Graph.Axis.Y, {
 
-	this.initialize(args);
-};
+  initialize: function($super, args) {
 
+    if (typeof(args.scale) === 'undefined') {
+      throw new Error('Scaled requires scale');
+    }
+
+    this.scale = args.scale;
+
+    if (typeof(args.grid) === 'undefined') {
+      this.grid = true;
+    } else {
+      this.grid = args.grid;
+    }
+
+    $super(args);
+
+  },
+
+  _drawAxis: function($super, scale) {
+    // make a copy of the custom scale, adjust the range to match the graph's scale
+    var adjustedScale = this.scale.copy().range(scale.range());
+
+    return $super(adjustedScale);
+  },
+
+  _drawGrid: function($super, axis) {
+    if (this.grid) {
+      // only draw the axis if the grid option is true
+      $super(axis);
+    }
+  }
+} );
 Rickshaw.namespace('Rickshaw.Graph.Behavior.Series.Highlight');
 
 Rickshaw.Graph.Behavior.Series.Highlight = function(args) {
@@ -1811,7 +1881,7 @@ Rickshaw.Graph.HoverDetail = Rickshaw.Class.create({
 
 			var point = {
 				formattedXValue: xFormatter(value.x),
-				formattedYValue: yFormatter(value.y),
+				formattedYValue: yFormatter(series.scale ? series.scale.invert(value.y) : value.y),
 				series: series,
 				value: value,
 				distance: distance,
@@ -1872,8 +1942,8 @@ Rickshaw.Graph.HoverDetail = Rickshaw.Class.create({
 
 		if (point.value.y === null) return;
 
-		var formattedXValue = this.xFormatter(point.value.x);
-		var formattedYValue = this.yFormatter(point.value.y);
+		var formattedXValue = point.formattedXValue;
+		var formattedYValue = point.formattedYValue;
 
 		this.element.innerHTML = '';
 		this.element.style.left = graph.x(point.value.x) + 'px';
@@ -1887,7 +1957,12 @@ Rickshaw.Graph.HoverDetail = Rickshaw.Class.create({
 		var item = document.createElement('div');
 
 		item.className = 'item';
-		item.innerHTML = this.formatter(point.series, point.value.x, point.value.y, formattedXValue, formattedYValue, point);
+
+		// invert the scale if this series displays using a scale
+		var series = point.series;
+		var actualY = series.scale ? series.scale.invert(point.value.y) : point.value.y;
+
+		item.innerHTML = this.formatter(series, point.value.x, actualY, formattedXValue, formattedYValue, point);
 		item.style.top = this.graph.y(point.value.y0 + point.value.y) + 'px';
 
 		this.element.appendChild(item);
@@ -1896,7 +1971,7 @@ Rickshaw.Graph.HoverDetail = Rickshaw.Class.create({
 
 		dot.className = 'dot';
 		dot.style.top = item.style.top;
-		dot.style.borderColor = point.series.color;
+		dot.style.borderColor = series.color;
 
 		this.element.appendChild(dot);
 
@@ -2117,8 +2192,6 @@ Rickshaw.Graph.Renderer = Rickshaw.Class.create( {
 	},
 
 	domain: function() {
-
-		var values = { xMin: [], xMax: [], y: [] };
 
 		var stackedData = this.graph.stackedData || this.graph.stackData();
 		var firstPoint = stackedData[0][0];
@@ -2671,7 +2744,7 @@ Rickshaw.Series = Rickshaw.Class.create( Array, {
 
 		this.setTimeInterval(timeInterval);
 
-		if (data && (typeof(data) == "object") && (data instanceof Array)) {
+		if (data && (typeof(data) == "object") && Array.isArray(data)) {
 			data.forEach( function(item) { this.addItem(item) }, this );
 		}
 	},
@@ -2847,7 +2920,7 @@ Rickshaw.Series.FixedDuration = Rickshaw.Class.create(Rickshaw.Series, {
 		this.maxDataPoints = options.maxDataPoints;
 
 
-		if (data && (typeof(data) == "object") && (data instanceof Array)) {
+		if (data && (typeof(data) == "object") && Array.isArray(data)) {
 			data.forEach( function (item) { this.addItem(item) }, this );
 			this.currentSize  += 1;
 			this.currentIndex += 1;
