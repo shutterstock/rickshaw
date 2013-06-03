@@ -6,6 +6,7 @@ Rickshaw.Graph = function(args) {
 
 	this.element = args.element;
 	this.series = args.series;
+	this.order = args.order || [];
 
 	this.defaults = {
 		interpolation: 'cardinal',
@@ -44,7 +45,8 @@ Rickshaw.Graph = function(args) {
 			Rickshaw.Graph.Renderer.Line,
 			Rickshaw.Graph.Renderer.Bar,
 			Rickshaw.Graph.Renderer.Area,
-			Rickshaw.Graph.Renderer.ScatterPlot
+			Rickshaw.Graph.Renderer.ScatterPlot,
+			Rickshaw.Graph.Renderer.Multi
 		];
 
 		renderers.forEach( function(r) {

@@ -96,10 +96,14 @@ Rickshaw.Graph.Renderer = Rickshaw.Class.create( {
 		var fill = this.fill ? series.color : 'none';
 		var stroke = this.stroke ? series.color : 'none';
 
-		series.path.setAttribute('fill', fill);
-		series.path.setAttribute('stroke', stroke);
-		series.path.setAttribute('stroke-width', this.strokeWidth);
-		series.path.setAttribute('class', series.className);
+    if(series.path){
+		  series.path.setAttribute('fill', fill);
+		  series.path.setAttribute('stroke', stroke);
+		  series.path.setAttribute('stroke-width', this.strokeWidth);
+		  series.path.setAttribute('class', series.className);
+    }else{
+      throw "series.path is undefined";
+    }
 	},
 
 	configure: function(args) {
