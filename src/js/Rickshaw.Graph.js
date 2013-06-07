@@ -146,9 +146,11 @@ Rickshaw.Graph = function(args) {
 			if (series.scale) {
 				// apply scale to each series
 				var seriesData = data[index];
-				seriesData.forEach( function(d) {
-					d.y = series.scale(d.y);
-				} );
+				if(seriesData) {
+					seriesData.forEach( function(d) {
+						d.y = series.scale(d.y);
+					} );
+				}
 			}
 		} );
 
