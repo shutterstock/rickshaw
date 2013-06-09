@@ -175,9 +175,11 @@ Rickshaw.Graph = function(args) {
 			stackedData = entry.f.apply(self, [data]);
 		} );
 
-		this.series.forEach( function(series, index) {
+
+		var i = 0;
+		this.series.forEach( function(series) {
 			if (series.disabled) return;
-			series.stack = stackedData[index];
+			series.stack = stackedData[i++];
 		} );
 
 		this.stackedData = stackedData;
