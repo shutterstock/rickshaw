@@ -4,6 +4,17 @@ Rickshaw.Graph.Renderer.Multi = Rickshaw.Class.create( Rickshaw.Graph.Renderer, 
 
 	name: 'multi',
 
+	initialize: function($super, args) {
+
+		$super(args);
+
+		this.graph.series.forEach( function(series) {
+			if (!series.renderer) {
+				throw new Error("Each series needs a renderer for graph 'multi' renderer");
+			}
+		});
+	},
+
 	defaults: function($super) {
 
 		return Rickshaw.extend( $super(), {
