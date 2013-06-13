@@ -153,6 +153,8 @@ Some extensions require [jQuery](http://jquery.com) and [jQuery UI](http://jquer
 
 For building, we need [Node](http://nodejs.org) and [npm](http://npmjs.org).  Running 'make' should get you going with any luck.
 
+After doing a build you can run the tests with the command: 'npm test'
+
 ## Contributing
 
 Pull requests are always welcome!  Please follow a few guidelines:
