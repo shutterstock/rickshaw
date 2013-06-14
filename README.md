@@ -151,9 +151,9 @@ Rickshaw relies on the fantastic [D3 visualization library](http://mbostock.gith
 
 Some extensions require [jQuery](http://jquery.com) and [jQuery UI](http://jqueryui.com), but for drawing some basic graphs you'll be okay without.
 
-For building, we need [Node](http://nodejs.org) and [npm](http://npmjs.org).  Running 'make' should get you going with any luck.
+For building, we need [Node](http://nodejs.org) and [npm](http://npmjs.org).  Running `make` should get you going with any luck.
 
-After doing a build you can run the tests with the command: 'npm test'
+After doing a build you can run the tests with the command: `npm test`
 
 ## Contributing
 
