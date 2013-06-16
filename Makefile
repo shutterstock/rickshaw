@@ -34,13 +34,15 @@ JS_FILES=\
 	src/js/Rickshaw.Graph.Legend.js\
 	src/js/Rickshaw.Graph.RangeSlider.js\
 	src/js/Rickshaw.Graph.Renderer.js\
-	src/js/Rickshaw.Graph.Renderer.Line.js\
-	src/js/Rickshaw.Graph.Renderer.Stack.js\
-	src/js/Rickshaw.Graph.Renderer.Bar.js\
 	src/js/Rickshaw.Graph.Renderer.Area.js\
+	src/js/Rickshaw.Graph.Renderer.Bar.js\
+	src/js/Rickshaw.Graph.Renderer.Line.js\
 	src/js/Rickshaw.Graph.Renderer.ScatterPlot.js\
 	src/js/Rickshaw.Graph.Renderer.Multi.js\
-	src/js/Rickshaw.Graph.Smoother.js\
+	src/js/Rickshaw.Graph.Renderer.Stack.js\
+	src/js/Rickshaw.Graph.Transform.js\
+	src/js/Rickshaw.Graph.Transform.MovingAverage.js\
+	src/js/Rickshaw.Graph.Transform.Smoother.js\
 	src/js/Rickshaw.Graph.Unstacker.js\
 	src/js/Rickshaw.Series.js\
 	src/js/Rickshaw.Series.FixedDuration.js\

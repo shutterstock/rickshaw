@@ -1,0 +1,82 @@
+<!doctype>
+<link type="text/css" rel="stylesheet" href="../src/css/graph.css">
+<link type="text/css" rel="stylesheet" href="css/lines.css">
+
+<link type="text/css" rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/base/jquery-ui.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.15/jquery-ui.min.js"></script>
+
+<script src="../vendor/d3.v2.js"></script>
+
+<script src="../src/js/Rickshaw.js"></script>
+<script src="../src/js/Rickshaw.Class.js"></script>
+<script src="../src/js/Rickshaw.Compat.ClassList.js"></script>
+<script src="../src/js/Rickshaw.Graph.js"></script>
+<script src="../src/js/Rickshaw.Graph.Renderer.js"></script>
+<script src="../src/js/Rickshaw.Graph.Renderer.Area.js"></script>
+<script src="../src/js/Rickshaw.Graph.Renderer.Line.js"></script>
+<script src="../src/js/Rickshaw.Graph.Renderer.Bar.js"></script>
+<script src="../src/js/Rickshaw.Graph.Renderer.ScatterPlot.js"></script>
+<script src="../src/js/Rickshaw.Graph.RangeSlider.js"></script>
+<script src="../src/js/Rickshaw.Graph.HoverDetail.js"></script>
+<script src="../src/js/Rickshaw.Graph.Annotate.js"></script>
+<script src="../src/js/Rickshaw.Graph.Legend.js"></script>
+<script src="../src/js/Rickshaw.Graph.Axis.Time.js"></script>
+<script src="../src/js/Rickshaw.Graph.Behavior.Series.Toggle.js"></script>
+<script src="../src/js/Rickshaw.Graph.Behavior.Series.Order.js"></script>
+<script src="../src/js/Rickshaw.Graph.Behavior.Series.Highlight.js"></script>
+<script src="../src/js/Rickshaw.Graph.Transform.js"></script>
+<script src="../src/js/Rickshaw.Graph.Transform.MovingAverage.js"></script>
+<script src="../src/js/Rickshaw.Graph.Unstacker.js"></script>
+<script src="../src/js/Rickshaw.Fixtures.Time.js"></script>
+<script src="../src/js/Rickshaw.Fixtures.Number.js"></script>
+<script src="../src/js/Rickshaw.Fixtures.RandomData.js"></script>
+<script src="../src/js/Rickshaw.Fixtures.Color.js"></script>
+<script src="../src/js/Rickshaw.Color.Palette.js"></script>
+<script src="../src/js/Rickshaw.Graph.Axis.Y.js"></script>
+
+<div id="chart"></div>
+<div id="slider"></div>
+
+<style type="text/css">
+body {
+  padding-top: 50px;
+  padding-left: 20px;
+}
+
+#slider {
+  width: 800px;
+}
+</style>
+
+<script>
+
+var data = [ [], [] ];
+var random = new Rickshaw.Fixtures.RandomData();
+for (var i = 0; i < 1000; i++) {
+  random.addData(data);
+}
+
+var graph = new Rickshaw.Graph( {
+  element: document.getElementById("chart"),
+  renderer: 'line',
+  series: [
+    {
+      data: data[0],
+      color: 'steelblue'
+    }, {
+      data: data[1],
+      color: 'lightblue'
+    }
+  ],
+  width: 800,
+  height: 200
+} );
+
+var movingAverage = new Rickshaw.Graph.Transform.MovingAverage( { graph: graph, element : document.getElementById('slider') } );
+movingAverage.setWindowSize(50);
+
+graph.render();
+$(document.getElementById('slider')).slider({ value: 50 });
+
+</script>

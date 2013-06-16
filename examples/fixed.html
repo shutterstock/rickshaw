@@ -23,7 +23,8 @@
 	<script src="../src/js/Rickshaw.Graph.Behavior.Series.Toggle.js"></script>
 	<script src="../src/js/Rickshaw.Graph.Behavior.Series.Order.js"></script>
 	<script src="../src/js/Rickshaw.Graph.Behavior.Series.Highlight.js"></script>
-	<script src="../src/js/Rickshaw.Graph.Smoother.js"></script>
+	<script src="../src/js/Rickshaw.Graph.Transform.js"></script>
+	<script src="../src/js/Rickshaw.Graph.Transform.Smoother.js"></script>
 	<script src="../src/js/Rickshaw.Graph.Unstacker.js"></script>
 	<script src="../src/js/Rickshaw.Fixtures.Time.js"></script>
 	<script src="../src/js/Rickshaw.Fixtures.RandomData.js"></script>
@@ -52,7 +53,7 @@ var graph = new Rickshaw.Graph( {
 		timeInterval: tv,
 		maxDataPoints: 100,
 		timeBase: new Date().getTime() / 1000
-	}) 
+	})
 } );
 
 graph.render();

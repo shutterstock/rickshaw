@@ -1,6 +1,6 @@
 <!doctype>
 <head>
-	<link type="text/css" rel="stylesheet" href="http://jqueryui.com/themes/base/jquery.ui.all.css">
+	<link type="text/css" rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/base/jquery-ui.css">
 	<link type="text/css" rel="stylesheet" href="../src/css/graph.css">
 	<link type="text/css" rel="stylesheet" href="../src/css/detail.css">
 	<link type="text/css" rel="stylesheet" href="../src/css/legend.css">
@@ -25,7 +25,8 @@
 	<script src="../src/js/Rickshaw.Graph.Behavior.Series.Toggle.js"></script>
 	<script src="../src/js/Rickshaw.Graph.Behavior.Series.Order.js"></script>
 	<script src="../src/js/Rickshaw.Graph.Behavior.Series.Highlight.js"></script>
-	<script src="../src/js/Rickshaw.Graph.Smoother.js"></script>
+	<script src="../src/js/Rickshaw.Graph.Transform.js"></script>
+	<script src="../src/js/Rickshaw.Graph.Transform.Smoother.js"></script>
 	<script src="../src/js/Rickshaw.Graph.Unstacker.js"></script>
 	<script src="../src/js/Rickshaw.Fixtures.Time.js"></script>
 	<script src="../src/js/Rickshaw.Fixtures.RandomData.js"></script>
@@ -37,27 +38,35 @@
 
 <div id="content">
 
-	<div id="side_panel">
+	<form id="side_panel">
 		<h1>Random Data in the Future</h1>
 		<section><div id="legend"></div></section>
 		<section>
-			<form id="offset_form">
-				<input type="radio" name="offset" id="stack" value="zero" checked>
-				<label for="stack">stack</label>
-				<input type="radio" name="offset" id="percent" value="expand">
-				<label for="percent">percent</label>
-				<input type="radio" name="offset" id="stream" value="silhouette">
-				<label for="stream">stream</label>
-				<input type="radio" name="offset" id="lines" value="lines">
-				<label for="lines">lines</label>
-			</form>
+			<div id="offset_form">
+				<label for="stack">
+					<input type="radio" name="offset" id="stack" value="zero" checked>
+					<span>stack</span>
+				</label>
+				<label for="stream">
+					<input type="radio" name="offset" id="stream" value="wiggle">
+					<span>stream</span>
+				</label>
+				<label for="pct">
+					<input type="radio" name="offset" id="pct" value="expand">
+					<span>pct</span>
+				</label>
+				<label for="value">
+					<input type="radio" name="offset" id="value" value="value">
+					<span>value</span>
+				</label>
+			</div>
 		</section>
 		<section>
 			<h6>Smoothing</h6>
 			<div id="smoother"></div>
 		</section>
 		<section></section>
-	</div>
+	</form>
 
 	<div id="chart_container">
 		<div id="chart"></div>
