@@ -58,9 +58,18 @@ Rickshaw.Graph.HoverDetail = Rickshaw.Class.create({
 
 			var domainX = graph.x.invert(eventX);
 
+			var inputDomainNumbers = [];
+
+			var scaleOutputRange = [];
+
+			for (var i = 0; i < data.length; i++) {
+				inputDomainNumbers.push(data[i].x);
+				scaleOutputRange.push(i);
+			}
+
 			var domainIndexScale = d3.scale.linear()
-				.domain([data[0].x, data.slice(-1)[0].x])
-				.range([0, data.length - 1]);
+				.domain(inputDomainNumbers)
+				.range(scaleOutputRange);
 
 			var approximateIndex = Math.round(domainIndexScale(domainX));
 			var dataIndex = Math.min(approximateIndex || 0, data.length - 1);
