@@ -55,14 +55,13 @@ Rickshaw.Graph.HoverDetail = Rickshaw.Class.create({
 		this.graph.series.active().forEach( function(series) {
 
 			var data = this.graph.stackedData[j++];
-
 			var domainX = graph.x.invert(eventX);
 
 			var inputDomainNumbers = [];
-
 			var scaleOutputRange = [];
+			var i;
 
-			for (var i = 0; i < data.length; i++) {
+			for (i = 0; i < data.length; i++) {
 				inputDomainNumbers.push(data[i].x);
 				scaleOutputRange.push(i);
 			}
@@ -74,7 +73,7 @@ Rickshaw.Graph.HoverDetail = Rickshaw.Class.create({
 			var approximateIndex = Math.round(domainIndexScale(domainX));
 			var dataIndex = Math.min(approximateIndex || 0, data.length - 1);
 
-			for (var i = approximateIndex; i < data.length - 1;) {
+			for (i = approximateIndex; i < data.length - 1;) {
 
 				if (!data[i] || !data[i + 1]) break;
 
