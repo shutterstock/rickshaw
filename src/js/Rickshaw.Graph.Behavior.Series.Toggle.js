@@ -7,6 +7,58 @@ Rickshaw.Graph.Behavior.Series.Toggle = function(args) {
 
 	var self = this;
 
+	this.anchorOnClick = args.anchorOnClick || function(line) {
+		if (line.series.disabled) {
+			line.series.enable();
+			line.element.classList.remove('disabled');
+		} else {
+			line.series.disable();
+			line.element.classList.add('disabled');
+		}
+	};
+
+	this.labelOnClick = args.labelOnClick || function(line) {
+			var disableAllOtherLines = line.series.disabled;
+			if ( ! disableAllOtherLines ) {
+				for ( var i = 0; i < self.legend.lines.length; i++ ) {
+					var l = self.legend.lines[i];
+					if ( line.series === l.series ) {
+						// noop
+					} else if ( l.series.disabled ) {
+						// noop
+					} else {
+						disableAllOtherLines = true;
+						break;
+					}
+				}
+			}
+
+			// show all or none
+			if ( disableAllOtherLines ) {
+
+				// these must happen first or else we try ( and probably fail ) to make a no line graph
+				line.series.enable();
+				line.element.classList.remove('disabled');
+
+				self.legend.lines.forEach(function(l){
+					if ( line.series === l.series ) {
+						// noop
+					} else {
+						l.series.disable();
+						l.element.classList.add('disabled');
+					}
+				});
+
+			} else {
+
+				self.legend.lines.forEach(function(l){
+					l.series.enable();
+					l.element.classList.remove('disabled');
+				});
+
+		}
+	};
+
 	this.addAnchor = function(line) {
 		var anchor = document.createElement('a');
 		anchor.innerHTML = '&#10004;';
@@ -14,60 +66,14 @@ Rickshaw.Graph.Behavior.Series.Toggle = function(args) {
 		line.element.insertBefore(anchor, line.element.firstChild);
 
 		anchor.onclick = function(e) {
-			if (line.series.disabled) {
-				line.series.enable();
-				line.element.classList.remove('disabled');
-			} else { 
-				line.series.disable();
-				line.element.classList.add('disabled');
-			}
+			self.anchorOnClick(line);
 		};
-		
-                var label = line.element.getElementsByTagName('span')[0];
-                label.onclick = function(e){
 
-                        var disableAllOtherLines = line.series.disabled;
-                        if ( ! disableAllOtherLines ) {
-                                for ( var i = 0; i < self.legend.lines.length; i++ ) {
-                                        var l = self.legend.lines[i];
-                                        if ( line.series === l.series ) {
-                                                // noop
-                                        } else if ( l.series.disabled ) {
-                                                // noop
-                                        } else {
-                                                disableAllOtherLines = true;
-                                                break;
-                                        }
-                                }
-                        }
+		var label = line.element.getElementsByTagName('span')[0];
 
-                        // show all or none
-                        if ( disableAllOtherLines ) {
-
-                                // these must happen first or else we try ( and probably fail ) to make a no line graph
-                                line.series.enable();
-                                line.element.classList.remove('disabled');
-
-                                self.legend.lines.forEach(function(l){
-                                        if ( line.series === l.series ) {
-                                                // noop
-                                        } else {
-                                                l.series.disable();
-                                                l.element.classList.add('disabled');
-                                        }
-                                });
-
-                        } else {
-
-                                self.legend.lines.forEach(function(l){
-                                        l.series.enable();
-                                        l.element.classList.remove('disabled');
-                                });
-
-                        }
-
-                };
-
+		label.onclick = function(e) {
+			self.labelOnClick(line);
+		};
 	};
 
 	if (this.legend) {
@@ -98,13 +104,13 @@ Rickshaw.Graph.Behavior.Series.Toggle = function(args) {
 	this._addBehavior = function() {
 
 		this.graph.series.forEach( function(s) {
-			
+
 			s.disable = function() {
 
 				if (self.graph.series.length <= 1) {
 					throw('only one series left');
 				}
-				
+
 				s.disabled = true;
 				self.graph.update();
 			};
