@@ -7,25 +7,17 @@ Rickshaw.Graph.Behavior.Series.Toggle = function(args) {
 
 	var self = this;
 
-	this.addAnchor = function(line) {
-		var anchor = document.createElement('a');
-		anchor.innerHTML = '&#10004;';
-		anchor.classList.add('action');
-		line.element.insertBefore(anchor, line.element.firstChild);
+	this.anchorOnClick = args.anchorOnClick || function(line) {
+		if (line.series.disabled) {
+			line.series.enable();
+			line.element.classList.remove('disabled');
+		} else {
+			line.series.disable();
+			line.element.classList.add('disabled');
+		}
+	};
 
-		anchor.onclick = function(e) {
-			if (line.series.disabled) {
-				line.series.enable();
-				line.element.classList.remove('disabled');
-			} else {
-				line.series.disable();
-				line.element.classList.add('disabled');
-			}
-		};
-
-		var label = line.element.getElementsByTagName('span')[0];
-		label.onclick = function(e){
-
+	this.labelOnClick = args.labelOnClick || function(line) {
 			var disableAllOtherLines = line.series.disabled;
 			if ( ! disableAllOtherLines ) {
 				for ( var i = 0; i < self.legend.lines.length; i++ ) {
@@ -64,10 +56,24 @@ Rickshaw.Graph.Behavior.Series.Toggle = function(args) {
 					l.element.classList.remove('disabled');
 				});
 
-			}
+		}
+	};
 
+	this.addAnchor = function(line) {
+		var anchor = document.createElement('a');
+		anchor.innerHTML = '&#10004;';
+		anchor.classList.add('action');
+		line.element.insertBefore(anchor, line.element.firstChild);
+
+		anchor.onclick = function(e) {
+			self.anchorOnClick(line);
 		};
 
+		var label = line.element.getElementsByTagName('span')[0];
+
+		label.onclick = function(e) {
+			self.labelOnClick(line);
+		};
 	};
 
 	if (this.legend) {
