@@ -17,56 +17,56 @@ Rickshaw.Graph.Behavior.Series.Toggle = function(args) {
 			if (line.series.disabled) {
 				line.series.enable();
 				line.element.classList.remove('disabled');
-			} else { 
+			} else {
 				line.series.disable();
 				line.element.classList.add('disabled');
 			}
 		};
-		
-                var label = line.element.getElementsByTagName('span')[0];
-                label.onclick = function(e){
 
-                        var disableAllOtherLines = line.series.disabled;
-                        if ( ! disableAllOtherLines ) {
-                                for ( var i = 0; i < self.legend.lines.length; i++ ) {
-                                        var l = self.legend.lines[i];
-                                        if ( line.series === l.series ) {
-                                                // noop
-                                        } else if ( l.series.disabled ) {
-                                                // noop
-                                        } else {
-                                                disableAllOtherLines = true;
-                                                break;
-                                        }
-                                }
-                        }
+		var label = line.element.getElementsByTagName('span')[0];
+		label.onclick = function(e){
 
-                        // show all or none
-                        if ( disableAllOtherLines ) {
+			var disableAllOtherLines = line.series.disabled;
+			if ( ! disableAllOtherLines ) {
+				for ( var i = 0; i < self.legend.lines.length; i++ ) {
+					var l = self.legend.lines[i];
+					if ( line.series === l.series ) {
+						// noop
+					} else if ( l.series.disabled ) {
+						// noop
+					} else {
+						disableAllOtherLines = true;
+						break;
+					}
+				}
+			}
 
-                                // these must happen first or else we try ( and probably fail ) to make a no line graph
-                                line.series.enable();
-                                line.element.classList.remove('disabled');
+			// show all or none
+			if ( disableAllOtherLines ) {
 
-                                self.legend.lines.forEach(function(l){
-                                        if ( line.series === l.series ) {
-                                                // noop
-                                        } else {
-                                                l.series.disable();
-                                                l.element.classList.add('disabled');
-                                        }
-                                });
+				// these must happen first or else we try ( and probably fail ) to make a no line graph
+				line.series.enable();
+				line.element.classList.remove('disabled');
 
-                        } else {
+				self.legend.lines.forEach(function(l){
+					if ( line.series === l.series ) {
+						// noop
+					} else {
+						l.series.disable();
+						l.element.classList.add('disabled');
+					}
+				});
 
-                                self.legend.lines.forEach(function(l){
-                                        l.series.enable();
-                                        l.element.classList.remove('disabled');
-                                });
+			} else {
 
-                        }
+				self.legend.lines.forEach(function(l){
+					l.series.enable();
+					l.element.classList.remove('disabled');
+				});
 
-                };
+			}
+
+		};
 
 	};
 
@@ -98,13 +98,13 @@ Rickshaw.Graph.Behavior.Series.Toggle = function(args) {
 	this._addBehavior = function() {
 
 		this.graph.series.forEach( function(s) {
-			
+
 			s.disable = function() {
 
 				if (self.graph.series.length <= 1) {
 					throw('only one series left');
 				}
-				
+
 				s.disabled = true;
 				self.graph.update();
 			};
