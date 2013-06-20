@@ -98,13 +98,18 @@ Rickshaw.Graph.Behavior.Series.Toggle = function(args) {
 	this._addBehavior = function() {
 
 		this.graph.series.forEach( function(s) {
-			
+
 			s.disable = function() {
 
-				if (self.graph.series.length <= 1) {
+				var enabledSeries = self.graph.series.filter(function (element) {
+					var isDisabled = element.disabled || false;
+					return (!isDisabled);
+				});
+
+				if (enabledSeries.length <= 1) {
 					throw('only one series left');
 				}
-				
+
 				s.disabled = true;
 				self.graph.update();
 			};
