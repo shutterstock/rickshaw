@@ -391,9 +391,10 @@ Rickshaw.Graph = function(args) {
 		offset: 'zero',
 		min: undefined,
 		max: undefined,
-		preserve: false
+		preserve: false,
+                zoomable: true
 	};
-
+        
 	Rickshaw.keys(this.defaults).forEach( function(k) {
 		this[k] = args[k] || this.defaults[k];
 	}, this );
@@ -433,7 +434,10 @@ Rickshaw.Graph = function(args) {
 
 		this.setRenderer(args.renderer || 'stack', args);
 		this.discoverRange();
+               
 	};
+        
+        
 
 	this.validateSeries = function(series) {
 
@@ -2012,6 +2016,7 @@ Rickshaw.Graph.HoverDetail = Rickshaw.Class.create({
 	}
 });
 
+
 Rickshaw.namespace('Rickshaw.Graph.JSONP');
 
 Rickshaw.Graph.JSONP = Rickshaw.Class.create( Rickshaw.Graph.Ajax, {
@@ -2160,6 +2165,76 @@ Rickshaw.Graph.RangeSlider = Rickshaw.Class.create({
 		$(element).slider('option', 'values', values);
 	}
 });
+Rickshaw.namespace('Rickshaw.Graph.ZoomSelector');
+
+Rickshaw.Graph.ZoomSelector = Rickshaw.Class.create({
+
+	initialize: function(args) {
+
+		var element = this.element = args.element;
+		var graph = this.graph = args.graph;
+
+		this.build();
+
+		graph.onUpdate( function() { this.update() }.bind(this) );
+	},
+
+	build: function() {
+
+		var element = this.element;
+		var graph = this.graph;
+
+		$( function() {
+			$(element).slider( {
+				range: true,
+				min: graph.dataDomain()[0],
+				max: graph.dataDomain()[1],
+				values: [ 
+					graph.dataDomain()[0],
+					graph.dataDomain()[1]
+				],
+				slide: function( event, ui ) {
+
+					graph.window.xMin = ui.values[0];
+					graph.window.xMax = ui.values[1];
+					graph.update();
+
+					// if we're at an extreme, stick there
+					if (graph.dataDomain()[0] == ui.values[0]) {
+						graph.window.xMin = undefined;
+					}
+					if (graph.dataDomain()[1] == ui.values[1]) {
+						graph.window.xMax = undefined;
+					}
+				}
+			} );
+		} );
+
+		element[0].style.width = graph.width + 'px';
+	},
+
+	update: function() {
+
+		var element = this.element;
+		var graph = this.graph;
+
+		var values = $(element).slider('option', 'values');
+
+		$(element).slider('option', 'min', graph.dataDomain()[0]);
+		$(element).slider('option', 'max', graph.dataDomain()[1]);
+
+		if (graph.window.xMin == null) {
+			values[0] = graph.dataDomain()[0];
+		}
+		if (graph.window.xMax == null) {
+			values[1] = graph.dataDomain()[1];
+		}
+
+		$(element).slider('option', 'values', values);
+	}
+});
+
+// END ZOOM SELECTOR
 
 Rickshaw.namespace("Rickshaw.Graph.Renderer");
 

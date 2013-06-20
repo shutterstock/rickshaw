@@ -182,3 +182,23 @@ label[for=linear] {
 label[for=step] {
 	background-image: url(../images/interp_step.png);
 }
+
+/* rangeSelector */
+
+.rickshaw_range_selector{
+    border:1px solid #eee;
+    background: rgba(255,255,255,0.3);
+    position:absolute;
+    z-index:1000000;
+    cursor:pointer;
+}
+/*Falta agregar un loader con estilos para el evento onUpdate*/
+.rickshaw_range_selector_loader{
+    background:#f00;
+    display:none;
+    width:100%;
+    height:100%;
+    position:absolute;
+    top:0;
+    left:0;
+}
