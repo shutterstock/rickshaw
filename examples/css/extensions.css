@@ -186,11 +186,13 @@ label[for=step] {
 /* rangeSelector */
 
 .rickshaw_range_selector{
-    border:1px solid #eee;
+    outline:1px solid #eee;
     background: rgba(255,255,255,0.3);
     position:absolute;
+    top:0;
     z-index:1000000;
     cursor:pointer;
+    pointer-events:none;
 }
 /*Falta agregar un loader con estilos para el evento onUpdate*/
 .rickshaw_range_selector_loader{
@@ -201,4 +203,18 @@ label[for=step] {
     position:absolute;
     top:0;
     left:0;
+    pointer-events:none;
+}
+
+.rickshaw_clear_zoom{
+    display:none;
+    width:100px;
+    height:30px;
+    border: 1px solid #ddd;
+    font-size:12px;
+    line-height:30px;
+    text-align:center;
+    position:absolute;
+    top:5px;
+    left:5px;
 }

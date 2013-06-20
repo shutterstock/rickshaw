@@ -21,6 +21,7 @@
 	<script src="../src/js/Rickshaw.Graph.Renderer.Bar.js"></script>
 	<script src="../src/js/Rickshaw.Graph.Renderer.ScatterPlot.js"></script>
 	<script src="../src/js/Rickshaw.Graph.RangeSlider.js"></script>
+	<script src="../src/js/Rickshaw.Graph.RangeSelector.js"></script>
 	<script src="../src/js/Rickshaw.Graph.HoverDetail.js"></script>
 	<script src="../src/js/Rickshaw.Graph.Annotate.js"></script>
 	<script src="../src/js/Rickshaw.Graph.Legend.js"></script>
@@ -164,96 +165,100 @@ var graph = new Rickshaw.Graph( {
 
 graph.render();
 
-var slider = new Rickshaw.Graph.RangeSlider( {
-	graph: graph,
-	element: $('#slider')
-} );
+//var slider = new Rickshaw.Graph.RangeSlider( {
+//	graph: graph,
+//	element: $('#slider')
+//} );
 
-var hoverDetail = new Rickshaw.Graph.HoverDetail( {
+var selector = new Rickshaw.Graph.RangeSelector( {
 	graph: graph
 } );
 
-var annotator = new Rickshaw.Graph.Annotate( {
-	graph: graph,
-	element: document.getElementById('timeline')
-} );
+//var hoverDetail = new Rickshaw.Graph.HoverDetail( {
+//	graph: graph
+//} );
 
-var legend = new Rickshaw.Graph.Legend( {
-	graph: graph,
-	element: document.getElementById('legend')
+//var annotator = new Rickshaw.Graph.Annotate( {
+//	graph: graph,
+//	element: document.getElementById('timeline')
+//} );
+//
+//var legend = new Rickshaw.Graph.Legend( {
+//	graph: graph,
+//	element: document.getElementById('legend')
+//
+//} );
+//
+//var shelving = new Rickshaw.Graph.Behavior.Series.Toggle( {
+//	graph: graph,
+//	legend: legend
+//} );
+//
+//var order = new Rickshaw.Graph.Behavior.Series.Order( {
+//	graph: graph,
+//	legend: legend
+//} );
+//
+//var highlighter = new Rickshaw.Graph.Behavior.Series.Highlight( {
+//	graph: graph,
+//	legend: legend
+//} );
+//
+//var smoother = new Rickshaw.Graph.Smoother( {
+//	graph: graph,
+//	element: $('#smoother')
+//} );
+//
+//var ticksTreatment = 'glow';
+//
+//var xAxis = new Rickshaw.Graph.Axis.Time( {
+//	graph: graph,
+//	ticksTreatment: ticksTreatment
+//} );
+//
+//xAxis.render();
+//
+//var yAxis = new Rickshaw.Graph.Axis.Y( {
+//	graph: graph,
+//	tickFormat: Rickshaw.Fixtures.Number.formatKMBT,
+//	ticksTreatment: ticksTreatment
+//} );
+//
+//yAxis.render();
 
-} );
-
-var shelving = new Rickshaw.Graph.Behavior.Series.Toggle( {
-	graph: graph,
-	legend: legend
-} );
-
-var order = new Rickshaw.Graph.Behavior.Series.Order( {
-	graph: graph,
-	legend: legend
-} );
-
-var highlighter = new Rickshaw.Graph.Behavior.Series.Highlight( {
-	graph: graph,
-	legend: legend
-} );
-
-var smoother = new Rickshaw.Graph.Smoother( {
-	graph: graph,
-	element: $('#smoother')
-} );
-
-var ticksTreatment = 'glow';
-
-var xAxis = new Rickshaw.Graph.Axis.Time( {
-	graph: graph,
-	ticksTreatment: ticksTreatment
-} );
-
-xAxis.render();
-
-var yAxis = new Rickshaw.Graph.Axis.Y( {
-	graph: graph,
-	tickFormat: Rickshaw.Fixtures.Number.formatKMBT,
-	ticksTreatment: ticksTreatment
-} );
-
-yAxis.render();
-
-
-var controls = new RenderControls( {
-	element: document.querySelector('form'),
-	graph: graph
-} );
-
-// add some data every so often
-
-var messages = [
-	"Changed home page welcome message",
-	"Minified JS and CSS",
-	"Changed button color from blue to green",
-	"Refactored SQL query to use indexed columns",
-	"Added additional logging for debugging",
-	"Fixed typo",
-	"Rewrite conditional logic for clarity",
-	"Added documentation for new methods"
-];
-
+//
+//var controls = new RenderControls( {
+//	element: document.querySelector('form'),
+//	graph: graph
+//} );
+//
+//// add some data every so often
+//
+//var messages = [
+//	"Changed home page welcome message",
+//	"Minified JS and CSS",
+//	"Changed button color from blue to green",
+//	"Refactored SQL query to use indexed columns",
+//	"Added additional logging for debugging",
+//	"Fixed typo",
+//	"Rewrite conditional logic for clarity",
+//	"Added documentation for new methods"
+//];
+//
 setInterval( function() {
 	random.addData(seriesData);
 	graph.update();
 
 }, 3000 );
-
-function addAnnotation(force) {
-	if (messages.length > 0 && (force || Math.random() >= 0.95)) {
-		annotator.add(seriesData[2][seriesData[2].length-1].x, messages.shift());
-	}
-}
-
-addAnnotation(true);
-setTimeout( function() { setInterval( addAnnotation, 6000 ) }, 6000 );
+//
+//function addAnnotation(force) {
+//	if (messages.length > 0 && (force || Math.random() >= 0.95)) {
+//		annotator.add(seriesData[2][seriesData[2].length-1].x, messages.shift());
+//	}
+//}
+//
+//addAnnotation(true);
+//setTimeout( function() { setInterval( addAnnotation, 6000 ) }, 6000 );
 
 </script>
 
