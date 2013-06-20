@@ -28,6 +28,8 @@ Rickshaw.Graph.Legend = function(args) {
 
 	this.addLine = function(series) {
 		var lineElement = document.createElement('li');
+		lineElement.series = series;
+
 		var lineData = {
 			element: lineElement,
 			series: series
@@ -73,7 +75,7 @@ Rickshaw.Graph.Legend = function(args) {
 		var newSetOfLines = [];
 		var seriesArray = this.prepareSeries(graph.series);
 
-		for (var i = seriesArray.length - 1; i >= 0; i--) {
+		for (var i = 0; i < seriesArray.length; i++) {
 			var series = seriesArray[i];
 			var existingLine = null;
 			for (var j = self.lines.length - 1; j >= 0; j--) {
