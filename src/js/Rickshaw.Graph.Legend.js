@@ -9,58 +9,98 @@ Rickshaw.Graph.Legend = function(args) {
 
 	element.classList.add('rickshaw_legend');
 
-	var list = this.list = document.createElement('ul');
-	element.appendChild(list);
+	this.list = document.createElement('ul');
+	element.appendChild(this.list);
 
-	var series = graph.series
-		.map( function(s) { return s } );
+	this.prepareSeries = function(unpreparedSeries) {
+		var preparedSeries = unpreparedSeries.map(function(s) {
+			return s;
+		});
 
-	if (!args.naturalOrder) {
-		series = series.reverse();
-	}
+		if (!args.naturalOrder) {
+			preparedSeries = preparedSeries.reverse();
+		}
+
+		return preparedSeries;
+	};
 
 	this.lines = [];
 
-	this.addLine = function (series) {
-		var line = document.createElement('li');
-		line.className = 'line';
-		if (series.disabled) {
-			line.className += ' disabled';
-		}
+	this.addLine = function(series) {
+		var lineElement = document.createElement('li');
+		var lineData = {
+			element: lineElement,
+			series: series
+		};
 
-		var swatch = document.createElement('div');
-		swatch.className = 'swatch';
-		swatch.style.backgroundColor = series.color;
+		lineData.swatch = document.createElement('div');
+		lineElement.appendChild(lineData.swatch);
 
-		line.appendChild(swatch);
+		lineData.label = document.createElement('span');
+		lineElement.appendChild(lineData.label);		
 
-		var label = document.createElement('span');
-		label.className = 'label';
-		label.innerHTML = series.name;
+		this.updateLineBehavior(lineData);
 
-		line.appendChild(label);
-		list.appendChild(line);
-
-		line.series = series;
-
-		if (series.noLegend) {
-			line.style.display = 'none';
-		}
-
-		var _line = { element: line, series: series };
-		if (self.shelving) {
-			self.shelving.addAnchor(_line);
-			self.shelving.updateBehaviour();
+		if (self.toggler) {
+			self.toggler.addAnchor(lineData);
+			self.toggler.updateBehaviour();
 		}
 		if (self.highlighter) {
-			self.highlighter.addHighlightEvents(_line);
+			self.highlighter.addHighlightEvents(lineData);
 		}
-		self.lines.push(_line);
+
+		return lineData;
 	};
 
-	series.forEach( function(s) {
-		self.addLine(s);
-	} );
+	this.updateLineBehavior = function(lineData) {
+		if (lineData.series.noLegend) {
+			lineData.element.style.display = 'none';
+		}
 
-	graph.onUpdate( function() {} );
+		lineData.element.className = 'line';
+		if (lineData.series.disabled) {
+			lineData.element.className += ' disabled';
+		}
+
+		lineData.swatch.className = 'swatch';
+		lineData.swatch.style.backgroundColor = lineData.series.color;
+
+		lineData.label.className = 'label';
+		lineData.label.innerHTML = lineData.series.name;
+	};
+
+	this.updateLines = function() {
+		var newSetOfLines = [];
+		var seriesArray = this.prepareSeries(graph.series);
+
+		for (var i = seriesArray.length - 1; i >= 0; i--) {
+			var series = seriesArray[i];
+			var existingLine = null;
+			for (var j = self.lines.length - 1; j >= 0; j--) {
+				if (self.lines[j].series === series) {
+					existingLine = self.lines[j];
+					break;
+				}
+			}
+
+			if (existingLine !== null) {
+				newSetOfLines.push(existingLine);
+			} else {
+				newSetOfLines.push(self.addLine(series));
+			}
+		}
+
+		self.lines = newSetOfLines;
+
+		self.list.innerHTML = '';
+		self.lines.forEach(function (lineData) {
+				self.list.appendChild(lineData.element);
+		});
+	};
+
+	self.updateLines();
+
+	graph.onUpdate(function() {
+		self.updateLines();
+	});
 };

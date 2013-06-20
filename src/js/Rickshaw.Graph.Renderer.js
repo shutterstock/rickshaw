@@ -82,7 +82,11 @@ Rickshaw.Graph.Renderer = Rickshaw.Class.create( {
 		var vis = args.vis || graph.vis;
 		vis.selectAll('*').remove();
 
-		var data = series
+		var orderedSeries = series
+			.slice(0)
+			.sort(function(a, b) { return a.zOrder !== undefined && b.zOrder !== undefined && a.zOrder > b.zOrder; });
+
+		var data = orderedSeries
 			.filter(function(s) { return !s.disabled })
 			.map(function(s) { return s.stack });
 
@@ -92,10 +96,10 @@ Rickshaw.Graph.Renderer = Rickshaw.Class.create( {
 			.attr("d", this.seriesPathFactory());
 
 		var i = 0;
-		series.forEach( function(series) {
-			if (series.disabled) return;
-			series.path = nodes[0][i++];
-			this._styleSeries(series);
+		orderedSeries.forEach( function(s) {
+			if (s.disabled) return;
+			s.path = nodes[0][i++];
+			this._styleSeries(s);
 		}, this );
 	},
 
