@@ -21,6 +21,7 @@
 	<script src="../src/js/Rickshaw.Graph.Renderer.Bar.js"></script>
 	<script src="../src/js/Rickshaw.Graph.Renderer.ScatterPlot.js"></script>
 	<script src="../src/js/Rickshaw.Graph.RangeSlider.js"></script>
+	<script src="../src/js/Rickshaw.Graph.Minimap.js"></script>
 	<script src="../src/js/Rickshaw.Graph.HoverDetail.js"></script>
 	<script src="../src/js/Rickshaw.Graph.Annotate.js"></script>
 	<script src="../src/js/Rickshaw.Graph.Legend.js"></script>
@@ -103,6 +104,7 @@
 		<div id="chart"></div>
 		<div id="timeline"></div>
 		<div id="slider"></div>
+		<div id="minimap"></div>
 	</div>
 
 </div>
@@ -167,6 +169,11 @@ graph.render();
 var slider = new Rickshaw.Graph.RangeSlider( {
 	graph: graph,
 	element: $('#slider')
+} );
+
+var minimap = new Rickshaw.Graph.Minimap( {
+	graph: graph,
+	element: $('#minimap')
 } );
 
 var hoverDetail = new Rickshaw.Graph.HoverDetail( {
