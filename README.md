@@ -102,6 +102,8 @@ Once you have a basic graph, extensions let you add functionality.  See the [ove
 
 * __Rickshaw.Graph.Axis.Time__ - add an x-axis and grid lines with time labels
 
+* __Rickshaw.Graph.Minimap__ - control pan and zoom via minimap of entire data set
+
 * __Rickshaw.Graph.Axis.X__ - add an x-axis and grid lines with arbitrary labels
 
 * __Rickshaw.Graph.Axis.Y__ - add a y-axis and grid lines
