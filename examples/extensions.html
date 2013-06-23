@@ -172,8 +172,8 @@ var slider = new Rickshaw.Graph.RangeSlider( {
 } );
 
 var minimap = new Rickshaw.Graph.Minimap( {
-	graph: graph,
-	element: $('#minimap')
+	graphs: [graph, graph],
+	element: document.getElementById('minimap')
 } );
 
 var hoverDetail = new Rickshaw.Graph.HoverDetail( {
