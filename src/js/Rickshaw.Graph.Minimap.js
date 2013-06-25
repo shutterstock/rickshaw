@@ -34,51 +34,49 @@ Rickshaw.Graph.Minimap = Rickshaw.Class.create({
 
 	update: function() {
 
-		var constructGraph = function(datum, index) {
-			// If anyone has an elegant way to do this without jQuery, please change...
-			var minimapGraphConfiguration = jQuery.extend({}, datum.graph.configuration);
-
-			minimapGraphConfiguration.element = this;
-			minimapGraphConfiguration.height = datum.height;
-			minimapGraphConfiguration.width = datum.width;
-			minimapGraphConfiguration.series = datum.graph.series;
-
-			datum.minimapGraph = new Rickshaw.Graph(minimapGraphConfiguration);
-
-			datum.graph.onUpdate(function() {
-				datum.minimap.update();
-			}.bind(this));
-
-			datum.graph.onConfigure(function(args) {
-				datum.minimapGraph.configure(args);
-			}.bind(this));
-
-			datum.minimapGraph.render();
-		};
-
 		var mainElement = d3.select(this.element);
 
 		var individualGraphHeight = this.config.height / this.graphs.length;
 		var totalWidth = this.config.width;
 
 		var minimap = this;
-		var mainData = this.graphs.map(function(item) {
+
+		var constructGraph = function(datum, index) {
 			var domainScale = d3.scale.linear();
 			domainScale.interpolate(d3.interpolateRound);
 			domainScale.domain([0, totalWidth]);
-			domainScale.range(graph.dataDomain());
+			domainScale.range(datum.dataDomain());
 
-			return {
-				minimap: minimap,
-				graph: item,
+			datum.minimapGraph = {
+				container: minimap,
 				height: individualGraphHeight,
 				width: totalWidth,
 				domainScale: domainScale
-			};
-		});
+			};	
+
+			// If anyone has an elegant way to do this without jQuery, please change...
+			var minimapGraphConfiguration = jQuery.extend({}, datum.configuration);
+
+			minimapGraphConfiguration.element = this;
+			minimapGraphConfiguration.height = datum.minimapGraph.height;
+			minimapGraphConfiguration.width = datum.minimapGraph.width;
+			minimapGraphConfiguration.series = datum.series;
+
+			datum.minimapGraph.graph = new Rickshaw.Graph(minimapGraphConfiguration);
+
+			datum.onUpdate(function() {
+				datum.minimapGraph.container.update();
+			}.bind(this));
+
+			datum.onConfigure(function(args) {
+				datum.minimapGraph.graph.configure(args);
+			}.bind(this));
+
+			datum.minimapGraph.graph.render();
+		};
 
 		var graphBlock = mainElement.selectAll("div.minimap")
-			.data(mainData);
+			.data(this.graphs);
 
 		graphBlock.enter()
 			.append("div")
@@ -89,12 +87,12 @@ Rickshaw.Graph.Minimap = Rickshaw.Class.create({
 			.remove();
 
 		// Use the first graph as of the "master" for the frame state
-		var masterData = mainData[0];
-		var currentWindow = [masterData.graph.window.xMin, masterData.graph.window.xMax];
+		var masterGraph = this.graphs[0];
+		var currentWindow = [masterGraph.window.xMin, masterGraph.window.xMax];
 		var currentFrame = [0, this.config.width];
 		for (var i = 0; i < currentWindow.length; i++) {
 			if (currentWindow[i] !== undefined) {
-				currentFrame[i] = masterData.domainScale.invert(currentWindow[i]);
+				currentFrame[i] = masterGraph.minimapGraph.domainScale.invert(currentWindow[i]);
 			}
 			currentFrame[i] = Math.round(currentFrame[i]);
 		}
@@ -136,8 +134,8 @@ Rickshaw.Graph.Minimap = Rickshaw.Class.create({
 			.attr("fill-opacity", "0.5")
 			.attr("fill-rule", "evenodd");
 
-		mainData.forEach(function(datum) {
-			//			datum.minimapGraph.update();
+		this.graphs.forEach(function(datum) {
+			datum.minimapGraph.graph.update();
 		});
 
 		console.log('GREAT SUCCESS');
