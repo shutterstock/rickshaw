@@ -195,6 +195,9 @@ label[for=step] {
     pointer-events:none;
 }
 /*Falta agregar un loader con estilos para el evento onUpdate*/
+.no-event{
+    pointer-events:none;
+}
 .rickshaw_range_selector_loader{
     background:#f00;
     display:none;

@@ -2,21 +2,51 @@ Rickshaw.namespace('Rickshaw.Graph.RangeSelector');
 Rickshaw.Graph.RangeSelector = Rickshaw.Class.create({
     initialize: function(args) {
         var graph = this.graph = args.graph;
-        var position = this.position = {};
+        var position = this.position = {
+            xMin : this.graph.dataDomain()[0],
+            xMax : this.graph.dataDomain()[1]
+        };
         var selectionBox = this.selectionBox = $('<div class="rickshaw_range_selector"></div>');
+        var selectionControl = false;
         selectionBox.prependTo($(graph.element));
-        this._addListeners();
+//        this._addListeners();
         this.build();
-        graph.onUpdate(function() {
-            this.update();
-        }.bind(this));
+        graph.onUpdate(function() { this.update() }.bind(this));
+    },
+    build: function() {
+        console.log('build was called');
+        var graph = this.graph;
+        var position = this.position;
+        var position = this.position;
+        var selectionBox = this.selectionBox;
+        var parent = graph.element.childNodes[1];
+        
+
+        position.xMin = graph.dataDomain()[0];
+        position.xMax = graph.dataDomain()[1];
+
+        graph.update();
+        console.log('wtf');
+//          if we're at an extreme, stick there
+        if (graph.dataDomain()[0] == position.xMin) {
+            graph.window.xMin = undefined;
+        }
+        if (graph.dataDomain()[1] == position.xMax) {
+            graph.window.xMax = undefined;
+        }
+
+        graph.window.xMin = position.xMin;
+        graph.window.xMax = position.xMax;
+        
+
     },
     _addListeners: function() {
         var graph = this.graph;
         var position = this.position;
         var selectionBox = this.selectionBox;
-        var selectionControl;
+        var parent = graph.element.childNodes[1];
         var selectionDraw = function(startPointX) {
+            parent.style.pointerEvents = selectionControl == true ?'none':'';
             graph.element.addEventListener('mousemove', function(e) {
                 if (selectionControl == true) {
                     var deltaX;
@@ -55,10 +85,8 @@ Rickshaw.Graph.RangeSelector = Rickshaw.Class.create({
 
         window.addEventListener('mouseup', function(e) {
             selectionControl = false;
-
-            graph.update();
-            console.log('inner function called');
-
+            position.xMin = Math.round(graph.x.invert(position.minX));
+            position.xMax = Math.round(graph.x.invert(position.maxX));
             selectionBox.css({
                 'transition': 'opacity 0.2s ease-out',
                 'opacity': '0'
@@ -71,57 +99,28 @@ Rickshaw.Graph.RangeSelector = Rickshaw.Class.create({
                     'left': 0
                 });
             }, 200);
-        
+            graph.update();
         }, false);
 
     },
-    build: function() {
-        var graph = this.graph;
-        var position = this.position;
-        console.log('build was called');
-        $(function() {
-
-            graph.window.xMin = position.xMin;
-            graph.window.xMax = position.xMax;
-
-            graph.update();
-
-//          if we're at an extreme, stick there
-            if (graph.dataDomain()[0] == position.xMin) {
-                graph.window.xMin = undefined;
-            }
-            if (graph.dataDomain()[1] == position.xMax) {
-                graph.window.xMax = undefined;
-            }
-
-        });
-
-    },
     update: function() {
-        console.log('update was called');
         var graph = this.graph;
         var position = this.position;
-        var selectionBox = this.selectionBox;
-        position.xMin = Math.round(graph.x.invert(position.minX));
-        position.xMax = Math.round(graph.x.invert(position.maxX));
-        
-
+        console.log(position);
         graph.window.xMin = position.xMin;
         graph.window.xMax = position.xMax;
 
-//        if (graph.window.xMin == null) {
-//            position.xMin = graph.dataDomain()[0];
-//        }
-//
-//        if (graph.window.xMax == null) {
-//            position.xMax = graph.dataDomain()[1];
-//        }
-//
-//        graph.dataDomain()[0] = graph.window.xMin;
-//        graph.dataDomain()[1] = graph.window.xMax;
-        
-        console.log(position);
-        console.log(graph.window);
+        if (graph.window.xMin == null) {
+            position.xMin = graph.dataDomain()[0];
+        }
+
+        if (graph.window.xMax == null) {
+            position.xMax = graph.dataDomain()[1];
+        }
+
+        position.xMin = graph.window.xMin;
+        position.xMax = graph.window.xMax;
+        console.log(['update was called and should show:',position]);
     }
 });
 
