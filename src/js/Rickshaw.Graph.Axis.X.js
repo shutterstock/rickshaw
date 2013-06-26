@@ -14,6 +14,12 @@ Rickshaw.Graph.Axis.X = function(args) {
 		this.ticks = args.ticks || Math.floor(this.graph.width / pixelsPerTick);
 		this.tickSize = args.tickSize || 4;
 		this.ticksTreatment = args.ticksTreatment || 'plain';
+		
+		if (typeof(args.grid) === 'undefined') {
+			this.grid = true;
+		} else {
+			this.grid = args.grid;
+		}
 
 		if (args.element) {
 
@@ -82,10 +88,12 @@ Rickshaw.Graph.Axis.X = function(args) {
 
 		var gridSize = (this.orientation == 'bottom' ? 1 : -1) * this.graph.height;
 
+		if (this.grid) {
 		this.graph.vis
 			.append("svg:g")
 			.attr("class", "x_grid_d3")
 			.call(axis.ticks(this.ticks).tickSubdivide(0).tickSize(gridSize));
+		}
 
 		this._renderHeight = this.graph.height;
 	};

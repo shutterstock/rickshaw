@@ -14,6 +14,12 @@ Rickshaw.Graph.Axis.Y = Rickshaw.Class.create( {
 		this.tickFormat = args.tickFormat || function(y) { return y };
 
 		this.berthRate = 0.10;
+		
+		if (typeof(args.grid) === 'undefined') {
+			this.grid = true;
+		} else {
+			this.grid = args.grid;
+		}
 
 		if (args.element) {
 
@@ -71,7 +77,7 @@ Rickshaw.Graph.Axis.Y = Rickshaw.Class.create( {
 
 		var axis = this._drawAxis(this.graph.y);
 
-		this._drawGrid(axis);
+		if (this.grid) {this._drawGrid(axis);}
 
 		this._renderHeight = this.graph.height;
 	},
