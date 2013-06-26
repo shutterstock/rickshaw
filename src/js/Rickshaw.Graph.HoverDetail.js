@@ -56,6 +56,9 @@ Rickshaw.Graph.HoverDetail = Rickshaw.Class.create({
 
 			var data = this.graph.stackedData[j++];
 
+			if (!data.length)
+				return;
+
 			var domainX = graph.x.invert(eventX);
 
 			var domainIndexScale = d3.scale.linear()
