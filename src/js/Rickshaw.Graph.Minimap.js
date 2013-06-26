@@ -17,8 +17,10 @@ Rickshaw.Graph.Minimap = Rickshaw.Class.create({
 		this.defaults = {
 			height: 400,
 			width: 500,
-			frameTopThickness: 50,
-			frameHandleThickness: 10
+			frameTopThickness: 10,
+			frameHandleThickness: 50,
+			frameColor: "gray",
+			frameOpacity: 0.5
 		};
 
 		this.configure(args);
@@ -83,12 +85,12 @@ Rickshaw.Graph.Minimap = Rickshaw.Class.create({
 			.append("div")
 			.classed("rickshaw_minimap", true)
 			.style("transform", translateCommand)
-			.each(constructGraph, this.config);
+			.each(constructGraph);
 
 		graphContainerBlock.exit()
 			.remove();
 
-		// Use the first graph as of the "master" for the frame state
+		// Use the first graph as the "master" for the frame state
 		var masterGraph = this.graphs[0];
 		var domainScale = d3.scale.linear();
 		domainScale.interpolate(d3.interpolateRound);
@@ -103,8 +105,91 @@ Rickshaw.Graph.Minimap = Rickshaw.Class.create({
 			currentFrame[i] = Math.round(currentFrame[i]);
 		}
 
+		var registerMouseEvents = function() {
+			console.log("mouse event registration");
+			var drag = {
+				start: null,
+				stop: null,
+				leftOrRight: null,
+			};
+
+			function onMousemove(datum, index) {
+				drag.stop = d3.event.clientX;
+				console.log("move:" + drag.start + " " + drag.stop);
+				var distanceTraveled = drag.stop - drag.start;
+				console.log("distance traveled: " + distanceTraveled);
+				minimap.graphs.forEach(function(graph) {
+					var domainScale = d3.scale.linear();
+					domainScale.interpolate(d3.interpolateRound);
+					domainScale.domain([0, graphsWidth]);
+					domainScale.range(graph.dataDomain());
+					var extremaPixelBeforeDrag = domainScale.invert(graph.minimapExtremaBeforeDrag);
+					var extremaPixelAfterDrag = extremaPixelBeforeDrag + distanceTraveled;
+					if (extremaPixelAfterDrag <= 0) {
+						extremaPixelAfterDrag = 0;
+					} else if (extremaPixelAfterDrag > graphsWidth) {
+						extremaPixelAfterDrag = graphsWidth;
+					}
+					var extremaDomainAfterDrag = domainScale(extremaPixelAfterDrag);
+					if (drag.leftOrRight === "left") {
+						if (extremaDomainAfterDrag <= graph.dataDomain()[0]) {
+							graph.window.xMin = undefined;
+						} else {
+							graph.window.xMin = extremaDomainAfterDrag;
+						}
+					} else {
+						if (extremaDomainAfterDrag >= graph.dataDomain()[1]) {
+							graph.window.xMax = undefined;
+						} else {
+							graph.window.xMax = extremaDomainAfterDrag;
+						}
+					}
+					graph.update();
+				});
+			}
+
+			function onMousedown(leftOrRight) {
+				drag.leftOrRight = leftOrRight;
+				drag.start = d3.event.clientX;
+				minimap.graphs.forEach(function(graph) {
+					var currentWindow = [graph.window.xMin, graph.window.xMax];
+					for (var i = 0; i < currentWindow.length; i++) {
+						if (currentWindow[i] === undefined) {
+							currentWindow[i] = graph.dataDomain()[i];
+						}
+					}
+					graph.minimapExtremaBeforeDrag = (leftOrRight === "left" ? currentWindow[0] : currentWindow[1]);
+				});
+
+				d3.event.preventDefault ? d3.event.preventDefault() : d3.event.returnValue = false;
+				d3.select(document).on("mousemove.rickshaw_minimap", onMousemove);
+				d3.select(document).on("mouseup.rickshaw_minimap", onMouseup);
+				console.log("down:" + drag.start);
+			}
+
+			function onMousedownLeftHandle(datum, index) {
+				onMousedown("left");
+			}
+
+			function onMousedownRightHandle(datum, index) {
+				onMousedown("right");
+			}
+
+			function onMouseup(datum, index) {
+				d3.select(document).on("mousemove.rickshaw_minimap", null);
+				d3.select(document).on("mouseup.rickshaw_minimap", null);
+				minimap.graphs.forEach(function(graph) {
+					delete graph.minimapExtremaBeforeDrag;
+				});
+				console.log("up " + drag.stop);
+			}
+
+			mainElement.select("path.rickshaw_minimap_lefthandle").on("mousedown", onMousedownLeftHandle);
+			mainElement.select("path.rickshaw_minimap_righthandle").on("mousedown", onMousedownRightHandle);
+		};
+
 		var svgBlock = mainElement.selectAll("svg.rickshaw_minimap")
-			.data([this.config]);
+			.data([this]);
 
 		svgBlock.enter()
 			.append("svg")
@@ -116,9 +201,8 @@ Rickshaw.Graph.Minimap = Rickshaw.Class.create({
 			.style("position", "relative")
 			.style("top", -graphsHeight);
 
-		var dataString = masterGraph.window.xMin + ", " + masterGraph.window.xMax;
 		var dimmingPathBlock = svgBlock.selectAll("path.rickshaw_minimap_dimming")
-			.data([this.config]);
+			.data([this]);
 
 		dimmingPathBlock.enter()
 			.append("path")
@@ -144,7 +228,7 @@ Rickshaw.Graph.Minimap = Rickshaw.Class.create({
 			.attr("fill-rule", "evenodd");
 
 		var framePathBlock = svgBlock.selectAll("path.rickshaw_minimap_frame")
-			.data([this.config]);
+			.data([this]);
 
 		framePathBlock.enter()
 			.append("path")
@@ -165,8 +249,50 @@ Rickshaw.Graph.Minimap = Rickshaw.Class.create({
 
 		framePathBlock
 			.attr("d", pathDescriptor)
-			.attr("fill", "gray")
+			.attr("stroke", "white")
+			.attr("fill", this.config.frameColor)
+			.attr("fill-opacity", this.config.frameOpacity)
 			.attr("fill-rule", "evenodd");
+
+		var leftHandleBlock = svgBlock.selectAll("path.rickshaw_minimap_lefthandle")
+			.data([this]);
+
+		leftHandleBlock.enter()
+			.append("path")
+			.classed("rickshaw_minimap_lefthandle", true)
+			.each(registerMouseEvents);
+
+		pathDescriptor = "";
+		pathDescriptor += " M " + currentFrame[0] + " 0";
+		pathDescriptor += " h " + this.config.frameHandleThickness;
+		pathDescriptor += " v " + this.config.height;
+		pathDescriptor += " h " + -this.config.frameHandleThickness;
+		pathDescriptor += " z";
+
+		leftHandleBlock
+			.attr("d", pathDescriptor)
+			.style("cursor", "ew-resize")
+			.style("fill-opacity", "0");
+
+		var rightHandleBlock = svgBlock.selectAll("path.rickshaw_minimap_righthandle")
+			.data([this]);
+
+		rightHandleBlock.enter()
+			.append("path")
+			.classed("rickshaw_minimap_righthandle", true)
+			.each(registerMouseEvents);
+
+		pathDescriptor = "";
+		pathDescriptor += " M " + (currentFrame[1] + this.config.frameHandleThickness) + " 0";
+		pathDescriptor += " h " + this.config.frameHandleThickness;
+		pathDescriptor += " v " + this.config.height;
+		pathDescriptor += " h " + -this.config.frameHandleThickness;
+		pathDescriptor += " z";
+
+		rightHandleBlock
+			.attr("d", pathDescriptor)
+			.style("cursor", "ew-resize")
+			.style("fill-opacity", "0");
 
 		this.graphs.forEach(function(datum) {
 			datum.minimapGraph.graph.update();
