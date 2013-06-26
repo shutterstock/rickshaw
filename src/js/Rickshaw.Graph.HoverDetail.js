@@ -106,6 +106,8 @@ Rickshaw.Graph.HoverDetail = Rickshaw.Class.create({
 
 		}, this );
 
+		if (!nearestPoint)
+			return;
 
 		nearestPoint.active = true;
 
