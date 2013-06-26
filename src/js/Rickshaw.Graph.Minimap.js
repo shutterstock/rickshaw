@@ -15,8 +15,10 @@ Rickshaw.Graph.Minimap = Rickshaw.Class.create({
 		}
 
 		this.defaults = {
-			height: 50,
-			width: 500
+			height: 400,
+			width: 500,
+			frameTopThickness: 50,
+			frameHandleThickness: 10
 		};
 
 		this.configure(args);
@@ -36,28 +38,29 @@ Rickshaw.Graph.Minimap = Rickshaw.Class.create({
 
 		var mainElement = d3.select(this.element);
 
-		var individualGraphHeight = this.config.height / this.graphs.length;
-		var totalWidth = this.config.width;
+		var graphsHeight = this.config.height - (this.config.frameTopThickness * 2);
+		var individualGraphHeight = graphsHeight / this.graphs.length;
+		var graphsWidth = this.config.width - (this.config.frameHandleThickness * 2);
 
 		var minimap = this;
 
 		var constructGraph = function(datum, index) {
 			var domainScale = d3.scale.linear();
 			domainScale.interpolate(d3.interpolateRound);
-			domainScale.domain([0, totalWidth]);
+			domainScale.domain([0, graphsWidth]);
 			domainScale.range(datum.dataDomain());
 
 			datum.minimapGraph = {
 				container: minimap,
 				height: individualGraphHeight,
-				width: totalWidth,
+				width: graphsWidth,
 				domainScale: domainScale
-			};	
+			};
 
 			// If anyone has an elegant way to do this without jQuery, please change...
 			var minimapGraphConfiguration = jQuery.extend({}, datum.configuration);
 
-			minimapGraphConfiguration.element = this;
+			minimapGraphConfiguration.element = this.appendChild(document.createElement("div"));
 			minimapGraphConfiguration.height = datum.minimapGraph.height;
 			minimapGraphConfiguration.width = datum.minimapGraph.width;
 			minimapGraphConfiguration.series = datum.series;
@@ -75,21 +78,26 @@ Rickshaw.Graph.Minimap = Rickshaw.Class.create({
 			datum.minimapGraph.graph.render();
 		};
 
-		var graphBlock = mainElement.selectAll("div.minimap")
+		var graphContainerBlock = mainElement.selectAll("div.rickshaw_minimap")
 			.data(this.graphs);
 
-		graphBlock.enter()
+		var translateCommand = "translate(" +
+			this.config.frameHandleThickness + "px, " +
+			this.config.frameTopThickness + "px)";
+
+		graphContainerBlock.enter()
 			.append("div")
-			.classed("minimap", true)
+			.classed("rickshaw_minimap", true)
+			.style("transform", translateCommand)
 			.each(constructGraph, this.config);
 
-		graphBlock.exit()
+		graphContainerBlock.exit()
 			.remove();
 
 		// Use the first graph as of the "master" for the frame state
 		var masterGraph = this.graphs[0];
 		var currentWindow = [masterGraph.window.xMin, masterGraph.window.xMax];
-		var currentFrame = [0, this.config.width];
+		var currentFrame = [0, graphsWidth];
 		for (var i = 0; i < currentWindow.length; i++) {
 			if (currentWindow[i] !== undefined) {
 				currentFrame[i] = masterGraph.minimapGraph.domainScale.invert(currentWindow[i]);
@@ -97,41 +105,69 @@ Rickshaw.Graph.Minimap = Rickshaw.Class.create({
 			currentFrame[i] = Math.round(currentFrame[i]);
 		}
 
-		var framePath = "";
-		framePath += " M 0 0";
-		framePath += " h " + this.config.width;
-		framePath += " v " + this.config.height;
-		framePath += " h " + -this.config.width;
-		framePath += " z";
-		framePath += " M " + currentFrame[0] + " 0";
-		framePath += " L " + currentFrame[1] + " 0";
-		framePath += " L " + currentFrame[1] + " " + this.config.height;
-		framePath += " L " + currentFrame[0] + " " + this.config.height;
-		framePath += " z";
-
-		var svgBlock = mainElement.selectAll("svg.minimap")
+		var svgBlock = mainElement.selectAll("svg.rickshaw_minimap")
 			.data([this.config]);
 
 		svgBlock.enter()
 			.append("svg")
-			.classed("minimap", true);
+			.classed("rickshaw_minimap", true);
 
 		svgBlock
 			.style("height", this.config.height)
-			.style("width", this.config.width)
+			.style("width", this.config.width + 50)
 			.style("position", "relative")
-			.style("top", -this.config.height);
+			.style("top", -graphsHeight);
 
-		var pathBlock = svgBlock.selectAll("path")
+		var dataString = masterGraph.window.xMin + ", " + masterGraph.window.xMax;
+		var dimmingPathBlock = svgBlock.selectAll("path.rickshaw_minimap_dimming")
 			.data([this.config]);
 
-		pathBlock.enter()
-			.append("path");
+		dimmingPathBlock.enter()
+			.append("path")
+			.classed("rickshaw_minimap_dimming", true);
 
-		pathBlock
-			.attr("d", framePath)
+		var pathDescriptor = "";
+		pathDescriptor += " M " + this.config.frameHandleThickness + " " + this.config.frameTopThickness;
+		pathDescriptor += " h " + graphsWidth;
+		pathDescriptor += " v " + graphsHeight;
+		pathDescriptor += " h " + -graphsWidth;
+		pathDescriptor += " z";
+		pathDescriptor += " M " + (this.config.frameHandleThickness + currentFrame[0]) +
+			" " + this.config.frameTopThickness;
+		pathDescriptor += " H " + (this.config.frameHandleThickness + currentFrame[1]);
+		pathDescriptor += " v " + graphsHeight;
+		pathDescriptor += " H " + (this.config.frameHandleThickness + currentFrame[0]);
+		pathDescriptor += " z";
+
+		dimmingPathBlock
+			.attr("d", pathDescriptor)
 			.attr("fill", "white")
 			.attr("fill-opacity", "0.5")
+			.attr("fill-rule", "evenodd");
+
+		var framePathBlock = svgBlock.selectAll("path.rickshaw_minimap_frame")
+			.data([this.config]);
+
+		framePathBlock.enter()
+			.append("path")
+			.classed("rickshaw_minimap_frame", true);
+
+		pathDescriptor = "";
+		pathDescriptor += " M " + currentFrame[0] + " 0";
+		pathDescriptor += " H " + (currentFrame[1] + (this.config.frameHandleThickness * 2));
+		pathDescriptor += " V " + this.config.height;
+		pathDescriptor += " H " + (currentFrame[0]);
+		pathDescriptor += " z";
+		pathDescriptor += " M " + (currentFrame[0] + this.config.frameHandleThickness) + " " +
+			this.config.frameTopThickness;
+		pathDescriptor += " H " + (currentFrame[1] + this.config.frameHandleThickness);
+		pathDescriptor += " v " + graphsHeight;
+		pathDescriptor += " H " + (currentFrame[0] + this.config.frameHandleThickness);
+		pathDescriptor += " z";
+
+		framePathBlock
+			.attr("d", pathDescriptor)
+			.attr("fill", "gray")
 			.attr("fill-rule", "evenodd");
 
 		this.graphs.forEach(function(datum) {
