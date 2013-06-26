@@ -45,16 +45,10 @@ Rickshaw.Graph.Minimap = Rickshaw.Class.create({
 		var minimap = this;
 
 		var constructGraph = function(datum, index) {
-			var domainScale = d3.scale.linear();
-			domainScale.interpolate(d3.interpolateRound);
-			domainScale.domain([0, graphsWidth]);
-			domainScale.range(datum.dataDomain());
-
 			datum.minimapGraph = {
 				container: minimap,
 				height: individualGraphHeight,
 				width: graphsWidth,
-				domainScale: domainScale
 			};
 
 			// If anyone has an elegant way to do this without jQuery, please change...
@@ -96,11 +90,15 @@ Rickshaw.Graph.Minimap = Rickshaw.Class.create({
 
 		// Use the first graph as of the "master" for the frame state
 		var masterGraph = this.graphs[0];
+		var domainScale = d3.scale.linear();
+		domainScale.interpolate(d3.interpolateRound);
+		domainScale.domain([0, graphsWidth]);
+		domainScale.range(masterGraph.dataDomain());
 		var currentWindow = [masterGraph.window.xMin, masterGraph.window.xMax];
 		var currentFrame = [0, graphsWidth];
 		for (var i = 0; i < currentWindow.length; i++) {
 			if (currentWindow[i] !== undefined) {
-				currentFrame[i] = masterGraph.minimapGraph.domainScale.invert(currentWindow[i]);
+				currentFrame[i] = domainScale.invert(currentWindow[i]);
 			}
 			currentFrame[i] = Math.round(currentFrame[i]);
 		}
