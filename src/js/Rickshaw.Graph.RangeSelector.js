@@ -1,14 +1,7 @@
 Rickshaw.namespace('Rickshaw.Graph.RangeSelector');
 Rickshaw.Graph.RangeSelector = Rickshaw.Class.create({
     initialize: function(args) {
-        var graph = this.graph = args.graph,
-            position = this.position = {
-                startingMinX : graph.dataDomain()[0],
-                startingMaxX : graph.dataDomain()[1]
-            },
-            selectionBox = this.selectionBox = $('<div class="rickshaw_range_selector"></div>'),
-            selectionControl = this.selectionControl = false;
-        selectionBox.prependTo($(graph.element));
+        var graph = this.graph = args.graph;
         this.build();
         graph.onUpdate(function() {
             this.update();
@@ -16,11 +9,13 @@ Rickshaw.Graph.RangeSelector = Rickshaw.Class.create({
     },
     build: function() {
         var graph = this.graph,
-            position = this.position,
-            selectionBox = this.selectionBox,
-            selectionControl = this.selectionControl,
-            parent = graph.element.childNodes[1],
-            clearSelection = function() {
+            position = this.position = {},
+            selectionBox = this.selectionBox = $('<div class="rickshaw_range_selector"></div>'),
+            selectionControl = this.selectionControl = false,
+            parent = $('svg', graph.element);
+        selectionBox.prependTo($(graph.element));
+       
+        var clearSelection = function() {
                 selectionBox.css({
                     'transition': 'opacity 0.2s ease-out',
                     'opacity': '0'
@@ -33,9 +28,16 @@ Rickshaw.Graph.RangeSelector = Rickshaw.Class.create({
                         'left': 0
                     });
                 }, 200);
+                parent.css({
+                   'pointer-events' : 'auto' 
+                });
             },
             selectionDraw = function(startPointX) {
-                parent.style.pointerEvents = selectionControl == true ? 'none' : '';
+                if (selectionControl === true) {
+                    parent.css({
+                        'pointer-events' : 'none'
+                    }); 
+                }
                 graph.element.addEventListener('mousemove', function(e) {
                     if (selectionControl === true) {
                         position.x = e.offsetX | e.layerX;
