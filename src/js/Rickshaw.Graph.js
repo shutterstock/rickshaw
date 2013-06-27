@@ -54,7 +54,7 @@ Rickshaw.Graph = function(args) {
 		} );
 
 		this.configure(args);
-	
+		this.discoverRange();	
 	};
 
 	this.validateSeries = function(series) {
