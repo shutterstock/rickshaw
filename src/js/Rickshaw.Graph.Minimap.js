@@ -140,7 +140,7 @@ Rickshaw.Graph.Minimap = Rickshaw.Class.create({
 				var currentFrameWidth = frameAfterDrag[1] - frameAfterDrag[0];
 				if (currentFrameWidth < minimumFrameWidth) {
 					if (drag.left) {
-					frameAfterDrag[0] = frameAfterDrag[1] - minimumFrameWidth;
+						frameAfterDrag[0] = frameAfterDrag[1] - minimumFrameWidth;
 					}
 					if (drag.right) {
 						frameAfterDrag[1] = frameAfterDrag[0] + minimumFrameWidth;
@@ -196,6 +196,13 @@ Rickshaw.Graph.Minimap = Rickshaw.Class.create({
 				onMousedown();
 			}
 
+			function onMousedownMiddleHandle(datum, index) {
+				drag.left = true;
+				drag.right = true;
+				drag.rigid = true;
+				onMousedown();
+			}
+
 			function onMouseup(datum, index) {
 				d3.select(document).on("mousemove.rickshaw_minimap", null);
 				d3.select(document).on("mouseup.rickshaw_minimap", null);
@@ -208,6 +215,7 @@ Rickshaw.Graph.Minimap = Rickshaw.Class.create({
 
 			mainElement.select("path.rickshaw_minimap_lefthandle").on("mousedown", onMousedownLeftHandle);
 			mainElement.select("path.rickshaw_minimap_righthandle").on("mousedown", onMousedownRightHandle);
+			mainElement.select("path.rickshaw_minimap_middlehandle").on("mousedown", onMousedownMiddleHandle);
 		};
 
 		var svgBlock = mainElement.selectAll("svg.rickshaw_minimap")
@@ -272,6 +280,8 @@ Rickshaw.Graph.Minimap = Rickshaw.Class.create({
 		framePathBlock
 			.attr("d", pathDescriptor)
 			.attr("stroke", "white")
+			.attr("stroke-width", 2)
+			.attr("stroke-linejoin", "round")
 			.attr("fill", this.config.frameColor)
 			.attr("fill-opacity", this.config.frameOpacity)
 			.attr("fill-rule", "evenodd");
@@ -314,6 +324,26 @@ Rickshaw.Graph.Minimap = Rickshaw.Class.create({
 		rightHandleBlock
 			.attr("d", pathDescriptor)
 			.style("cursor", "ew-resize")
+			.style("fill-opacity", "0");
+
+		var middleHandleBlock = svgBlock.selectAll("path.rickshaw_minimap_middlehandle")
+			.data([this]);
+
+		middleHandleBlock.enter()
+			.append("path")
+			.classed("rickshaw_minimap_middlehandle", true)
+			.each(registerMouseEvents);
+
+		pathDescriptor = "";
+		pathDescriptor += " M " + (minimap.currentFrame[0] + this.config.frameHandleThickness) + " 0";
+		pathDescriptor += " H " + (minimap.currentFrame[1] + this.config.frameHandleThickness);
+		pathDescriptor += " v " + this.config.height;
+		pathDescriptor += " H " + (minimap.currentFrame[0] + this.config.frameHandleThickness);
+		pathDescriptor += " z";
+
+		middleHandleBlock
+			.attr("d", pathDescriptor)
+			.style("cursor", "move")
 			.style("fill-opacity", "0");
 
 		this.graphs.forEach(function(datum) {
