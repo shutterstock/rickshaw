@@ -15,12 +15,12 @@ Rickshaw.Graph.Minimap = Rickshaw.Class.create({
 		}
 
 		this.defaults = {
-			height: 400,
-			width: 500,
-			frameTopThickness: 10,
-			frameHandleThickness: 50,
-			frameColor: "gray",
-			frameOpacity: 0.5
+			height: 50,
+			width: 800,
+			frameTopThickness: 5,
+			frameHandleThickness: 40,
+			frameColor: "slategray",
+			frameOpacity: 0.7
 		};
 
 		this.configure(args);
@@ -124,7 +124,7 @@ Rickshaw.Graph.Minimap = Rickshaw.Class.create({
 				var minimumFrameWidth = 5;
 				if (drag.rigid) {
 					minimumFrameWidth = minimap.frameBeforeDrag[1] - minimap.frameBeforeDrag[0];
-				};
+				}
 				if (drag.left) {
 					frameAfterDrag[0] += distanceTraveled;
 				}
@@ -285,6 +285,32 @@ Rickshaw.Graph.Minimap = Rickshaw.Class.create({
 			.attr("fill", this.config.frameColor)
 			.attr("fill-opacity", this.config.frameOpacity)
 			.attr("fill-rule", "evenodd");
+
+		var gripperColor = d3.rgb(this.config.frameColor).darker().toString();
+		var gripperBlock = svgBlock.selectAll("path.rickshaw_minimap_gripper")
+			.data([this]);
+
+		gripperBlock.enter()
+			.append("path")
+			.classed("rickshaw_minimap_gripper", true);
+
+		pathDescriptor = "";
+		var spacings = [0.4, 0.5, 0.6];
+		var spacingIndex;
+		for (spacingIndex = 0; spacingIndex < spacings.length; spacingIndex++) {
+			pathDescriptor += " M " + Math.round((minimap.currentFrame[0] + (this.config.frameHandleThickness * spacings[spacingIndex]))) +
+				" " + Math.round(this.config.height * 0.3);
+			pathDescriptor += " V " + Math.round(this.config.height * 0.7);
+		}
+		for (spacingIndex = 0; spacingIndex < spacings.length; spacingIndex++) {
+			pathDescriptor += " M " + Math.round((minimap.currentFrame[1] + (this.config.frameHandleThickness * (1 + spacings[spacingIndex])))) +
+				" " + Math.round(this.config.height * 0.3);
+			pathDescriptor += " V " + Math.round(this.config.height * 0.7);
+		}
+
+		gripperBlock
+			.attr("d", pathDescriptor)
+			.attr("stroke", gripperColor);
 
 		var leftHandleBlock = svgBlock.selectAll("path.rickshaw_minimap_lefthandle")
 			.data([this]);
