@@ -50,7 +50,7 @@ Rickshaw.Graph.Minimap = Rickshaw.Class.create({
 			datum.minimapGraph = {
 				container: minimap,
 				height: individualGraphHeight,
-				width: graphsWidth,
+				width: graphsWidth
 			};
 
 			// If anyone has an elegant way to do this without jQuery, please change...
@@ -377,5 +377,5 @@ Rickshaw.Graph.Minimap = Rickshaw.Class.create({
 		});
 
 		console.log('GREAT SUCCESS');
-	},
+	}
 });
