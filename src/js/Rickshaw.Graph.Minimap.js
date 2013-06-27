@@ -97,12 +97,12 @@ Rickshaw.Graph.Minimap = Rickshaw.Class.create({
 		domainScale.domain([0, graphsWidth]);
 		domainScale.range(masterGraph.dataDomain());
 		var currentWindow = [masterGraph.window.xMin, masterGraph.window.xMax];
-		var currentFrame = [0, graphsWidth];
+		minimap.currentFrame = [0, graphsWidth];
 		for (var i = 0; i < currentWindow.length; i++) {
 			if (currentWindow[i] !== undefined) {
-				currentFrame[i] = domainScale.invert(currentWindow[i]);
+				minimap.currentFrame[i] = domainScale.invert(currentWindow[i]);
 			}
-			currentFrame[i] = Math.round(currentFrame[i]);
+			minimap.currentFrame[i] = Math.round(minimap.currentFrame[i]);
 		}
 
 		var registerMouseEvents = function() {
@@ -110,7 +110,9 @@ Rickshaw.Graph.Minimap = Rickshaw.Class.create({
 			var drag = {
 				start: null,
 				stop: null,
-				leftOrRight: null,
+				left: false,
+				right: false,
+				rigid: false
 			};
 
 			function onMousemove(datum, index) {
@@ -118,49 +120,66 @@ Rickshaw.Graph.Minimap = Rickshaw.Class.create({
 				console.log("move:" + drag.start + " " + drag.stop);
 				var distanceTraveled = drag.stop - drag.start;
 				console.log("distance traveled: " + distanceTraveled);
+				var frameAfterDrag = minimap.frameBeforeDrag.slice(0);
+				var minimumFrameWidth = 5;
+				if (drag.rigid) {
+					minimumFrameWidth = minimap.frameBeforeDrag[1] - minimap.frameBeforeDrag[0];
+				};
+				if (drag.left) {
+					frameAfterDrag[0] += distanceTraveled;
+				}
+				if (drag.right) {
+					frameAfterDrag[1] += distanceTraveled;
+				}
+				if (frameAfterDrag[0] <= 0) {
+					frameAfterDrag[0] = 0;
+				}
+				if (frameAfterDrag[1] >= graphsWidth) {
+					frameAfterDrag[1] = graphsWidth;
+				}
+				var currentFrameWidth = frameAfterDrag[1] - frameAfterDrag[0];
+				if (currentFrameWidth < minimumFrameWidth) {
+					if (drag.left) {
+					frameAfterDrag[0] = frameAfterDrag[1] - minimumFrameWidth;
+					}
+					if (drag.right) {
+						frameAfterDrag[1] = frameAfterDrag[0] + minimumFrameWidth;
+					}
+					if (frameAfterDrag[0] <= 0) {
+						frameAfterDrag[1] -= frameAfterDrag[0];
+						frameAfterDrag[0] = 0;
+					}
+					if (frameAfterDrag[1] >= graphsWidth) {
+						frameAfterDrag[0] -= (frameAfterDrag[1] - graphsWidth);
+						frameAfterDrag[1] = graphsWidth;
+					}
+				}
 				minimap.graphs.forEach(function(graph) {
 					var domainScale = d3.scale.linear();
 					domainScale.interpolate(d3.interpolateRound);
 					domainScale.domain([0, graphsWidth]);
 					domainScale.range(graph.dataDomain());
-					var extremaPixelBeforeDrag = domainScale.invert(graph.minimapExtremaBeforeDrag);
-					var extremaPixelAfterDrag = extremaPixelBeforeDrag + distanceTraveled;
-					if (extremaPixelAfterDrag <= 0) {
-						extremaPixelAfterDrag = 0;
-					} else if (extremaPixelAfterDrag > graphsWidth) {
-						extremaPixelAfterDrag = graphsWidth;
+					var windowAfterDrag = [
+						domainScale(frameAfterDrag[0]),
+						domainScale(frameAfterDrag[1])
+					];
+					if (frameAfterDrag[0] === 0) {
+						windowAfterDrag[0] = undefined;
 					}
-					var extremaDomainAfterDrag = domainScale(extremaPixelAfterDrag);
-					if (drag.leftOrRight === "left") {
-						if (extremaDomainAfterDrag <= graph.dataDomain()[0]) {
-							graph.window.xMin = undefined;
-						} else {
-							graph.window.xMin = extremaDomainAfterDrag;
-						}
-					} else {
-						if (extremaDomainAfterDrag >= graph.dataDomain()[1]) {
-							graph.window.xMax = undefined;
-						} else {
-							graph.window.xMax = extremaDomainAfterDrag;
-						}
+					if (frameAfterDrag[1] === graphsWidth) {
+						windowAfterDrag[1] = undefined;
 					}
+					graph.window.xMin = windowAfterDrag[0];
+					graph.window.xMax = windowAfterDrag[1];
 					graph.update();
+
 				});
 			}
 
-			function onMousedown(leftOrRight) {
-				drag.leftOrRight = leftOrRight;
+			function onMousedown() {
 				drag.start = d3.event.clientX;
-				minimap.graphs.forEach(function(graph) {
-					var currentWindow = [graph.window.xMin, graph.window.xMax];
-					for (var i = 0; i < currentWindow.length; i++) {
-						if (currentWindow[i] === undefined) {
-							currentWindow[i] = graph.dataDomain()[i];
-						}
-					}
-					graph.minimapExtremaBeforeDrag = (leftOrRight === "left" ? currentWindow[0] : currentWindow[1]);
-				});
-
+				console.log("c:" + minimap.currentFrame.length);
+				minimap.frameBeforeDrag = minimap.currentFrame.slice();
 				d3.event.preventDefault ? d3.event.preventDefault() : d3.event.returnValue = false;
 				d3.select(document).on("mousemove.rickshaw_minimap", onMousemove);
 				d3.select(document).on("mouseup.rickshaw_minimap", onMouseup);
@@ -168,19 +187,22 @@ Rickshaw.Graph.Minimap = Rickshaw.Class.create({
 			}
 
 			function onMousedownLeftHandle(datum, index) {
-				onMousedown("left");
+				drag.left = true;
+				onMousedown();
 			}
 
 			function onMousedownRightHandle(datum, index) {
-				onMousedown("right");
+				drag.right = true;
+				onMousedown();
 			}
 
 			function onMouseup(datum, index) {
 				d3.select(document).on("mousemove.rickshaw_minimap", null);
 				d3.select(document).on("mouseup.rickshaw_minimap", null);
-				minimap.graphs.forEach(function(graph) {
-					delete graph.minimapExtremaBeforeDrag;
-				});
+				delete minimap.frameBeforeDrag;
+				drag.left = false;
+				drag.right = false;
+				drag.rigid = false;
 				console.log("up " + drag.stop);
 			}
 
@@ -214,11 +236,11 @@ Rickshaw.Graph.Minimap = Rickshaw.Class.create({
 		pathDescriptor += " v " + graphsHeight;
 		pathDescriptor += " h " + -graphsWidth;
 		pathDescriptor += " z";
-		pathDescriptor += " M " + (this.config.frameHandleThickness + currentFrame[0]) +
+		pathDescriptor += " M " + (this.config.frameHandleThickness + minimap.currentFrame[0]) +
 			" " + this.config.frameTopThickness;
-		pathDescriptor += " H " + (this.config.frameHandleThickness + currentFrame[1]);
+		pathDescriptor += " H " + (this.config.frameHandleThickness + minimap.currentFrame[1]);
 		pathDescriptor += " v " + graphsHeight;
-		pathDescriptor += " H " + (this.config.frameHandleThickness + currentFrame[0]);
+		pathDescriptor += " H " + (this.config.frameHandleThickness + minimap.currentFrame[0]);
 		pathDescriptor += " z";
 
 		dimmingPathBlock
@@ -235,16 +257,16 @@ Rickshaw.Graph.Minimap = Rickshaw.Class.create({
 			.classed("rickshaw_minimap_frame", true);
 
 		pathDescriptor = "";
-		pathDescriptor += " M " + currentFrame[0] + " 0";
-		pathDescriptor += " H " + (currentFrame[1] + (this.config.frameHandleThickness * 2));
+		pathDescriptor += " M " + minimap.currentFrame[0] + " 0";
+		pathDescriptor += " H " + (minimap.currentFrame[1] + (this.config.frameHandleThickness * 2));
 		pathDescriptor += " V " + this.config.height;
-		pathDescriptor += " H " + (currentFrame[0]);
+		pathDescriptor += " H " + (minimap.currentFrame[0]);
 		pathDescriptor += " z";
-		pathDescriptor += " M " + (currentFrame[0] + this.config.frameHandleThickness) + " " +
+		pathDescriptor += " M " + (minimap.currentFrame[0] + this.config.frameHandleThickness) + " " +
 			this.config.frameTopThickness;
-		pathDescriptor += " H " + (currentFrame[1] + this.config.frameHandleThickness);
+		pathDescriptor += " H " + (minimap.currentFrame[1] + this.config.frameHandleThickness);
 		pathDescriptor += " v " + graphsHeight;
-		pathDescriptor += " H " + (currentFrame[0] + this.config.frameHandleThickness);
+		pathDescriptor += " H " + (minimap.currentFrame[0] + this.config.frameHandleThickness);
 		pathDescriptor += " z";
 
 		framePathBlock
@@ -263,7 +285,7 @@ Rickshaw.Graph.Minimap = Rickshaw.Class.create({
 			.each(registerMouseEvents);
 
 		pathDescriptor = "";
-		pathDescriptor += " M " + currentFrame[0] + " 0";
+		pathDescriptor += " M " + minimap.currentFrame[0] + " 0";
 		pathDescriptor += " h " + this.config.frameHandleThickness;
 		pathDescriptor += " v " + this.config.height;
 		pathDescriptor += " h " + -this.config.frameHandleThickness;
@@ -283,7 +305,7 @@ Rickshaw.Graph.Minimap = Rickshaw.Class.create({
 			.each(registerMouseEvents);
 
 		pathDescriptor = "";
-		pathDescriptor += " M " + (currentFrame[1] + this.config.frameHandleThickness) + " 0";
+		pathDescriptor += " M " + (minimap.currentFrame[1] + this.config.frameHandleThickness) + " 0";
 		pathDescriptor += " h " + this.config.frameHandleThickness;
 		pathDescriptor += " v " + this.config.height;
 		pathDescriptor += " h " + -this.config.frameHandleThickness;
