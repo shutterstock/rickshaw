@@ -1,0 +1,11 @@
+/* rangeSelector */
+
+.rickshaw_range_selector{
+    outline:1px solid #eee;
+    background: rgba(255,255,255,0.3);
+    position:absolute;
+    top:0;
+    z-index:1000000;
+    cursor:pointer;
+    pointer-events:none;
+}
