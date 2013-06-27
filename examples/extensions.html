@@ -103,8 +103,6 @@
 	<div id="chart_container">
 		<div id="chart"></div>
 		<div id="timeline"></div>
-		<div id="slider"></div>
-		<br></br>
 		<div id="minimap"></div>
 	</div>
 
@@ -166,11 +164,6 @@ var graph = new Rickshaw.Graph( {
 } );
 
 graph.render();
-
-var slider = new Rickshaw.Graph.RangeSlider( {
-	graph: graph,
-	element: $('#slider')
-} );
 
 var minimap = new Rickshaw.Graph.Minimap( {
 	graph: graph,
