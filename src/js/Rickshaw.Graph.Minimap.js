@@ -53,8 +53,7 @@ Rickshaw.Graph.Minimap = Rickshaw.Class.create({
 				width: graphsWidth
 			};
 
-			// If anyone has an elegant way to do this without jQuery, please change...
-			var minimapGraphConfiguration = jQuery.extend({}, datum.configuration);
+			var minimapGraphConfiguration = Rickshaw.clone(datum.configuration);
 
 			minimapGraphConfiguration.element = this.appendChild(document.createElement("div"));
 			minimapGraphConfiguration.height = datum.minimapGraph.height;
