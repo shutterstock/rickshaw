@@ -107,7 +107,6 @@ Rickshaw.Graph.Minimap = Rickshaw.Class.create({
 		}
 
 		var registerMouseEvents = function() {
-			console.log("mouse event registration");
 			var drag = {
 				start: null,
 				stop: null,
@@ -118,9 +117,7 @@ Rickshaw.Graph.Minimap = Rickshaw.Class.create({
 
 			function onMousemove(datum, index) {
 				drag.stop = d3.event.clientX;
-				console.log("move:" + drag.start + " " + drag.stop);
 				var distanceTraveled = drag.stop - drag.start;
-				console.log("distance traveled: " + distanceTraveled);
 				var frameAfterDrag = minimap.frameBeforeDrag.slice(0);
 				var minimumFrameWidth = 5;
 				if (drag.rigid) {
@@ -179,12 +176,10 @@ Rickshaw.Graph.Minimap = Rickshaw.Class.create({
 
 			function onMousedown() {
 				drag.start = d3.event.clientX;
-				console.log("c:" + minimap.currentFrame.length);
 				minimap.frameBeforeDrag = minimap.currentFrame.slice();
 				d3.event.preventDefault ? d3.event.preventDefault() : d3.event.returnValue = false;
 				d3.select(document).on("mousemove.rickshaw_minimap", onMousemove);
 				d3.select(document).on("mouseup.rickshaw_minimap", onMouseup);
-				console.log("down:" + drag.start);
 			}
 
 			function onMousedownLeftHandle(datum, index) {
@@ -211,7 +206,6 @@ Rickshaw.Graph.Minimap = Rickshaw.Class.create({
 				drag.left = false;
 				drag.right = false;
 				drag.rigid = false;
-				console.log("up " + drag.stop);
 			}
 
 			mainElement.select("path.rickshaw_minimap_lefthandle").on("mousedown", onMousedownLeftHandle);
@@ -376,7 +370,5 @@ Rickshaw.Graph.Minimap = Rickshaw.Class.create({
 		this.graphs.forEach(function(datum) {
 			datum.minimapGraph.graph.update();
 		});
-
-		console.log('GREAT SUCCESS');
 	}
 });
