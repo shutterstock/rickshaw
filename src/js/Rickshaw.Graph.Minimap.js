@@ -53,7 +53,9 @@ Rickshaw.Graph.Minimap = Rickshaw.Class.create({
 				width: graphsWidth
 			};
 
-			var minimapGraphConfiguration = Rickshaw.clone(datum.configuration);
+			var minimapGraphConfiguration = {};
+			for (var key in datum.configuration)
+				minimapGraphConfiguration[key] = datum.configuration[key];
 
 			minimapGraphConfiguration.element = this.appendChild(document.createElement("div"));
 			minimapGraphConfiguration.height = datum.minimapGraph.height;
