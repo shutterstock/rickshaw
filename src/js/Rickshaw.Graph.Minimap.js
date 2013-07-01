@@ -86,6 +86,7 @@ Rickshaw.Graph.Minimap = Rickshaw.Class.create({
 			.append("div")
 			.classed("rickshaw_minimap", true)
 			.style("transform", translateCommand)
+			.style("-webkit-transform", translateCommand)
 			.each(constructGraph);
 
 		graphContainerBlock.exit()
