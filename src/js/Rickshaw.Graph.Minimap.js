@@ -222,10 +222,10 @@ Rickshaw.Graph.Minimap = Rickshaw.Class.create({
 			.classed("rickshaw_minimap", true);
 
 		svgBlock
-			.style("height", this.config.height)
-			.style("width", this.config.width + 50)
+			.style("height", (this.config.height) + "px")
+			.style("width",  (this.config.width + 50) + "px")
 			.style("position", "relative")
-			.style("top", -graphsHeight);
+			.style("top", (-graphsHeight) + "px");
 
 		var dimmingPathBlock = svgBlock.selectAll("path.rickshaw_minimap_dimming")
 			.data([this]);
@@ -276,7 +276,7 @@ Rickshaw.Graph.Minimap = Rickshaw.Class.create({
 		framePathBlock
 			.attr("d", pathDescriptor)
 			.attr("stroke", "white")
-			.attr("stroke-width", 2)
+			.attr("stroke-width", "2px")
 			.attr("stroke-linejoin", "round")
 			.attr("fill", this.config.frameColor)
 			.attr("fill-opacity", this.config.frameOpacity)
