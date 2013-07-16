@@ -58,7 +58,7 @@ Highest value on the Y-axis.  Defaults to the highest value in the series.
 
 ##### padding
 
-An object containing any of `top`, `right`, `bottom`, and `left` properties specifying padding around the extrema of the data in the graph.  Defaults to 0.01 on top for 1% padding, and 0 on other sides.
+An object containing any of `top`, `right`, `bottom`, and `left` properties specifying a padding percentage around the extrema of the data in the graph.  Defaults to 0.01 on top for 1% padding, and 0 on other sides.
 
 ##### interpolation
 
@@ -136,7 +136,7 @@ palette.color() // => next color in the palette...
 
 #### Interpolation
 
-For graphs with more series than palettes have colors, sepcify an `interpolatedStopsCount` to the palette constructor.
+For graphs with more series than palettes have colors, specify an `interpolatedStopCount` to the palette constructor.
 
 ## Rickshaw and Cross-Browser Support
 
