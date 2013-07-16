@@ -109,6 +109,7 @@ Rickshaw.Graph.Minimap = Rickshaw.Class.create({
 
 		var registerMouseEvents = function() {
 			var drag = {
+				target: null,
 				start: null,
 				stop: null,
 				left: false,
@@ -117,7 +118,7 @@ Rickshaw.Graph.Minimap = Rickshaw.Class.create({
 			};
 
 			function onMousemove(datum, index) {
-				drag.stop = d3.event.clientX;
+				drag.stop = getClientXFromEvent(d3.event);
 				var distanceTraveled = drag.stop - drag.start;
 				var frameAfterDrag = minimap.frameBeforeDrag.slice(0);
 				var minimumFrameWidth = 5;
@@ -175,12 +176,39 @@ Rickshaw.Graph.Minimap = Rickshaw.Class.create({
 				});
 			}
 
+			function getClientXFromEvent(event) {
+				var clientX;
+				switch (event.type) {
+					case 'touchstart':
+					case 'touchmove':
+						var touchList = event.changedTouches;
+						var touch = null;
+						for (var touchIndex = 0; touchIndex < touchList.length; touchIndex++) {
+							if (touchList[touchIndex].target === drag.target) {
+								touch = touchList[touchIndex];
+								break;
+							}
+						}
+						if (touch !== null) {
+							return touch.clientX;
+						}
+						return undefined;
+
+					default:
+						return event.clientX;
+				}
+			}
+
 			function onMousedown() {
-				drag.start = d3.event.clientX;
+				drag.target = d3.event.target;
+				drag.start = getClientXFromEvent(d3.event);
 				minimap.frameBeforeDrag = minimap.currentFrame.slice();
 				d3.event.preventDefault ? d3.event.preventDefault() : d3.event.returnValue = false;
 				d3.select(document).on("mousemove.rickshaw_minimap", onMousemove);
 				d3.select(document).on("mouseup.rickshaw_minimap", onMouseup);
+				d3.select(document).on("touchmove.rickshaw_minimap", onMousemove);
+				d3.select(document).on("touchend.rickshaw_minimap", onMouseup);
+				d3.select(document).on("touchcancel.rickshaw_minimap", onMouseup);
 			}
 
 			function onMousedownLeftHandle(datum, index) {
@@ -203,6 +231,9 @@ Rickshaw.Graph.Minimap = Rickshaw.Class.create({
 			function onMouseup(datum, index) {
 				d3.select(document).on("mousemove.rickshaw_minimap", null);
 				d3.select(document).on("mouseup.rickshaw_minimap", null);
+				d3.select(document).on("touchmove.rickshaw_minimap", null);
+				d3.select(document).on("touchend.rickshaw_minimap", null);
+				d3.select(document).on("touchcancel.rickshaw_minimap", null);
 				delete minimap.frameBeforeDrag;
 				drag.left = false;
 				drag.right = false;
@@ -212,6 +243,9 @@ Rickshaw.Graph.Minimap = Rickshaw.Class.create({
 			mainElement.select("path.rickshaw_minimap_lefthandle").on("mousedown", onMousedownLeftHandle);
 			mainElement.select("path.rickshaw_minimap_righthandle").on("mousedown", onMousedownRightHandle);
 			mainElement.select("path.rickshaw_minimap_middlehandle").on("mousedown", onMousedownMiddleHandle);
+			mainElement.select("path.rickshaw_minimap_lefthandle").on("touchstart", onMousedownLeftHandle);
+			mainElement.select("path.rickshaw_minimap_righthandle").on("touchstart", onMousedownRightHandle);
+			mainElement.select("path.rickshaw_minimap_middlehandle").on("touchstart", onMousedownMiddleHandle);
 		};
 
 		var svgBlock = mainElement.selectAll("svg.rickshaw_minimap")
@@ -223,7 +257,7 @@ Rickshaw.Graph.Minimap = Rickshaw.Class.create({
 
 		svgBlock
 			.style("height", (this.config.height) + "px")
-			.style("width",  (this.config.width + 50) + "px")
+			.style("width", (this.config.width + 50) + "px")
 			.style("position", "relative")
 			.style("top", (-graphsHeight) + "px");
 
