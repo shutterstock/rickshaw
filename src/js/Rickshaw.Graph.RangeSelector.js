@@ -13,11 +13,13 @@ Rickshaw.Graph.RangeSelector = Rickshaw.Class.create({
             selectionBox = this.selectionBox = document.createElement('div'),
             selectionControl = this.selectionControl = false,
             parent = graph.element.getElementsByTagName('svg')[0];
-            selectionBox.setAttribute('class','rickshaw_range_selector');
-            graph.element.appendChild(selectionBox);
-            position.startingMinX = graph.dataDomain()[0];
-            position.startingMaxX = graph.dataDomain()[1];
-            console.log(position);
+        selectionBox.setAttribute('class','rickshaw_range_selector');
+        graph.element.appendChild(selectionBox);
+        position.startingMinX = graph.dataDomain()[0];
+        position.startingMaxX = graph.dataDomain()[1];
+        parent.oncontextmenu = function(e){
+            e.preventDefault();
+        };
         var clearSelection = function() {
                 selectionBox.style.transition = 'opacity 0.2s ease-out';
                 selectionBox.style.opacity = 0;
@@ -56,13 +58,23 @@ Rickshaw.Graph.RangeSelector = Rickshaw.Class.create({
         graph.element.addEventListener('mousedown', function(e) {
             e.stopPropagation();
             e.preventDefault();
-            if (e.button !== 0) {
-                return;
+            if (e.button === 0 | e.button === 1) {
+                var startPointX = e.layerX;
+                selectionBox.style.left = e.layerX;
+                selectionControl = true;
+                selectionDraw(startPointX);
+            }else if(e.button === 2 | e.button === 3){
+                e.preventDefault();
+                console.log(e.button);
+                position.xMin = position.startingMinX;
+                position.xMax = position.startingMaxX;
+                graph.update();
+                clearSelection();
+                graph.update();
+            }else{
+               return;
             }
-            var startPointX = e.layerX;
-            selectionBox.style.left = e.layerX;
-            selectionControl = true;
-            selectionDraw(startPointX);
+            
         }, true);
 
         window.addEventListener('mouseup', function() {
