@@ -78,7 +78,7 @@ Rickshaw.Graph.RangeSelector = Rickshaw.Class.create({
         }, true);
 
         window.addEventListener('mouseup', function() {
-            if (!selectionControl | position.deltaX < 40 | position.xMax - position.xMin < 500) {
+            if (!selectionControl | position.deltaX < 40 | position.xMax - position.xMin < 1000) {
                 selectionControl = false;
                 clearSelection();
                 return false;
