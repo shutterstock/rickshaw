@@ -10,34 +10,31 @@ Rickshaw.Graph.RangeSelector = Rickshaw.Class.create({
     build: function() {
         var graph = this.graph,
             position = this.position = {},
-            selectionBox = this.selectionBox = $('<div class="rickshaw_range_selector"></div>'),
+            selectionBox = this.selectionBox = document.createElement('div'),
             selectionControl = this.selectionControl = false,
-            parent = $('svg', graph.element);
-        selectionBox.prependTo($(graph.element));
-       
+            parent = graph.element.getElementsByTagName('svg')[0];
+            selectionBox.setAttribute('class','rickshaw_range_selector');
+            graph.element.appendChild(selectionBox);
+            position.startingMinX = graph.dataDomain()[0];
+            position.startingMaxX = graph.dataDomain()[1];
+            console.log(position);
         var clearSelection = function() {
-                selectionBox.css({
-                    'transition': 'opacity 0.2s ease-out',
-                    'opacity': '0'
-                });
+                selectionBox.style.transition = 'opacity 0.2s ease-out';
+                selectionBox.style.opacity = 0;
                 setTimeout(function() {
-                    selectionBox.css({
-                        'width': 0,
-                        'height': 0,
-                        'top': 0,
-                        'left': 0
-                    });
+                    selectionBox.style.width = 0;
+                    selectionBox.style.height = 0;
+                    selectionBox.style.top = 0;
+                    selectionBox.style.left = 0;
                 }, 200);
-                parent.css({
-                   'pointer-events' : 'auto' 
-                });
+                parent.style.pointerEvents = 'auto'; 
+                graph.element.style.cursor = 'auto';
             },
             selectionDraw = function(startPointX) {
                 if (selectionControl === true) {
-                    parent.css({
-                        'pointer-events' : 'none'
-                    }); 
+                    parent.style.pointerEvents = 'none';
                 }
+                graph.element.style.cursor = 'crosshair';
                 graph.element.addEventListener('mousemove', function(e) {
                     if (selectionControl === true) {
                         position.x = e.offsetX | e.layerX;
@@ -45,13 +42,11 @@ Rickshaw.Graph.RangeSelector = Rickshaw.Class.create({
                         position.minX = Math.min(position.x, startPointX);
                         position.maxX = position.minX + position.deltaX;
 
-                        selectionBox.css({
-                            'transition': 'none',
-                            'opacity': '1',
-                            'width': position.deltaX,
-                            'height': '100%',
-                            'left': position.minX
-                        });
+                        selectionBox.style.transition = 'none';
+                        selectionBox.style.opacity = '1';
+                        selectionBox.style.width = position.deltaX;
+                        selectionBox.style.height = '100%';
+                        selectionBox.style.left = position.minX;
                     } else {
                         return false;
                     }
@@ -60,29 +55,26 @@ Rickshaw.Graph.RangeSelector = Rickshaw.Class.create({
 
         graph.element.addEventListener('mousedown', function(e) {
             e.stopPropagation();
+            e.preventDefault();
             if (e.button !== 0) {
                 return;
             }
             var startPointX = e.layerX;
-            selectionBox.css({
-                'left': e.layerX
-            });
+            selectionBox.style.left = e.layerX;
             selectionControl = true;
             selectionDraw(startPointX);
         }, true);
 
         window.addEventListener('mouseup', function() {
-            if (!selectionControl | position.deltaX < 20 | position.xMax - position.xMin < 200) {
+            if (!selectionControl | position.deltaX < 40 | position.xMax - position.xMin < 500) {
                 selectionControl = false;
                 clearSelection();
                 return false;
             }
             selectionControl = false;
-            $(function() {
-                position.xMin = Math.round(graph.x.invert(position.minX));
-                position.xMax = Math.round(graph.x.invert(position.maxX));
-                graph.update();
-            });
+            position.xMin = Math.round(graph.x.invert(position.minX));
+            position.xMax = Math.round(graph.x.invert(position.maxX));
+            graph.update();
             clearSelection();
             graph.update();
         }, false);
