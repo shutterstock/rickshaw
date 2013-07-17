@@ -8,6 +8,7 @@ Rickshaw.Graph.Axis.Time = function(args) {
 	this.elements = [];
 	this.ticksTreatment = args.ticksTreatment || 'plain';
 	this.fixedTimeUnit = args.timeUnit;
+	this.maxTicks = args.maxTicks;
 
 	var time = new Rickshaw.Fixtures.Time();
 
@@ -38,6 +39,19 @@ Rickshaw.Graph.Axis.Time = function(args) {
 		var runningTick = domain[0];
 
 		var offsets = [];
+
+		if (this.maxTicks && count > this.maxTicks) {
+			var interval = time.ceil((domain[1] - domain[0]) / maxTicks, unit);
+
+			for (var i = 0; i < this.maxTicks; i++) {
+				var tickValue = Math.ceil(runningTick / interval) * interval;
+				runningTick = tickValue + interval;
+
+				offsets.push( { value: tickValue, unit: unit });
+			}
+
+			count = 0;
+		}		
 
 		for (var i = 0; i < count; i++) {
 
