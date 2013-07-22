@@ -241,6 +241,7 @@ var messages = [
 ];
 
 setInterval( function() {
+	random.removeData(seriesData);
 	random.addData(seriesData);
 	graph.update();
 
