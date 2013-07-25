@@ -39,19 +39,12 @@ Rickshaw.Graph = function(args) {
 			.attr('width', this.width)
 			.attr('height', this.height);
 
-		var renderers = [
-			Rickshaw.Graph.Renderer.Stack,
-			Rickshaw.Graph.Renderer.Line,
-			Rickshaw.Graph.Renderer.Bar,
-			Rickshaw.Graph.Renderer.Area,
-			Rickshaw.Graph.Renderer.ScatterPlot,
-			Rickshaw.Graph.Renderer.Multi
-		];
-
-		renderers.forEach( function(r) {
-			if (!r) return;
+		for (var name in Rickshaw.Graph.Renderer) {
+			if (!name || !Rickshaw.Graph.Renderer.hasOwnProperty(name)) continue;
+			var r = Rickshaw.Graph.Renderer[name];
+			if (!r || !r.prototype || !r.prototype.render) continue;
 			self.registerRenderer(new r( { graph: self } ));
-		} );
+		}
 
 		this.setRenderer(args.renderer || 'stack', args);
 		this.discoverRange();
