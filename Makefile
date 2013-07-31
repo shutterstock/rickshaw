@@ -18,6 +18,7 @@ JS_FILES=\
 	src/js/Rickshaw.Fixtures.Color.js\
 	src/js/Rickshaw.Fixtures.RandomData.js\
 	src/js/Rickshaw.Fixtures.Time.js\
+	src/js/Rickshaw.Fixtures.LocalTime.js\
 	src/js/Rickshaw.Fixtures.Number.js\
 	src/js/Rickshaw.Color.Palette.js\
 	src/js/Rickshaw.Graph.Ajax.js\
