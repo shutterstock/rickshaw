@@ -1,0 +1,102 @@
+<!doctype html>
+<head>
+<link type="text/css" rel="stylesheet" href="../rickshaw.css">
+<link type="text/css" rel="stylesheet" href="css/lines.css">
+<link type="text/css" rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/base/jquery-ui.css">
+<script src="../vendor/d3.v2.js"></script>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.15/jquery-ui.min.js"></script>
+
+<script src="../rickshaw.js"></script>
+<style>
+	.column { display: inline-block }
+	#legend { background: white }
+	#legend .line { color: #333 }
+</style>
+</head>
+<body>
+
+<div class="column">
+	<div id="chart"></div>
+	<div id="slider"></div>
+</div>
+<div class="column" id="legend"></div>
+
+<script>
+
+var seriesData = [ [], [], [], [], [] ];
+var random = new Rickshaw.Fixtures.RandomData(50);
+
+for (var i = 0; i < 75; i++) {
+	random.addData(seriesData);
+}
+
+var graph = new Rickshaw.Graph( {
+	element: document.getElementById("chart"),
+	renderer: 'multi',
+	width: 900,
+	height: 500,
+	dotSize: 2,
+	series: [
+		{
+			name: 'temperature',
+			data: seriesData.shift(),
+			color: 'rgba(255, 0, 0, 0.4)',
+			renderer: 'stack'
+		}, {
+			name: 'heat index',
+			data: seriesData.shift(),
+			color: 'rgba(255, 127, 0, 0.4)',
+			renderer: 'stack'
+		}, {
+			name: 'dewpoint',
+			data: seriesData.shift(),
+			color: 'rgba(127, 0, 0, 0.3)',
+			renderer: 'scatterplot'
+		}, {
+			name: 'pop',
+			data: seriesData.shift().map(function(d) { return { x: d.x, y: d.y / 4 } }),
+			color: 'rgba(0, 0, 127, 0.4)',
+			renderer: 'bar'
+		}, {
+			name: 'humidity',
+			data: seriesData.shift().map(function(d) { return { x: d.x, y: d.y * 1.5 } }),
+			renderer: 'line',
+			color: 'rgba(0, 0, 127, 0.25)'
+		}
+	]
+} );
+
+var slider = new Rickshaw.Graph.RangeSlider({
+	graph: graph,
+	element: $('#slider')
+});
+
+graph.render();
+
+var detail = new Rickshaw.Graph.HoverDetail({
+	graph: graph
+});
+
+var legend = new Rickshaw.Graph.Legend({
+	graph: graph,
+	element: document.querySelector('#legend')
+});
+
+var highlighter = new Rickshaw.Graph.Behavior.Series.Highlight({
+    graph: graph,
+    legend: legend,
+    disabledColor: function() { return 'rgba(0, 0, 0, 0.2)' }
+});
+
+var highlighter = new Rickshaw.Graph.Behavior.Series.Toggle({
+    graph: graph,
+    legend: legend
+});
+
+
+
+
+</script>
+</body>

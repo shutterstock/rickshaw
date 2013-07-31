@@ -44,7 +44,8 @@ Rickshaw.Graph = function(args) {
 			Rickshaw.Graph.Renderer.Line,
 			Rickshaw.Graph.Renderer.Bar,
 			Rickshaw.Graph.Renderer.Area,
-			Rickshaw.Graph.Renderer.ScatterPlot
+			Rickshaw.Graph.Renderer.ScatterPlot,
+			Rickshaw.Graph.Renderer.Multi
 		];
 
 		renderers.forEach( function(r) {
@@ -146,9 +147,11 @@ Rickshaw.Graph = function(args) {
 			if (series.scale) {
 				// apply scale to each series
 				var seriesData = data[index];
-				seriesData.forEach( function(d) {
-					d.y = series.scale(d.y);
-				} );
+				if(seriesData) {
+					seriesData.forEach( function(d) {
+						d.y = series.scale(d.y);
+					} );
+				}
 			}
 		} );
 
@@ -173,9 +176,11 @@ Rickshaw.Graph = function(args) {
 			stackedData = entry.f.apply(self, [data]);
 		} );
 
-		this.series.forEach( function(series, index) {
+
+		var i = 0;
+		this.series.forEach( function(series) {
 			if (series.disabled) return;
-			series.stack = stackedData[index];
+			series.stack = stackedData[i++];
 		} );
 
 		this.stackedData = stackedData;

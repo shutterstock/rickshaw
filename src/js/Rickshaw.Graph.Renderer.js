@@ -28,9 +28,9 @@ Rickshaw.Graph.Renderer = Rickshaw.Class.create( {
 		};
 	},
 
-	domain: function() {
+	domain: function(data) {
 
-		var stackedData = this.graph.stackedData || this.graph.stackData();
+		var stackedData = data || this.graph.stackedData || this.graph.stackData();
 		var firstPoint = stackedData[0][0];
 
 		var xMin = firstPoint.x;
@@ -72,19 +72,27 @@ Rickshaw.Graph.Renderer = Rickshaw.Class.create( {
 		return { x: [xMin, xMax], y: [yMin, yMax] };
 	},
 
-	render: function() {
+	render: function(args) {
+
+		args = args || {};
 
 		var graph = this.graph;
+		var series = args.series || graph.series;
 
-		graph.vis.selectAll('*').remove();
+		var vis = args.vis || graph.vis;
+		vis.selectAll('*').remove();
 
-		var nodes = graph.vis.selectAll("path")
-			.data(this.graph.stackedData)
+		var data = series
+			.filter(function(s) { return !s.disabled })
+			.map(function(s) { return s.stack });
+
+		var nodes = vis.selectAll("path")
+			.data(data)
 			.enter().append("svg:path")
 			.attr("d", this.seriesPathFactory());
 
 		var i = 0;
-		graph.series.forEach( function(series) {
+		series.forEach( function(series) {
 			if (series.disabled) return;
 			series.path = nodes[0][i++];
 			this._styleSeries(series);

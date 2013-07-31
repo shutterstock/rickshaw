@@ -423,7 +423,8 @@ Rickshaw.Graph = function(args) {
 			Rickshaw.Graph.Renderer.Line,
 			Rickshaw.Graph.Renderer.Bar,
 			Rickshaw.Graph.Renderer.Area,
-			Rickshaw.Graph.Renderer.ScatterPlot
+			Rickshaw.Graph.Renderer.ScatterPlot,
+			Rickshaw.Graph.Renderer.Multi
 		];
 
 		renderers.forEach( function(r) {
@@ -525,9 +526,11 @@ Rickshaw.Graph = function(args) {
 			if (series.scale) {
 				// apply scale to each series
 				var seriesData = data[index];
-				seriesData.forEach( function(d) {
-					d.y = series.scale(d.y);
-				} );
+				if(seriesData) {
+					seriesData.forEach( function(d) {
+						d.y = series.scale(d.y);
+					} );
+				}
 			}
 		} );
 
@@ -552,9 +555,11 @@ Rickshaw.Graph = function(args) {
 			stackedData = entry.f.apply(self, [data]);
 		} );
 
-		this.series.forEach( function(series, index) {
+
+		var i = 0;
+		this.series.forEach( function(series) {
 			if (series.disabled) return;
-			series.stack = stackedData[index];
+			series.stack = stackedData[i++];
 		} );
 
 		this.stackedData = stackedData;
@@ -1560,6 +1565,10 @@ Rickshaw.Graph.Behavior.Series.Highlight = function(args) {
 	var colorSafe = {};
 	var activeLine = null;
 
+	var disabledColor = args.disabledColor || function(seriesColor) {
+		return d3.interpolateRgb(seriesColor, d3.rgb('#d8d8d8'))(0.8).toString();
+	};
+
 	this.addHighlightEvents = function (l) {
 
 		l.element.addEventListener( 'mouseover', function(e) {
@@ -1572,7 +1581,7 @@ Rickshaw.Graph.Behavior.Series.Highlight = function(args) {
 				if (l === line) {
 
 					// if we're not in a stacked renderer bring active line to the top
-					if (index > 0 && self.graph.renderer.unstack) {
+					if (index > 0 && self.graph.renderer.unstack && (line.series.renderer ? line.series.renderer.unstack : true)) {
 
 						var seriesIndex = self.graph.series.length - index - 1;
 						line.originalIndex = seriesIndex;
@@ -1584,7 +1593,8 @@ Rickshaw.Graph.Behavior.Series.Highlight = function(args) {
 				}
 
 				colorSafe[line.series.name] = colorSafe[line.series.name] || line.series.color;
-				line.series.color = d3.interpolateRgb(line.series.color, d3.rgb('#d8d8d8'))(0.8).toString();
+				line.series.color = disabledColor(line.series.color);
+
 			} );
 
 			self.graph.update();
@@ -1847,6 +1857,9 @@ Rickshaw.Graph.HoverDetail = Rickshaw.Class.create({
 
 			var data = this.graph.stackedData[j++];
 
+			if (!data.length)
+				return;
+
 			var domainX = graph.x.invert(eventX);
 
 			var domainIndexScale = d3.scale.linear()
@@ -1897,6 +1910,8 @@ Rickshaw.Graph.HoverDetail = Rickshaw.Class.create({
 
 		}, this );
 
+		if (!nearestPoint)
+			return;
 
 		nearestPoint.active = true;
 
@@ -2191,9 +2206,9 @@ Rickshaw.Graph.Renderer = Rickshaw.Class.create( {
 		};
 	},
 
-	domain: function() {
+	domain: function(data) {
 
-		var stackedData = this.graph.stackedData || this.graph.stackData();
+		var stackedData = data || this.graph.stackedData || this.graph.stackData();
 		var firstPoint = stackedData[0][0];
 
 		var xMin = firstPoint.x;
@@ -2235,19 +2250,27 @@ Rickshaw.Graph.Renderer = Rickshaw.Class.create( {
 		return { x: [xMin, xMax], y: [yMin, yMax] };
 	},
 
-	render: function() {
+	render: function(args) {
+
+		args = args || {};
 
 		var graph = this.graph;
+		var series = args.series || graph.series;
 
-		graph.vis.selectAll('*').remove();
+		var vis = args.vis || graph.vis;
+		vis.selectAll('*').remove();
 
-		var nodes = graph.vis.selectAll("path")
-			.data(this.graph.stackedData)
+		var data = series
+			.filter(function(s) { return !s.disabled })
+			.map(function(s) { return s.stack });
+
+		var nodes = vis.selectAll("path")
+			.data(data)
 			.enter().append("svg:path")
 			.attr("d", this.seriesPathFactory());
 
 		var i = 0;
-		graph.series.forEach( function(series) {
+		series.forEach( function(series) {
 			if (series.disabled) return;
 			series.path = nodes[0][i++];
 			this._styleSeries(series);
@@ -2396,33 +2419,34 @@ Rickshaw.Graph.Renderer.Bar = Rickshaw.Class.create( Rickshaw.Graph.Renderer, {
 
 		var domain = $super();
 
-		var frequentInterval = this._frequentInterval();
-		domain.x[1] += parseInt(frequentInterval.magnitude, 10);
+		var frequentInterval = this._frequentInterval(this.graph.stackedData.slice(-1).shift());
+		domain.x[1] += Number(frequentInterval.magnitude);
 
 		return domain;
 	},
 
-	barWidth: function() {
+	barWidth: function(series) {
 
-		var stackedData = this.graph.stackedData || this.graph.stackData();
-		var data = stackedData.slice(-1).shift();
-
-		var frequentInterval = this._frequentInterval();
-		var barWidth = this.graph.x(data[0].x + frequentInterval.magnitude * (1 - this.gapSize)); 
+		var frequentInterval = this._frequentInterval(series.stack);
+		var barWidth = this.graph.x(series.stack[0].x + frequentInterval.magnitude * (1 - this.gapSize)); 
 
 		return barWidth;
 	},
 
-	render: function() {
+	render: function(args) {
+
+		args = args || {};
 
 		var graph = this.graph;
+		var series = args.series || graph.series;
 
-		graph.vis.selectAll('*').remove();
+		var vis = args.vis || graph.vis;
+		vis.selectAll('*').remove();
 
-		var barWidth = this.barWidth();
+		var barWidth = this.barWidth(series[0]);
 		var barXOffset = 0;
 
-		var activeSeriesCount = graph.series.filter( function(s) { return !s.disabled; } ).length;
+		var activeSeriesCount = series.filter( function(s) { return !s.disabled; } ).length;
 		var seriesBarWidth = this.unstack ? barWidth / activeSeriesCount : barWidth;
 
 		var transform = function(d) {
@@ -2431,16 +2455,18 @@ Rickshaw.Graph.Renderer.Bar = Rickshaw.Class.create( Rickshaw.Graph.Renderer, {
 			return "matrix(" + matrix.join(',') + ")";
 		};
 
-		graph.series.forEach( function(series) {
+		series.forEach( function(series) {
 
 			if (series.disabled) return;
 
-			var nodes = graph.vis.selectAll("path")
+			var barWidth = this.barWidth(series);
+
+			var nodes = vis.selectAll("path")
 				.data(series.stack.filter( function(d) { return d.y !== null } ))
 				.enter().append("svg:rect")
 				.attr("x", function(d) { return graph.x(d.x) + barXOffset })
 				.attr("y", function(d) { return (graph.y(d.y0 + Math.abs(d.y))) * (d.y < 0 ? -1 : 1 ) })
-				.attr("width", seriesBarWidth)
+				.attr("width", barWidth)
 				.attr("height", function(d) { return graph.y.magnitude(Math.abs(d.y)) })
 				.attr("transform", transform);
 
@@ -2453,10 +2479,7 @@ Rickshaw.Graph.Renderer.Bar = Rickshaw.Class.create( Rickshaw.Graph.Renderer, {
 		}, this );
 	},
 
-	_frequentInterval: function() {
-
-		var stackedData = this.graph.stackedData || this.graph.stackData();
-		var data = stackedData.slice(-1).shift();
+	_frequentInterval: function(data) {
 
 		var intervalCounts = {};
 
@@ -2470,15 +2493,12 @@ Rickshaw.Graph.Renderer.Bar = Rickshaw.Class.create( Rickshaw.Graph.Renderer, {
 
 		Rickshaw.keys(intervalCounts).forEach( function(i) {
 			if (frequentInterval.count < intervalCounts[i]) {
-
 				frequentInterval = {
 					count: intervalCounts[i],
 					magnitude: i
 				};
 			}
 		} );
-
-		this._frequentInterval = function() { return frequentInterval };
 
 		return frequentInterval;
 	}
@@ -2598,22 +2618,29 @@ Rickshaw.Graph.Renderer.ScatterPlot = Rickshaw.Class.create( Rickshaw.Graph.Rend
 		$super(args);
 	},
 
-	render: function() {
+	render: function(args) {
+
+		args = args || {};
 
 		var graph = this.graph;
 
-		graph.vis.selectAll('*').remove();
+		var series = args.series || graph.series;
+		var vis = args.vis || graph.vis;
 
-		graph.series.forEach( function(series) {
+		var dotSize = this.dotSize;
+
+		vis.selectAll('*').remove();
+
+		series.forEach( function(series) {
 
 			if (series.disabled) return;
 
-			var nodes = graph.vis.selectAll("path")
+			var nodes = vis.selectAll("path")
 				.data(series.stack.filter( function(d) { return d.y !== null } ))
 				.enter().append("svg:circle")
 				.attr("cx", function(d) { return graph.x(d.x) })
 				.attr("cy", function(d) { return graph.y(d.y) })
-				.attr("r", function(d) { return ("r" in d) ? d.r : graph.renderer.dotSize});
+				.attr("r", function(d) { return ("r" in d) ? d.r : dotSize});
 
 			Array.prototype.forEach.call(nodes[0], function(n) {
 				n.setAttribute('fill', series.color);
@@ -2621,6 +2648,145 @@ Rickshaw.Graph.Renderer.ScatterPlot = Rickshaw.Class.create( Rickshaw.Graph.Rend
 
 		}, this );
 	}
+} );
+Rickshaw.namespace('Rickshaw.Graph.Renderer.Multi');
+
+Rickshaw.Graph.Renderer.Multi = Rickshaw.Class.create( Rickshaw.Graph.Renderer, {
+
+	name: 'multi',
+
+	initialize: function($super, args) {
+
+		$super(args);
+	},
+
+	defaults: function($super) {
+
+		return Rickshaw.extend( $super(), {
+			unstack: true,
+			fill: false,
+			stroke: true 
+		} );
+	},
+
+	domain: function($super) {
+
+		this.graph.stackData();
+
+		var domains = [];
+
+		var groups = this._groups();
+		this._stack(groups);
+
+		groups.forEach( function(group) {
+
+			var data = group.series
+				.filter( function(s) { return !s.disabled } )
+				.map( function(s) { return s.stack });
+
+			if (!data.length) return;
+
+			var domain = $super(data);
+			domains.push(domain);
+		});
+
+		var xMin = d3.min(domains.map( function(d) { return d.x[0] } ));
+		var xMax = d3.max(domains.map( function(d) { return d.x[1] } ));
+		var yMin = d3.min(domains.map( function(d) { return d.y[0] } ));
+		var yMax = d3.max(domains.map( function(d) { return d.y[1] } ));
+
+		return { x: [xMin, xMax], y: [yMin, yMax] };
+	},
+
+	_groups: function() {
+
+		var graph = this.graph;
+
+		var renderGroups = {};
+
+		graph.series.forEach( function(series) {
+
+			if (series.disabled) return;
+
+			if (!renderGroups[series.renderer]) {
+
+				var ns = "http://www.w3.org/2000/svg";
+				var vis = document.createElementNS(ns, 'g');
+
+				graph.vis[0][0].appendChild(vis);
+
+				var renderer = graph._renderers[series.renderer];
+
+				renderGroups[series.renderer] = {
+					renderer: renderer,
+					series: [],
+					vis: d3.select(vis)
+				};
+			}
+				
+			renderGroups[series.renderer].series.push(series);
+
+		}, this);
+
+		var groups = [];
+
+		Object.keys(renderGroups).forEach( function(key) {
+			var group = renderGroups[key];
+			groups.push(group);
+		});
+
+		return groups;
+	},
+
+	_stack: function(groups) {
+
+		groups.forEach( function(group) {
+
+			var series = group.series
+				.filter( function(series) { return !series.disabled } );
+
+			var data = series
+				.map( function(series) { return series.stack } );
+
+			if (!group.renderer.unstack) {
+
+				var layout = d3.layout.stack();
+				var stackedData = Rickshaw.clone(layout(data));
+
+				series.forEach( function(series, index) {
+					series._stack = Rickshaw.clone(stackedData[index]);
+				});
+			}
+
+		}, this );
+
+		return groups;
+
+	},
+
+	render: function() {
+
+		this.graph.series.forEach( function(series) {
+			if (!series.renderer) {
+				throw new Error("Each series needs a renderer for graph 'multi' renderer");
+			}
+		});
+
+		this.graph.vis.selectAll('*').remove();
+
+		var groups = this._groups();
+		groups = this._stack(groups);
+
+		groups.forEach( function(group) {
+
+			var series = group.series
+				.filter( function(series) { return !series.disabled } );
+
+			group.renderer.render({ series: series, vis: group.vis });
+			series.forEach(function(s) { s.stack = s._stack || s.stack || s.data; });
+		});
+	}
+
 } );
 Rickshaw.namespace('Rickshaw.Graph.Smoother');
 
