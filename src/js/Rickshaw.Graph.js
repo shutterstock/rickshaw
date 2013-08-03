@@ -143,7 +143,7 @@ Rickshaw.Graph = function(args) {
 
 		data = preserve ? Rickshaw.clone(data) : data;
 
-		this.series.forEach( function(series, index) {
+		this.series.active().forEach( function(series, index) {
 			if (series.scale) {
 				// apply scale to each series
 				var seriesData = data[index];
