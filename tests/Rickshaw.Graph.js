@@ -113,3 +113,59 @@ exports.inconsistent = function(test) {
 
 	test.done();
 };
+
+exports.rendererAutodiscover = function(test) {
+
+	var jsdom    = require("jsdom").jsdom;
+	global.document = jsdom("<html><head></head><body></body></html>");
+	global.window   = global.document.createWindow();
+
+	var Rickshaw = require('../rickshaw');
+	new Rickshaw.Compat.ClassList();
+
+	var el = document.createElement("div");
+
+	var series = [
+		{
+			color: 'steelblue',
+			data: [ { x: 0, y: 40 }, { x: 1, y: 49 }, { x: 2, y: 38 } ]
+		}, {
+			color: 'red',
+			data: [ { x: 0, y: 40 }, { x: 1, y: 49 }, { x: 2, y: 38 } ]
+		}
+	];
+
+	test.throws( function() {
+
+		var graph = new Rickshaw.Graph({
+			element: el,
+			width: 960,
+			height: 500,
+			renderer: 'testline',
+			series: series
+		});
+
+	}, null, "throw for unknown renderer" );
+
+	Rickshaw.namespace('Rickshaw.Graph.Renderer.TestLine');
+
+	Rickshaw.Graph.Renderer.TestLine = Rickshaw.Class.create( Rickshaw.Graph.Renderer.Line, {
+		name: 'testline'
+	} );
+
+	test.doesNotThrow( function() {
+
+		var graph = new Rickshaw.Graph({
+			element: el,
+			width: 960,
+			height: 500,
+			renderer: 'testline',
+			series: series
+		});
+
+	}, "new render autodiscovered ok" );
+
+	delete Rickshaw.Graph.Renderer.TestLine;
+
+	test.done();
+};
