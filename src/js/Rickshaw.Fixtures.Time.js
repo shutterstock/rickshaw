@@ -61,7 +61,7 @@ Rickshaw.Fixtures.Time = function() {
 	};
 
 	this.formatDate = function(d) {
-		return d.toUTCString().match(/, (\w+ \w+ \w+)/)[1];
+		return d3.time.format('%b %e')(d);
 	};
 
 	this.formatTime = function(d) {
