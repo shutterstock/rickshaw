@@ -106,7 +106,7 @@ Once you have a basic graph, extensions let you add functionality.  See the [ove
 
 * __Rickshaw.Graph.Axis.Y__ - add a y-axis and grid lines
 
-* __Rickshaw.Graph.Axis.Y.Scaled__ - add a y-axis that scales with data set
+* __Rickshaw.Graph.Axis.Y.Scaled__ - add a y-axis with an alternate scale
 
 * __Rickshaw.Graph.Behavior.Series.Highlight__ - highlight series on legend hover
 
