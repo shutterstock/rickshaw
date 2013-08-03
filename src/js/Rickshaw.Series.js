@@ -48,7 +48,7 @@ Rickshaw.Series = Rickshaw.Class.create( Array, {
 		}
 	},
 
-	addData: function(data) {
+	addData: function(data, x) {
 
 		var index = this.getIndex();
 
@@ -60,7 +60,7 @@ Rickshaw.Series = Rickshaw.Class.create( Array, {
 
 		this.forEach( function(item) {
 			item.data.push({ 
-				x: (index * this.timeInterval || 1) + this.timeBase, 
+				x: x || (index * this.timeInterval || 1) + this.timeBase, 
 				y: (data[item.name] || 0) 
 			});
 		}, this );
