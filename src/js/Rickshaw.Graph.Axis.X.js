@@ -10,8 +10,9 @@ Rickshaw.Graph.Axis.X = function(args) {
 		this.graph = args.graph;
 		this.orientation = args.orientation || 'top';
 
-		var pixelsPerTick = args.pixelsPerTick || 75;
-		this.ticks = args.ticks || Math.floor(this.graph.width / pixelsPerTick);
+		this.pixelsPerTick = args.pixelsPerTick || 75;
+		if (args.ticks) this.staticTicks = args.ticks;
+
 		this.tickSize = args.tickSize || 4;
 		this.ticksTreatment = args.ticksTreatment || 'plain';
 
@@ -59,6 +60,8 @@ Rickshaw.Graph.Axis.X = function(args) {
 
 		var axis = d3.svg.axis().scale(this.graph.x).orient(this.orientation);
 		axis.tickFormat( args.tickFormat || function(x) { return x } );
+
+		this.ticks = this.staticTicks || Math.floor(this.graph.width / this.pixelsPerTick);
 
 		var berth = Math.floor(this.width * berthRate / 2) || 0;
 		var transform;

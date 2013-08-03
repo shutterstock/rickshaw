@@ -7,10 +7,12 @@ Rickshaw.Graph.Axis.Y = Rickshaw.Class.create( {
 		this.graph = args.graph;
 		this.orientation = args.orientation || 'right';
 
-		var pixelsPerTick = args.pixelsPerTick || 75;
-		this.ticks = args.ticks || Math.floor(this.graph.height / pixelsPerTick);
+		this.pixelsPerTick = args.pixelsPerTick || 75;
+		if (args.ticks) this.staticTicks = args.ticks;
+
 		this.tickSize = args.tickSize || 4;
 		this.ticksTreatment = args.ticksTreatment || 'plain';
+
 		this.tickFormat = args.tickFormat || function(y) { return y };
 
 		this.berthRate = 0.10;
@@ -68,6 +70,8 @@ Rickshaw.Graph.Axis.Y = Rickshaw.Class.create( {
 	render: function() {
 
 		if (this.graph.height !== this._renderHeight) this.setSize({ auto: true });
+
+		this.ticks = this.staticTicks || Math.floor(this.graph.height / this.pixelsPerTick);
 
 		var axis = this._drawAxis(this.graph.y);
 
