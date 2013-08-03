@@ -28,6 +28,8 @@ Rickshaw.Graph.RangeSlider = Rickshaw.Class.create({
 				],
 				slide: function( event, ui ) {
 
+					if (ui.values[1] <= ui.values[0]) return;
+
 					graph.window.xMin = ui.values[0];
 					graph.window.xMax = ui.values[1];
 					graph.update();
