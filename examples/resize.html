@@ -1,0 +1,38 @@
+<!doctype html>
+<link type="text/css" rel="stylesheet" href="../src/css/graph.css">
+<link type="text/css" rel="stylesheet" href="css/lines.css">
+
+<script src="../vendor/d3.v2.js"></script>
+<script src="../rickshaw.min.js"></script>
+
+<div id="chart"></div>
+
+<script>
+
+var graph = new Rickshaw.Graph( {
+	element: document.getElementById("chart"),
+	renderer: 'area',
+	series: [
+		{
+			data: [ { x: 0, y: 40 }, { x: 1, y: 49 }, { x: 2, y: 38 }, { x: 3, y: 30 }, { x: 4, y: 32 } ],
+			color: 'steelblue'
+		}, {
+			data: [ { x: 0, y: 19 }, { x: 1, y: 22 }, { x: 2, y: 32 }, { x: 3, y: 20 }, { x: 4, y: 21 } ],
+			color: 'lightblue'
+		}
+	]
+} );
+
+var resize = function() {
+	var padding = 40;
+	graph.configure({
+		width: window.innerWidth - padding,
+		height: window.innerHeight - padding
+	});
+	graph.render();
+}
+
+window.addEventListener('resize', resize); 
+resize();
+
+</script>
