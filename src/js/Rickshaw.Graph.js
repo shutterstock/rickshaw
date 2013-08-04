@@ -79,6 +79,13 @@ Rickshaw.Graph = function(args) {
 					(typeof x) + " and " + (typeof y);
 			}
 
+			if (s.data.length >= 3) {
+				// probe to sanity check sort order
+				if (s.data[2].x < s.data[1].x || s.data[1].x < s.data[0].x || s.data[s.data.length - 1].x < s.data[0].x) {
+					throw "series data needs to be sorted on x values for series name: " + s.name;
+				}
+			}
+
 		}, this );
 	};
 
