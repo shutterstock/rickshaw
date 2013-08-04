@@ -1,6 +1,6 @@
-Rickshaw.namespace('Rickshaw.Fixtures.LocalTime');
+Rickshaw.namespace('Rickshaw.Fixtures.Time.Local');
 
-Rickshaw.Fixtures.LocalTime = function() {
+Rickshaw.Fixtures.Time.Local = function() {
 
 	var tzOffset = new Date().getTimezoneOffset() * 60;
 
