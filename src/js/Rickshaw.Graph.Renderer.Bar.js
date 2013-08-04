@@ -95,7 +95,7 @@ Rickshaw.Graph.Renderer.Bar = Rickshaw.Class.create( Rickshaw.Graph.Renderer, {
 			intervalCounts[interval]++;
 		}
 
-		var frequentInterval = { count: 0 };
+		var frequentInterval = { count: 0, magnitude: 1 };
 
 		Rickshaw.keys(intervalCounts).forEach( function(i) {
 			if (frequentInterval.count < intervalCounts[i]) {
