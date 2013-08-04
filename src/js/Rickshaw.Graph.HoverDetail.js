@@ -41,7 +41,7 @@ Rickshaw.Graph.HoverDetail = Rickshaw.Class.create({
 		if (!e) return;
 		this.lastEvent = e;
 
-		if (!e.target.nodeName.match(/^(path|svg|rect)$/)) return;
+		if (!e.target.nodeName.match(/^(path|svg|rect|circle)$/)) return;
 
 		var graph = this.graph;
 
