@@ -34,7 +34,7 @@ A reference to an HTML element that should hold the graph.
 
 ##### series
 
-Array of objects containing series data to plot.  Each object should contain `data` at a minimum, an array of objects each with x and y properties.  Optionally send a `name` and `color` as well.  Some renderers and extensions may also support additional keys.
+Array of objects containing series data to plot.  Each object should contain `data` at a minimum, a sorted array of objects each with x and y properties.  Optionally send a `name` and `color` as well.  Some renderers and extensions may also support additional keys.
 
 ##### renderer
 
