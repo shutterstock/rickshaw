@@ -17,14 +17,16 @@ Rickshaw.Graph.RangeSlider = Rickshaw.Class.create({
 		var element = this.element;
 		var graph = this.graph;
 
+		var domain = graph.dataDomain();
+
 		$( function() {
 			$(element).slider( {
 				range: true,
-				min: graph.dataDomain()[0],
-				max: graph.dataDomain()[1],
+				min: domain[0],
+				max: domain[1],
 				values: [ 
-					graph.dataDomain()[0],
-					graph.dataDomain()[1]
+					domain[0],
+					domain[1]
 				],
 				slide: function( event, ui ) {
 
@@ -34,11 +36,13 @@ Rickshaw.Graph.RangeSlider = Rickshaw.Class.create({
 					graph.window.xMax = ui.values[1];
 					graph.update();
 
+					var domain = graph.dataDomain();
+
 					// if we're at an extreme, stick there
-					if (graph.dataDomain()[0] == ui.values[0]) {
+					if (domain[0] == ui.values[0]) {
 						graph.window.xMin = undefined;
 					}
-					if (graph.dataDomain()[1] == ui.values[1]) {
+					if (domain[1] == ui.values[1]) {
 						graph.window.xMax = undefined;
 					}
 				}
@@ -55,14 +59,16 @@ Rickshaw.Graph.RangeSlider = Rickshaw.Class.create({
 
 		var values = $(element).slider('option', 'values');
 
-		$(element).slider('option', 'min', graph.dataDomain()[0]);
-		$(element).slider('option', 'max', graph.dataDomain()[1]);
+		var domain = graph.dataDomain();
+
+		$(element).slider('option', 'min', domain[0]);
+		$(element).slider('option', 'max', domain[1]);
 
 		if (graph.window.xMin == null) {
-			values[0] = graph.dataDomain()[0];
+			values[0] = domain[0];
 		}
 		if (graph.window.xMax == null) {
-			values[1] = graph.dataDomain()[1];
+			values[1] = domain[1];
 		}
 
 		$(element).slider('option', 'values', values);

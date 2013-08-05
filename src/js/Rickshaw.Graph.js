@@ -91,11 +91,12 @@ Rickshaw.Graph = function(args) {
 
 	this.dataDomain = function() {
 
-		// take from the first series
-		var data = this.series[0].data;
+		var data = graph.series.map( function(s) { return s.data } );
 
-		return [ data[0].x, data.slice(-1).shift().x ];
+		var min = d3.min( data.map( function(d) { return d[0].x } ) );
+		var max = d3.max( data.map( function(d) { return d[d.length - 1].x } ) );
 
+		return [min, max];
 	};
 
 	this.discoverRange = function() {
