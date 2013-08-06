@@ -1,1 +1,2 @@
 runtime: node010
+build: npm install && make clean && make

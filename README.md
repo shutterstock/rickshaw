@@ -34,7 +34,7 @@ A reference to an HTML element that should hold the graph.
 
 ##### series
 
-Array of objects containing series data to plot.  Each object should contain `data` at a minimum, an array of objects each with x and y properties.  Optionally send a `name` and `color` as well.  Some renderers and extensions may also support additional keys.
+Array of objects containing series data to plot.  Each object should contain `data` at a minimum, a sorted array of objects each with x and y properties.  Optionally send a `name` and `color` as well.  Some renderers and extensions may also support additional keys.
 
 ##### renderer
 
@@ -100,11 +100,13 @@ Once you have a basic graph, extensions let you add functionality.  See the [ove
 
 * __Rickshaw.Graph.RangeSlider__ - dynamically zoom on the x-axis with a slider
 
-* __Rickshaw.Graph.Axis.Time__ - add x-axis and grid lines with time labels
+* __Rickshaw.Graph.Axis.Time__ - add an x-axis and grid lines with time labels
 
 * __Rickshaw.Graph.Axis.X__ - add an x-axis and grid lines with arbitrary labels
 
 * __Rickshaw.Graph.Axis.Y__ - add a y-axis and grid lines
+
+* __Rickshaw.Graph.Axis.Y.Scaled__ - add a y-axis with an alternate scale
 
 * __Rickshaw.Graph.Behavior.Series.Highlight__ - highlight series on legend hover
 

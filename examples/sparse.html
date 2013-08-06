@@ -1,0 +1,58 @@
+<!doctype>
+<head>
+	<link type="text/css" rel="stylesheet" href="../src/css/graph.css">
+	<link type="text/css" rel="stylesheet" href="../src/css/detail.css">
+	<link type="text/css" rel="stylesheet" href="../src/css/legend.css">
+	<link type="text/css" rel="stylesheet" href="css/lines.css">
+
+	<script src="../vendor/d3.v2.js"></script>
+
+	<script src="../rickshaw.js"></script>
+</head>
+<body>
+
+<div id="chart_container">
+	<div id="chart"></div>
+	<div id="legend_container">
+		<div id="smoother" title="Smoothing"></div>
+		<div id="legend"></div>
+	</div>
+	<div id="slider"></div>
+</div>
+
+<script>
+
+// set up our data series with 50 random data points
+
+var seriesData = [ [], [], [] ];
+var random = new Rickshaw.Fixtures.RandomData(150);
+
+for (var i = 0; i < 150; i++) {
+	random.addData(seriesData);
+}
+
+// instantiate our graph!
+
+var graph = new Rickshaw.Graph( {
+	element: document.getElementById("chart"),
+	width: 960,
+	height: 500,
+	renderer: 'line',
+	series: [
+		{
+			color: "steelblue",
+			name: 'New York',
+			data: [ { x: 0, y: 15 }, { x: 100, y: 20 }, { x: 200, y: 22 }, { x: 300, y: 25 }, { x: 380, y: 24 }, { x: 400, y: 22 }, { x: 420, y: 25 } ],
+		}
+	]
+} );
+
+graph.render();
+
+var hoverDetail = new Rickshaw.Graph.HoverDetail( {
+	graph: graph
+} );
+
+</script>
+
+</body>

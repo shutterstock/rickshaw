@@ -31,6 +31,7 @@
 	<script src="../src/js/Rickshaw.Graph.Smoother.js"></script>
 	<script src="../src/js/Rickshaw.Graph.Unstacker.js"></script>
 	<script src="../src/js/Rickshaw.Fixtures.Time.js"></script>
+	<script src="../src/js/Rickshaw.Fixtures.Time.Local.js"></script>
 	<script src="../src/js/Rickshaw.Fixtures.Number.js"></script>
 	<script src="../src/js/Rickshaw.Fixtures.RandomData.js"></script>
 	<script src="../src/js/Rickshaw.Fixtures.Color.js"></script>
@@ -170,7 +171,10 @@ var slider = new Rickshaw.Graph.RangeSlider( {
 } );
 
 var hoverDetail = new Rickshaw.Graph.HoverDetail( {
-	graph: graph
+	graph: graph,
+	xFormatter: function(x) {
+		return new Date(x * 1000).toString();
+	}
 } );
 
 var annotator = new Rickshaw.Graph.Annotate( {
@@ -208,7 +212,8 @@ var ticksTreatment = 'glow';
 
 var xAxis = new Rickshaw.Graph.Axis.Time( {
 	graph: graph,
-	ticksTreatment: ticksTreatment
+	ticksTreatment: ticksTreatment,
+	timeFixture: new Rickshaw.Fixtures.Time.Local()
 } );
 
 xAxis.render();
@@ -241,6 +246,7 @@ var messages = [
 ];
 
 setInterval( function() {
+	random.removeData(seriesData);
 	random.addData(seriesData);
 	graph.update();
 

@@ -4,6 +4,9 @@ NODE_MODULES=$(NODE_PREFIX)/node_modules
 CSS_MIN=$(NODE_MODULES)/.bin/cleancss
 JS_MIN=$(NODE_MODULES)/.bin/uglifyjs
 JS_HINT=$(NODE_MODULES)/.bin/jshint
+D3=$(NODE_MODULES)/d3
+JSDOM=$(NODE_MODULES)/jsdom
+NODEUNIT=$(NODE_MODULES)/nodeunit
 
 CSS_FILES=\
 	src/css/detail.css\
@@ -18,6 +21,7 @@ JS_FILES=\
 	src/js/Rickshaw.Fixtures.Color.js\
 	src/js/Rickshaw.Fixtures.RandomData.js\
 	src/js/Rickshaw.Fixtures.Time.js\
+	src/js/Rickshaw.Fixtures.Time.Local.js\
 	src/js/Rickshaw.Fixtures.Number.js\
 	src/js/Rickshaw.Color.Palette.js\
 	src/js/Rickshaw.Graph.Ajax.js\
@@ -40,6 +44,7 @@ JS_FILES=\
 	src/js/Rickshaw.Graph.Renderer.Area.js\
 	src/js/Rickshaw.Graph.Renderer.ScatterPlot.js\
 	src/js/Rickshaw.Graph.Renderer.Multi.js\
+	src/js/Rickshaw.Graph.Renderer.LinePlot.js\
 	src/js/Rickshaw.Graph.Smoother.js\
 	src/js/Rickshaw.Graph.Unstacker.js\
 	src/js/Rickshaw.Series.js\
@@ -52,6 +57,9 @@ build: rickshaw.min.css rickshaw.min.js
 clean:
 	rm -rf rickshaw.css rickshaw.js rickshaw.min.*
 
+test: $(D3) $(JSDOM) $(NODEUNIT)
+	npm test
+
 $(JS_HINT):
 	npm install jshint
 
@@ -60,6 +68,15 @@ $(CSS_MIN):
 
 $(JS_MIN):
 	npm install uglify-js
+
+$(D3):
+	npm install d3
+
+$(JSDOM):
+	npm install jsdom
+
+$(NODEUNIT):
+	npm install nodeunit
 
 rickshaw.css: $(CSS_FILES)
 	cat $(CSS_FILES) > rickshaw.css

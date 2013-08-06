@@ -1,6 +1,6 @@
-Rickshaw.namespace('Rickshaw.Fixtures.Time');
+Rickshaw.namespace('Rickshaw.Fixtures.Time.Local');
 
-Rickshaw.Fixtures.Time = function() {
+Rickshaw.Fixtures.Time.Local = function() {
 
 	var tzOffset = new Date().getTimezoneOffset() * 60;
 
@@ -12,15 +12,15 @@ Rickshaw.Fixtures.Time = function() {
 		{
 			name: 'decade',
 			seconds: 86400 * 365.25 * 10,
-			formatter: function(d) { return (parseInt(d.getUTCFullYear() / 10, 10) * 10) }
+			formatter: function(d) { return (parseInt(d.getFullYear() / 10, 10) * 10) }
 		}, {
 			name: 'year',
 			seconds: 86400 * 365.25,
-			formatter: function(d) { return d.getUTCFullYear() }
+			formatter: function(d) { return d.getFullYear() }
 		}, {
 			name: 'month',
 			seconds: 86400 * 30.5,
-			formatter: function(d) { return self.months[d.getUTCMonth()] }
+			formatter: function(d) { return self.months[d.getMonth()] }
 		}, {
 			name: 'week',
 			seconds: 86400 * 7,
@@ -28,7 +28,7 @@ Rickshaw.Fixtures.Time = function() {
 		}, {
 			name: 'day',
 			seconds: 86400,
-			formatter: function(d) { return d.getUTCDate() }
+			formatter: function(d) { return d.getDate() }
 		}, {
 			name: '6 hour',
 			seconds: 3600 * 6,
@@ -44,15 +44,15 @@ Rickshaw.Fixtures.Time = function() {
 		}, {
 			name: 'minute',
 			seconds: 60,
-			formatter: function(d) { return d.getUTCMinutes() }
+			formatter: function(d) { return d.getMinutes() }
 		}, {
 			name: '15 second',
 			seconds: 15,
-			formatter: function(d) { return d.getUTCSeconds() + 's' }
+			formatter: function(d) { return d.getSeconds() + 's' }
 		}, {
 			name: 'second',
 			seconds: 1,
-			formatter: function(d) { return d.getUTCSeconds() + 's' }
+			formatter: function(d) { return d.getSeconds() + 's' }
 		}
 	];
 
@@ -65,7 +65,7 @@ Rickshaw.Fixtures.Time = function() {
 	};
 
 	this.formatTime = function(d) {
-		return d.toUTCString().match(/(\d+:\d+):/)[1];
+		return d.toString().match(/(\d+:\d+):/)[1];
 	};
 
 	this.ceil = function(time, unit) {
@@ -73,18 +73,34 @@ Rickshaw.Fixtures.Time = function() {
 		var nearFuture;
 		var rounded;
 
+		if (unit.name == 'day') {
+
+			nearFuture = new Date((time + unit.seconds - 1) * 1000);
+
+			rounded = new Date(0);
+			rounded.setMilliseconds(0);
+			rounded.setSeconds(0);
+			rounded.setMinutes(0);
+			rounded.setHours(0);
+			rounded.setDate(nearFuture.getDate());
+			rounded.setMonth(nearFuture.getMonth());
+			rounded.setFullYear(nearFuture.getFullYear());
+
+			return rounded.getTime() / 1000;
+		}
+
 		if (unit.name == 'month') {
 
 			nearFuture = new Date((time + unit.seconds - 1) * 1000);
 
 			rounded = new Date(0);
-			rounded.setUTCFullYear(nearFuture.getUTCFullYear());
-			rounded.setUTCMonth(nearFuture.getUTCMonth());
-			rounded.setUTCDate(1);
-			rounded.setUTCHours(0);
-			rounded.setUTCMinutes(0);
-			rounded.setUTCSeconds(0);
-			rounded.setUTCMilliseconds(0);
+			rounded.setMilliseconds(0);
+			rounded.setSeconds(0);
+			rounded.setMinutes(0);
+			rounded.setHours(0);
+			rounded.setDate(1);
+			rounded.setMonth(nearFuture.getMonth());
+			rounded.setFullYear(nearFuture.getFullYear());
 
 			return rounded.getTime() / 1000;
 		}
@@ -94,13 +110,13 @@ Rickshaw.Fixtures.Time = function() {
 			nearFuture = new Date((time + unit.seconds - 1) * 1000);
 
 			rounded = new Date(0);
-			rounded.setUTCFullYear(nearFuture.getUTCFullYear());
-			rounded.setUTCMonth(0);
-			rounded.setUTCDate(1);
-			rounded.setUTCHours(0);
-			rounded.setUTCMinutes(0);
-			rounded.setUTCSeconds(0);
-			rounded.setUTCMilliseconds(0);
+			rounded.setFullYear(nearFuture.getFullYear());
+			rounded.setMilliseconds(0);
+			rounded.setSeconds(0);
+			rounded.setMinutes(0);
+			rounded.setHours(0);
+			rounded.setDate(1);
+			rounded.setMonth(0);
 
 			return rounded.getTime() / 1000;
 		}

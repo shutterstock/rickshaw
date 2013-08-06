@@ -28,5 +28,12 @@ Rickshaw.Fixtures.RandomData = function(timeInterval) {
 
 		lastRandomValue = randomValue * 0.85;
 	};
+
+	this.removeData = function(data) {
+		data.forEach( function(series) {
+			series.shift();
+		} );
+		timeBase += timeInterval;
+	};
 };
 

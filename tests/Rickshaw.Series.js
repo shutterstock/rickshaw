@@ -64,6 +64,28 @@ exports.addData = function(test) {
 	test.done();
 };
 
+exports.addDataWithXAxisValue = function(test) {
+
+	var series = new Rickshaw.Series([seriesData()], 'spectrum2001', {timeBase: 0});
+
+	series.addData({ series1: 22 }, 5);
+
+	test.equal(series[0].data.length, 4, 'first series has four data points');
+	test.equal(series[0].data[3].y, 22, 'first series last data point made it in');
+	test.equal(series[0].data[3].x, 5, 'first series last data point made it in with the correct x');
+
+	series.addData({ series1: 29, series2: 57 }, 7);
+
+	test.equal(series[0].data[4].y, 29, 'first series has a new data point');
+	test.equal(series[0].data[4].x, 7, 'first series has a new data point with the correct x');
+
+	test.equal(series[1].data.length, 5, 'second series has five data points');
+	test.equal(series[1].data[4].y, 57, 'second series last data point made it in');
+	test.equal(series[1].data[4].x, 7, 'second series last data point made it in with the correct x');
+
+	test.done();
+};
+
 exports.itemByName = function(test) {
 
 	var series = new Rickshaw.Series([seriesData()], 'spectrum2001', {timeBase: 0});
