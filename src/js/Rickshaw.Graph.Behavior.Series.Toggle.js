@@ -121,4 +121,5 @@ Rickshaw.Graph.Behavior.Series.Toggle = function(args) {
 
 	this.updateBehaviour = function () { this._addBehavior() };
 
+	this.legend.toggler = this;
 };

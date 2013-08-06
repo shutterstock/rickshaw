@@ -17,6 +17,7 @@ div, span, p, td {
 	display: inline-block;
 	position: relative;
 	left: 8px;
+	height: 150px;
 }
 #legend_container {
 	position: absolute;

@@ -121,16 +121,7 @@ for (var i = 0; i < 150; i++) {
 
 var palette = new Rickshaw.Color.Palette( { scheme: 'classic9' } );
 
-// instantiate our graph!
-
-var graph = new Rickshaw.Graph( {
-	element: document.getElementById("chart"),
-	width: 900,
-	height: 500,
-	renderer: 'area',
-	stroke: true,
-	preserve: true,
-	series: [
+var seriesArray = [
 		{
 			color: palette.color(),
 			data: seriesData[0],
@@ -160,7 +151,19 @@ var graph = new Rickshaw.Graph( {
 			data: seriesData[6],
 			name: 'New York'
 		}
-	]
+	];
+
+// instantiate our graph!
+
+var graphSeries = [seriesArray[0]];
+var graph = new Rickshaw.Graph( {
+	element: document.getElementById("chart"),
+	width: 900,
+	height: 500,
+	renderer: 'area',
+	stroke: true,
+	preserve: true,
+	series: graphSeries
 } );
 
 graph.render();
@@ -260,6 +263,19 @@ function addAnnotation(force) {
 
 addAnnotation(true);
 setTimeout( function() { setInterval( addAnnotation, 6000 ) }, 6000 );
+
+function addNewSeries() {
+	var i = graphSeries.length;
+	if (i >= seriesArray.length) {
+		return;
+	} else {
+		graphSeries[i] = seriesArray[i];
+		setTimeout(addNewSeries, 50);
+	}
+	graph.update();
+}
+
+addNewSeries();
 
 </script>
 

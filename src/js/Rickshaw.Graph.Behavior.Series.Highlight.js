@@ -26,19 +26,15 @@ Rickshaw.Graph.Behavior.Series.Highlight = function(args) {
 				if (l === line) {
 
 					// if we're not in a stacked renderer bring active line to the top
-					if (index > 0 && self.graph.renderer.unstack && (line.series.renderer ? line.series.renderer.unstack : true)) {
-
-						var seriesIndex = self.graph.series.length - index - 1;
-						line.originalIndex = seriesIndex;
-
-						var series = self.graph.series.splice(seriesIndex, 1)[0];
-						self.graph.series.push(series);
+					if (self.graph.renderer.unstack && (line.series.renderer ? line.series.renderer.unstack : true)) {
+						line.series.zOrder = 1;
 					}
 					return;
 				}
 
 				colorSafe[line.series.name] = colorSafe[line.series.name] || line.series.color;
 				line.series.color = disabledColor(line.series.color);
+				line.series.zOrder = 0;
 
 			} );
 
@@ -53,17 +49,11 @@ Rickshaw.Graph.Behavior.Series.Highlight = function(args) {
 
 			self.legend.lines.forEach( function(line) {
 
-				// return reordered series to its original place
-				if (l === line && line.hasOwnProperty('originalIndex')) {
-
-					var series = self.graph.series.pop();
-					self.graph.series.splice(line.originalIndex, 0, series);
-					delete line.originalIndex;
-				}
-
 				if (colorSafe[line.series.name]) {
 					line.series.color = colorSafe[line.series.name];
 				}
+				line.series.zOrder = 0;
+			
 			} );
 
 			self.graph.update();
@@ -75,6 +65,8 @@ Rickshaw.Graph.Behavior.Series.Highlight = function(args) {
 		this.legend.lines.forEach( function(l) {
 			self.addHighlightEvents(l);
 		} );
+
+		this.legend.highlighter = this;
 	}
 
 };
