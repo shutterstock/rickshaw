@@ -1445,6 +1445,7 @@ Rickshaw.Graph.Axis.X = function(args) {
 
 		this.pixelsPerTick = args.pixelsPerTick || 75;
 		if (args.ticks) this.staticTicks = args.ticks;
+		if (args.tickValues) this.tickValues = args.tickValues;
 
 		this.tickSize = args.tickSize || 4;
 		this.ticksTreatment = args.ticksTreatment || 'plain';
@@ -1493,6 +1494,7 @@ Rickshaw.Graph.Axis.X = function(args) {
 
 		var axis = d3.svg.axis().scale(this.graph.x).orient(this.orientation);
 		axis.tickFormat( args.tickFormat || function(x) { return x } );
+		if (this.tickValues) axis.tickValues(this.tickValues);
 
 		this.ticks = this.staticTicks || Math.floor(this.graph.width / this.pixelsPerTick);
 
@@ -1556,6 +1558,7 @@ Rickshaw.Graph.Axis.Y = Rickshaw.Class.create( {
 
 		this.pixelsPerTick = args.pixelsPerTick || 75;
 		if (args.ticks) this.staticTicks = args.ticks;
+		if (args.tickValues) this.tickValues = args.tickValues;
 
 		this.tickSize = args.tickSize || 4;
 		this.ticksTreatment = args.ticksTreatment || 'plain';
@@ -1630,6 +1633,7 @@ Rickshaw.Graph.Axis.Y = Rickshaw.Class.create( {
 	_drawAxis: function(scale) {
 		var axis = d3.svg.axis().scale(scale).orient(this.orientation);
 		axis.tickFormat(this.tickFormat);
+		if (this.tickValues) axis.tickValues(this.tickValues);
 
 		if (this.orientation == 'left') {
 			var berth = this.height * this.berthRate;
@@ -3344,7 +3348,7 @@ Rickshaw.Series.FixedDuration = Rickshaw.Class.create(Rickshaw.Series, {
 
 		// zero-fill up to maxDataPoints size if we don't have that much data yet
 		if ((typeof(this.maxDataPoints) !== 'undefined') && (this.currentSize < this.maxDataPoints)) {
-			for (var i = this.maxDataPoints - this.currentSize - 1; i > 0; i--) {
+			for (var i = this.maxDataPoints - this.currentSize - 1; i > 1; i--) {
 				this.currentSize  += 1;
 				this.currentIndex += 1;
 				this.forEach( function (item) {

@@ -9,6 +9,7 @@ Rickshaw.Graph.Axis.Y = Rickshaw.Class.create( {
 
 		this.pixelsPerTick = args.pixelsPerTick || 75;
 		if (args.ticks) this.staticTicks = args.ticks;
+		if (args.tickValues) this.tickValues = args.tickValues;
 
 		this.tickSize = args.tickSize || 4;
 		this.ticksTreatment = args.ticksTreatment || 'plain';
@@ -83,6 +84,7 @@ Rickshaw.Graph.Axis.Y = Rickshaw.Class.create( {
 	_drawAxis: function(scale) {
 		var axis = d3.svg.axis().scale(scale).orient(this.orientation);
 		axis.tickFormat(this.tickFormat);
+		if (this.tickValues) axis.tickValues(this.tickValues);
 
 		if (this.orientation == 'left') {
 			var berth = this.height * this.berthRate;
