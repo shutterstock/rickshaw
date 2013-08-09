@@ -40,7 +40,7 @@ Rickshaw.Series.FixedDuration = Rickshaw.Class.create(Rickshaw.Series, {
 
 		// zero-fill up to maxDataPoints size if we don't have that much data yet
 		if ((typeof(this.maxDataPoints) !== 'undefined') && (this.currentSize < this.maxDataPoints)) {
-			for (var i = this.maxDataPoints - this.currentSize - 1; i > 0; i--) {
+			for (var i = this.maxDataPoints - this.currentSize - 1; i > 1; i--) {
 				this.currentSize  += 1;
 				this.currentIndex += 1;
 				this.forEach( function (item) {
