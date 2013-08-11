@@ -50,9 +50,9 @@ Rickshaw.Series.FixedDuration = Rickshaw.Class.create(Rickshaw.Series, {
 		}
 	},
 
-	addData: function($super, data) {
+	addData: function($super, data, x) {
 
-		$super(data);
+		$super(data, x);
 
 		this.currentSize += 1;
 		this.currentIndex += 1;
