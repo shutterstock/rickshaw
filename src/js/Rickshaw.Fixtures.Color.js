@@ -156,4 +156,31 @@ Rickshaw.Fixtures.Color = function() {
 		'#cc6699',
 		'#999900'
 	];
-};
+
+	this.schemes.okay = [
+		'#00AA00',
+		'#00FF00',
+		'#2AFF2A',
+		'#55FF55',
+		'#80FF80',
+		'#AAFFAA'
+	];
+
+	this.schemes.warning = [
+		'#D4AA00',
+		'#FFCC00',
+		'#FFD42A',
+		'#FFDD55',
+		'#FFE680',
+		'#FFEEAA'
+	];
+		
+	this.schemes.critical = [
+		'#AA0000',
+		'#FF0000',
+		'#FF2A2A',
+		'#FF5555',
+		'#FF8080',
+		'#FFAAAA'
+	];
+};	
