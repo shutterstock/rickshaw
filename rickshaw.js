@@ -470,7 +470,7 @@ Rickshaw.Graph = function(args) {
 
 	this.dataDomain = function() {
 
-		var data = graph.series.map( function(s) { return s.data } );
+		var data = this.series.map( function(s) { return s.data } );
 
 		var min = d3.min( data.map( function(d) { return d[0].x } ) );
 		var max = d3.max( data.map( function(d) { return d[d.length - 1].x } ) );
@@ -2604,7 +2604,7 @@ Rickshaw.Graph.Renderer.Bar = Rickshaw.Class.create( Rickshaw.Graph.Renderer, {
 		var vis = args.vis || graph.vis;
 		vis.selectAll('*').remove();
 
-		var barWidth = this.barWidth(series[0]);
+		var barWidth = this.barWidth(series.active()[0]);
 		var barXOffset = 0;
 
 		var activeSeriesCount = series.filter( function(s) { return !s.disabled; } ).length;
@@ -3358,9 +3358,9 @@ Rickshaw.Series.FixedDuration = Rickshaw.Class.create(Rickshaw.Series, {
 		}
 	},
 
-	addData: function($super, data) {
+	addData: function($super, data, x) {
 
-		$super(data);
+		$super(data, x);
 
 		this.currentSize += 1;
 		this.currentIndex += 1;

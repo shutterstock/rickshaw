@@ -1,6 +1,6 @@
 {
   "name": "rickshaw",
-  "version": "1.4.2",
+  "version": "1.4.3",
   "dependencies": {
     "d3": "~2.10.1"
   },
