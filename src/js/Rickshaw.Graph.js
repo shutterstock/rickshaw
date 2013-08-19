@@ -37,7 +37,8 @@ Rickshaw.Graph = function(args) {
 		this.vis = d3.select(this.element)
 			.append("svg:svg")
 			.attr('width', this.width)
-			.attr('height', this.height);
+			.attr('height', this.height)
+			.attr('class', 'rickshaw_graph graph');
 
 		for (var name in Rickshaw.Graph.Renderer) {
 			if (!name || !Rickshaw.Graph.Renderer.hasOwnProperty(name)) continue;
