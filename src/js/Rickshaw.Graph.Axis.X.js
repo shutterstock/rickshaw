@@ -9,12 +9,13 @@ Rickshaw.Graph.Axis.X = function(args) {
 
 		this.graph = args.graph;
 		this.orientation = args.orientation || 'top';
-
+		
 		this.pixelsPerTick = args.pixelsPerTick || 75;
 		if (args.ticks) this.staticTicks = args.ticks;
 		if (args.tickValues) this.tickValues = args.tickValues;
 
 		this.tickSize = args.tickSize || 4;
+		this.tickTransformation = args.tickTransformation || function(svg) {};
 		this.ticksTreatment = args.ticksTreatment || 'plain';
 
 		if (args.element) {
@@ -79,11 +80,13 @@ Rickshaw.Graph.Axis.X = function(args) {
 			this.vis.selectAll('*').remove();
 		}
 
-		this.vis
+
+		this.tickTransformation(this.vis
 			.append("svg:g")
 			.attr("class", ["x_ticks_d3", this.ticksTreatment].join(" "))
 			.attr("transform", transform)
-			.call(axis.ticks(this.ticks).tickSubdivide(0).tickSize(this.tickSize));
+			.call(axis.ticks(this.ticks).tickSubdivide(0).tickSize(this.tickSize))
+			.selectAll("text") );
 
 		var gridSize = (this.orientation == 'bottom' ? 1 : -1) * this.graph.height;
 

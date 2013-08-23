@@ -15,6 +15,7 @@ Rickshaw.Graph.Axis.Y = Rickshaw.Class.create( {
 		this.ticksTreatment = args.ticksTreatment || 'plain';
 
 		this.tickFormat = args.tickFormat || function(y) { return y };
+		this.tickTransformation = args.tickTransformation || function(svg) {};
 
 		this.berthRate = 0.10;
 
@@ -95,11 +96,12 @@ Rickshaw.Graph.Axis.Y = Rickshaw.Class.create( {
 			this.vis.selectAll('*').remove();
 		}
 
-		this.vis
+		this.tickTransformation(this.vis
 			.append("svg:g")
 			.attr("class", ["y_ticks", this.ticksTreatment].join(" "))
 			.attr("transform", transform)
-			.call(axis.ticks(this.ticks).tickSubdivide(0).tickSize(this.tickSize));
+			.call(axis.ticks(this.ticks).tickSubdivide(0).tickSize(this.tickSize))
+			.selectAll("text"));
 
 		return axis;
 	},
