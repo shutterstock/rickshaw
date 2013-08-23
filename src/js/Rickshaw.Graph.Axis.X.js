@@ -57,7 +57,7 @@ Rickshaw.Graph.Axis.X = function(args) {
 
 	this.render = function() {
 
-		if (this.graph.width !== this._renderWidth) this.setSize({ auto: true });
+		if (this._renderWidth !== undefined && this.graph.width !== this._renderWidth) this.setSize({ auto: true });
 
 		var axis = d3.svg.axis().scale(this.graph.x).orient(this.orientation);
 		axis.tickFormat( args.tickFormat || function(x) { return x } );
