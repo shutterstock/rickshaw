@@ -1,0 +1,101 @@
+<!doctype>
+<head>
+	<link type="text/css" rel="stylesheet" href="../src/css/graph.css">
+	<link type="text/css" rel="stylesheet" href="../src/css/detail.css">
+	<link type="text/css" rel="stylesheet" href="../src/css/legend.css">
+	<link type="text/css" rel="stylesheet" href="css/lines.css">
+
+	<script src="../vendor/d3.v2.js"></script>
+
+	<script src="../rickshaw.js"></script>
+	<script src="../src/js/Rickshaw.Series.FixedRate.js"></script>
+</head>
+<body>
+
+<div id="chart_container">
+	<div id="chart"></div>
+	<div id="legend_container">
+		<div id="smoother" title="Smoothing"></div>
+		<div id="legend"></div>
+	</div>
+	<div id="slider"></div>
+</div>
+
+<script>
+
+// set up our data series with 50 random data points
+
+var seriesData = [ [], [], [] ];
+var fixedRate = 60;
+var random = new Rickshaw.Fixtures.RandomData(fixedRate);
+
+for (var i = 0; i < 150; i++) {
+    random.addData(seriesData);
+}
+
+// Removing some data
+for(var i = 0; i < 16; i++) {
+    seriesData[0].splice(40, 1);
+    seriesData[1].splice(40, 1);
+    seriesData[2].splice(40, 1);
+}
+for(var i = 0; i < 16; i++) {
+    seriesData[0].splice(60, 1);
+    seriesData[1].splice(60, 1);
+    seriesData[2].splice(60, 1);
+}
+// then it will be filled with 0's
+
+// instantiate our graph!
+var series = [
+        {
+            color: "#c05020",
+            data: seriesData[0],
+            name: 'New York'
+        }, {
+            color: "#30c020",
+            data: seriesData[1],
+            name: 'London'
+        }, {
+            color: "#6060c0",
+            data: seriesData[2],
+            name: 'Tokyo'
+        }
+    ];
+series = new Rickshaw.Series.FixedRate(series, undefined, {
+    rate: fixedRate
+});
+var graph = new Rickshaw.Graph( {
+	element: document.getElementById("chart"),
+	width: 960,
+	height: 500,
+	renderer: 'line',
+	interpolation: 'linear',
+	series: series
+} );
+
+graph.render();
+
+var hoverDetail = new Rickshaw.Graph.HoverDetail( {
+	graph: graph
+} );
+
+var legend = new Rickshaw.Graph.Legend( {
+	graph: graph,
+	element: document.getElementById('legend')
+
+} );
+
+var shelving = new Rickshaw.Graph.Behavior.Series.Toggle( {
+	graph: graph,
+	legend: legend
+} );
+
+var axes = new Rickshaw.Graph.Axis.Time( {
+	graph: graph
+} );
+axes.render();
+
+</script>
+
+</body>
