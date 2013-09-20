@@ -2307,7 +2307,7 @@ Rickshaw.Graph.RangeSlider = Rickshaw.Class.create({
 			} );
 		} );
 
-		element[0].style.width = graph.width + 'px';
+		element.style.width = graph.width + 'px';
 	},
 
 	update: function() {
@@ -2604,7 +2604,7 @@ Rickshaw.Graph.Renderer.Bar = Rickshaw.Class.create( Rickshaw.Graph.Renderer, {
 		var vis = args.vis || graph.vis;
 		vis.selectAll('*').remove();
 
-		var barWidth = this.barWidth(series.active()[0]);
+		var barWidth = this.barWidth(series[0]);
 		var barXOffset = 0;
 
 		var activeSeriesCount = series.filter( function(s) { return !s.disabled; } ).length;
