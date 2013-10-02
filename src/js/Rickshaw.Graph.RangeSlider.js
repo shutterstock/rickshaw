@@ -48,8 +48,13 @@ Rickshaw.Graph.RangeSlider = Rickshaw.Class.create({
 				}
 			} );
 		} );
+		if(element instanceof jQuery) {
+			element[0].style.width = graph.width + 'px';
+		}
+		else {
+			element.style.width = graph.width + 'px';
+		}
 
-		element[0].style.width = graph.width + 'px';
 	},
 
 	update: function() {
