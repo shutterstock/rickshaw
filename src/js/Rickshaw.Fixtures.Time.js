@@ -53,7 +53,15 @@ Rickshaw.Fixtures.Time = function() {
 			name: 'second',
 			seconds: 1,
 			formatter: function(d) { return d.getUTCSeconds() + 's' }
-		}
+		}, {
+			name: 'decisecond',
+			seconds: 1/10,
+			formatter: function(d) { return d.getUTCMilliseconds() + 'ms' }
+		}, {
+			name: 'centisecond',
+			seconds: 1/100,
+			formatter: function(d) { return d.getUTCMilliseconds() + 'ms' }
+		}, 
 	];
 
 	this.unit = function(unitName) {
