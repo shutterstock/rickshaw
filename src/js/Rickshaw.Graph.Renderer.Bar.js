@@ -45,11 +45,12 @@ Rickshaw.Graph.Renderer.Bar = Rickshaw.Class.create( Rickshaw.Graph.Renderer, {
 
 		var graph = this.graph;
 		var series = args.series || graph.series;
+		var active = args.series.active || graph.series.active;
 
 		var vis = args.vis || graph.vis;
 		vis.selectAll('*').remove();
 
-		var barWidth = this.barWidth(series.active()[0]);
+		var barWidth = this.barWidth(active()[0]);
 		var barXOffset = 0;
 
 		var activeSeriesCount = series.filter( function(s) { return !s.disabled; } ).length;
