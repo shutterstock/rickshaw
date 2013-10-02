@@ -54,9 +54,10 @@ Rickshaw.Graph.Renderer = Rickshaw.Class.create( {
 				if (y < yMin) yMin = y;
 				if (y > yMax) yMax = y;
 			} );
-
-			if (series[0].x < xMin) xMin = series[0].x;
-			if (series[series.length - 1].x > xMax) xMax = series[series.length - 1].x;
+			if (series.length > 0) {
+				if (series[0].x < xMin) xMin = series[0].x;
+				if (series[series.length - 1].x > xMax) xMax = series[series.length - 1].x;				
+			}
 		} );
 
 		xMin -= (xMax - xMin) * this.padding.left;
