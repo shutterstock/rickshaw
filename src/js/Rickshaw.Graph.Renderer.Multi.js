@@ -131,6 +131,8 @@ Rickshaw.Graph.Renderer.Multi = Rickshaw.Class.create( Rickshaw.Graph.Renderer, 
 			var series = group.series
 				.filter( function(series) { return !series.disabled } );
 
+			series.active = function() { return series };
+
 			group.renderer.render({ series: series, vis: group.vis });
 			series.forEach(function(s) { s.stack = s._stack || s.stack || s.data; });
 		});
