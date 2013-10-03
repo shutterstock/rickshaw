@@ -70,7 +70,7 @@ Rickshaw.Graph.Axis.Y = Rickshaw.Class.create( {
 
 	render: function() {
 
-		if (this.graph.height !== this._renderHeight) this.setSize({ auto: true });
+		if (this._renderHeight !== undefined && this.graph.height !== this._renderHeight) this.setSize({ auto: true });
 
 		this.ticks = this.staticTicks || Math.floor(this.graph.height / this.pixelsPerTick);
 

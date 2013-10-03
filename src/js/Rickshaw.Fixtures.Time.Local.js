@@ -53,6 +53,14 @@ Rickshaw.Fixtures.Time.Local = function() {
 			name: 'second',
 			seconds: 1,
 			formatter: function(d) { return d.getSeconds() + 's' }
+		}, {
+			name: 'decisecond',
+			seconds: 1/10,
+			formatter: function(d) { return d.getMilliseconds() + 'ms' }
+		}, {
+			name: 'centisecond',
+			seconds: 1/100,
+			formatter: function(d) { return d.getMilliseconds() + 'ms' }
 		}
 	];
 
