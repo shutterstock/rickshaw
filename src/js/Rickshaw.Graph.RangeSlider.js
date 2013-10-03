@@ -49,7 +49,7 @@ Rickshaw.Graph.RangeSlider = Rickshaw.Class.create({
 			} );
 		} );
 
-		element[0].style.width = graph.width + 'px';
+		element.style.width = graph.width + 'px';
 	},
 
 	update: function() {
