@@ -914,6 +914,14 @@ Rickshaw.Fixtures.Time = function() {
 			name: 'second',
 			seconds: 1,
 			formatter: function(d) { return d.getUTCSeconds() + 's' }
+		}, {
+			name: 'decisecond',
+			seconds: 1/10,
+			formatter: function(d) { return d.getUTCMilliseconds() + 'ms' }
+		}, {
+			name: 'centisecond',
+			seconds: 1/100,
+			formatter: function(d) { return d.getUTCMilliseconds() + 'ms' }
 		}
 	];
 
@@ -1024,6 +1032,14 @@ Rickshaw.Fixtures.Time.Local = function() {
 			name: 'second',
 			seconds: 1,
 			formatter: function(d) { return d.getSeconds() + 's' }
+		}, {
+			name: 'decisecond',
+			seconds: 1/10,
+			formatter: function(d) { return d.getMilliseconds() + 'ms' }
+		}, {
+			name: 'centisecond',
+			seconds: 1/100,
+			formatter: function(d) { return d.getMilliseconds() + 'ms' }
 		}
 	];
 
@@ -1490,7 +1506,7 @@ Rickshaw.Graph.Axis.X = function(args) {
 
 	this.render = function() {
 
-		if (this.graph.width !== this._renderWidth) this.setSize({ auto: true });
+		if (this._renderWidth !== undefined && this.graph.width !== this._renderWidth) this.setSize({ auto: true });
 
 		var axis = d3.svg.axis().scale(this.graph.x).orient(this.orientation);
 		axis.tickFormat( args.tickFormat || function(x) { return x } );
@@ -1619,7 +1635,7 @@ Rickshaw.Graph.Axis.Y = Rickshaw.Class.create( {
 
 	render: function() {
 
-		if (this.graph.height !== this._renderHeight) this.setSize({ auto: true });
+		if (this._renderHeight !== undefined && this.graph.height !== this._renderHeight) this.setSize({ auto: true });
 
 		this.ticks = this.staticTicks || Math.floor(this.graph.height / this.pixelsPerTick);
 
@@ -2307,7 +2323,8 @@ Rickshaw.Graph.RangeSlider = Rickshaw.Class.create({
 			} );
 		} );
 
-		element[0].style.width = graph.width + 'px';
+		$(element)[0].style.width = graph.width + 'px';
+
 	},
 
 	update: function() {
@@ -2943,6 +2960,8 @@ Rickshaw.Graph.Renderer.Multi = Rickshaw.Class.create( Rickshaw.Graph.Renderer, 
 			var series = group.series
 				.filter( function(series) { return !series.disabled } );
 
+			series.active = function() { return series };
+
 			group.renderer.render({ series: series, vis: group.vis });
 			series.forEach(function(s) { s.stack = s._stack || s.stack || s.data; });
 		});
@@ -3117,6 +3136,17 @@ Rickshaw.Graph.Smoother = Rickshaw.Class.create({
 	}
 });
 
+Rickshaw.namespace('Rickshaw.Graph.Socketio');
+
+Rickshaw.Graph.Socketio = Rickshaw.Class.create( Rickshaw.Graph.Ajax, {
+	request: function() {
+		var socket = io.connect(this.dataURL);
+		thisData = this;
+		socket.on('rickshaw', function (data) {
+			thisData.success(data);
+		});
+	}
+} );
 Rickshaw.namespace('Rickshaw.Graph.Unstacker');
 
 Rickshaw.Graph.Unstacker = function(args) {
