@@ -1,13 +1,25 @@
 var fs = require('fs');
+var Rickshaw;
+
+exports.setUp = function(callback) {
+
+	Rickshaw = require('../rickshaw');
+
+	global.document = d3.select('html')[0][0].parentNode;
+	global.window = document.defaultView;
+
+	new Rickshaw.Compat.ClassList();
+
+	callback();
+};
+
+exports.tearDown = function(callback) {
+
+	delete require.cache.d3;
+	callback();
+};
 
 exports.svg = function(test) {
-
-	var jsdom    = require("jsdom").jsdom;
-	global.document = jsdom("<html><head></head><body></body></html>");
-	global.window   = global.document.createWindow();
-
-	var Rickshaw = require('../rickshaw');
-	new Rickshaw.Compat.ClassList();
 
 	var el = document.createElement("div");
 
@@ -42,13 +54,6 @@ exports.svg = function(test) {
 
 exports.validate = function(test) {
 
-	var jsdom    = require("jsdom").jsdom;
-	global.document = jsdom("<html><head></head><body></body></html>");
-	global.window   = global.document.createWindow();
-
-	var Rickshaw = require('../rickshaw');
-	new Rickshaw.Compat.ClassList();
-
 	var el = document.createElement("div");
 
 	 test.throws( function() {
@@ -75,13 +80,6 @@ exports.validate = function(test) {
 };
 
 exports.inconsistent = function(test) {
-
-	var jsdom    = require("jsdom").jsdom;
-	global.document = jsdom("<html><head></head><body></body></html>");
-	global.window   = global.document.createWindow();
-
-	var Rickshaw = require('../rickshaw');
-	new Rickshaw.Compat.ClassList();
 
 	var el = document.createElement("div");
 
@@ -150,10 +148,6 @@ exports.inconsistent = function(test) {
 
 exports.rendererAutodiscover = function(test) {
 
-	var jsdom    = require("jsdom").jsdom;
-	global.document = jsdom("<html><head></head><body></body></html>");
-	global.window   = global.document.createWindow();
-
 	var Rickshaw = require('../rickshaw');
 	new Rickshaw.Compat.ClassList();
 
@@ -203,3 +197,4 @@ exports.rendererAutodiscover = function(test) {
 
 	test.done();
 };
+
