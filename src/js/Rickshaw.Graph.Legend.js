@@ -59,7 +59,9 @@ Rickshaw.Graph.Legend = function(args) {
 	};
 
 	series.forEach( function(s) {
-		self.addLine(s);
+		if (s.legend === undefined || s.legend === true){
+			self.addLine(s);
+		}
 	} );
 
 	graph.onUpdate( function() {} );
