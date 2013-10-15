@@ -31,35 +31,34 @@ Rickshaw.Graph.Renderer = Rickshaw.Class.create( {
 	domain: function(data) {
 
 		var stackedData = data || this.graph.stackedData || this.graph.stackData();
-		var firstPoint = stackedData[0][0];
 
-		if (firstPoint === undefined) {
-			return { x: [null, null], y: [null, null] };
-		}
-
-		var xMin = firstPoint.x;
-		var xMax = firstPoint.x;
-
-		var yMin = firstPoint.y + firstPoint.y0;
-		var yMax = firstPoint.y + firstPoint.y0;
+		var xMin, xMax, yMin, yMax;
 
 		stackedData.forEach( function(series) {
 
 			series.forEach( function(d) {
-
 				if (d.y == null) return;
 
 				var y = d.y + d.y0;
+
+				if (xMin === undefined) {
+					xMin = xMax = d.x;
+					yMin = yMax = y;
+				}
 
 				if (y < yMin) yMin = y;
 				if (y > yMax) yMax = y;
 			} );
 
-			if (!series.length) return;
-
-			if (series[0].x < xMin) xMin = series[0].x;
-			if (series[series.length - 1].x > xMax) xMax = series[series.length - 1].x;
+			if (series.length) {
+				if (series[0].x < xMin) xMin = series[0].x;
+				if (series[series.length - 1].x > xMax) xMax = series[series.length - 1].x;
+			}
 		} );
+
+		if (xMin === undefined) {
+			return { x: [null, null], y: [null, null] };
+		}
 
 		xMin -= (xMax - xMin) * this.padding.left;
 		xMax += (xMax - xMin) * this.padding.right;
