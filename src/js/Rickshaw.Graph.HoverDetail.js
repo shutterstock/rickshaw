@@ -192,11 +192,36 @@ Rickshaw.Graph.HoverDetail = Rickshaw.Class.create({
 		this.element.appendChild(dot);
 
 		if (point.active) {
-			item.className = 'item active';
-			dot.className = 'dot active';
+			item.classList.add('active');
+			dot.classList.add('active');
 		}
 
+		// Assume left alignment until the element has been displayed and
+		// bounding box calculations are possible.
+		var alignables = [xLabel, item];
+		alignables.forEach(function(el) {
+			el.classList.add('left');
+		});
+
 		this.show();
+
+		// After the element has been shown, it is possible to get client
+		// rectangles.
+		var parentRect = this.element.parentNode.getBoundingClientRect();
+
+		// If any alignable element's right edge extends past the right edge of
+		// the parent rectangle, then align right.
+		var alignRight = alignables.some(function(el) {
+			var rect = el.getBoundingClientRect();
+			return rect.right > parentRect.right;
+		});
+
+		if (alignRight) {
+			alignables.forEach(function(el) {
+				el.classList.remove('left');
+				el.classList.add('right');
+			});
+		}
 
 		if (typeof this.onRender == 'function') {
 			this.onRender(args);
@@ -227,4 +252,3 @@ Rickshaw.Graph.HoverDetail = Rickshaw.Class.create({
 		);
 	}
 });
-
