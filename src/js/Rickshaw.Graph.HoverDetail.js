@@ -205,27 +205,50 @@ Rickshaw.Graph.HoverDetail = Rickshaw.Class.create({
 
 		this.show();
 
-		// After the element has been shown, it is possible to get client
-		// rectangles.
-		var parentRect = this.element.parentNode.getBoundingClientRect();
-
-		// If any alignable element's right edge extends past the right edge of
-		// the parent rectangle, then align right.
-		var alignRight = alignables.some(function(el) {
-			var rect = el.getBoundingClientRect();
-			return rect.right > parentRect.right;
-		});
-
-		if (alignRight) {
+		// If left-alignment results in any error, try right-alignment.
+		var leftAlignError = this._calcLayoutError(alignables);
+		if (leftAlignError > 0) {
 			alignables.forEach(function(el) {
 				el.classList.remove('left');
 				el.classList.add('right');
 			});
+
+			// If right-alignment is worse than left alignment, switch back.
+			var rightAlignError = this._calcLayoutError(alignables);
+			if (rightAlignError > leftAlignError) {
+				alignables.forEach(function(el) {
+					el.classList.remove('right');
+					el.classList.add('left');
+				});
+			}
 		}
 
 		if (typeof this.onRender == 'function') {
 			this.onRender(args);
 		}
+	},
+
+	_calcLayoutError: function(alignables) {
+		// Layout error is calculated as the number of linear pixels by which
+		// an alignable extends past the left or right edge of the parent.
+		var parentRect = this.element.parentNode.getBoundingClientRect();
+
+		var error = 0;
+		var alignRight = alignables.forEach(function(el) {
+			var rect = el.getBoundingClientRect();
+			if (!rect.width) {
+				return;
+			}
+
+			if (rect.right > parentRect.right) {
+				error += rect.right - parentRect.right;
+			}
+
+			if (rect.left < parentRect.left) {
+				error += parentRect.left - rect.left;
+			}
+		});
+		return error;
 	},
 
 	_addListeners: function() {
