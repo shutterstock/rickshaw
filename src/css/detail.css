@@ -28,6 +28,12 @@
 	background: white;
 	white-space: nowrap;
 }
+.rickshaw_graph .detail .x_label.left {
+	left: 0;
+}
+.rickshaw_graph .detail .x_label.right {
+	right: 0;
+}
 .rickshaw_graph .detail .item {
 	position: absolute;
 	z-index: 2;
@@ -40,25 +46,39 @@
 	color: white;
 	border: 1px solid rgba(0, 0, 0, 0.4);
 	margin-left: 1em;
+	margin-right: 1em;
 	margin-top: -1em;
 	white-space: nowrap;
+}
+.rickshaw_graph .detail .item.left {
+	left: 0;
+}
+.rickshaw_graph .detail .item.right {
+	right: 0;
 }
 .rickshaw_graph .detail .item.active {
 	opacity: 1;
 	background: rgba(0, 0, 0, 0.8);
 }
-.rickshaw_graph .detail .item:before {
+.rickshaw_graph .detail .item.left:before {
 	content: "\25c2";
 	position: absolute;
 	left: -0.5em;
 	color: rgba(0, 0, 0, 0.7);
 	width: 0;
 }
+.rickshaw_graph .detail .item.right:after {
+	content: "\25b8";
+	position: relative;
+	left: 0.6em;
+	color: rgba(0, 0, 0, 0.7);
+	width: 0;
+}
 .rickshaw_graph .detail .dot {
 	width: 4px;
 	height: 4px;
-	margin-left: -4px;
-	margin-top: -3px;
+	margin-left: -2px;
+	margin-top: -2px;
 	border-radius: 5px;
 	position: absolute;
 	box-shadow: 0 0 2px rgba(0, 0, 0, 0.6);
