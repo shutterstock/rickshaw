@@ -9,21 +9,8 @@ exports.setUp = function(callback) {
 
 	new Rickshaw.Compat.ClassList();
 
-	callback();
-};
-
-exports.tearDown = function(callback) {
-
-	delete require.cache.d3;
-	callback();
-};
-
-exports.rendersLegend = function(test) {
-
 	var el = document.createElement("div");
-	var legendEl = document.createElement("div");
-
-	var graph = new Rickshaw.Graph({
+	this.graph = new Rickshaw.Graph({
 		element: el,
 		width: 960,
 		height: 500,
@@ -43,20 +30,53 @@ exports.rendersLegend = function(test) {
 			}
 		]
 	});
+	this.legendEl = document.createElement("div");
 
+
+	callback();
+};
+
+exports.tearDown = function(callback) {
+
+	delete require.cache.d3;
+	callback();
+};
+
+exports.rendersLegend = function(test) {
 	var legend = new Rickshaw.Graph.Legend({
-		graph: graph,
-		element: legendEl
+		graph: this.graph,
+		element: this.legendEl
 	});
 
-	graph.render();
-
-	var items = legendEl.getElementsByTagName('li')
+	var items = this.legendEl.getElementsByTagName('li')
 	test.equal(items.length, 2, "legend count")
 	test.equal(items[1].getElementsByClassName('label')[0].innerHTML, "foo")
 	test.equal(items[0].getElementsByClassName('label')[0].innerHTML, "bar")
 
 	test.done();
 
+};
+
+exports.hasDefaultClassName = function(test) {
+	var legend = new Rickshaw.Graph.Legend({
+		graph: this.graph,
+		element: this.legendEl
+	});
+
+	test.equal(this.legendEl.className, "rickshaw_legend")
+	test.done();
+};
+
+exports.canOverrideClassName = function(test) {
+    var MyLegend = Rickshaw.Class.create( Rickshaw.Graph.Legend, {
+    	className: 'fnord'
+    });
+	var legend = new MyLegend({
+		graph: this.graph,
+		element: this.legendEl
+	});
+
+	test.equal(this.legendEl.className, "fnord")
+	test.done();
 };
 

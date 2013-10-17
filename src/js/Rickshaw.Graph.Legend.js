@@ -2,12 +2,14 @@ Rickshaw.namespace('Rickshaw.Graph.Legend');
 
 Rickshaw.Graph.Legend = Rickshaw.Class.create( {
 
+	className: 'rickshaw_legend',
+
 	initialize: function(args) {
 		var self = this;
 		this.element = args.element;
 		this.graph = args.graph;
 
-		this.element.classList.add('rickshaw_legend');
+		this.element.classList.add(this.className);
 
 		this.list = document.createElement('ul');
 		this.element.appendChild(this.list);
