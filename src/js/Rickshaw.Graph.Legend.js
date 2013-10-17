@@ -1,27 +1,33 @@
 Rickshaw.namespace('Rickshaw.Graph.Legend');
 
-Rickshaw.Graph.Legend = function(args) {
+Rickshaw.Graph.Legend = Rickshaw.Class.create( {
 
-	var element = this.element = args.element;
-	var graph = this.graph = args.graph;
+	initialize: function(args) {
+		var self = this;
+		this.element = args.element;
+		this.graph = args.graph;
 
-	var self = this;
+		this.element.classList.add('rickshaw_legend');
 
-	element.classList.add('rickshaw_legend');
+		this.list = document.createElement('ul');
+		this.element.appendChild(this.list);
+		this.lines = [];
 
-	var list = this.list = document.createElement('ul');
-	element.appendChild(list);
+		var series = this.graph.series
+			.map( function(s) { return s } );
 
-	var series = graph.series
-		.map( function(s) { return s } );
+		if (!args.naturalOrder) {
+			series = series.reverse();
+		}
 
-	if (!args.naturalOrder) {
-		series = series.reverse();
-	}
+		series.forEach( function(s) {
+			self.addLine(s);
+		} );
 
-	this.lines = [];
+		this.graph.onUpdate( function() {} );
+	},
 
-	this.addLine = function (series) {
+	addLine: function (series) {
 		var line = document.createElement('li');
 		line.className = 'line';
 		if (series.disabled) {
@@ -39,7 +45,7 @@ Rickshaw.Graph.Legend = function(args) {
 		label.innerHTML = series.name;
 
 		line.appendChild(label);
-		list.appendChild(line);
+		this.list.appendChild(line);
 
 		line.series = series;
 
@@ -48,19 +54,14 @@ Rickshaw.Graph.Legend = function(args) {
 		}
 
 		var _line = { element: line, series: series };
-		if (self.shelving) {
-			self.shelving.addAnchor(_line);
-			self.shelving.updateBehaviour();
+		if (this.shelving) {
+			this.shelving.addAnchor(_line);
+			this.shelving.updateBehaviour();
 		}
-		if (self.highlighter) {
-			self.highlighter.addHighlightEvents(_line);
+		if (this.highlighter) {
+			this.highlighter.addHighlightEvents(_line);
 		}
-		self.lines.push(_line);
-	};
+		this.lines.push(_line);
+	}
+} );
 
-	series.forEach( function(s) {
-		self.addLine(s);
-	} );
-
-	graph.onUpdate( function() {} );
-};
