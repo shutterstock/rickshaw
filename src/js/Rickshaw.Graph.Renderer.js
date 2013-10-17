@@ -91,16 +91,29 @@ Rickshaw.Graph.Renderer = Rickshaw.Class.create( {
 		var data = series
 			.filter(function(s) { return !s.disabled })
 			.map(function(s) { return s.stack });
-
-		var nodes = vis.selectAll("path")
+		
+		var seriesGroups = vis.selectAll('g.series')
 			.data(data)
-			.enter().append("svg:path")
-			.attr("d", this.seriesPathFactory());
-
-		var i = 0;
-		series.forEach( function(series) {
+			.enter().append('svg:g')
+				.classed('series', true);
+				
+		var pathNodes = seriesGroups.append("svg:path")
+			.attr("d", this.seriesPathFactory())
+			.classed('path', true);
+		
+		var strokeNodes = null;
+		if (this.stroke) {
+			strokeNodes = seriesGroups.append("svg:path")
+				.attr("d", this.seriesStrokeFactory())
+				.classed('stroke', true);
+		}
+		
+		// Enable later processing of the created dom nodes
+		series.forEach( function(series, index) {
 			if (series.disabled) return;
-			series.path = nodes[0][i++];
+			series.group = seriesGroups[0][index];
+			series.path = pathNodes[0][index];
+			if (this.stroke) series.stroke = strokeNodes[0][index];
 			this._styleSeries(series);
 		}, this );
 	},
@@ -113,7 +126,9 @@ Rickshaw.Graph.Renderer = Rickshaw.Class.create( {
 		series.path.setAttribute('fill', fill);
 		series.path.setAttribute('stroke', stroke);
 		series.path.setAttribute('stroke-width', this.strokeWidth);
-		series.path.setAttribute('class', series.className);
+		// REFACT: series.className should probably go on the group
+		// but this is likely to break existing visualizations
+		series.path.classList.add(series.className);
 	},
 
 	configure: function(args) {
@@ -160,4 +175,3 @@ Rickshaw.Graph.Renderer = Rickshaw.Class.create( {
 		}
 	}
 } );
-

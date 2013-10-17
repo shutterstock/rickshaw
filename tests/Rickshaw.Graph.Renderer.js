@@ -86,3 +86,66 @@ exports.domain = function(test) {
 
 	test.done();
 };
+
+exports["render() should respect seriesStrokeFactory() in custom Renderer subclasses"] = function(test) {
+	var el = document.createElement("div");
+	
+	Rickshaw.Graph.Renderer.RespectStrokeFactory = Rickshaw.Class.create( Rickshaw.Graph.Renderer, {
+		name: 'respectStrokeFactory',
+		
+		seriesPathFactory: function() {
+			var graph = this.graph;
+			var factory = d3.svg.line()
+				.x( function(d) { return graph.x(d.x) } )
+				.y( function(d) { return graph.y(d.y + d.y0) } )
+				.interpolate(graph.interpolation).tension(this.tension);
+			factory.defined && factory.defined( function(d) { return d.y !== null } );
+			return factory;
+		},
+		
+		seriesStrokeFactory: function() {
+			var graph = this.graph;
+			var factory = d3.svg.line()
+				.x( function(d) { return graph.x(d.x) } )
+				.y( function(d) { return graph.y(d.y + d.y0) } )
+				.interpolate(graph.interpolation).tension(this.tension);
+			factory.defined && factory.defined( function(d) { return d.y !== null } );
+			return factory;
+		}
+	});
+	
+	var graph = new Rickshaw.Graph({
+		element: el,
+		stroke: true,
+		width: 10,
+		height: 10,
+		renderer: 'respectStrokeFactory',
+		series: [
+			{
+				color: 'steelblue',
+				data: [
+					{ x: 0, y: 40 },
+					{ x: 1, y: 49 },
+					{ x: 2, y: 38 },
+					{ x: 3, y: 30 },
+					{ x: 4, y: 32 }
+				]
+			}
+		]
+	});
+	graph.render()
+	
+	test.equals(1, graph.vis.select('path.path').size())
+	test.equals(1, graph.vis.select('path.stroke').size())
+	
+	var firstSeries = graph.series[0]
+	test.ok(d3.select(firstSeries.path).classed('path'))
+	test.ok(d3.select(firstSeries.stroke).classed('stroke'))
+	
+	var group = d3.select(firstSeries.group)
+	test.ok(group.classed('series'))
+	test.ok(firstSeries.path === group.select('.path').node())
+	test.ok(firstSeries.stroke === group.select('.stroke').node())
+	
+	test.done()
+}
