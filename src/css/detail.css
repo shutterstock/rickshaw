@@ -60,19 +60,29 @@
 	opacity: 1;
 	background: rgba(0, 0, 0, 0.8);
 }
-.rickshaw_graph .detail .item.left:before {
-	content: "\25c2";
+.rickshaw_graph .detail .item:after {
 	position: absolute;
-	left: -0.5em;
-	color: rgba(0, 0, 0, 0.7);
+	display: block;
 	width: 0;
+	height: 0;
+
+	content: "";
+
+	border: 5px solid transparent;
+}
+.rickshaw_graph .detail .item.left:after {
+	top: 1em;
+	left: -5px;
+	margin-top: -5px;
+	border-right-color: rgba(0, 0, 0, 0.8);
+	border-left-width: 0;
 }
 .rickshaw_graph .detail .item.right:after {
-	content: "\25b8";
-	position: relative;
-	left: 0.6em;
-	color: rgba(0, 0, 0, 0.7);
-	width: 0;
+	top: 1em;
+	right: -5px;
+	margin-top: -5px;
+	border-left-color: rgba(0, 0, 0, 0.8);
+	border-right-width: 0;
 }
 .rickshaw_graph .detail .dot {
 	width: 4px;
