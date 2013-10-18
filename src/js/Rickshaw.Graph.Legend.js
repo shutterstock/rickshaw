@@ -5,20 +5,35 @@ Rickshaw.Graph.Legend = Rickshaw.Class.create( {
 	className: 'rickshaw_legend',
 
 	initialize: function(args) {
-		var self = this;
 		this.element = args.element;
 		this.graph = args.graph;
+		this.naturalOrder = args.naturalOrder;
 
 		this.element.classList.add(this.className);
 
 		this.list = document.createElement('ul');
 		this.element.appendChild(this.list);
+
+		this.render();
+
+		// we could bind this.render.bind(this) here
+		// but triggering the re-render would lose the added
+		// behavior of the series toggle
+		this.graph.onUpdate( function() {} );
+	},
+
+	render: function() {
+		var self = this;
+
+		while ( this.list.firstChild ) {
+			this.list.removeChild( this.list.firstChild );
+		}
 		this.lines = [];
 
 		var series = this.graph.series
 			.map( function(s) { return s } );
 
-		if (!args.naturalOrder) {
+		if (!this.naturalOrder) {
 			series = series.reverse();
 		}
 
@@ -26,7 +41,7 @@ Rickshaw.Graph.Legend = Rickshaw.Class.create( {
 			self.addLine(s);
 		} );
 
-		this.graph.onUpdate( function() {} );
+
 	},
 
 	addLine: function (series) {
