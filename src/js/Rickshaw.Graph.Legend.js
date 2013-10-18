@@ -54,8 +54,6 @@ Rickshaw.Graph.Legend = Rickshaw.Class.create({
 
 	addLine: function(series) {
 
-		console.log('addline', series.name);
-
 		var line = document.createElement('li');
 		line.className = 'line';
 
