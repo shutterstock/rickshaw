@@ -79,6 +79,7 @@ Rickshaw.Graph.Legend = Rickshaw.Class.create( {
 			this.highlighter.addHighlightEvents(_line);
 		}
 		this.lines.push(_line);
+		return line;
 	}
 } );
 
