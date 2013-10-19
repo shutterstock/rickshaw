@@ -1,80 +1,94 @@
 Rickshaw.namespace('Rickshaw.Graph.Behavior.Series.Highlight');
 
-Rickshaw.Graph.Behavior.Series.Highlight = function(args) {
+Rickshaw.Graph.Behavior.Series.Highlight = Rickshaw.Class.create({
 
-	this.graph = args.graph;
-	this.legend = args.legend;
+	initialize: function(args) {
 
-	var self = this;
+		this.graph = args.graph;
+		this.legend = args.legend;
 
-	var colorSafe = {};
-	var activeLine = null;
+		this._colorSafe = {};
+		this._activeLine = null;
 
-	var disabledColor = args.disabledColor || function(seriesColor) {
-		return d3.interpolateRgb(seriesColor, d3.rgb('#d8d8d8'))(0.8).toString();
-	};
+		this._disabledColor = args.disabledColor || function(seriesColor) {
+			return d3.interpolateRgb(seriesColor, d3.rgb('#d8d8d8'))(0.8).toString();
+		};
 
-	this.addHighlightEvents = function (l) {
+		this.graph.onSeriesChange(function() {
+			this.addListeners();
+		}.bind(this));
 
-		l.element.addEventListener( 'mouseover', function(e) {
+		this.addListeners();
+	},
 
-			if (activeLine) return;
-			else activeLine = l;
+	addListeners: function() {
 
-			self.legend.lines.forEach( function(line) {
+		if (this.legend) {
+			this.legend.lines.forEach(function(l) {
+				this.addHighlightEvents(l);
+			}.bind(this));
+		}
+	},
+
+	addHighlightEvents: function(l) {
+
+		if (l._hasHighlightEvents) return;
+
+		l.element.addEventListener('mouseover', function(e) {
+
+			if (this._activeLine) return;
+			else this._activeLine = l;
+
+			this.legend.lines.forEach(function(line, index) {
 
 				if (l === line) {
 
 					// if we're not in a stacked renderer bring active line to the top
-					if (self.graph.renderer.unstack && (line.series.renderer ? line.series.renderer.unstack : true)) {
+					if (this.graph.renderer.unstack && (line.series.renderer ? line.series.renderer.unstack : true)) {
 
-						var seriesIndex = self.graph.series.indexOf(line.series);
+						var seriesIndex = this.graph.series.indexOf(line.series);
 						line.originalIndex = seriesIndex;
 
-						var series = self.graph.series.splice(seriesIndex, 1)[0];
-						self.graph.series.push(series);
+						var series = this.graph.series.splice(seriesIndex, 1)[0];
+						this.graph.series.push(series);
 					}
 					return;
 				}
 
-				colorSafe[line.series.name] = colorSafe[line.series.name] || line.series.color;
-				line.series.color = disabledColor(line.series.color);
+				this._colorSafe[line.series.name] = this._colorSafe[line.series.name] || line.series.color;
+				line.series.color = this._disabledColor(line.series.color);
 
-			} );
+			}.bind(this));
 
-			self.graph.update();
+			this.graph.update();
 
-		}, false );
+		}.bind(this), false);
 
-		l.element.addEventListener( 'mouseout', function(e) {
+		l.element.addEventListener('mouseout', function(e) {
 
-			if (!activeLine) return;
-			else activeLine = null;
+			if (!this._activeLine) return;
+			else this._activeLine = null;
 
-			self.legend.lines.forEach( function(line) {
+			this.legend.lines.forEach(function(line) {
 
 				// return reordered series to its original place
 				if (l === line && line.hasOwnProperty('originalIndex')) {
 
-					var series = self.graph.series.pop();
-					self.graph.series.splice(line.originalIndex, 0, series);
+					var series = this.graph.series.pop();
+					this.graph.series.splice(line.originalIndex, 0, series);
 					delete line.originalIndex;
 				}
 
-				if (colorSafe[line.series.name]) {
-					line.series.color = colorSafe[line.series.name];
+				if (this._colorSafe[line.series.name]) {
+					line.series.color = this._colorSafe[line.series.name];
 				}
-			} );
 
-			self.graph.update();
+			}.bind(this));
 
-		}, false );
-	};
+			this.graph.update();
 
-	if (this.legend) {
-		this.legend.lines.forEach( function(l) {
-			self.addHighlightEvents(l);
-		} );
+		}.bind(this), false);
+
+		l._hasHighlightEvents = true;
 	}
-
-};
+});
