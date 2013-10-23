@@ -1701,8 +1701,32 @@ Rickshaw.Graph.Axis.Y.Scaled = Rickshaw.Class.create( Rickshaw.Graph.Axis.Y, {
   },
 
   _drawAxis: function($super, scale) {
-    // make a copy of the custom scale, adjust the range to match the graph's scale
-    var adjustedScale = this.scale.copy().range(scale.range());
+    // Adjust scale's domain to compensate for adjustments to the
+    // renderer's domain (e.g. padding).
+    var domain = this.scale.domain();
+    var renderDomain = this.graph.renderer.domain().y;
+
+    var extents = [
+      Math.min.apply(Math, domain),
+      Math.max.apply(Math, domain)];
+
+    // A mapping from the ideal render domain [0, 1] to the extent
+    // of the original scale's domain.  This is used to calculate
+    // the extents of the adjusted domain.
+    var extentMap = d3.scale.linear().domain([0, 1]).range(extents);
+
+    var adjExtents = [
+      extentMap(renderDomain[0]),
+      extentMap(renderDomain[1])];
+
+    // A mapping from the original domain to the adjusted domain.
+    var adjustment = d3.scale.linear().domain(extents).range(adjExtents);
+
+    // Make a copy of the custom scale, apply the adjusted domain, and
+    // copy the range to match the graph's scale.
+    var adjustedScale = this.scale.copy()
+      .domain(domain.map(adjustment))
+      .range(scale.range());
 
     return $super(adjustedScale);
   },
@@ -1737,14 +1761,14 @@ Rickshaw.Graph.Behavior.Series.Highlight = function(args) {
 			if (activeLine) return;
 			else activeLine = l;
 
-			self.legend.lines.forEach( function(line, index) {
+			self.legend.lines.forEach( function(line) {
 
 				if (l === line) {
 
 					// if we're not in a stacked renderer bring active line to the top
-					if (index > 0 && self.graph.renderer.unstack && (line.series.renderer ? line.series.renderer.unstack : true)) {
+					if (self.graph.renderer.unstack && (line.series.renderer ? line.series.renderer.unstack : true)) {
 
-						var seriesIndex = self.graph.series.length - index - 1;
+						var seriesIndex = self.graph.series.indexOf(line.series);
 						line.originalIndex = seriesIndex;
 
 						var series = self.graph.series.splice(seriesIndex, 1)[0];
@@ -2156,15 +2180,63 @@ Rickshaw.Graph.HoverDetail = Rickshaw.Class.create({
 		this.element.appendChild(dot);
 
 		if (point.active) {
-			item.className = 'item active';
-			dot.className = 'dot active';
+			item.classList.add('active');
+			dot.classList.add('active');
 		}
 
+		// Assume left alignment until the element has been displayed and
+		// bounding box calculations are possible.
+		var alignables = [xLabel, item];
+		alignables.forEach(function(el) {
+			el.classList.add('left');
+		});
+
 		this.show();
+
+		// If left-alignment results in any error, try right-alignment.
+		var leftAlignError = this._calcLayoutError(alignables);
+		if (leftAlignError > 0) {
+			alignables.forEach(function(el) {
+				el.classList.remove('left');
+				el.classList.add('right');
+			});
+
+			// If right-alignment is worse than left alignment, switch back.
+			var rightAlignError = this._calcLayoutError(alignables);
+			if (rightAlignError > leftAlignError) {
+				alignables.forEach(function(el) {
+					el.classList.remove('right');
+					el.classList.add('left');
+				});
+			}
+		}
 
 		if (typeof this.onRender == 'function') {
 			this.onRender(args);
 		}
+	},
+
+	_calcLayoutError: function(alignables) {
+		// Layout error is calculated as the number of linear pixels by which
+		// an alignable extends past the left or right edge of the parent.
+		var parentRect = this.element.parentNode.getBoundingClientRect();
+
+		var error = 0;
+		var alignRight = alignables.forEach(function(el) {
+			var rect = el.getBoundingClientRect();
+			if (!rect.width) {
+				return;
+			}
+
+			if (rect.right > parentRect.right) {
+				error += rect.right - parentRect.right;
+			}
+
+			if (rect.left < parentRect.left) {
+				error += parentRect.left - rect.left;
+			}
+		});
+		return error;
 	},
 
 	_addListeners: function() {
@@ -2191,7 +2263,6 @@ Rickshaw.Graph.HoverDetail = Rickshaw.Class.create({
 		);
 	}
 });
-
 Rickshaw.namespace('Rickshaw.Graph.JSONP');
 
 Rickshaw.Graph.JSONP = Rickshaw.Class.create( Rickshaw.Graph.Ajax, {
@@ -2208,28 +2279,51 @@ Rickshaw.Graph.JSONP = Rickshaw.Class.create( Rickshaw.Graph.Ajax, {
 } );
 Rickshaw.namespace('Rickshaw.Graph.Legend');
 
-Rickshaw.Graph.Legend = function(args) {
+Rickshaw.Graph.Legend = Rickshaw.Class.create( {
 
-	var element = this.element = args.element;
-	var graph = this.graph = args.graph;
+	className: 'rickshaw_legend',
 
-	var self = this;
+	initialize: function(args) {
+		this.element = args.element;
+		this.graph = args.graph;
+		this.naturalOrder = args.naturalOrder;
 
-	element.classList.add('rickshaw_legend');
+		this.element.classList.add(this.className);
 
-	var list = this.list = document.createElement('ul');
-	element.appendChild(list);
+		this.list = document.createElement('ul');
+		this.element.appendChild(this.list);
 
-	var series = graph.series
-		.map( function(s) { return s } );
+		this.render();
 
-	if (!args.naturalOrder) {
-		series = series.reverse();
-	}
+		// we could bind this.render.bind(this) here
+		// but triggering the re-render would lose the added
+		// behavior of the series toggle
+		this.graph.onUpdate( function() {} );
+	},
 
-	this.lines = [];
+	render: function() {
+		var self = this;
 
-	this.addLine = function (series) {
+		while ( this.list.firstChild ) {
+			this.list.removeChild( this.list.firstChild );
+		}
+		this.lines = [];
+
+		var series = this.graph.series
+			.map( function(s) { return s } );
+
+		if (!this.naturalOrder) {
+			series = series.reverse();
+		}
+
+		series.forEach( function(s) {
+			self.addLine(s);
+		} );
+
+
+	},
+
+	addLine: function (series) {
 		var line = document.createElement('li');
 		line.className = 'line';
 		if (series.disabled) {
@@ -2247,7 +2341,7 @@ Rickshaw.Graph.Legend = function(args) {
 		label.innerHTML = series.name;
 
 		line.appendChild(label);
-		list.appendChild(line);
+		this.list.appendChild(line);
 
 		line.series = series;
 
@@ -2256,22 +2350,18 @@ Rickshaw.Graph.Legend = function(args) {
 		}
 
 		var _line = { element: line, series: series };
-		if (self.shelving) {
-			self.shelving.addAnchor(_line);
-			self.shelving.updateBehaviour();
+		if (this.shelving) {
+			this.shelving.addAnchor(_line);
+			this.shelving.updateBehaviour();
 		}
-		if (self.highlighter) {
-			self.highlighter.addHighlightEvents(_line);
+		if (this.highlighter) {
+			this.highlighter.addHighlightEvents(_line);
 		}
-		self.lines.push(_line);
-	};
+		this.lines.push(_line);
+		return line;
+	}
+} );
 
-	series.forEach( function(s) {
-		self.addLine(s);
-	} );
-
-	graph.onUpdate( function() {} );
-};
 Rickshaw.namespace('Rickshaw.Graph.RangeSlider');
 
 Rickshaw.Graph.RangeSlider = Rickshaw.Class.create({
@@ -2406,6 +2496,8 @@ Rickshaw.Graph.Renderer = Rickshaw.Class.create( {
 				if (y < yMin) yMin = y;
 				if (y > yMax) yMax = y;
 			} );
+
+			if (!series.length) return;
 
 			if (series[0].x < xMin) xMin = series[0].x;
 			if (series[series.length - 1].x > xMax) xMax = series[series.length - 1].x;
@@ -2724,17 +2816,25 @@ Rickshaw.Graph.Renderer.Area = Rickshaw.Class.create( Rickshaw.Graph.Renderer, {
 		return factory;
 	},
 
-	render: function() {
+	render: function(args) {
+
+		args = args || {};
 
 		var graph = this.graph;
+		var series = args.series || graph.series;
 
-		graph.vis.selectAll('*').remove();
+		var vis = args.vis || graph.vis;
+		vis.selectAll('*').remove();
 
 		// insert or stacked areas so strokes lay on top of areas
 		var method = this.unstack ? 'append' : 'insert';
 
-		var nodes = graph.vis.selectAll("path")
-			.data(this.graph.stackedData)
+		var data = series
+			.filter(function(s) { return !s.disabled })
+			.map(function(s) { return s.stack });
+
+		var nodes = vis.selectAll("path")
+			.data(data)
 			.enter()[method]("svg:g", 'g');
 
 		nodes.append("svg:path")
@@ -2748,7 +2848,7 @@ Rickshaw.Graph.Renderer.Area = Rickshaw.Class.create( Rickshaw.Graph.Renderer, {
 		}
 
 		var i = 0;
-		graph.series.forEach( function(series) {
+		series.forEach( function(series) {
 			if (series.disabled) return;
 			series.path = nodes[0][i++];
 			this._styleSeries(series);
@@ -2847,6 +2947,13 @@ Rickshaw.Graph.Renderer.Multi = Rickshaw.Class.create( Rickshaw.Graph.Renderer, 
 		} );
 	},
 
+	configure: function($super, args) {
+
+		args = args || {};
+		this.config = args;
+		$super(args);
+	},
+
 	domain: function($super) {
 
 		this.graph.stackData();
@@ -2894,6 +3001,13 @@ Rickshaw.Graph.Renderer.Multi = Rickshaw.Class.create( Rickshaw.Graph.Renderer, 
 				graph.vis[0][0].appendChild(vis);
 
 				var renderer = graph._renderers[series.renderer];
+
+				var config = {};
+
+				var defaults = [ this.defaults(), renderer.defaults(), this.config, this.graph ];
+				defaults.forEach(function(d) { Rickshaw.extend(config, d) });
+
+				renderer.configure(config);
 
 				renderGroups[series.renderer] = {
 					renderer: renderer,
