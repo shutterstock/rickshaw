@@ -119,7 +119,11 @@ var graph = new Rickshaw.Graph( {
 graph.render();
 
 var RangeSelector = new Rickshaw.Graph.RangeSelector( {
-	graph: graph
+	graph: graph,
+    onZoom: function(i) {
+        alert('hola');
+        console.log('theres something wrong '+i);
+    }
 } );
 
 

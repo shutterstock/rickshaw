@@ -2,16 +2,19 @@ Rickshaw.namespace('Rickshaw.Graph.RangeSelector');
 Rickshaw.Graph.RangeSelector = Rickshaw.Class.create({
     initialize: function(args) {
         var graph = this.graph = args.graph;
+        var onZoom = this.onZoom = args.onZoom;
         this.build();
         graph.onUpdate(function() {
             this.update();
         }.bind(this));
     },
     build: function() {
-        var graph = this.graph,
+        var self = this,
+            graph = this.graph,
             position = this.position = {},
             selectionBox = this.selectionBox = document.createElement('div'),
             selectionControl = this.selectionControl = false,
+            i = 0,
             parent = graph.element.getElementsByTagName('svg')[0];
         selectionBox.setAttribute('class','rickshaw_range_selector');
         graph.element.appendChild(selectionBox);
@@ -20,7 +23,7 @@ Rickshaw.Graph.RangeSelector = Rickshaw.Class.create({
         parent.oncontextmenu = function(e){
             e.preventDefault();
         };
-        var clearSelection = function() {
+        var clearSelection = function(self) {
                 selectionBox.style.transition = 'opacity 0.2s ease-out';
                 selectionBox.style.opacity = 0;
                 setTimeout(function() {
@@ -53,42 +56,53 @@ Rickshaw.Graph.RangeSelector = Rickshaw.Class.create({
                         return false;
                     }
                 }, false);
+            },
+            startDrawing = function(e) {
+                e.stopPropagation();
+                e.preventDefault();
+                if (e.button === 0 | e.button === 1) {
+                    var startPointX = e.layerX;
+                    selectionBox.style.left = e.layerX;
+                    selectionControl = true;
+                    selectionDraw(startPointX);
+                }else if(e.button === 2 | e.button === 3){
+                    e.preventDefault();
+                    position.xMin = position.startingMinX;
+                    position.xMax = position.startingMaxX;
+                    graph.update();
+                    clearSelection();
+                    graph.update();
+                }else{
+                    return;
+                }
+            },
+            finishDrawing = function () {
+
+                if (!selectionControl | position.deltaX < 40 | position.xMax - position.xMin < 1000) {
+                    selectionControl = false;
+                    clearSelection();
+                    return false;
+                }
+                self.onZoom(i);
+                selectionControl = false;
+                position.xMin = Math.round(graph.x.invert(position.minX));
+                position.xMax = Math.round(graph.x.invert(position.maxX));
+                graph.update();
+                clearSelection();
+                graph.update();
+                i++;
             };
 
         graph.element.addEventListener('mousedown', function(e) {
-            e.stopPropagation();
-            e.preventDefault();
-            if (e.button === 0 | e.button === 1) {
-                var startPointX = e.layerX;
-                selectionBox.style.left = e.layerX;
-                selectionControl = true;
-                selectionDraw(startPointX);
-            }else if(e.button === 2 | e.button === 3){
-                e.preventDefault();
-                console.log(e.button);
-                position.xMin = position.startingMinX;
-                position.xMax = position.startingMaxX;
-                graph.update();
-                clearSelection();
-                graph.update();
-            }else{
-               return;
-            }
-            
+           startDrawing(e);
         }, true);
 
-        window.addEventListener('mouseup', function() {
-            if (!selectionControl | position.deltaX < 40 | position.xMax - position.xMin < 1000) {
-                selectionControl = false;
-                clearSelection();
-                return false;
-            }
-            selectionControl = false;
-            position.xMin = Math.round(graph.x.invert(position.minX));
-            position.xMax = Math.round(graph.x.invert(position.maxX));
-            graph.update();
-            clearSelection();
-            graph.update();
+        graph.element.addEventListener('mouseup', function(e) {
+            finishDrawing();
+        }, false);
+
+        graph.element.addEventListener('mouseleave', function(e) {
+            finishDrawing();
         }, false);
 
 //          if we're at an extreme, stick there
