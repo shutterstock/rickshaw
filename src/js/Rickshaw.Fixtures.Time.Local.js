@@ -6,7 +6,23 @@ Rickshaw.Fixtures.Time.Local = function() {
 
 	var self = this;
 
-	this.months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+	this.months = (function(){
+		var lang, months = [], d = new Date();
+
+		if (window && window.navigator) {
+			lang = window.navigator.userLanguage || window.navigator.language;
+		} else {
+			lang = 'en-US'
+		}
+
+		for(var i = 0; i < 12; i++) {
+			d = new Date(d.getFullYear(), i);
+			months.push(d.toLocaleDateString(lang, {
+				month: 'short'
+			}));
+		}
+		return months;
+	})();
 
 	this.units = [
 		{
