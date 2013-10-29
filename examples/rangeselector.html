@@ -121,10 +121,13 @@ graph.render();
 var RangeSelector = new Rickshaw.Graph.RangeSelector( {
 	graph: graph,
     onZoom: function(e) {
-        alert('hola');
         console.log(e);
     }
 } );
+
+var test = setTimeout(function () {
+    RangeSelector.zoomTo(seriesData[1][4].x,seriesData[5][100].x);
+}, 2000)
 
 
 </script>

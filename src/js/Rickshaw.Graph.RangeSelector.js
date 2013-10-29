@@ -134,7 +134,7 @@ Rickshaw.Graph.RangeSelector = Rickshaw.Class.create({
             this.update(position.xMin,position.xMax);
         }.bind(this));
     },
-    update: function(xMin,xMax) {
+    update: function (xMin,xMax) {
         var graph = this.graph;
         var position = this.position;
         graph.window.xMin = xMin;
@@ -150,8 +150,19 @@ Rickshaw.Graph.RangeSelector = Rickshaw.Class.create({
 
         position.xMin = graph.window.xMin;
         position.xMax = graph.window.xMax;
-
-        return position;
+    },
+    zoomTo : function (xMin,xMax) {
+        var graph = this.graph,
+            position = this.position,
+            e = {
+                type : 'zoomToCall'
+            };
+        position.xMin = xMin;
+        position.xMax = xMax;
+        e.position = position;
+        this.onZoom(e);
+        graph.update(xMin,xMax);
+        graph.update(xMin,xMax);
     }
 });
 
