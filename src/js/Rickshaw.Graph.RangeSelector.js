@@ -1,14 +1,13 @@
 Rickshaw.namespace('Rickshaw.Graph.RangeSelector');
 Rickshaw.Graph.RangeSelector = Rickshaw.Class.create({
     initialize: function(args) {
-        var graph = this.graph = args.graph;
-        var onZoom = this.onZoom = args.onZoom;
-        this.build();
-        graph.onUpdate(function() {
-            this.update();
-        }.bind(this));
+        var graph = this.graph = args.graph,
+            onZoom = this.onZoom = args.onZoom,
+            xMin = this.xMin = args.xMin,
+            xMax = this.xMax = args.xMax;
+        this.build(xMin,xMax);
     },
-    build: function() {
+    build: function(xMin,xMax) {
         var self = this,
             graph = this.graph,
             position = this.position = {},
@@ -18,12 +17,25 @@ Rickshaw.Graph.RangeSelector = Rickshaw.Class.create({
             parent = graph.element.getElementsByTagName('svg')[0];
         selectionBox.setAttribute('class','rickshaw_range_selector');
         graph.element.appendChild(selectionBox);
-        position.startingMinX = graph.dataDomain()[0];
-        position.startingMaxX = graph.dataDomain()[1];
+
+        if (xMin !== undefined && xMin !== '') {
+            position.xMin = xMin;
+        } else {
+            position.xMin = graph.dataDomain()[0];
+        }
+
+        if (xMax !== undefined && xMax !== '') {
+            position.xMax = xMax;
+        } else {
+            position.xMax = graph.dataDomain()[1];
+        }
+
         parent.oncontextmenu = function(e){
             e.preventDefault();
         };
-        var clearSelection = function(self) {
+
+
+        var clearSelection = function() {
                 selectionBox.style.transition = 'opacity 0.2s ease-out';
                 selectionBox.style.opacity = 0;
                 setTimeout(function() {
@@ -67,8 +79,10 @@ Rickshaw.Graph.RangeSelector = Rickshaw.Class.create({
                     selectionDraw(startPointX);
                 }else if(e.button === 2 | e.button === 3){
                     e.preventDefault();
-                    position.xMin = position.startingMinX;
-                    position.xMax = position.startingMaxX;
+                    position.xMin = graph.dataDomain()[0];
+                    position.xMax = graph.dataDomain()[1];
+                    e.position = position;
+                    self.onZoom(e);
                     graph.update();
                     clearSelection();
                     graph.update();
@@ -76,21 +90,21 @@ Rickshaw.Graph.RangeSelector = Rickshaw.Class.create({
                     return;
                 }
             },
-            finishDrawing = function () {
+            finishDrawing = function (e) {
 
                 if (!selectionControl | position.deltaX < 40 | position.xMax - position.xMin < 1000) {
                     selectionControl = false;
                     clearSelection();
                     return false;
                 }
-                self.onZoom(i);
                 selectionControl = false;
                 position.xMin = Math.round(graph.x.invert(position.minX));
                 position.xMax = Math.round(graph.x.invert(position.maxX));
-                graph.update();
+                e.position = position;
+                self.onZoom(e);
+                graph.update(position.xMin,position.xMax);
                 clearSelection();
-                graph.update();
-                i++;
+                graph.update(position.xMin,position.xMax);
             };
 
         graph.element.addEventListener('mousedown', function(e) {
@@ -98,11 +112,11 @@ Rickshaw.Graph.RangeSelector = Rickshaw.Class.create({
         }, true);
 
         graph.element.addEventListener('mouseup', function(e) {
-            finishDrawing();
+            finishDrawing(e);
         }, false);
 
         graph.element.addEventListener('mouseleave', function(e) {
-            finishDrawing();
+            finishDrawing(e);
         }, false);
 
 //          if we're at an extreme, stick there
@@ -115,12 +129,16 @@ Rickshaw.Graph.RangeSelector = Rickshaw.Class.create({
 
         graph.window.xMin = position.xMin;
         graph.window.xMax = position.xMax;
+
+        graph.onUpdate(function() {
+            this.update(position.xMin,position.xMax);
+        }.bind(this));
     },
-    update: function() {
-        var graph = this.graph,
-            position = this.position;
-        graph.window.xMin = position.xMin;
-        graph.window.xMax = position.xMax;
+    update: function(xMin,xMax) {
+        var graph = this.graph;
+        var position = this.position;
+        graph.window.xMin = xMin;
+        graph.window.xMax = xMax;
 
         if (graph.window.xMin === null) {
             position.xMin = graph.dataDomain()[0];
@@ -132,6 +150,8 @@ Rickshaw.Graph.RangeSelector = Rickshaw.Class.create({
 
         position.xMin = graph.window.xMin;
         position.xMax = graph.window.xMax;
+
+        return position;
     }
 });
 

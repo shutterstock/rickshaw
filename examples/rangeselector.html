@@ -120,9 +120,9 @@ graph.render();
 
 var RangeSelector = new Rickshaw.Graph.RangeSelector( {
 	graph: graph,
-    onZoom: function(i) {
+    onZoom: function(e) {
         alert('hola');
-        console.log('theres something wrong '+i);
+        console.log(e);
     }
 } );
 
