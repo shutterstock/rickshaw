@@ -155,7 +155,7 @@
     var RangeSelector = new Rickshaw.Graph.RangeSelector({
         graph: graph,
         onZoom: function (e) {
-            currentZoomPositionDiv.innerHTML = '<code><b>Start:</b> ' + e.position.xMin + '</code><br/><code><b>End:</b> ' + e.position.xMax + '</code>';
+            currentZoomPositionDiv.innerHTML = '<code><b>Start:</b> ' + new Date(e.position.xMin*1000) + '</code><br/><code><b>End:</b> ' + new Date(e.position.xMax*1000) + '</code>';
         }
     });
 

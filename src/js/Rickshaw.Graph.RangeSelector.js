@@ -58,7 +58,7 @@ Rickshaw.Graph.RangeSelector = Rickshaw.Class.create({
             graph.element.style.cursor = 'crosshair';
             graph.element.addEventListener('mousemove', function (e) {
                 if (selectionControl === true) {
-                    position.x = e.offsetX | e.layerX;
+                    position.x = e.offsetX | e.offsetX;
                     position.deltaX = Math.round(Math.max(position.x, startPointX) - Math.min(position.x, startPointX));
                     position.minX = Math.min(position.x, startPointX);
                     position.maxX = position.minX + position.deltaX;
@@ -74,11 +74,12 @@ Rickshaw.Graph.RangeSelector = Rickshaw.Class.create({
             }, false);
         };
         startDrawing = function (e) {
+            console.log(e);
             e.stopPropagation();
             e.preventDefault();
             if (e.button === 0 | e.button === 1) {
-                var startPointX = e.layerX;
-                selectionBox.style.left = e.layerX;
+                var startPointX = e.offsetX;
+                selectionBox.style.left = e.offsetX;
                 selectionControl = true;
                 selectionDraw(startPointX);
             } else if (e.button === 2 | e.button === 3) {
