@@ -173,10 +173,17 @@ Rickshaw.Graph = function(args) {
 
 		stackedData = stackedData || data;
 
+		if (this.renderer.unstack) {
+			stackedData.forEach( function(seriesData) {
+				seriesData.forEach( function(d) {
+					d.y0 = d.y0 === undefined ? 0 : d.y0;
+				} );
+			} );
+		}
+
 		this.stackData.hooks.after.forEach( function(entry) {
 			stackedData = entry.f.apply(self, [data]);
 		} );
-
 
 		var i = 0;
 		this.series.forEach( function(series) {

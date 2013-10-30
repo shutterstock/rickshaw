@@ -5,7 +5,6 @@ Rickshaw.Graph.Renderer = Rickshaw.Class.create( {
 	initialize: function(args) {
 		this.graph = args.graph;
 		this.tension = args.tension || this.tension;
-		this.graph.unstacker = this.graph.unstacker || new Rickshaw.Graph.Unstacker( { graph: this.graph } );
 		this.configure(args);
 	},
 
