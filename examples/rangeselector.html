@@ -66,7 +66,9 @@
             <h3>onZoom Callback</h3>
             <p>The range selector object callback returns the event with the position object allowing you to work with the currently zoomed timestamps:</p>
             <div>
-                <div id="currentZoomPosition" style="padding:1em;border:1px solid #eee;background:#f9f9f9;color:#333;margin:1em 0;height:20px;line-height:20px;"></div>
+                <div id="currentZoomPosition" style="padding:1em;border:1px solid #eee;background:#f9f9f9;color:#333;margin:1em 0;min-height:20px;line-height:20px;">
+                    Not zoomed
+                </div>
             </div>
         </section>
     </form>
@@ -153,14 +155,9 @@
     var RangeSelector = new Rickshaw.Graph.RangeSelector({
         graph: graph,
         onZoom: function (e) {
-            currentZoomPositionDiv.innerHTML = '<b>Start:</b> ' + e.position.xMin + ', <b>End:</b> ' + e.position.xMax;
+            currentZoomPositionDiv.innerHTML = '<code><b>Start:</b> ' + e.position.xMin + '</code><br/><code><b>End:</b> ' + e.position.xMax + '</code>';
         }
     });
-
-    var test = setTimeout(function () {
-        RangeSelector.zoomTo(seriesData[1][4].x, seriesData[5][100].x);
-    }, 2000)
-
 
 </script>
 
