@@ -4,17 +4,21 @@ Rickshaw.Graph.RangeSelector = Rickshaw.Class.create({
         var graph = this.graph = args.graph,
             onZoom = this.onZoom = args.onZoom,
             xMin = this.xMin = args.xMin,
-            xMax = this.xMax = args.xMax;
+            xMax = this.xMax = args.xMax,
+            position = this.position = {},
+            selectionBox = this.selectionBox = document.createElement('div'),
+            selectionControl = this.selectionControl = false,
+            parent = this.parent = graph.element.getElementsByTagName('svg')[0];
+
         this.build(xMin,xMax);
     },
     build: function(xMin,xMax) {
         var self = this,
             graph = this.graph,
-            position = this.position = {},
-            selectionBox = this.selectionBox = document.createElement('div'),
-            selectionControl = this.selectionControl = false,
-            domain = this.domain = [],
-            parent = graph.element.getElementsByTagName('svg')[0];
+            position = this.position,
+            selectionBox = this.selectionBox ,
+            selectionControl = this.selectionControl,
+            parent = this.parent;
 
         console.log(domain);
 
@@ -38,19 +42,7 @@ Rickshaw.Graph.RangeSelector = Rickshaw.Class.create({
         };
 
 
-        var clearSelection, selectionDraw, startDrawing, finishDrawing;
-        clearSelection = function () {
-            selectionBox.style.transition = 'opacity 0.2s ease-out';
-            selectionBox.style.opacity = 0;
-            setTimeout(function () {
-                selectionBox.style.width = 0;
-                selectionBox.style.height = 0;
-                selectionBox.style.top = 0;
-                selectionBox.style.left = 0;
-            }, 200);
-            parent.style.pointerEvents = 'auto';
-            graph.element.style.cursor = 'auto';
-        };
+        var selectionDraw, startDrawing, finishDrawing;
         selectionDraw = function (startPointX) {
             if (selectionControl === true) {
                 parent.style.pointerEvents = 'none';
@@ -59,6 +51,7 @@ Rickshaw.Graph.RangeSelector = Rickshaw.Class.create({
             graph.element.addEventListener('mousemove', function (e) {
                 if (selectionControl === true) {
                     position.x = e.offsetX | e.offsetX;
+                    position.x = e.offsetX;
                     position.deltaX = Math.round(Math.max(position.x, startPointX) - Math.min(position.x, startPointX));
                     position.minX = Math.min(position.x, startPointX);
                     position.maxX = position.minX + position.deltaX;
@@ -74,7 +67,6 @@ Rickshaw.Graph.RangeSelector = Rickshaw.Class.create({
             }, false);
         };
         startDrawing = function (e) {
-            console.log(e);
             e.stopPropagation();
             e.preventDefault();
             if (e.button === 0 | e.button === 1) {
@@ -89,33 +81,35 @@ Rickshaw.Graph.RangeSelector = Rickshaw.Class.create({
                 e.position = position;
                 self.onZoom(e);
                 graph.update();
-                clearSelection();
+                self.clearSelection();
                 graph.update();
             } else {
                 return;
             }
         };
         finishDrawing = function (e) {
-
-            if (!selectionControl | position.deltaX < 60 ) {
+            if (!selectionControl | position.deltaX < 20) {
                 selectionControl = false;
-                clearSelection();
+                self.clearSelection();
                 return false;
             }
             selectionControl = false;
-
             var start = graph.x.invert(position.minX),
                 end = graph.x.invert(position.maxX);
-            // todo - make this actually work
+            // todo - this is working when the difference between the start and end timestamps is 1 millisecond at least
             console.log(start+','+end);
-
-            position.xMin = start;
-            position.xMax = end;
-            e.position = position;
-            self.onZoom(e);
-            graph.update(position.xMin, position.xMax);
-            clearSelection();
-            graph.update(position.xMin, position.xMax);
+            if (end < start+1000) {
+                self.clearSelection();
+                return;
+            } else {
+                position.xMin = start;
+                position.xMax = end;
+                e.position = position;
+                self.onZoom(e);
+                graph.update(position.xMin, position.xMax);
+                self.clearSelection();
+                graph.update(position.xMin, position.xMax);
+            }
         };
 
         graph.element.addEventListener('mousedown', function(e) {
@@ -128,6 +122,7 @@ Rickshaw.Graph.RangeSelector = Rickshaw.Class.create({
 
         graph.element.addEventListener('mouseleave', function(e) {
             // todo - change this, maybe clear selection on mouseleave or something else.
+            self.clearSelection();
             finishDrawing(e);
         }, false);
 
@@ -137,6 +132,23 @@ Rickshaw.Graph.RangeSelector = Rickshaw.Class.create({
         graph.onUpdate(function() {
             this.update(position.xMin,position.xMax);
         }.bind(this));
+    },
+    clearSelection: function () {
+        var selectionBox = this.selectionBox,
+            selectionControl = this.selectionControl,
+            parent = this.parent,
+            graph = this.graph;
+
+        selectionBox.style.transition = 'opacity 0.2s ease-out';
+        selectionBox.style.opacity = 0;
+        setTimeout(function () {
+            selectionBox.style.width = 0;
+            selectionBox.style.height = 0;
+            selectionBox.style.top = 0;
+            selectionBox.style.left = 0;
+        }, 200);
+        parent.style.pointerEvents = 'auto';
+        graph.element.style.cursor = 'auto';
     },
     update: function (xMin,xMax) {
         var graph = this.graph;
@@ -166,6 +178,7 @@ Rickshaw.Graph.RangeSelector = Rickshaw.Class.create({
         e.position = position;
         this.onZoom(e);
         graph.update(xMin,xMax);
+        this.clearSelection();
         graph.update(xMin,xMax);
     }
 });
