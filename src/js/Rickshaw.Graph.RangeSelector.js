@@ -81,13 +81,9 @@ Rickshaw.Graph.RangeSelector = Rickshaw.Class.create({
                 selectionDraw(startPointX);
             } else if (e.button === 2 | e.button === 3) {
                 e.preventDefault();
-                position.xMin = graph.dataDomain()[0];
-                position.xMax = graph.dataDomain()[1];
-                e.position = position;
-                self.onZoom(e);
-                graph.update(position.xMin,position.xMax);
-                self.clearSelection();
-                graph.update(position.xMin,position.xMax);
+                var start = graph.dataDomain()[0],
+                    end = graph.dataDomain()[1];
+                self.zoomTo(start,end);
             } else {
                 return;
             }
@@ -102,13 +98,7 @@ Rickshaw.Graph.RangeSelector = Rickshaw.Class.create({
             var start = graph.x.invert(position.minX),
                 end = graph.x.invert(position.maxX);
 
-            position.xMin = start;
-            position.xMax = end;
-            e.position = position;
-            self.onZoom(e);
-            graph.update(position.xMin, position.xMax);
-            self.clearSelection();
-            graph.update(position.xMin, position.xMax);
+            self.zoomTo(start,end);
         };
 
         graph.element.addEventListener('mousedown', function (e) {
