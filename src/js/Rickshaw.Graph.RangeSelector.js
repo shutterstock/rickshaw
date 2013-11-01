@@ -20,8 +20,6 @@ Rickshaw.Graph.RangeSelector = Rickshaw.Class.create({
             selectionControl = this.selectionControl,
             parent = this.parent;
 
-        console.log(domain);
-
         selectionBox.setAttribute('class','rickshaw_range_selector');
         graph.element.appendChild(selectionBox);
 
