@@ -47,7 +47,6 @@ Rickshaw.Graph.RangeSelector = Rickshaw.Class.create({
             e.preventDefault();
         };
 
-
         var selectionDraw, startDrawing, finishDrawing;
         selectionDraw = function (startPointX) {
             if (selectionControl === true) {
@@ -102,8 +101,6 @@ Rickshaw.Graph.RangeSelector = Rickshaw.Class.create({
             selectionControl = false;
             var start = graph.x.invert(position.minX),
                 end = graph.x.invert(position.maxX);
-            // todo - this is working when the difference between the start and end timestamps is 1 millisecond at least
-            console.log(start + ',' + end);
 
             position.xMin = start;
             position.xMax = end;
@@ -112,7 +109,6 @@ Rickshaw.Graph.RangeSelector = Rickshaw.Class.create({
             graph.update(position.xMin, position.xMax);
             self.clearSelection();
             graph.update(position.xMin, position.xMax);
-
         };
 
         graph.element.addEventListener('mousedown', function (e) {
@@ -124,9 +120,8 @@ Rickshaw.Graph.RangeSelector = Rickshaw.Class.create({
         }, false);
 
         graph.element.addEventListener('mouseleave', function (e) {
-            // todo - change this, maybe clear selection on mouseleave or something else.
             self.clearSelection();
-            finishDrawing(e);
+            finishDrawing(e)
         }, false);
 
         graph.window.xMin = position.xMin;
@@ -172,7 +167,6 @@ Rickshaw.Graph.RangeSelector = Rickshaw.Class.create({
                     }
                 }
             }
-            console.log(nearest);
             return nearest;
         }
 
@@ -196,6 +190,7 @@ Rickshaw.Graph.RangeSelector = Rickshaw.Class.create({
             position.xMin = graph.window.xMin;
             position.xMax = graph.window.xMax;
         }
+        return position;
     },
     zoomTo: function (start, end) {
         var graph = this.graph,
