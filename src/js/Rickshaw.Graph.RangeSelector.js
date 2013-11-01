@@ -1,41 +1,49 @@
 Rickshaw.namespace('Rickshaw.Graph.RangeSelector');
 Rickshaw.Graph.RangeSelector = Rickshaw.Class.create({
-    initialize: function(args) {
+    initialize: function (args) {
         var graph = this.graph = args.graph,
             onZoom = this.onZoom = args.onZoom,
-            xMin = this.xMin = args.xMin,
-            xMax = this.xMax = args.xMax,
+            start = this.start = args.start,
+            end = this.end = args.end,
             position = this.position = {},
             selectionBox = this.selectionBox = document.createElement('div'),
             selectionControl = this.selectionControl = false,
-            parent = this.parent = graph.element.getElementsByTagName('svg')[0];
+            parent = this.parent = graph.element.getElementsByTagName('svg')[0],
+            tDomain = this.tDomain = [];
 
-        this.build(xMin,xMax);
+        for (var i=0; i < graph.stackedData.length; i+=1) {
+            for (var j=0; j < graph.stackedData[i].length; j+=1) {
+                tDomain.push(graph.stackedData[i][j].x);
+            }
+        }
+
+        this.build(start, end);
     },
-    build: function(xMin,xMax) {
+    build: function (start, end) {
         var self = this,
             graph = this.graph,
             position = this.position,
             selectionBox = this.selectionBox ,
             selectionControl = this.selectionControl,
-            parent = this.parent;
+            parent = this.parent,
+            tDomain = this.tDomain;
 
-        selectionBox.setAttribute('class','rickshaw_range_selector');
+        selectionBox.setAttribute('class', 'rickshaw_range_selector');
         graph.element.appendChild(selectionBox);
 
-        if (xMin !== undefined && xMin !== '') {
-            position.xMin = xMin;
+        if (start !== undefined && start !== '') {
+            position.xMin = start;
         } else {
             position.xMin = graph.dataDomain()[0];
         }
 
-        if (xMax !== undefined && xMax !== '') {
-            position.xMax = xMax;
+        if (end !== undefined && end !== '') {
+            position.xMax = end;
         } else {
             position.xMax = graph.dataDomain()[1];
         }
 
-        parent.oncontextmenu = function(e){
+        parent.oncontextmenu = function (e) {
             e.preventDefault();
         };
 
@@ -78,15 +86,15 @@ Rickshaw.Graph.RangeSelector = Rickshaw.Class.create({
                 position.xMax = graph.dataDomain()[1];
                 e.position = position;
                 self.onZoom(e);
-                graph.update();
+                graph.update(position.xMin,position.xMax);
                 self.clearSelection();
-                graph.update();
+                graph.update(position.xMin,position.xMax);
             } else {
                 return;
             }
         };
         finishDrawing = function (e) {
-            if (!selectionControl | position.deltaX < 20) {
+            if (!selectionControl | position.deltaX < 10) {
                 selectionControl = false;
                 self.clearSelection();
                 return false;
@@ -95,30 +103,27 @@ Rickshaw.Graph.RangeSelector = Rickshaw.Class.create({
             var start = graph.x.invert(position.minX),
                 end = graph.x.invert(position.maxX);
             // todo - this is working when the difference between the start and end timestamps is 1 millisecond at least
-            console.log(start+','+end);
-            if (end < start+1000) {
-                self.clearSelection();
-                return;
-            } else {
-                position.xMin = start;
-                position.xMax = end;
-                e.position = position;
-                self.onZoom(e);
-                graph.update(position.xMin, position.xMax);
-                self.clearSelection();
-                graph.update(position.xMin, position.xMax);
-            }
+            console.log(start + ',' + end);
+
+            position.xMin = start;
+            position.xMax = end;
+            e.position = position;
+            self.onZoom(e);
+            graph.update(position.xMin, position.xMax);
+            self.clearSelection();
+            graph.update(position.xMin, position.xMax);
+
         };
 
-        graph.element.addEventListener('mousedown', function(e) {
-           startDrawing(e);
+        graph.element.addEventListener('mousedown', function (e) {
+            startDrawing(e);
         }, true);
 
-        graph.element.addEventListener('mouseup', function(e) {
+        graph.element.addEventListener('mouseup', function (e) {
             finishDrawing(e);
         }, false);
 
-        graph.element.addEventListener('mouseleave', function(e) {
+        graph.element.addEventListener('mouseleave', function (e) {
             // todo - change this, maybe clear selection on mouseleave or something else.
             self.clearSelection();
             finishDrawing(e);
@@ -127,8 +132,8 @@ Rickshaw.Graph.RangeSelector = Rickshaw.Class.create({
         graph.window.xMin = position.xMin;
         graph.window.xMax = position.xMax;
 
-        graph.onUpdate(function() {
-            this.update(position.xMin,position.xMax);
+        graph.onUpdate(function () {
+            this.update(position.xMin, position.xMax);
         }.bind(this));
     },
     clearSelection: function () {
@@ -148,36 +153,63 @@ Rickshaw.Graph.RangeSelector = Rickshaw.Class.create({
         parent.style.pointerEvents = 'auto';
         graph.element.style.cursor = 'auto';
     },
-    update: function (xMin,xMax) {
-        var graph = this.graph;
-        var position = this.position;
-        graph.window.xMin = xMin;
-        graph.window.xMax = xMax;
+    update: function (start, end) {
+        var graph = this.graph,
+            position = this.position,
+            tDomain = this.tDomain;
 
-        if (graph.window.xMin === null) {
-            position.xMin = graph.dataDomain()[0];
+        var getNearest = function (timestamp) {
+            var nearest = null;
+            var bestDistanceFound = Number.MAX_VALUE;
+            for ( var i=0; i < tDomain.length; i+=1) {
+                if (tDomain[i] === timestamp){
+                    return tDomain[i];
+                } else {
+                    var d = Math.abs(timestamp - tDomain[i]);
+                    if (d < bestDistanceFound) {
+                        bestDistanceFound = d;
+                        nearest = tDomain[i];
+                    }
+                }
+            }
+            console.log(nearest);
+            return nearest;
         }
 
-        if (graph.window.xMax === null) {
-            position.xMax = graph.dataDomain()[1];
-        }
+        var starting = getNearest(start);
+        var ending = getNearest(end);
 
-        position.xMin = graph.window.xMin;
-        position.xMax = graph.window.xMax;
+        if (starting === ending) {
+            return;
+        } else {
+            graph.window.xMin = starting;
+            graph.window.xMax = ending;
+
+            if (graph.window.xMin === null) {
+                position.xMin = graph.dataDomain()[0];
+            }
+
+            if (graph.window.xMax === null) {
+                position.xMax = graph.dataDomain()[1];
+            }
+
+            position.xMin = graph.window.xMin;
+            position.xMax = graph.window.xMax;
+        }
     },
-    zoomTo : function (xMin,xMax) {
+    zoomTo: function (start, end) {
         var graph = this.graph,
             position = this.position,
             e = {
-                type : 'zoomToCall'
+                type: 'zoomToCall'
             };
-        position.xMin = xMin;
-        position.xMax = xMax;
+        position.xMin = start;
+        position.xMax = end;
         e.position = position;
         this.onZoom(e);
-        graph.update(xMin,xMax);
+        graph.update(start, end);
         this.clearSelection();
-        graph.update(xMin,xMax);
+        graph.update(start, end);
     }
 });
 
