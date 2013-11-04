@@ -1,0 +1,164 @@
+<!doctype>
+<head>
+    <link type="text/css" rel="stylesheet"
+          href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/base/jquery-ui.css">
+    <link type="text/css" rel="stylesheet" href="../src/css/graph.css">
+    <link type="text/css" rel="stylesheet" href="../src/css/detail.css">
+    <link type="text/css" rel="stylesheet" href="../src/css/rangeSelector.css">
+    <link type="text/css" rel="stylesheet" href="../src/css/legend.css">
+    <link type="text/css" rel="stylesheet" href="css/extensions.css">
+
+    <script src="../vendor/d3.v2.js"></script>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.15/jquery-ui.min.js"></script>
+
+    <script src="../src/js/Rickshaw.js"></script>
+    <script src="../src/js/Rickshaw.Class.js"></script>
+    <script src="../src/js/Rickshaw.Compat.ClassList.js"></script>
+    <script src="../src/js/Rickshaw.Graph.js"></script>
+    <script src="../src/js/Rickshaw.Graph.Renderer.js"></script>
+    <script src="../src/js/Rickshaw.Graph.Renderer.Area.js"></script>
+    <script src="../src/js/Rickshaw.Graph.Renderer.Line.js"></script>
+    <script src="../src/js/Rickshaw.Graph.Renderer.Bar.js"></script>
+    <script src="../src/js/Rickshaw.Graph.Renderer.ScatterPlot.js"></script>
+    <script src="../src/js/Rickshaw.Graph.RangeSelector.js"></script>
+    <script src="../src/js/Rickshaw.Graph.HoverDetail.js"></script>
+    <script src="../src/js/Rickshaw.Graph.Annotate.js"></script>
+    <script src="../src/js/Rickshaw.Graph.Legend.js"></script>
+    <script src="../src/js/Rickshaw.Graph.Axis.Time.js"></script>
+    <script src="../src/js/Rickshaw.Graph.Behavior.Series.Toggle.js"></script>
+    <script src="../src/js/Rickshaw.Graph.Behavior.Series.Order.js"></script>
+    <script src="../src/js/Rickshaw.Graph.Behavior.Series.Highlight.js"></script>
+    <script src="../src/js/Rickshaw.Graph.Smoother.js"></script>
+    <script src="../src/js/Rickshaw.Graph.Unstacker.js"></script>
+    <script src="../src/js/Rickshaw.Fixtures.Time.js"></script>
+    <script src="../src/js/Rickshaw.Fixtures.Number.js"></script>
+    <script src="../src/js/Rickshaw.Fixtures.RandomData.js"></script>
+    <script src="../src/js/Rickshaw.Fixtures.Color.js"></script>
+    <script src="../src/js/Rickshaw.Color.Palette.js"></script>
+    <script src="../src/js/Rickshaw.Graph.Axis.Y.js"></script>
+
+
+    <!--<script src="js/extensions.js"></script>-->
+</head>
+<body>
+
+<div id="content">
+
+    <form id="side_panel">
+        <h1>Range selector example</h1>
+        <section>
+            <div>
+                <p>Use the Left mouse button to drag a selection on the graph to zoom.</p>
+
+                <p>Use the Right mouse button to reset the zoom.</p>
+            </div>
+        </section>
+        <section>
+            <h3>zoomTo Method</h3>
+            <div>
+                <p>You can use the <b>zoomTo</b> method on the Range Selector object to call a zoom by passing the starting and ending timestamps as parameters in this way:</p>
+                <pre>RangeSelector.zoomTo(start,end);</pre>
+            </div>
+        </section>
+        <section>
+            <h3>onZoom Callback</h3>
+            <p>The range selector object callback returns the event with the position object allowing you to work with the currently zoomed timestamps:</p>
+            <div>
+                <div id="currentZoomPosition" style="padding:1em;border:1px solid #eee;background:#f9f9f9;color:#333;margin:1em 0;min-height:20px;line-height:20px;">
+                    Not zoomed
+                </div>
+            </div>
+        </section>
+    </form>
+
+    <div id="chart_container">
+        <div id="chart"></div>
+    </div>
+
+</div>
+
+<script>
+
+    // set up our data series with 150 random data points
+
+    var seriesData = [
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        [],
+        []
+    ];
+    var random = new Rickshaw.Fixtures.RandomData(150);
+
+    for (var i = 0; i < 150; i++) {
+        random.addData(seriesData);
+    }
+
+    var palette = new Rickshaw.Color.Palette({ scheme: 'classic9' });
+
+    // instantiate our graph!
+
+    var graph = new Rickshaw.Graph({
+        element: document.getElementById("chart"),
+        width: 900,
+        height: 500,
+        renderer: 'area',
+        stroke: true,
+        preserve: true,
+        series: [
+            {
+                color: palette.color(),
+                data: seriesData[0],
+                name: 'Moscow'
+            },
+            {
+                color: palette.color(),
+                data: seriesData[1],
+                name: 'Shanghai'
+            },
+            {
+                color: palette.color(),
+                data: seriesData[2],
+                name: 'Amsterdam'
+            },
+            {
+                color: palette.color(),
+                data: seriesData[3],
+                name: 'Paris'
+            },
+            {
+                color: palette.color(),
+                data: seriesData[4],
+                name: 'Tokyo'
+            },
+            {
+                color: palette.color(),
+                data: seriesData[5],
+                name: 'London'
+            },
+            {
+                color: palette.color(),
+                data: seriesData[6],
+                name: 'New York'
+            }
+        ]
+    });
+
+    graph.render();
+    var currentZoomPositionDiv = document.getElementById('currentZoomPosition');
+    var RangeSelector = new Rickshaw.Graph.RangeSelector({
+        graph: graph,
+        onZoom: function (e) {
+            currentZoomPositionDiv.innerHTML = '<code><b>Start:</b> ' + new Date(e.position.xMin*1000) + '</code><br/><code><b>End:</b> ' + new Date(e.position.xMax*1000) + '</code>';
+        }
+    });
+
+</script>
+
+</body>
