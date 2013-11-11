@@ -128,7 +128,9 @@ Rickshaw.Graph.Renderer = Rickshaw.Class.create( {
 		series.path.setAttribute('stroke-width', this.strokeWidth);
 		// REFACT: series.className should probably go on the group
 		// but this is likely to break existing visualizations
-		d3.select(series.path).classed(series.className || '', true);
+		if (series.className) {
+			d3.select(series.path).classed(series.className, true);
+		}
 	},
 
 	configure: function(args) {
