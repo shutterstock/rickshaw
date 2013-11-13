@@ -12,6 +12,7 @@ Rickshaw.Graph = function(args) {
 		offset: 'zero',
 		min: undefined,
 		max: undefined,
+		xScale: undefined,
 		preserve: false
 	};
 
@@ -103,7 +104,8 @@ Rickshaw.Graph = function(args) {
 
 		var domain = this.renderer.domain();
 
-		this.x = d3.scale.linear().domain(domain.x).range([0, this.width]);
+		var xScale = this.xScale || d3.scale.linear();
+		this.x = xScale.domain(domain.x).range([0, this.width]);
 
 		this.y = d3.scale.linear().domain(domain.y).range([this.height, 0]);
 
