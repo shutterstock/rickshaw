@@ -4,7 +4,7 @@ exports.domain = function(test) {
 
 	// document comes from jsdom
 	var el = document.createElement("div");
-
+	
 	var graph = new Rickshaw.Graph({
 		element: el,
 		width: 960,
@@ -122,7 +122,7 @@ exports["render() should respect seriesStrokeFactory() in custom Renderer subcla
 		renderer: 'respectStrokeFactory',
 		series: [
 			{
-				color: 'steelblue',
+				className: 'fnord',
 				data: [
 					{ x: 0, y: 40 },
 					{ x: 1, y: 49 },
@@ -135,17 +135,16 @@ exports["render() should respect seriesStrokeFactory() in custom Renderer subcla
 	});
 	graph.render()
 	
-	test.equals(1, graph.vis.select('path.path').size())
-	test.equals(1, graph.vis.select('path.stroke').size())
+	var path = graph.vis.select('path.path.fnord')
+	test.equals(1, path.size())
 	
+	var stroke = graph.vis.select('path.stroke.fnord')
+	test.equals(1, stroke.size())
+	
+	// should also be availeable via series
 	var firstSeries = graph.series[0]
 	test.ok(d3.select(firstSeries.path).classed('path'))
-	test.ok(d3.select(firstSeries.stroke).classed('stroke'))
-	
-	var group = d3.select(firstSeries.group)
-	test.ok(group.classed('series'))
-	test.ok(firstSeries.path === group.select('.path').node())
-	test.ok(firstSeries.stroke === group.select('.stroke').node())
+	test.ok(d3.select(firstSeries.strokePath).classed('stroke'))
 	
 	test.done()
 }
