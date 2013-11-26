@@ -91,11 +91,12 @@ exports.timeScale = function(test) {
 		}
 	];
 
+	var scale = d3.time.scale();
 	var graph = new Rickshaw.Graph({
 		element: el,
 		width: 960,
 		height: 500,
-		xScale: d3.time.scale(),
+		xScale: scale,
 		series: series
 	});
 	graph.render();
@@ -110,6 +111,12 @@ exports.timeScale = function(test) {
 	test.equal('Sep 29', ticks[0].innerHTML);
 	test.equal('Oct 06', ticks[1].innerHTML);
 	test.equal('Nov 24', ticks[8].innerHTML);
+	
+	// should make a copy mutable object
+	scale.range([0, 960]);
+	test.deepEqual(scale.range(), graph.x.range());
+	scale.range([0, 1])
+	test.notDeepEqual(scale.range(), graph.x.range());
 
 	test.done();
 
