@@ -79,6 +79,49 @@ exports.validate = function(test) {
 
 };
 
+exports.timeScale = function(test) {
+
+	var el = document.createElement("div");
+
+	var times = [1380000000000, 1390000000000];
+	var series = [
+		{
+			color: 'steelblue',
+			data: [ { x: times[0], y: 40 }, { x: times[1], y: 49 } ]
+		}
+	];
+
+	var scale = d3.time.scale();
+	var graph = new Rickshaw.Graph({
+		element: el,
+		width: 960,
+		height: 500,
+		xScale: scale,
+		series: series
+	});
+	graph.render();
+
+	var xAxis = new Rickshaw.Graph.Axis.X({
+		graph: graph,
+		tickFormat: graph.x.tickFormat()
+	});
+	xAxis.render();
+	test.ok(graph.x.ticks()[0] instanceof Date);
+	var ticks = el.getElementsByClassName('x_ticks_d3')[0].getElementsByTagName('text');
+	test.equal('Sep 29', ticks[0].innerHTML);
+	test.equal('Oct 06', ticks[1].innerHTML);
+	test.equal('Nov 24', ticks[8].innerHTML);
+	
+	// should make a copy mutable object
+	scale.range([0, 960]);
+	test.deepEqual(scale.range(), graph.x.range());
+	scale.range([0, 1])
+	test.notDeepEqual(scale.range(), graph.x.range());
+
+	test.done();
+
+};
+
 exports.inconsistent = function(test) {
 
 	var el = document.createElement("div");

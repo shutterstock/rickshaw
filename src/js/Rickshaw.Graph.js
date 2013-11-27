@@ -12,6 +12,7 @@ Rickshaw.Graph = function(args) {
 		offset: 'zero',
 		min: undefined,
 		max: undefined,
+		xScale: undefined,
 		preserve: false
 	};
 
@@ -103,7 +104,12 @@ Rickshaw.Graph = function(args) {
 
 		var domain = this.renderer.domain();
 
-		this.x = d3.scale.linear().domain(domain.x).range([0, this.width]);
+		// this.xScale is coming from the configuration dictionary
+		// which may be referenced by the Graph creator, or shared
+		// with other Graphs. We need to ensure we copy the scale
+		// so that our mutations do not change the object given to us.
+		var xScale = (this.xScale || d3.scale.linear()).copy();
+		this.x = xScale.domain(domain.x).range([0, this.width]);
 
 		this.y = d3.scale.linear().domain(domain.y).range([this.height, 0]);
 
