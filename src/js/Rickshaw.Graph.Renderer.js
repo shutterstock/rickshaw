@@ -104,8 +104,8 @@ Rickshaw.Graph.Renderer = Rickshaw.Class.create( {
 			strokeNodes = vis.selectAll('path.stroke')
 				.data(data)
 				.enter().append("svg:path")
-				.classed('stroke', true)
-				.attr("d", this.seriesStrokeFactory());
+					.classed('stroke', true)
+					.attr("d", this.seriesStrokeFactory());
 		}
 		
 		// Enable later processing of the created dom nodes
