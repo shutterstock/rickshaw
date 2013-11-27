@@ -3,6 +3,7 @@ Rickshaw.namespace('Rickshaw.Graph');
 Rickshaw.Graph = function(args) {
 
 	if (!args.element) throw "Rickshaw.Graph needs a reference to an element";
+	if (args.element.nodeType !== 1) throw "Rickshaw.Graph element was defined but not an HTML element";
 
 	this.element = args.element;
 	this.series = args.series;
