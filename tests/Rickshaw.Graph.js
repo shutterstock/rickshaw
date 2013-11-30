@@ -146,6 +146,55 @@ exports.inconsistent = function(test) {
 	test.done();
 };
 
+exports.configure = function(test) {
+
+	var el = document.createElement('div');
+
+	var graph = new Rickshaw.Graph({
+		element: el,
+		width: 960,
+		height: 500,
+		padding: { top: 0.2 },
+		renderer: 'stack',
+		series: [ { data: [ { x: 1, y: 40 } ] } ]
+	});
+
+	test.deepEqual(graph.renderer.padding, { bottom: 0.01, right: 0, left: 0, top: 0.2 },
+		"padding makes it through to renderer from constructor");
+
+	test.strictEqual(typeof graph.padding, "undefined",
+		"padding not set on graph from constructor");
+
+	graph.configure({ padding: { top: 0.25, bottom: 0.25, right: 0.25, left: 0.25 } });
+
+	test.deepEqual(graph.renderer.padding, { bottom: 0.25, right: 0.25, left: 0.25, top: 0.25 },
+		"padding makes it through to renderer from configure");
+
+	test.strictEqual(typeof graph.padding, "undefined",
+		"padding not set on graph from configure");
+
+	var callback = function(args) {
+		if (callback.called) return;
+		test.deepEqual(args, { interpolation: 'step-after' }, "configure args match");
+		callback.called = true;
+	};
+
+	graph.onConfigure(callback);
+	graph.configure({ interpolation: 'step-after' });
+
+	test.equal(graph.interpolation, 'step-after', "interpolation set on graph");
+	test.ok(callback.called, "configure callback was called");
+	test.equal(graph.config.interpolation, 'step-after', "configuration object has interpolation set");
+
+	graph.configure({ width: 900, height: 100 });
+
+	test.deepEqual([ graph.width, graph.height ], [ 900, 100 ], "graph dimensions take");
+	test.deepEqual(graph.vis[0][0].getAttribute('width'), 900, "width set on svg");
+	test.deepEqual(graph.vis[0][0].getAttribute('height'), 100, "height set on svg");
+
+	test.done();
+};
+
 exports.rendererAutodiscover = function(test) {
 
 	var Rickshaw = require('../rickshaw');

@@ -1,13 +1,22 @@
-var fs = require('fs');
+exports.setUp = function(callback) {
+
+	Rickshaw = require('../rickshaw');
+
+	global.document = d3.select('html')[0][0].parentNode;
+	global.window = document.defaultView;
+
+	new Rickshaw.Compat.ClassList();
+
+	callback();
+};
+
+exports.tearDown = function(callback) {
+
+	delete require.cache.d3;
+	callback();
+};
 
 exports.basic = function(test) {
-
-	var jsdom    = require("jsdom").jsdom;
-	global.document = jsdom("<html><head></head><body></body></html>");
-	global.window   = global.document.createWindow();
-
-	var Rickshaw = require('../rickshaw');
-	new Rickshaw.Compat.ClassList();
 
 	var el = document.createElement("div");
 
@@ -30,10 +39,10 @@ exports.basic = function(test) {
 	graph.renderer.dotSize = 6;
 	graph.render();
 
-	var minimapElement = document.createElement("div");
+	var previewElement = document.createElement("div");
 	test.doesNotThrow(function() {
-		var minimap = new Rickshaw.Graph.Minimap({
-			element: minimapElement,
+		var preview = new Rickshaw.Graph.RangeSlider.Preview({
+			element: previewElement,
 			graph: graph
 		});
 	});

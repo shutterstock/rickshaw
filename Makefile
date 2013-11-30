@@ -36,8 +36,8 @@ JS_FILES=\
 	src/js/Rickshaw.Graph.HoverDetail.js\
 	src/js/Rickshaw.Graph.JSONP.js\
 	src/js/Rickshaw.Graph.Legend.js\
-	src/js/Rickshaw.Graph.Minimap.js\
 	src/js/Rickshaw.Graph.RangeSlider.js\
+	src/js/Rickshaw.Graph.RangeSlider.Preview.js\
 	src/js/Rickshaw.Graph.Renderer.js\
 	src/js/Rickshaw.Graph.Renderer.Line.js\
 	src/js/Rickshaw.Graph.Renderer.Stack.js\
