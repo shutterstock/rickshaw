@@ -944,11 +944,16 @@ Rickshaw.Fixtures.Time = function() {
 
 		if (unit.name == 'month') {
 
-			nearFuture = new Date((time + unit.seconds - 1) * 1000);
+			cur_time = new Date(time * 1000);
 
 			rounded = new Date(0);
-			rounded.setUTCFullYear(nearFuture.getUTCFullYear());
-			rounded.setUTCMonth(nearFuture.getUTCMonth());
+			if(cur_time.getUTCMonth() >= 11) {
+				rounded.setUTCFullYear(cur_time.getUTCFullYear()+1);
+				rounded.setUTCMonth(0);
+			} else {
+				rounded.setUTCFullYear(cur_time.getUTCFullYear());
+				rounded.setUTCMonth(cur_time.getUTCMonth()+1);
+			}
 			rounded.setUTCDate(1);
 			rounded.setUTCHours(0);
 			rounded.setUTCMinutes(0);
@@ -1402,6 +1407,12 @@ Rickshaw.Graph.Axis.Time = function(args) {
 		var runningTick = domain[0];
 
 		var offsets = [];
+
+		// Check if the tick falls exactly on the first point
+		if(time.ceil(runningTick-1, unit) == runningTick) {
+			offsets.push( { value: runningTick, unit: unit } );
+			count--;
+		}
 
 		for (var i = 0; i < count; i++) {
 
