@@ -100,7 +100,7 @@ Once you have a basic graph, extensions let you add functionality.  See the [ove
 
 * __Rickshaw.Graph.RangeSlider__ - dynamically zoom on the x-axis with a slider
 
-* __Rickshaw.Graph.RangeSlider.Preview__ - control pan and zoom via graphical preview of entire data set
+* __Rickshaw.Graph.RangeSlider.Preview__ - pan and zoom via graphical preview of entire data set
 
 * __Rickshaw.Graph.Axis.Time__ - add an x-axis and grid lines with time labels
 
