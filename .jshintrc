@@ -3,5 +3,9 @@
   "lastsemic": true,
   "loopfunc": true,
   "eqnull": true,
-  "expr": true
+  "expr": true,
+  "undef": true,
+  "browser": true,
+  "node": true,
+  "predef": ["Rickshaw", "d3", "$", "console", "io"]
 }

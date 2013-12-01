@@ -308,7 +308,7 @@ Rickshaw.Graph.RangeSlider.Preview = Rickshaw.Class.create({
 
 		function onMousemove(datum, index) {
 
-			drag.stop = self._getClientXFromEvent(d3.event);
+			drag.stop = self._getClientXFromEvent(d3.event, drag);
 			var distanceTraveled = drag.stop - drag.start;
 			var frameAfterDrag = self.frameBeforeDrag.slice(0);
 			var minimumFrameWidth = self.config.minimumFrameWidth;
@@ -370,7 +370,7 @@ Rickshaw.Graph.RangeSlider.Preview = Rickshaw.Class.create({
 
 		function onMousedown() {
 			drag.target = d3.event.target;
-			drag.start = self._getClientXFromEvent(d3.event);
+			drag.start = self._getClientXFromEvent(d3.event, drag);
 			self.frameBeforeDrag = self.currentFrame.slice();
 			d3.event.preventDefault ? d3.event.preventDefault() : d3.event.returnValue = false;
 			d3.select(document).on("mousemove.rickshaw_range_slider_preview", onMousemove);
@@ -417,7 +417,7 @@ Rickshaw.Graph.RangeSlider.Preview = Rickshaw.Class.create({
 		element.select("rect.middle_handle").on("touchstart", onMousedownMiddleHandle);
 	},
 
-	_getClientXFromEvent: function(event) {
+	_getClientXFromEvent: function(event, drag) {
 
 		switch (event.type) {
 			case 'touchstart':
