@@ -90,7 +90,9 @@ Rickshaw.Graph.Axis.X = function(args) {
 		this.graph.vis
 			.append("svg:g")
 			.attr("class", "x_grid_d3")
-			.call(axis.ticks(this.ticks).tickSubdivide(0).tickSize(gridSize));
+			.call(axis.ticks(this.ticks).tickSubdivide(0).tickSize(gridSize))
+			.selectAll('text')
+			.each(function() { this.parentNode.setAttribute('data-x-value', this.textContent) });
 
 		this._renderHeight = this.graph.height;
 	};

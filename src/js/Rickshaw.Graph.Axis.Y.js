@@ -110,6 +110,8 @@ Rickshaw.Graph.Axis.Y = Rickshaw.Class.create( {
 		this.graph.vis
 			.append("svg:g")
 			.attr("class", "y_grid")
-			.call(axis.ticks(this.ticks).tickSubdivide(0).tickSize(gridSize));
+			.call(axis.ticks(this.ticks).tickSubdivide(0).tickSize(gridSize))
+			.selectAll('text')
+			.each(function() { this.parentNode.setAttribute('data-y-value', this.textContent) });
 	}
 } );
