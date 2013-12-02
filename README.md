@@ -144,7 +144,7 @@ For graphs with more series than palettes have colors, specify an `interpolatedS
 
 ## Rickshaw and Cross-Browser Support
 
-This library works in modern browsers and Internet Explorer 9.
+This library works in modern browsers and Internet Explorer 9+.
 
 Rickshaw relies on the HTMLElement#classList API, which isn't natively supported in Internet Explorer 9.  Rickshaw adds support by including a shim which implements the classList API by extending the HTMLElement prototype.  You can disable this behavior if you like, by setting `RICKSHAW_NO_COMPAT` to a true value before including the library. 
 
