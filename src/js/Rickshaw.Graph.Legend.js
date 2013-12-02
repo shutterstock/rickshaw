@@ -50,7 +50,9 @@ Rickshaw.Graph.Legend = Rickshaw.Class.create( {
 		if (series.disabled) {
 			line.className += ' disabled';
 		}
-
+		if (series.className) {
+			d3.select(line).classed(series.className, true);
+		}
 		var swatch = document.createElement('div');
 		swatch.className = 'swatch';
 		swatch.style.backgroundColor = series.color;
