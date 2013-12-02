@@ -68,15 +68,28 @@ exports.hasDefaultClassName = function(test) {
 };
 
 exports.canOverrideClassName = function(test) {
-    var MyLegend = Rickshaw.Class.create( Rickshaw.Graph.Legend, {
-    	className: 'fnord'
-    });
+	var MyLegend = Rickshaw.Class.create( Rickshaw.Graph.Legend, {
+		className: 'fnord'
+	});
 	var legend = new MyLegend({
 		graph: this.graph,
 		element: this.legendEl
 	});
-
+	
 	test.equal(this.legendEl.className, "fnord")
 	test.done();
 };
 
+exports['should put series classes on legend elements'] = function(test) {
+	this.graph.series[0].className = 'fnord-series-0';
+	this.graph.series[1].className = 'fnord-series-1';
+	
+	var legend = new Rickshaw.Graph.Legend({
+		graph: this.graph,
+		element: this.legendEl
+	});
+	test.equal(d3.select(this.legendEl).selectAll('.line').size(), 2);
+	test.equal(d3.select(this.legendEl).selectAll('.fnord-series-0').size(), 1);
+	test.equal(d3.select(this.legendEl).selectAll('.fnord-series-1').size(), 1);
+	test.done();
+};
