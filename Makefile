@@ -58,7 +58,7 @@ build: rickshaw.min.css rickshaw.min.js
 clean:
 	rm -rf rickshaw.css rickshaw.js rickshaw.min.*
 
-test: $(D3) $(JSDOM) $(NODEUNIT)
+test: $(D3) $(JSDOM) $(NODEUNIT) build
 	npm test
 
 $(JS_HINT):

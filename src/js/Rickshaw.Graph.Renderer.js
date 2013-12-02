@@ -1,7 +1,7 @@
 Rickshaw.namespace("Rickshaw.Graph.Renderer");
 
 Rickshaw.Graph.Renderer = Rickshaw.Class.create( {
-
+	
 	initialize: function(args) {
 		this.graph = args.graph;
 		this.tension = args.tension || this.tension;
@@ -85,21 +85,37 @@ Rickshaw.Graph.Renderer = Rickshaw.Class.create( {
 		var series = args.series || graph.series;
 
 		var vis = args.vis || graph.vis;
+		// REFACT: this should really happen via d3 enter()/ exit()
 		vis.selectAll('*').remove();
 
 		var data = series
 			.filter(function(s) { return !s.disabled })
 			.map(function(s) { return s.stack });
-
-		var nodes = vis.selectAll("path")
+		
+		var pathNodes = vis.selectAll('path.path')
 			.data(data)
-			.enter().append("svg:path")
-			.attr("d", this.seriesPathFactory());
-
-		var i = 0;
-		series.forEach( function(series) {
+			.enter().append('svg:path')
+				.classed('path', true)
+				.attr("d", this.seriesPathFactory());
+				
+		var strokeNodes = null;
+		if (this.stroke) {
+			strokeNodes = vis.selectAll('path.stroke')
+				.data(data)
+				.enter().append("svg:path")
+					.classed('stroke', true)
+					.attr("d", this.seriesStrokeFactory());
+		}
+		
+		// Enable later processing of the created dom nodes
+		// REFACT: putting additional values into the series doesn't seem like a great idea just to allow _styleSeries() to do it's job.
+		// Users can get access to the paths by specifying a custom class
+		// and the Renderer could either store them on this.{path,strokePath}
+		// or hand them in to _styleSeries() directly.
+		series.forEach( function(series, index) {
 			if (series.disabled) return;
-			series.path = nodes[0][i++];
+			series.path = pathNodes[0][index];
+			if (this.stroke) series.strokePath = strokeNodes[0][index];
 			this._styleSeries(series);
 		}, this );
 	},
@@ -112,7 +128,12 @@ Rickshaw.Graph.Renderer = Rickshaw.Class.create( {
 		series.path.setAttribute('fill', fill);
 		series.path.setAttribute('stroke', stroke);
 		series.path.setAttribute('stroke-width', this.strokeWidth);
-		series.path.setAttribute('class', series.className);
+		if (series.className) {
+			d3.select(series.path).classed(series.className, true);
+			if (series.strokePath) {
+				d3.select(series.strokePath).classed(series.className, true);
+			}
+		}
 	},
 
 	configure: function(args) {
@@ -159,4 +180,3 @@ Rickshaw.Graph.Renderer = Rickshaw.Class.create( {
 		}
 	}
 } );
-
