@@ -91,17 +91,29 @@ Rickshaw.Graph.Renderer = Rickshaw.Class.create( {
 			.filter(function(s) { return !s.disabled })
 			.map(function(s) { return s.stack });
 
-		var nodes = vis.selectAll("path")
+		var pathNodes = vis.selectAll("path.path")
 			.data(data)
 			.enter().append("svg:path")
+			.classed('path', true)
 			.attr("d", this.seriesPathFactory());
+
+		if (this.stroke) {
+                        var strokeNodes = vis.selectAll('path.stroke')
+                                .data(data)
+                                .enter().append("svg:path")
+				.classed('stroke', true)
+				.attr("d", this.seriesStrokeFactory());
+		}
 
 		var i = 0;
 		series.forEach( function(series) {
 			if (series.disabled) return;
-			series.path = nodes[0][i++];
+			series.path = pathNodes[0][i];
+			if (this.stroke) series.stroke = strokeNodes[0][i];
 			this._styleSeries(series);
+			i++;
 		}, this );
+
 	},
 
 	_styleSeries: function(series) {
@@ -112,7 +124,13 @@ Rickshaw.Graph.Renderer = Rickshaw.Class.create( {
 		series.path.setAttribute('fill', fill);
 		series.path.setAttribute('stroke', stroke);
 		series.path.setAttribute('stroke-width', this.strokeWidth);
-		series.path.setAttribute('class', series.className);
+
+		if (series.className) {
+			d3.select(series.path).classed(series.className, true);
+		}
+		if (series.className && this.stroke) {
+			d3.select(series.stroke).classed(series.className, true);
+		}
 	},
 
 	configure: function(args) {
