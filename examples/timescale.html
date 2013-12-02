@@ -1,0 +1,56 @@
+<!doctype html>
+<link type="text/css" rel="stylesheet" href="../src/css/graph.css">
+<link type="text/css" rel="stylesheet" href="css/lines.css">
+
+<script src="../vendor/d3.v3.js"></script>
+
+<script src="../rickshaw.min.js"></script>
+
+<div id="chart"></div>
+<div id="slider"></div>
+
+<script>
+
+var seriesData = [ [], [] ];
+var random = new Rickshaw.Fixtures.RandomData(1500000);
+
+for (var i = 0; i < 900; i++) {
+	random.addData(seriesData);
+}
+
+var graph = new Rickshaw.Graph({
+	element: document.getElementById("chart"),
+	width: 960,
+	height: 500,
+	stroke: true,
+	strokeWidth: 0.5,
+	renderer: 'area',
+	xScale: d3.time.scale(),
+	yScale: d3.scale.sqrt(),
+	series:[
+		{ color: 'steelblue', data: seriesData[0] },
+		{ color: '#99d4ee', data: seriesData[1] }
+	] 
+});
+
+graph.render();
+
+var xAxis = new Rickshaw.Graph.Axis.X({
+	graph: graph,
+	tickFormat: graph.x.tickFormat()
+});
+
+xAxis.render();
+
+var yAxis = new Rickshaw.Graph.Axis.Y({
+	graph: graph
+});
+
+yAxis.render();
+
+var slider = new Rickshaw.Graph.RangeSlider.Preview({
+	graph: graph,
+	element: document.getElementById('slider')
+});
+
+</script>

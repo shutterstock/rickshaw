@@ -79,6 +79,58 @@ exports.validate = function(test) {
 
 };
 
+exports.scales = function(test) {
+
+	var el = document.createElement("div");
+
+	var times = [1380000000000, 1390000000000];
+
+	var series = [
+		{
+			color: 'steelblue',
+			data: [ { x: times[0], y: 40 }, { x: times[1], y: 49 } ]
+		}
+	];
+
+	var graph = new Rickshaw.Graph({
+		element: el,
+		width: 960,
+		height: 500,
+		xScale: d3.time.scale(),
+		yScale: d3.scale.sqrt(),
+		series: series
+	});
+
+	graph.render();
+
+	var xAxis = new Rickshaw.Graph.Axis.X({
+		graph: graph,
+		tickFormat: graph.x.tickFormat()
+	});
+
+	xAxis.render();
+
+	var yAxis = new Rickshaw.Graph.Axis.Y({
+		graph: graph
+	});
+
+	yAxis.render();
+
+	test.ok(graph.x.ticks()[0] instanceof Date);
+
+	var xTicks = el.getElementsByClassName('x_ticks_d3')[0].getElementsByTagName('text');
+	test.equal(xTicks[0].innerHTML, 'Sep 29');
+	test.equal(xTicks[1].innerHTML, 'Oct 06');
+	test.equal(xTicks[8].innerHTML, 'Nov 24');
+
+	var yTicks = el.getElementsByClassName('y_ticks')[0].getElementsByTagName('g');
+	test.equal(yTicks[0].getAttribute('transform'), 'translate(0,500)');
+	test.equal(yTicks[1].getAttribute('transform'), 'translate(0,275.24400874015976)');
+	test.equal(yTicks[2].getAttribute('transform'), 'translate(0,182.14702893572513)');
+
+	test.done();
+};
+
 exports.inconsistent = function(test) {
 
 	var el = document.createElement("div");

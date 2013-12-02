@@ -21,7 +21,9 @@ Rickshaw.Graph = function(args) {
 			offset: 'zero',
 			min: undefined,
 			max: undefined,
-			preserve: false
+			preserve: false,
+			xScale: undefined,
+			yScale: undefined
 		};
 
 		this._loadRenderers();
@@ -103,9 +105,8 @@ Rickshaw.Graph = function(args) {
 
 		var domain = this.renderer.domain();
 
-		this.x = d3.scale.linear().domain(domain.x).range([0, this.width]);
-
-		this.y = d3.scale.linear().domain(domain.y).range([this.height, 0]);
+		this.x = (this.xScale || d3.scale.linear()).domain(domain.x).range([0, this.width]);
+		this.y = (this.yScale || d3.scale.linear()).domain(domain.y).range([this.height, 0]);
 
 		this.y.magnitude = d3.scale.linear()
 			.domain([domain.y[0] - domain.y[0], domain.y[1] - domain.y[0]])
