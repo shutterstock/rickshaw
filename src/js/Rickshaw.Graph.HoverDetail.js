@@ -192,15 +192,63 @@ Rickshaw.Graph.HoverDetail = Rickshaw.Class.create({
 		this.element.appendChild(dot);
 
 		if (point.active) {
-			item.className = 'item active';
-			dot.className = 'dot active';
+			item.classList.add('active');
+			dot.classList.add('active');
 		}
 
+		// Assume left alignment until the element has been displayed and
+		// bounding box calculations are possible.
+		var alignables = [xLabel, item];
+		alignables.forEach(function(el) {
+			el.classList.add('left');
+		});
+
 		this.show();
+
+		// If left-alignment results in any error, try right-alignment.
+		var leftAlignError = this._calcLayoutError(alignables);
+		if (leftAlignError > 0) {
+			alignables.forEach(function(el) {
+				el.classList.remove('left');
+				el.classList.add('right');
+			});
+
+			// If right-alignment is worse than left alignment, switch back.
+			var rightAlignError = this._calcLayoutError(alignables);
+			if (rightAlignError > leftAlignError) {
+				alignables.forEach(function(el) {
+					el.classList.remove('right');
+					el.classList.add('left');
+				});
+			}
+		}
 
 		if (typeof this.onRender == 'function') {
 			this.onRender(args);
 		}
+	},
+
+	_calcLayoutError: function(alignables) {
+		// Layout error is calculated as the number of linear pixels by which
+		// an alignable extends past the left or right edge of the parent.
+		var parentRect = this.element.parentNode.getBoundingClientRect();
+
+		var error = 0;
+		var alignRight = alignables.forEach(function(el) {
+			var rect = el.getBoundingClientRect();
+			if (!rect.width) {
+				return;
+			}
+
+			if (rect.right > parentRect.right) {
+				error += rect.right - parentRect.right;
+			}
+
+			if (rect.left < parentRect.left) {
+				error += parentRect.left - rect.left;
+			}
+		});
+		return error;
 	},
 
 	_addListeners: function() {
@@ -227,4 +275,3 @@ Rickshaw.Graph.HoverDetail = Rickshaw.Class.create({
 		);
 	}
 });
-

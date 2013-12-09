@@ -1,3 +1,5 @@
+/* jshint -W079 */ 
+
 var Rickshaw = {
 
 	namespace: function(namespace, obj) {

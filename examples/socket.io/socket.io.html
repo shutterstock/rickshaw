@@ -1,0 +1,44 @@
+<!doctype html>
+<head>
+	<link type="text/css" rel="stylesheet" href="../src/css/graph.css">
+	<link type="text/css" rel="stylesheet" href="../examples/css/lines.css">
+
+	<script src="../vendor/d3.v2.js"></script>
+
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.1/jquery.min.js"></script>
+  <script src="/socket.io/socket.io.js"></script>
+
+	<script src="../rickshaw.js"></script>
+</head>
+<body>
+
+<div id="chart_container">
+	<div id="chart"></div>
+</div>
+
+<script>
+
+Rickshaw.Graph.Socketio.Static = Rickshaw.Class.create( Rickshaw.Graph.Socketio, {
+	request: function() {
+	  var socket = io.connect(this.dataURL);
+	  thisData = this;
+    socket.on('rickshaw', function (data) {
+      console.log("Got some fancy Websocket data: ");
+      console.log(data);
+      thisData.success(data);
+    });
+	}
+} );
+
+var socketioGraph = new Rickshaw.Graph.Socketio.Static( {
+	element: document.getElementById("chart"),
+	width: 400,
+	height: 200,
+	renderer: 'line',
+	dataURL: "http://localhost",
+	onData: function(d) { Rickshaw.Series.zeroFill(d); return d }
+} );
+
+</script>
+
+</body>

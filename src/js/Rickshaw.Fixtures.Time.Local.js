@@ -2,8 +2,6 @@ Rickshaw.namespace('Rickshaw.Fixtures.Time.Local');
 
 Rickshaw.Fixtures.Time.Local = function() {
 
-	var tzOffset = new Date().getTimezoneOffset() * 60;
-
 	var self = this;
 
 	this.months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
@@ -53,6 +51,14 @@ Rickshaw.Fixtures.Time.Local = function() {
 			name: 'second',
 			seconds: 1,
 			formatter: function(d) { return d.getSeconds() + 's' }
+		}, {
+			name: 'decisecond',
+			seconds: 1/10,
+			formatter: function(d) { return d.getMilliseconds() + 'ms' }
+		}, {
+			name: 'centisecond',
+			seconds: 1/100,
+			formatter: function(d) { return d.getMilliseconds() + 'ms' }
 		}
 	];
 
@@ -70,14 +76,13 @@ Rickshaw.Fixtures.Time.Local = function() {
 
 	this.ceil = function(time, unit) {
 
-		var nearFuture;
-		var rounded;
+		var date, floor, year;
 
 		if (unit.name == 'day') {
 
-			nearFuture = new Date((time + unit.seconds - 1) * 1000);
+			var nearFuture = new Date((time + unit.seconds - 1) * 1000);
 
-			rounded = new Date(0);
+			var rounded = new Date(0);
 			rounded.setMilliseconds(0);
 			rounded.setSeconds(0);
 			rounded.setMinutes(0);
@@ -91,34 +96,34 @@ Rickshaw.Fixtures.Time.Local = function() {
 
 		if (unit.name == 'month') {
 
-			nearFuture = new Date((time + unit.seconds - 1) * 1000);
+			date = new Date(time * 1000);
 
-			rounded = new Date(0);
-			rounded.setMilliseconds(0);
-			rounded.setSeconds(0);
-			rounded.setMinutes(0);
-			rounded.setHours(0);
-			rounded.setDate(1);
-			rounded.setMonth(nearFuture.getMonth());
-			rounded.setFullYear(nearFuture.getFullYear());
+			floor = new Date(date.getFullYear(), date.getMonth()).getTime() / 1000;
+			if (floor == time) return time;
 
-			return rounded.getTime() / 1000;
+			year = date.getFullYear();
+			var month = date.getMonth();
+
+			if (month == 11) {
+				month = 0;
+				year = year + 1;
+			} else {
+				month += 1;
+			}
+
+			return new Date(year, month).getTime() / 1000;
 		}
 
 		if (unit.name == 'year') {
 
-			nearFuture = new Date((time + unit.seconds - 1) * 1000);
+			date = new Date(time * 1000);
 
-			rounded = new Date(0);
-			rounded.setFullYear(nearFuture.getFullYear());
-			rounded.setMilliseconds(0);
-			rounded.setSeconds(0);
-			rounded.setMinutes(0);
-			rounded.setHours(0);
-			rounded.setDate(1);
-			rounded.setMonth(0);
+			floor = new Date(date.getUTCFullYear(), 0).getTime() / 1000;
+			if (floor == time) return time;
 
-			return rounded.getTime() / 1000;
+			year = date.getFullYear() + 1;
+
+			return new Date(year, 0).getTime() / 1000;
 		}
 
 		return Math.ceil(time / unit.seconds) * unit.seconds;

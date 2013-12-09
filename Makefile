@@ -37,6 +37,7 @@ JS_FILES=\
 	src/js/Rickshaw.Graph.JSONP.js\
 	src/js/Rickshaw.Graph.Legend.js\
 	src/js/Rickshaw.Graph.RangeSlider.js\
+	src/js/Rickshaw.Graph.RangeSlider.Preview.js\
 	src/js/Rickshaw.Graph.Renderer.js\
 	src/js/Rickshaw.Graph.Renderer.Line.js\
 	src/js/Rickshaw.Graph.Renderer.Stack.js\
@@ -46,7 +47,7 @@ JS_FILES=\
 	src/js/Rickshaw.Graph.Renderer.Multi.js\
 	src/js/Rickshaw.Graph.Renderer.LinePlot.js\
 	src/js/Rickshaw.Graph.Smoother.js\
-	src/js/Rickshaw.Graph.Unstacker.js\
+	src/js/Rickshaw.Graph.Socketio.js\
 	src/js/Rickshaw.Series.js\
 	src/js/Rickshaw.Series.FixedDuration.js\
 

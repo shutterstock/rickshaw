@@ -38,7 +38,7 @@ Array of objects containing series data to plot.  Each object should contain `da
 
 ##### renderer
 
-A string containing the name of the renderer to be used.  Options include `area`, `stack`, `bar`, `line`, and `scatterplot`.
+A string containing the name of the renderer to be used.  Options include `area`, `stack`, `bar`, `line`, and `scatterplot`.  Also see the `multi` meta renderer in order to support different renderers per series.
 
 ##### width
 
@@ -58,7 +58,7 @@ Highest value on the Y-axis.  Defaults to the highest value in the series.
 
 ##### padding
 
-An object containing any of `top`, `right`, `bottom`, and `left` properties specifying a padding percentage around the extrema of the data in the graph.  Defaults to 0.01 on top for 1% padding, and 0 on other sides.
+An object containing any of `top`, `right`, `bottom`, and `left` properties specifying a padding percentage around the extrema of the data in the graph.  Defaults to 0.01 on top for 1% padding, and 0 on other sides. Padding on the bottom only applies when the `yMin` is either negative or `auto`.
 
 ##### interpolation
 
@@ -99,6 +99,8 @@ Once you have a basic graph, extensions let you add functionality.  See the [ove
 * __Rickshaw.Graph.Annotate__ - add x-axis annotations
 
 * __Rickshaw.Graph.RangeSlider__ - dynamically zoom on the x-axis with a slider
+
+* __Rickshaw.Graph.RangeSlider.Preview__ - pan and zoom via graphical preview of entire data set
 
 * __Rickshaw.Graph.Axis.Time__ - add an x-axis and grid lines with time labels
 
@@ -142,7 +144,7 @@ For graphs with more series than palettes have colors, specify an `interpolatedS
 
 ## Rickshaw and Cross-Browser Support
 
-This library works in modern browsers and Internet Explorer 9.
+This library works in modern browsers and Internet Explorer 9+.
 
 Rickshaw relies on the HTMLElement#classList API, which isn't natively supported in Internet Explorer 9.  Rickshaw adds support by including a shim which implements the classList API by extending the HTMLElement prototype.  You can disable this behavior if you like, by setting `RICKSHAW_NO_COMPAT` to a true value before including the library. 
 
@@ -173,7 +175,7 @@ This library was developed by David Chester, Douglas Hunter, and Silas Sewell at
 
 ## License
 
-Copyright (C) 2011-2012 by Shutterstock Images, LLC
+Copyright (C) 2011-2013 by Shutterstock Images, LLC
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 

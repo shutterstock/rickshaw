@@ -18,6 +18,13 @@ Rickshaw.Graph.Renderer.Multi = Rickshaw.Class.create( Rickshaw.Graph.Renderer, 
 		} );
 	},
 
+	configure: function($super, args) {
+
+		args = args || {};
+		this.config = args;
+		$super(args);
+	},
+
 	domain: function($super) {
 
 		this.graph.stackData();
@@ -65,6 +72,13 @@ Rickshaw.Graph.Renderer.Multi = Rickshaw.Class.create( Rickshaw.Graph.Renderer, 
 				graph.vis[0][0].appendChild(vis);
 
 				var renderer = graph._renderers[series.renderer];
+
+				var config = {};
+
+				var defaults = [ this.defaults(), renderer.defaults(), this.config, this.graph ];
+				defaults.forEach(function(d) { Rickshaw.extend(config, d) });
+
+				renderer.configure(config);
 
 				renderGroups[series.renderer] = {
 					renderer: renderer,
@@ -130,6 +144,8 @@ Rickshaw.Graph.Renderer.Multi = Rickshaw.Class.create( Rickshaw.Graph.Renderer, 
 
 			var series = group.series
 				.filter( function(series) { return !series.disabled } );
+
+			series.active = function() { return series };
 
 			group.renderer.render({ series: series, vis: group.vis });
 			series.forEach(function(s) { s.stack = s._stack || s.stack || s.data; });

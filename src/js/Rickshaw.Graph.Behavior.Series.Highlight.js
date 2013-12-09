@@ -21,14 +21,14 @@ Rickshaw.Graph.Behavior.Series.Highlight = function(args) {
 			if (activeLine) return;
 			else activeLine = l;
 
-			self.legend.lines.forEach( function(line, index) {
+			self.legend.lines.forEach( function(line) {
 
 				if (l === line) {
 
 					// if we're not in a stacked renderer bring active line to the top
-					if (index > 0 && self.graph.renderer.unstack && (line.series.renderer ? line.series.renderer.unstack : true)) {
+					if (self.graph.renderer.unstack && (line.series.renderer ? line.series.renderer.unstack : true)) {
 
-						var seriesIndex = self.graph.series.length - index - 1;
+						var seriesIndex = self.graph.series.indexOf(line.series);
 						line.originalIndex = seriesIndex;
 
 						var series = self.graph.series.splice(seriesIndex, 1)[0];

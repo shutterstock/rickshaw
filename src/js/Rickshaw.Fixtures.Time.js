@@ -2,8 +2,6 @@ Rickshaw.namespace('Rickshaw.Fixtures.Time');
 
 Rickshaw.Fixtures.Time = function() {
 
-	var tzOffset = new Date().getTimezoneOffset() * 60;
-
 	var self = this;
 
 	this.months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
@@ -53,6 +51,14 @@ Rickshaw.Fixtures.Time = function() {
 			name: 'second',
 			seconds: 1,
 			formatter: function(d) { return d.getUTCSeconds() + 's' }
+		}, {
+			name: 'decisecond',
+			seconds: 1/10,
+			formatter: function(d) { return d.getUTCMilliseconds() + 'ms' }
+		}, {
+			name: 'centisecond',
+			seconds: 1/100,
+			formatter: function(d) { return d.getUTCMilliseconds() + 'ms' }
 		}
 	];
 
@@ -70,39 +76,38 @@ Rickshaw.Fixtures.Time = function() {
 
 	this.ceil = function(time, unit) {
 
-		var nearFuture;
-		var rounded;
+		var date, floor, year;
 
 		if (unit.name == 'month') {
 
-			nearFuture = new Date((time + unit.seconds - 1) * 1000);
+			date = new Date(time * 1000);
 
-			rounded = new Date(0);
-			rounded.setUTCFullYear(nearFuture.getUTCFullYear());
-			rounded.setUTCMonth(nearFuture.getUTCMonth());
-			rounded.setUTCDate(1);
-			rounded.setUTCHours(0);
-			rounded.setUTCMinutes(0);
-			rounded.setUTCSeconds(0);
-			rounded.setUTCMilliseconds(0);
+			floor = Date.UTC(date.getUTCFullYear(), date.getUTCMonth()) / 1000;
+			if (floor == time) return time;
 
-			return rounded.getTime() / 1000;
+			year = date.getUTCFullYear();
+			var month = date.getUTCMonth();
+
+			if (month == 11) {
+				month = 0;
+				year = year + 1;
+			} else {
+				month += 1;
+			}
+
+			return Date.UTC(year, month) / 1000;
 		}
 
 		if (unit.name == 'year') {
 
-			nearFuture = new Date((time + unit.seconds - 1) * 1000);
+			date = new Date(time * 1000);
 
-			rounded = new Date(0);
-			rounded.setUTCFullYear(nearFuture.getUTCFullYear());
-			rounded.setUTCMonth(0);
-			rounded.setUTCDate(1);
-			rounded.setUTCHours(0);
-			rounded.setUTCMinutes(0);
-			rounded.setUTCSeconds(0);
-			rounded.setUTCMilliseconds(0);
+			floor = Date.UTC(date.getUTCFullYear(), 0) / 1000;
+			if (floor == time) return time;
 
-			return rounded.getTime() / 1000;
+			year = date.getUTCFullYear() + 1;
+
+			return Date.UTC(year, 0) / 1000;
 		}
 
 		return Math.ceil(time / unit.seconds) * unit.seconds;

@@ -1,13 +1,25 @@
 var fs = require('fs');
+var Rickshaw;
+
+exports.setUp = function(callback) {
+
+	Rickshaw = require('../rickshaw');
+
+	global.document = d3.select('html')[0][0].parentNode;
+	global.window = document.defaultView;
+
+	new Rickshaw.Compat.ClassList();
+
+	callback();
+};
+
+exports.tearDown = function(callback) {
+
+	delete require.cache.d3;
+	callback();
+};
 
 exports.svg = function(test) {
-
-	var jsdom    = require("jsdom").jsdom;
-	global.document = jsdom("<html><head></head><body></body></html>");
-	global.window   = global.document.createWindow();
-
-	var Rickshaw = require('../rickshaw');
-	new Rickshaw.Compat.ClassList();
 
 	var el = document.createElement("div");
 
@@ -42,13 +54,6 @@ exports.svg = function(test) {
 
 exports.validate = function(test) {
 
-	var jsdom    = require("jsdom").jsdom;
-	global.document = jsdom("<html><head></head><body></body></html>");
-	global.window   = global.document.createWindow();
-
-	var Rickshaw = require('../rickshaw');
-	new Rickshaw.Compat.ClassList();
-
 	var el = document.createElement("div");
 
 	 test.throws( function() {
@@ -74,14 +79,59 @@ exports.validate = function(test) {
 
 };
 
+exports.scales = function(test) {
+
+	var el = document.createElement("div");
+
+	var times = [1380000000000, 1390000000000];
+
+	var series = [
+		{
+			color: 'steelblue',
+			data: [ { x: times[0], y: 40 }, { x: times[1], y: 49 } ]
+		}
+	];
+
+	var graph = new Rickshaw.Graph({
+		element: el,
+		width: 960,
+		height: 500,
+		xScale: d3.time.scale(),
+		yScale: d3.scale.sqrt(),
+		series: series
+	});
+
+	graph.render();
+
+	var xAxis = new Rickshaw.Graph.Axis.X({
+		graph: graph,
+		tickFormat: graph.x.tickFormat()
+	});
+
+	xAxis.render();
+
+	var yAxis = new Rickshaw.Graph.Axis.Y({
+		graph: graph
+	});
+
+	yAxis.render();
+
+	test.ok(graph.x.ticks()[0] instanceof Date);
+
+	var xTicks = el.getElementsByClassName('x_ticks_d3')[0].getElementsByTagName('text');
+	test.equal(xTicks[0].innerHTML, 'Sep 29');
+	test.equal(xTicks[1].innerHTML, 'Oct 06');
+	test.equal(xTicks[8].innerHTML, 'Nov 24');
+
+	var yTicks = el.getElementsByClassName('y_ticks')[0].getElementsByTagName('g');
+	test.equal(yTicks[0].getAttribute('transform'), 'translate(0,500)');
+	test.equal(yTicks[1].getAttribute('transform'), 'translate(0,275.24400874015976)');
+	test.equal(yTicks[2].getAttribute('transform'), 'translate(0,182.14702893572513)');
+
+	test.done();
+};
+
 exports.inconsistent = function(test) {
-
-	var jsdom    = require("jsdom").jsdom;
-	global.document = jsdom("<html><head></head><body></body></html>");
-	global.window   = global.document.createWindow();
-
-	var Rickshaw = require('../rickshaw');
-	new Rickshaw.Compat.ClassList();
 
 	var el = document.createElement("div");
 
@@ -148,11 +198,56 @@ exports.inconsistent = function(test) {
 	test.done();
 };
 
-exports.rendererAutodiscover = function(test) {
+exports.configure = function(test) {
 
-	var jsdom    = require("jsdom").jsdom;
-	global.document = jsdom("<html><head></head><body></body></html>");
-	global.window   = global.document.createWindow();
+	var el = document.createElement('div');
+
+	var graph = new Rickshaw.Graph({
+		element: el,
+		width: 960,
+		height: 500,
+		padding: { top: 0.2 },
+		renderer: 'stack',
+		series: [ { data: [ { x: 1, y: 40 } ] } ]
+	});
+
+	test.deepEqual(graph.renderer.padding, { bottom: 0.01, right: 0, left: 0, top: 0.2 },
+		"padding makes it through to renderer from constructor");
+
+	test.strictEqual(typeof graph.padding, "undefined",
+		"padding not set on graph from constructor");
+
+	graph.configure({ padding: { top: 0.25, bottom: 0.25, right: 0.25, left: 0.25 } });
+
+	test.deepEqual(graph.renderer.padding, { bottom: 0.25, right: 0.25, left: 0.25, top: 0.25 },
+		"padding makes it through to renderer from configure");
+
+	test.strictEqual(typeof graph.padding, "undefined",
+		"padding not set on graph from configure");
+
+	var callback = function(args) {
+		if (callback.called) return;
+		test.deepEqual(args, { interpolation: 'step-after' }, "configure args match");
+		callback.called = true;
+	};
+
+	graph.onConfigure(callback);
+	graph.configure({ interpolation: 'step-after' });
+
+	test.equal(graph.interpolation, 'step-after', "interpolation set on graph");
+	test.ok(callback.called, "configure callback was called");
+	test.equal(graph.config.interpolation, 'step-after', "configuration object has interpolation set");
+
+	graph.configure({ width: 900, height: 100 });
+
+	test.deepEqual([ graph.width, graph.height ], [ 900, 100 ], "graph dimensions take");
+	test.deepEqual(graph.vis[0][0].getAttribute('width'), 900, "width set on svg");
+	test.deepEqual(graph.vis[0][0].getAttribute('height'), 100, "height set on svg");
+
+	test.done();
+};
+
+exports.rendererAutodiscover = function(test) {
 
 	var Rickshaw = require('../rickshaw');
 	new Rickshaw.Compat.ClassList();
@@ -203,3 +298,4 @@ exports.rendererAutodiscover = function(test) {
 
 	test.done();
 };
+

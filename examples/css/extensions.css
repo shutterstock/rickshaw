@@ -10,7 +10,7 @@ div, span, p, td {
 #chart path {
 	-webkit-transition: opacity 0.2s linear;
 }
-#slider {
+#preview {
 	margin-top: 10px;
 }
 #legend {

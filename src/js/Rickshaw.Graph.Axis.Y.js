@@ -70,7 +70,7 @@ Rickshaw.Graph.Axis.Y = Rickshaw.Class.create( {
 
 	render: function() {
 
-		if (this.graph.height !== this._renderHeight) this.setSize({ auto: true });
+		if (this._renderHeight !== undefined && this.graph.height !== this._renderHeight) this.setSize({ auto: true });
 
 		this.ticks = this.staticTicks || Math.floor(this.graph.height / this.pixelsPerTick);
 
@@ -110,6 +110,8 @@ Rickshaw.Graph.Axis.Y = Rickshaw.Class.create( {
 		this.graph.vis
 			.append("svg:g")
 			.attr("class", "y_grid")
-			.call(axis.ticks(this.ticks).tickSubdivide(0).tickSize(gridSize));
+			.call(axis.ticks(this.ticks).tickSubdivide(0).tickSize(gridSize))
+			.selectAll('text')
+			.each(function() { this.parentNode.setAttribute('data-y-value', this.textContent) });
 	}
 } );
