@@ -231,6 +231,9 @@
 	stroke-width: 1px;
 	stroke-dasharray: 1 1;
 }
+.rickshaw_graph .y_grid .tick[data-y-value="0"] {
+	stroke-dasharray: 1 0;
+}
 .rickshaw_graph .y_grid path,
 .rickshaw_graph .x_grid_d3 path  {
 	fill: none;
