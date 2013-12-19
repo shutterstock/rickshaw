@@ -12,6 +12,7 @@ Rickshaw.Graph.RangeSlider = Rickshaw.Class.create({
 		this.build();
 
 		graph.onUpdate( function() { this.update() }.bind(this) );
+		graph.onConfigure( function() { this.configure() }.bind(this) );
 	},
 
 	build: function() {
@@ -59,6 +60,13 @@ Rickshaw.Graph.RangeSlider = Rickshaw.Class.create({
 
 		$(element)[0].style.width = graph.width + 'px';
 
+	},
+
+	configure: function() {
+		var element = this.element;
+		var graph = this.graph;
+
+		$(element)[0].style.width = graph.width + 'px';
 	},
 
 	update: function() {
