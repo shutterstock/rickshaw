@@ -40,13 +40,14 @@ exports.basic = function(test) {
 	graph.render();
 
 	var previewElement = document.createElement("div");
-	test.doesNotThrow(function() {
-		var preview = new Rickshaw.Graph.RangeSlider.Preview({
-			element: previewElement,
-			graph: graph
-		});
+
+	var preview = new Rickshaw.Graph.RangeSlider.Preview({
+		element: previewElement,
+		graph: graph
 	});
 
+	test.equal(graph.renderer.name, preview.previews[0].renderer.name);
 	test.done();
 };
+
 
