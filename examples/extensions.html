@@ -256,6 +256,7 @@ setInterval( function() {
 function addAnnotation(force) {
 	if (messages.length > 0 && (force || Math.random() >= 0.95)) {
 		annotator.add(seriesData[2][seriesData[2].length-1].x, messages.shift());
+		annotator.update();
 	}
 }
 
