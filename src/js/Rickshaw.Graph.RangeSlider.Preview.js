@@ -363,6 +363,10 @@ Rickshaw.Graph.RangeSlider.Preview = Rickshaw.Class.create({
 					domainScale(frameAfterDrag[1])
 				];
 
+				self.slideCallbacks.forEach(function(callback) {
+					callback(graph, windowAfterDrag[0], windowAfterDrag[1]);
+				});
+
 				if (frameAfterDrag[0] === 0) {
 					windowAfterDrag[0] = undefined;
 				}
@@ -371,10 +375,6 @@ Rickshaw.Graph.RangeSlider.Preview = Rickshaw.Class.create({
 				}
 				graph.window.xMin = windowAfterDrag[0];
 				graph.window.xMax = windowAfterDrag[1];
-
-				self.slideCallbacks.forEach(function(callback) {
-					callback(graph, graph.window.xMin, graph.window.xMax);
-				});
 
 				graph.update();
 			});
