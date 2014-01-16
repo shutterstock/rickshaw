@@ -354,7 +354,7 @@ Rickshaw.Graph.RangeSlider.Preview = Rickshaw.Class.create({
 			self.graphs.forEach(function(graph) {
 
 				var domainScale = d3.scale.linear()
-					.interpolate(d3.interpolateRound)
+					.interpolate(d3.interpolateNumber)
 					.domain([0, self.previewWidth])
 					.range(graph.dataDomain());
 
