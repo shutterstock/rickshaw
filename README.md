@@ -22,7 +22,7 @@ var graph = new Rickshaw.Graph( {
 
 graph.render();
 ```
-See the [overview](http://code.shutterstock.com/rickshaw/), [tutorial](http://shutterstock.github.com/rickshaw/tutorial/introduction.html), and [examples](http://shutterstock.github.com/rickshaw/examples/) for more.
+See the [overview](http://code.shutterstock.com/rickshaw/), [tutorial](http://shutterstock.github.com/rickshaw/tutorial/introduction.html), [examples](http://shutterstock.github.com/rickshaw/examples/) and [resources](../../resources/index.html) for more.
 
 ## Rickshaw.Graph 
 
