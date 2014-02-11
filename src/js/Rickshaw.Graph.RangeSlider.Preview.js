@@ -121,6 +121,8 @@ Rickshaw.Graph.RangeSlider.Preview = Rickshaw.Class.create({
 		var translateCommand = "translate(" +
 			this.config.frameHandleThickness + "px, " +
 			this.config.frameTopThickness + "px)";
+			
+		var widthCommand = this.previewWidth + "px";
 
 		graphContainer.enter()
 			.append("div")
@@ -129,6 +131,7 @@ Rickshaw.Graph.RangeSlider.Preview = Rickshaw.Class.create({
 			.style("-moz-transform", translateCommand)
 			.style("-ms-transform", translateCommand)
 			.style("transform", translateCommand)
+			.style("width", widthCommand)
 			.each(buildGraph);
 
 		graphContainer.exit()
