@@ -9,6 +9,10 @@
 	<script src="../vendor/d3.v3.js"></script>
 
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
+	<script>
+		jQuery.noConflict();
+	</script>
+
 	<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.15/jquery-ui.min.js"></script>
 
 	<script src="../src/js/Rickshaw.js"></script>
@@ -166,7 +170,7 @@ var graph = new Rickshaw.Graph( {
 
 graph.render();
 
-var preview = new Rickshaw.Graph.RangeSlider.Preview( {
+var preview = new Rickshaw.Graph.RangeSlider( {
 	graph: graph,
 	element: document.getElementById('preview'),
 } );
@@ -206,7 +210,7 @@ var highlighter = new Rickshaw.Graph.Behavior.Series.Highlight( {
 
 var smoother = new Rickshaw.Graph.Smoother( {
 	graph: graph,
-	element: $('#smoother')
+	element: document.querySelector('#smoother')
 } );
 
 var ticksTreatment = 'glow';

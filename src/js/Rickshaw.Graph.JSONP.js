@@ -4,7 +4,7 @@ Rickshaw.Graph.JSONP = Rickshaw.Class.create( Rickshaw.Graph.Ajax, {
 
 	request: function() {
 
-		$.ajax( {
+		jQuery.ajax( {
 			url: this.dataURL,
 			dataType: 'jsonp',
 			success: this.success.bind(this),

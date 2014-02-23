@@ -8,6 +8,9 @@ Rickshaw.Graph.Behavior.Series.Toggle = function(args) {
 	var self = this;
 
 	this.addAnchor = function(line) {
+
+		var $ = jQuery;
+
 		var anchor = document.createElement('a');
 		anchor.innerHTML = '&#10004;';
 		anchor.classList.add('action');

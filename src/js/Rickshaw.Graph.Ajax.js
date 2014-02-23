@@ -17,7 +17,7 @@ Rickshaw.Graph.Ajax = Rickshaw.Class.create( {
 
 	request: function() {
 
-		$.ajax( {
+		jQuery.ajax( {
 			url: this.dataURL,
 			dataType: 'json',
 			success: this.success.bind(this),
