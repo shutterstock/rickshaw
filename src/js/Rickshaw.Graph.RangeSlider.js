@@ -10,55 +10,97 @@ Rickshaw.Graph.RangeSlider = Rickshaw.Class.create({
 		this.slideCallbacks = [];
 
 		this.build();
-
-		graph.onUpdate( function() { this.update() }.bind(this) );
+		
+		if( graph.constructor === Array ) {
+			for( var i=0; i<graph.length; i++ ) {
+				graph[i].onUpdate( function() { this.update() }.bind(this) );
+			}
+		} else {
+			graph.onUpdate( function() { this.update() }.bind(this) );
+		}
 	},
 
 	build: function() {
 
 		var element = this.element;
 		var graph = this.graph;
-		var $ = jQuery;
 
-		var domain = graph.dataDomain();
 		var self = this;
 
-		$( function() {
-			$(element).slider( {
-				range: true,
-				min: domain[0],
-				max: domain[1],
-				values: [ 
-					domain[0],
-					domain[1]
-				],
-				slide: function( event, ui ) {
+		if( graph.constructor === Array ) {
+			$( function() {
+				$(element).slider( {
+					range: true,
+					min: graph[0].dataDomain()[0],
+					max: graph[0].dataDomain()[1],
+					values: [
+						graph[0].dataDomain()[0],
+						graph[0].dataDomain()[1]
+					],
+					slide: function( event, ui ) {
+						for( var i=0; i<graph.length; i++) {
+							graph[i].window.xMin = ui.values[0];
+							graph[i].window.xMax = ui.values[1];
+							graph[i].update();
 
-					if (ui.values[1] <= ui.values[0]) return;
-
-					graph.window.xMin = ui.values[0];
-					graph.window.xMax = ui.values[1];
-					graph.update();
-
-					var domain = graph.dataDomain();
-
-					// if we're at an extreme, stick there
-					if (domain[0] == ui.values[0]) {
-						graph.window.xMin = undefined;
+							// if we're at an extreme, stick there
+							if (graph[i].dataDomain()[0] == ui.values[0]) {
+								graph[i].window.xMin = undefined;
+							}
+							if (graph[i].dataDomain()[1] == ui.values[1]) {
+								graph[i].window.xMax = undefined;
+							}
+						}
+                                                
+						self.slideCallbacks.forEach(function(callback) {
+                                                        callback(graph[i], graph[i].window.xMin, graph[i].window.xMax);
+                                                });
 					}
-
-					if (domain[1] == ui.values[1]) {
-						graph.window.xMax = undefined;
-					}
-
-					self.slideCallbacks.forEach(function(callback) {
-						callback(graph, graph.window.xMin, graph.window.xMax);
-					});
-				}
+				} );
 			} );
-		} );
 
-		$(element)[0].style.width = graph.width + 'px';
+			element[0].style.width = graph[0].width + 'px';
+
+		} else {
+
+			var domain = graph.dataDomain();
+			$( function() {
+				$(element).slider( {
+					range: true,
+					min: domain[0],
+					max: domain[1],
+					values: [ 
+						domain[0],
+						domain[1]
+					],
+					slide: function( event, ui ) {
+
+						if (ui.values[1] <= ui.values[0]) return;
+
+						graph.window.xMin = ui.values[0];
+						graph.window.xMax = ui.values[1];
+						graph.update();
+
+						var domain = graph.dataDomain();
+
+						// if we're at an extreme, stick there
+						if (domain[0] == ui.values[0]) {
+							graph.window.xMin = undefined;
+						}
+
+						if (domain[1] == ui.values[1]) {
+							graph.window.xMax = undefined;
+						}
+
+						self.slideCallbacks.forEach(function(callback) {
+							callback(graph, graph.window.xMin, graph.window.xMax);
+						});
+					}
+				} );
+			} );
+
+			$(element)[0].style.width = graph.width + 'px';
+		}
 
 	},
 
@@ -66,9 +108,12 @@ Rickshaw.Graph.RangeSlider = Rickshaw.Class.create({
 
 		var element = this.element;
 		var graph = this.graph;
-		var $ = jQuery;
 
 		var values = $(element).slider('option', 'values');
+		
+		if( graph.constructor === Array ) {
+			graph = graph[0];
+		}
 
 		var domain = graph.dataDomain();
 
