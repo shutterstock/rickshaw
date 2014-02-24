@@ -486,13 +486,27 @@ Rickshaw.Graph = function(args) {
 
 		var domain = this.renderer.domain();
 
-		this.x = (this.xScale || d3.scale.linear()).domain(domain.x).range([0, this.width]);
-		this.y = (this.yScale || d3.scale.linear()).domain(domain.y).range([this.height, 0]);
+		var xScale = this.xScale || d3.scale.linear();
+		// Set domain unless already set
+		if (isDefaultDomain(xScale.domain())) {
+		    xScale = xScale.domain(domain.x);
+		}
+		this.x = xScale.range([0, this.width]);
+
+		var yScale = this.yScale || d3.scale.linear();
+		if (isDefaultDomain(yScale.domain())) {
+		    yScale = yScale.domain(domain.y);
+		}
+		this.y = yScale.range([this.height, 0]);
 
 		this.y.magnitude = d3.scale.linear()
 			.domain([domain.y[0] - domain.y[0], domain.y[1] - domain.y[0]])
 			.range([0, this.height]);
 	};
+
+        function isDefaultDomain(domain) {
+            return domain[0] === 0 && domain[1] === 1;
+        }
 
 	this.render = function() {
 
