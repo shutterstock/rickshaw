@@ -9,8 +9,6 @@ Rickshaw.Graph.Behavior.Series.Toggle = function(args) {
 
 	this.addAnchor = function(line) {
 
-		var $ = jQuery;
-
 		var anchor = document.createElement('a');
 		anchor.innerHTML = '&#10004;';
 		anchor.classList.add('action');
@@ -77,6 +75,7 @@ Rickshaw.Graph.Behavior.Series.Toggle = function(args) {
 
 	if (this.legend) {
 
+		var $ = jQuery;
 		if (typeof $ != 'undefined' && $(this.legend.list).sortable) {
 
 			$(this.legend.list).sortable( {
