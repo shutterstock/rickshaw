@@ -2,119 +2,120 @@ Rickshaw.namespace('Rickshaw.Graph.RangeSlider');
 
 Rickshaw.Graph.RangeSlider = Rickshaw.Class.create({
 
-  initialize: function(args) {
+	initialize: function(args) {
 
-    var element = this.element = args.element;
-    var graph = this.graph = args.graph;
+		var element = this.element = args.element;
+		var graph = this.graph = args.graph;
 
-    this.slideCallbacks = [];
+		this.slideCallbacks = [];
 
-    this.build();
+		this.build();
 
-    graph.onUpdate( function() { this.update() }.bind(this) );
-  },
+		graph.onUpdate( function() { this.update() }.bind(this) );
+	},
 
-  build: function() {
+	build: function() {
 
-    var element = this.element;
-    var graph = this.graph;
-    var $ = jQuery;
+		var element = this.element;
+		var graph = this.graph;
+		var $ = jQuery;
 
-    var domain = graph.dataDomain();
-    var self = this;
+		var domain = graph.dataDomain();
+		var self = this;
 
-    $( function() {
-      $(element).slider( {
-        range: true,
-        min: domain[0],
-        max: domain[1],
-        values: [ 
-          domain[0],
-          domain[1]
-        ],
-        start: function ( event, ui ) {
-          self.slideStarted(event,ui);
-        },
-        stop: function( event, ui ) {
-          self.slideFinished(event, ui);
-        },
-        slide: function( event, ui ) {
+		$( function() {
+			$(element).slider( {
+				range: true,
+				min: domain[0],
+				max: domain[1],
+				values: [ 
+					domain[0],
+					domain[1]
+				],
+				start: function ( event, ui ) {
+					self.slideStarted(event,ui);
+				},
+				stop: function( event, ui ) {
+					self.slideFinished(event, ui);
+				},
+				slide: function( event, ui ) {
 
-          if (!self.slideShouldUpdate(event, ui))
-            return;
+					if (!self.slideShouldUpdate(event, ui))
+						return;
 
-          if (ui.values[1] <= ui.values[0]) return;
+					if (ui.values[1] <= ui.values[0]) return;
 
-          self.processSlideChange(event, ui);
-        }
-      } );
-    } );
+					self.processSlideChange(event, ui);
+				}
+			} );
+		} );
 
-    $(element)[0].style.width = graph.width + 'px';
+		$(element)[0].style.width = graph.width + 'px';
 
-  },
+	},
 
-  update: function() {
+	update: function() {
 
-    var element = this.element;
-    var graph = this.graph;
-    var $ = jQuery;
+		var element = this.element;
+		var graph = this.graph;
+		var $ = jQuery;
 
-    var values = $(element).slider('option', 'values');
+		var values = $(element).slider('option', 'values');
 
-    var domain = graph.dataDomain();
+		var domain = graph.dataDomain();
 
-    $(element).slider('option', 'min', domain[0]);
-    $(element).slider('option', 'max', domain[1]);
+		$(element).slider('option', 'min', domain[0]);
+		$(element).slider('option', 'max', domain[1]);
 
-    if (graph.window.xMin == null) {
-      values[0] = domain[0];
-    }
-    if (graph.window.xMax == null) {
-      values[1] = domain[1];
-    }
+		if (graph.window.xMin == null) {
+			values[0] = domain[0];
+		}
+		if (graph.window.xMax == null) {
+			values[1] = domain[1];
+		}
 
-    $(element).slider('option', 'values', values);
-  },
+		$(element).slider('option', 'values', values);
+	},
 
-  onSlide: function(callback) {
-    this.slideCallbacks.push(callback);
-  },
+	onSlide: function(callback) {
+		this.slideCallbacks.push(callback);
+	},
 
-  processSlideChange: function(event, ui) {
-    var graph = this.graph;
+	processSlideChange: function(event, ui) {
 
-    graph.window.xMin = ui.values[0];
-    graph.window.xMax = ui.values[1];
-    graph.update();
+		var graph = this.graph;
 
-    var domain = graph.dataDomain();
+		graph.window.xMin = ui.values[0];
+		graph.window.xMax = ui.values[1];
+		graph.update();
 
-    // if we're at an extreme, stick there
-    if (domain[0] == ui.values[0]) {
-      graph.window.xMin = undefined;
-    }
+		var domain = graph.dataDomain();
 
-    if (domain[1] == ui.values[1]) {
-      graph.window.xMax = undefined;
-    }
+		// if we're at an extreme, stick there
+		if (domain[0] == ui.values[0]) {
+			graph.window.xMin = undefined;
+		}
 
-    this.slideCallbacks.forEach(function(callback) {
-      callback(graph, graph.window.xMin, graph.window.xMax);
-    });
-  },
+		if (domain[1] == ui.values[1]) {
+			graph.window.xMax = undefined;
+		}
 
-  // allows the slide updates to bail out if sliding is not permitted
-  slideShouldUpdate: function(event, ui) {
-    return true;
-  },
+		this.slideCallbacks.forEach(function(callback) {
+			callback(graph, graph.window.xMin, graph.window.xMax);
+		});
+	},
 
-  slideStarted: function(event, ui) {
-    return;
-  },
+	// allows the slide updates to bail out if sliding is not permitted
+	slideShouldUpdate: function(event, ui) {
+		return true;
+	},
 
-  slideFinished: function(event, ui) {
-    return;
-  }
+	slideStarted: function(event, ui) {
+		return;
+	},
+
+	slideFinished: function(event, ui) {
+		return;
+	}
 });
 
