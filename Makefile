@@ -86,7 +86,7 @@ rickshaw.css: $(CSS_FILES)
 
 rickshaw.js: $(JS_FILES) $(JS_HINT)
 	$(JS_HINT) src/js
-	cat $(JS_FILES) >> rickshaw.js
+	cat $(JS_FILES) > rickshaw.js
 
 rickshaw.min.css: $(CSS_MIN) rickshaw.css
 	$(CSS_MIN) rickshaw.css > rickshaw.min.css
