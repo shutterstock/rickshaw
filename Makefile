@@ -14,6 +14,7 @@ CSS_FILES=\
 	src/css/legend.css\
 
 JS_FILES=\
+	src/helpers/startUMD.js\
 	src/js/Rickshaw.js\
 	src/js/Rickshaw.Class.js\
 	src/js/Rickshaw.Compat.ClassList.js\
@@ -50,6 +51,7 @@ JS_FILES=\
 	src/js/Rickshaw.Graph.Socketio.js\
 	src/js/Rickshaw.Series.js\
 	src/js/Rickshaw.Series.FixedDuration.js\
+	src/helpers/endUMD.js\
 
 .PHONY: clean build
 
@@ -84,7 +86,7 @@ rickshaw.css: $(CSS_FILES)
 
 rickshaw.js: $(JS_FILES) $(JS_HINT)
 	$(JS_HINT) src/js
-	cat $(JS_FILES) > rickshaw.js
+	cat $(JS_FILES) >> rickshaw.js
 
 rickshaw.min.css: $(CSS_MIN) rickshaw.css
 	$(CSS_MIN) rickshaw.css > rickshaw.min.css
