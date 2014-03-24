@@ -36,9 +36,11 @@ Rickshaw.Graph.Renderer.LinePlot = Rickshaw.Class.create( Rickshaw.Graph.Rendere
 	_renderDots: function() {
 
 		var graph = this.graph;
+		var dotSize = this.dotSize;
+		var dotBySeries = dotSize;
 
 		graph.series.forEach(function(series) {
-
+			dotBySeries = series.dotSize || dotSize;
 			if (series.disabled) return;
 
 			var nodes = graph.vis.selectAll("x")
@@ -46,7 +48,7 @@ Rickshaw.Graph.Renderer.LinePlot = Rickshaw.Class.create( Rickshaw.Graph.Rendere
 				.enter().append("svg:circle")
 				.attr("cx", function(d) { return graph.x(d.x) })
 				.attr("cy", function(d) { return graph.y(d.y) })
-				.attr("r", function(d) { return ("r" in d) ? d.r : graph.renderer.dotSize});
+				.attr("r", function(d) { return ("r" in d) ? d.r : dotBySeries});
 
 			Array.prototype.forEach.call(nodes[0], function(n) {
 				if (!n) return;
