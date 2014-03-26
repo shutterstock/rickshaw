@@ -56,7 +56,7 @@ exports.validate = function(test) {
 
 	var el = document.createElement("div");
 
-	 test.throws( function() {
+	test.throws( function() {
 
 		var graph = new Rickshaw.Graph({
 			element: el,
@@ -77,6 +77,36 @@ exports.validate = function(test) {
 
 	test.done();
 
+};
+
+exports['should validate empty data when rendering multiple series'] = function(test) {
+	var el = document.createElement("div");
+	
+	try {
+		var graph = new Rickshaw.Graph({
+			element: el,
+			width: 960,
+			height: 500,
+			renderer: 'line',
+			series: [
+				{data: [], name:'first: empty'},{
+				data  : [
+					{ x: 0, y: 40 },
+					{ x: 1, y: 49 },
+					{ x: 2, y: 38 },
+					{ x: 3, y: 30 },
+					{ x: 4, y: 32 } ],
+				name: '5 datas'
+				},
+				{data: [], name:'last: empty'}]
+		});
+	} catch (error) {
+		test.fail(error);
+	}
+	//test.deepEquals(graph.domain(), [NaN, NaN], should have proper );
+	
+	
+	test.done();
 };
 
 exports.scales = function(test) {
