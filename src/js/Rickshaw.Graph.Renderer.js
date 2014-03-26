@@ -28,19 +28,14 @@ Rickshaw.Graph.Renderer = Rickshaw.Class.create( {
 	},
 
 	domain: function(data) {
-
+		// Requires that at least one series contains some data
 		var stackedData = data || this.graph.stackedData || this.graph.stackData();
-		var firstPoint = stackedData[0][0];
 
-		if (firstPoint === undefined) {
-			return { x: [null, null], y: [null, null] };
-		}
+		var xMin = +Infinity;
+		var xMax = -Infinity;
 
-		var xMin = firstPoint.x;
-		var xMax = firstPoint.x;
-
-		var yMin = firstPoint.y + firstPoint.y0;
-		var yMax = firstPoint.y + firstPoint.y0;
+		var yMin = +Infinity;
+		var yMax = -Infinity;
 
 		stackedData.forEach( function(series) {
 
