@@ -63,6 +63,9 @@ Rickshaw.Graph.Renderer = Rickshaw.Class.create( {
 		xMin -= (xMax - xMin) * this.padding.left;
 		xMax += (xMax - xMin) * this.padding.right;
 
+		xMin = this.graph.x_min === undefined ? xMin : this.graph.x_min || 0;
+		xMax = this.graph.x_max === undefined ? xMax : this.graph.x_max || 0;
+
 		yMin = this.graph.min === 'auto' ? yMin : this.graph.min || 0;
 		yMax = this.graph.max === undefined ? yMax : this.graph.max;
 
