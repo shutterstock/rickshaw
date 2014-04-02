@@ -72,13 +72,15 @@ Rickshaw.Graph = function(args) {
 			if (!Array.isArray(s.data)) {
 				throw "series data is not an array: " + JSON.stringify(s.data);
 			}
+			
+			if (s.data.length > 0) {
+				var x = s.data[0].x;
+				var y = s.data[0].y;
 
-			var x = s.data[0].x;
-			var y = s.data[0].y;
-
-			if (typeof x != 'number' || ( typeof y != 'number' && y !== null ) ) {
-				throw "x and y properties of points should be numbers instead of " +
-					(typeof x) + " and " + (typeof y);
+				if (typeof x != 'number' || ( typeof y != 'number' && y !== null ) ) {
+					throw "x and y properties of points should be numbers instead of " +
+						(typeof x) + " and " + (typeof y);
+				}
 			}
 
 			if (s.data.length >= 3) {
