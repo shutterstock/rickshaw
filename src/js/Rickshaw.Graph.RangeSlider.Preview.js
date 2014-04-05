@@ -45,7 +45,7 @@ Rickshaw.Graph.RangeSlider.Preview = Rickshaw.Class.create({
 
 	configure: function(args) {
 
-		this.config = {};
+		this.config = this.config || {};
 
 		this.configureCallbacks.forEach(function(callback) {
 			callback(args);
@@ -57,19 +57,12 @@ Rickshaw.Graph.RangeSlider.Preview = Rickshaw.Class.create({
 				: this.defaults[k];
 		}, this);
 
-		if (args.width) {
-			this.previews.forEach(function(preview) {
-				var width = args.width - this.config.frameHandleThickness * 2;
-				preview.setSize({ width: width });
-			}, this);
-		}
+		this.previews.forEach(function(preview) {
+			var height = this.previewHeight / this.graphs.length;
+			var width = args.width - this.config.frameHandleThickness * 2;
+			preview.setSize({ width: width, height: height });
+		}, this);
 
-		if (args.height) {
-			this.previews.forEach(function(preview) {
-				var height = this.previewHeight / this.graphs.length;
-				preview.setSize({ height: height });
-			}, this);
-		}
 	},
 
 	render: function() {
