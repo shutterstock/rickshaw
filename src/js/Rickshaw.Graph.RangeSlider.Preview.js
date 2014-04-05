@@ -28,6 +28,17 @@ Rickshaw.Graph.RangeSlider.Preview = Rickshaw.Class.create({
 
 		this.previews = [];
 
+		// If we're taking width or height from graphs[0], then reconfigure when it does.
+		if(!args.width) {
+			this.widthFromGraph = true;
+		}
+		if(!args.height) {
+			this.heightFromGraph = true;
+		}
+		if(this.widthFromGraph || this.heightFromGraph) {
+			this.graphs[0].onConfigure(function () { this.configure(args); this.render(); }.bind(this));
+		}
+
 		args.width = args.width || this.graphs[0].width || this.defaults.width;
 		args.height = args.height || this.graphs[0].height / 5 || this.defaults.height;
 
@@ -44,7 +55,6 @@ Rickshaw.Graph.RangeSlider.Preview = Rickshaw.Class.create({
 	},
 
 	configure: function(args) {
-
 		this.config = {};
 
 		this.configureCallbacks.forEach(function(callback) {
@@ -57,18 +67,26 @@ Rickshaw.Graph.RangeSlider.Preview = Rickshaw.Class.create({
 				: this.defaults[k];
 		}, this);
 
+		if (this.widthFromGraph) {
+			this.config.width = args.width = this.graphs[0].width;
+		}
 		if (args.width) {
 			this.previews.forEach(function(preview) {
 				var width = args.width - this.config.frameHandleThickness * 2;
 				preview.setSize({ width: width });
 			}, this);
+			if(this.svg) { this.svg.style("width", args.width + "px"); }
 		}
 
+		if (this.heightFromGraph) {
+			this.previewHeight = this.config.height = args.height = this.graphs[0].height / 5;
+		}
 		if (args.height) {
 			this.previews.forEach(function(preview) {
 				var height = this.previewHeight / this.graphs.length;
 				preview.setSize({ height: height });
 			}, this);
+			if(this.svg) { this.svg.style("height", args.height + "px"); }
 		}
 	},
 
