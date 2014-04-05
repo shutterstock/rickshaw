@@ -23,7 +23,8 @@ Rickshaw.Graph = function(args) {
 			max: undefined,
 			preserve: false,
 			xScale: undefined,
-			yScale: undefined
+			yScale: undefined,
+			stack: true
 		};
 
 		this._loadRenderers();
@@ -263,6 +264,8 @@ Rickshaw.Graph = function(args) {
 		Rickshaw.keys(this.config).forEach( function(k) {
 			this[k] = this.config[k];
 		}, this );
+
+		if ('stack' in args) args.unstack = !args.stack;
 
 		var renderer = args.renderer || (this.renderer && this.renderer.name) || 'stack';
 		this.setRenderer(renderer, args);
