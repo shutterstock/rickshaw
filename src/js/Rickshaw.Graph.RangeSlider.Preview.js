@@ -8,6 +8,8 @@ Rickshaw.Graph.RangeSlider.Preview = Rickshaw.Class.create({
 		if (!args.graph && !args.graphs) throw "Rickshaw.Graph.RangeSlider.Preview needs a reference to an graph or an array of graphs";
 
 		this.element = args.element;
+		this.element.style.position = 'relative';
+
 		this.graphs = args.graph ? [ args.graph ] : args.graphs;
 
 		this.defaults = {
@@ -18,9 +20,11 @@ Rickshaw.Graph.RangeSlider.Preview = Rickshaw.Class.create({
 			frameHandleThickness: 10,
 			frameColor: "#d4d4d4",
 			frameOpacity: 1,
-			minimumFrameWidth: 0
+			minimumFrameWidth: 0,
+			heightRatio: 0.2
 		};
 
+		this.heightRatio = args.heightRatio || this.defaults.heightRatio;
 		this.defaults.gripperColor = d3.rgb(this.defaults.frameColor).darker().toString(); 
 
 		this.configureCallbacks = [];
@@ -28,8 +32,17 @@ Rickshaw.Graph.RangeSlider.Preview = Rickshaw.Class.create({
 
 		this.previews = [];
 
+		if (!args.width) this.widthFromGraph = true;
+		if (!args.height) this.heightFromGraph = true;
+
+		if (this.widthFromGraph || this.heightFromGraph) {
+			this.graphs[0].onConfigure(function () {
+				this.configure(args); this.render();
+			}.bind(this));
+		}
+
 		args.width = args.width || this.graphs[0].width || this.defaults.width;
-		args.height = args.height || this.graphs[0].height / 5 || this.defaults.height;
+		args.height = args.height || this.graphs[0].height * this.heightRatio || this.defaults.height;
 
 		this.configure(args);
 		this.render();
@@ -45,7 +58,7 @@ Rickshaw.Graph.RangeSlider.Preview = Rickshaw.Class.create({
 
 	configure: function(args) {
 
-		this.config = {};
+		this.config = this.config || {};
 
 		this.configureCallbacks.forEach(function(callback) {
 			callback(args);
@@ -57,17 +70,29 @@ Rickshaw.Graph.RangeSlider.Preview = Rickshaw.Class.create({
 				: this.defaults[k];
 		}, this);
 
-		if (args.width) {
-			this.previews.forEach(function(preview) {
-				var width = args.width - this.config.frameHandleThickness * 2;
-				preview.setSize({ width: width });
-			}, this);
-		}
+		if ('width' in args || 'height' in args) {
 
-		if (args.height) {
+			if (this.widthFromGraph) {
+				this.config.width = this.graphs[0].width;
+			}
+
+			if (this.heightFromGraph) {
+				this.config.height = this.graphs[0].height * this.heightRatio;
+				this.previewHeight = this.config.height;
+			}
+
 			this.previews.forEach(function(preview) {
-				var height = this.previewHeight / this.graphs.length;
-				preview.setSize({ height: height });
+
+				var height = this.previewHeight / this.graphs.length - this.config.frameTopThickness * 2;
+				var width = this.config.width - this.config.frameHandleThickness * 2;
+				preview.setSize({ width: width, height: height });
+
+				if (this.svg) {
+					var svgHeight = height + this.config.frameHandleThickness * 2;
+					var svgWidth = width + this.config.frameHandleThickness * 2;
+					this.svg.style("width", svgWidth + "px");
+					this.svg.style("height", svgHeight + "px");
+				}
 			}, this);
 		}
 	},
@@ -107,6 +132,7 @@ Rickshaw.Graph.RangeSlider.Preview = Rickshaw.Class.create({
 			parent.onConfigure(function(args) { 
 				// don't propagate height
 				delete args.height;
+				args.width = args.width - self.config.frameHandleThickness * 2;
 				graph.configure(args);
 				graph.render();
 			});
@@ -160,8 +186,8 @@ Rickshaw.Graph.RangeSlider.Preview = Rickshaw.Class.create({
 			.classed("rickshaw_range_slider_preview", true)
 			.style("height", this.config.height + "px")
 			.style("width", this.config.width + "px")
-			.style("position", "relative")
-			.style("top", -this.previewHeight + "px");
+			.style("position", "absolute")
+			.style("top", 0);
 
 		this._renderDimming();
 		this._renderFrame();
@@ -261,12 +287,13 @@ Rickshaw.Graph.RangeSlider.Preview = Rickshaw.Class.create({
 		leftHandle.enter()
 			.append("rect")
 			.attr('width', this.config.frameHandleThickness)
-			.attr('height', this.config.height)
 			.style("cursor", "ew-resize")
 			.style("fill-opacity", "0")
 			.classed("left_handle", true);
 
-		leftHandle.attr('x', this.currentFrame[0]);
+		leftHandle
+			.attr('x', this.currentFrame[0])
+			.attr('height', this.config.height);
 
 		var rightHandle = this.svg.selectAll("rect.right_handle")
 			.data([null]);
@@ -274,12 +301,13 @@ Rickshaw.Graph.RangeSlider.Preview = Rickshaw.Class.create({
 		rightHandle.enter()
 			.append("rect")
 			.attr('width', this.config.frameHandleThickness)
-			.attr('height', this.config.height)
 			.style("cursor", "ew-resize")
 			.style("fill-opacity", "0")
 			.classed("right_handle", true);
 
-		rightHandle.attr('x', this.currentFrame[1] + this.config.frameHandleThickness);
+		rightHandle
+			.attr('x', this.currentFrame[1] + this.config.frameHandleThickness)
+			.attr('height', this.config.height);
 	},
 
 	_renderMiddle: function() {
@@ -289,14 +317,14 @@ Rickshaw.Graph.RangeSlider.Preview = Rickshaw.Class.create({
 
 		middleHandle.enter()
 			.append("rect")
-			.attr('height', this.config.height)
 			.style("cursor", "move")
 			.style("fill-opacity", "0")
 			.classed("middle_handle", true);
 
 		middleHandle
 			.attr('width', Math.max(0, this.currentFrame[1] - this.currentFrame[0]))
-			.attr('x', this.currentFrame[0] + this.config.frameHandleThickness);
+			.attr('x', this.currentFrame[0] + this.config.frameHandleThickness)
+			.attr('height', this.config.height);
 	},
 
 	_registerMouseEvents: function() {
