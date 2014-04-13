@@ -69,6 +69,10 @@ Line smoothing / interpolation method (see [D3 docs](https://github.com/mbostock
   * `cardinal`: smooth curves via cardinal splines (default)
   * `basis`: smooth curves via B-splines
 
+##### stack
+
+Boolean to specify whether series should be stacked while in the context of stacking renderers (area, bar, etc).  Defaults to true.
+
 ### Methods
 
 Once you have instantiated a graph, call methods below to get pixels on the screen, change configuration, and set callbacks.
