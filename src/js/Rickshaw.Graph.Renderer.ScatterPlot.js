@@ -11,7 +11,8 @@ Rickshaw.Graph.Renderer.ScatterPlot = Rickshaw.Class.create( Rickshaw.Graph.Rend
 			fill: true,
 			stroke: false,
 			padding:{ top: 0.01, right: 0.01, bottom: 0.01, left: 0.01 },
-			dotSize: 4
+			dotSize: 4,
+			opacity : 1.0
 		} );
 	},
 
@@ -41,7 +42,8 @@ Rickshaw.Graph.Renderer.ScatterPlot = Rickshaw.Class.create( Rickshaw.Graph.Rend
 				.enter().append("svg:circle")
 					.attr("cx", function(d) { return graph.x(d.x) })
 					.attr("cy", function(d) { return graph.y(d.y) })
-					.attr("r", function(d) { return ("r" in d) ? d.r : dotSize});
+					.attr("r", function(d) { return ("r" in d) ? d.r : dotSize})
+					.attr("opacity", series.opacity);
 			if (series.className) {
 				nodes.classed(series.className, true);
 			}

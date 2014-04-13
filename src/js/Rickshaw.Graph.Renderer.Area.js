@@ -9,7 +9,8 @@ Rickshaw.Graph.Renderer.Area = Rickshaw.Class.create( Rickshaw.Graph.Renderer, {
 		return Rickshaw.extend( $super(), {
 			unstack: false,
 			fill: false,
-			stroke: false
+			stroke: false,
+			opacity : 1.0
 		} );
 	},
 
@@ -84,7 +85,8 @@ Rickshaw.Graph.Renderer.Area = Rickshaw.Class.create( Rickshaw.Graph.Renderer, {
 		if (!series.path) return;
 
 		d3.select(series.path).select('.area')
-			.attr('fill', series.color);
+			.attr('fill', series.color)
+			.attr('opacity', series.opacity);
 
 		if (this.stroke) {
 			d3.select(series.path).select('.line')

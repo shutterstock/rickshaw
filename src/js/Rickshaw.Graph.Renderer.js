@@ -23,7 +23,8 @@ Rickshaw.Graph.Renderer = Rickshaw.Class.create( {
 			unstack: true,
 			padding: { top: 0.01, right: 0, bottom: 0.01, left: 0 },
 			stroke: false,
-			fill: false
+			fill: false,
+			opacity : 1.0
 		};
 	},
 
@@ -115,10 +116,12 @@ Rickshaw.Graph.Renderer = Rickshaw.Class.create( {
 
 		var fill = this.fill ? series.color : 'none';
 		var stroke = this.stroke ? series.color : 'none';
+		var opacity = this.opacity ? series.opacity : this.opacity;
 
 		series.path.setAttribute('fill', fill);
 		series.path.setAttribute('stroke', stroke);
 		series.path.setAttribute('stroke-width', this.strokeWidth);
+		series.path.setAttribute('opacity', opacity);
 
 		if (series.className) {
 			d3.select(series.path).classed(series.className, true);
