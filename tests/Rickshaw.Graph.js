@@ -122,11 +122,12 @@ exports.scales = function(test) {
 		}
 	];
 
+	var scale = d3.time.scale();
 	var graph = new Rickshaw.Graph({
 		element: el,
 		width: 960,
 		height: 500,
-		xScale: d3.time.scale(),
+		xScale: scale,
 		yScale: d3.scale.sqrt(),
 		series: series
 	});
@@ -147,7 +148,6 @@ exports.scales = function(test) {
 	yAxis.render();
 
 	test.ok(graph.x.ticks()[0] instanceof Date);
-
 	var xTicks = el.getElementsByClassName('x_ticks_d3')[0].getElementsByTagName('text');
 	test.equal(xTicks[0].innerHTML, 'Sep 29');
 	test.equal(xTicks[1].innerHTML, 'Oct 06');
@@ -158,6 +158,12 @@ exports.scales = function(test) {
 	test.equal(yTicks[1].getAttribute('transform'), 'translate(0,275.24400874015976)');
 	test.equal(yTicks[2].getAttribute('transform'), 'translate(0,182.14702893572513)');
 
+	// should make a copy mutable object
+	scale.range([0, 960]);
+	test.deepEqual(scale.range(), graph.x.range());
+	scale.range([0, 1])
+	test.notDeepEqual(scale.range(), graph.x.range());
+	
 	test.done();
 };
 
