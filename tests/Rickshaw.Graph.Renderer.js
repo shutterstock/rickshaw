@@ -1,5 +1,23 @@
 var Rickshaw = require("../rickshaw");
 
+exports.setUp = function(callback) {
+
+	Rickshaw = require('../rickshaw');
+
+	global.document = d3.select('html')[0][0].parentNode;
+	global.window = document.defaultView;
+
+	new Rickshaw.Compat.ClassList();
+
+	callback();
+};
+
+exports.tearDown = function(callback) {
+
+	delete require.cache.d3;
+	callback();
+};
+
 exports.domain = function(test) {
 
 	// document comes from jsdom
@@ -87,7 +105,6 @@ exports.domain = function(test) {
 	test.done();
 };
 
-
 exports.respectStrokeFactory = function(test) {
 
 	var el = document.createElement("div");
@@ -151,3 +168,36 @@ exports.respectStrokeFactory = function(test) {
 	
 	test.done();
 };
+
+
+exports['should allow arbitrary empty series when finding the domain of stacked data'] = function(test) {
+	
+	var el = document.createElement("div");
+	
+	// should not throw
+	var graph = new Rickshaw.Graph({
+		element: el,
+		stroke: true,
+		width: 10,
+		height: 10,
+		renderer: 'line',
+		series: [
+			{
+				data: []
+			},
+			{
+				data: [
+					{ x: 0, y: 40 },
+					{ x: 1, y: 49 },
+					{ x: 2, y: 38 },
+					{ x: 3, y: 30 },
+					{ x: 4, y: 32 }
+				]
+			}
+		]
+	});
+	test.deepEqual(graph.renderer.domain(), { x: [0, 4], y: [0, 49.49]});
+	
+	test.done();
+};
+

@@ -87,11 +87,13 @@
 .rickshaw_graph .detail .dot {
 	width: 4px;
 	height: 4px;
-	margin-left: -2px;
-	margin-top: -2px;
+	margin-left: -3px;
+	margin-top: -3.5px;
 	border-radius: 5px;
 	position: absolute;
 	box-shadow: 0 0 2px rgba(0, 0, 0, 0.6);
+	box-sizing: content-box;
+	-moz-box-sizing: content-box;
 	background: white;
 	border-width: 2px;
 	border-style: solid;
@@ -217,7 +219,7 @@
 .rickshaw_graph  .x_axis_d3 {
 	fill: none;
 }
-.rickshaw_graph .y_ticks .tick,
+.rickshaw_graph .y_ticks .tick line,
 .rickshaw_graph .x_ticks_d3 .tick {
 	stroke: rgba(0, 0, 0, 0.16);
 	stroke-width: 2px;

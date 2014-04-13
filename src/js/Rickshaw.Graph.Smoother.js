@@ -20,6 +20,7 @@ Rickshaw.Graph.Smoother = Rickshaw.Class.create({
 	build: function() {
 
 		var self = this;
+		var $ = jQuery;
 
 		if (this.element) {
 			$( function() {

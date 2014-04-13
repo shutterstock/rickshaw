@@ -16,10 +16,6 @@ Rickshaw.Graph.Renderer.LinePlot = Rickshaw.Class.create( Rickshaw.Graph.Rendere
 		} );
 	},
 
-	initialize: function($super, args) {
-		$super(args);
-	},
-
 	seriesPathFactory: function() {
 
 		var graph = this.graph;
@@ -33,20 +29,45 @@ Rickshaw.Graph.Renderer.LinePlot = Rickshaw.Class.create( Rickshaw.Graph.Rendere
 		return factory;
 	},
 
-	_renderDots: function() {
+	render: function(args) {
+
+		args = args || {};
 
 		var graph = this.graph;
 
-		graph.series.forEach(function(series) {
+		var series = args.series || graph.series;
+		var vis = args.vis || graph.vis;
+
+		var dotSize = this.dotSize;
+
+		vis.selectAll('*').remove();
+
+		var data = series
+			.filter(function(s) { return !s.disabled })
+			.map(function(s) { return s.stack });
+
+		var nodes = vis.selectAll("path")
+			.data(data)
+			.enter().append("svg:path")
+			.attr("d", this.seriesPathFactory());
+
+		var i = 0;
+		series.forEach(function(series) {
+			if (series.disabled) return;
+			series.path = nodes[0][i++];
+			this._styleSeries(series);
+		}, this);
+
+		series.forEach(function(series) {
 
 			if (series.disabled) return;
 
-			var nodes = graph.vis.selectAll("x")
+			var nodes = vis.selectAll("x")
 				.data(series.stack.filter( function(d) { return d.y !== null } ))
 				.enter().append("svg:circle")
 				.attr("cx", function(d) { return graph.x(d.x) })
 				.attr("cy", function(d) { return graph.y(d.y) })
-				.attr("r", function(d) { return ("r" in d) ? d.r : graph.renderer.dotSize});
+				.attr("r", function(d) { return ("r" in d) ? d.r : dotSize});
 
 			Array.prototype.forEach.call(nodes[0], function(n) {
 				if (!n) return;
@@ -58,33 +79,6 @@ Rickshaw.Graph.Renderer.LinePlot = Rickshaw.Class.create( Rickshaw.Graph.Rendere
 			}.bind(this));
 
 		}, this);
-	},
-
-	_renderLines: function() {
-
-		var graph = this.graph;
-
-		var nodes = graph.vis.selectAll("path")
-			.data(this.graph.stackedData)
-			.enter().append("svg:path")
-			.attr("d", this.seriesPathFactory());
-
-		var i = 0;
-		graph.series.forEach(function(series) {
-			if (series.disabled) return;
-			series.path = nodes[0][i++];
-			this._styleSeries(series);
-		}, this);
-	},
-
-	render: function() {
-
-		var graph = this.graph;
-
-		graph.vis.selectAll('*').remove();
-
-		this._renderLines();
-		this._renderDots();
 	}
 } );
 

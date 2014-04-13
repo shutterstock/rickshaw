@@ -1,5 +1,7 @@
 var RenderControls = function(args) {
 
+	var $ = jQuery;
+
 	this.initialize = function() {
 
 		this.element = args.element;

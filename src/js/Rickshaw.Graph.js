@@ -23,7 +23,8 @@ Rickshaw.Graph = function(args) {
 			max: undefined,
 			preserve: false,
 			xScale: undefined,
-			yScale: undefined
+			yScale: undefined,
+			stack: true
 		};
 
 		this._loadRenderers();
@@ -72,13 +73,15 @@ Rickshaw.Graph = function(args) {
 			if (!Array.isArray(s.data)) {
 				throw "series data is not an array: " + JSON.stringify(s.data);
 			}
+			
+			if (s.data.length > 0) {
+				var x = s.data[0].x;
+				var y = s.data[0].y;
 
-			var x = s.data[0].x;
-			var y = s.data[0].y;
-
-			if (typeof x != 'number' || ( typeof y != 'number' && y !== null ) ) {
-				throw "x and y properties of points should be numbers instead of " +
-					(typeof x) + " and " + (typeof y);
+				if (typeof x != 'number' || ( typeof y != 'number' && y !== null ) ) {
+					throw "x and y properties of points should be numbers instead of " +
+						(typeof x) + " and " + (typeof y);
+				}
 			}
 
 			if (s.data.length >= 3) {
@@ -105,8 +108,17 @@ Rickshaw.Graph = function(args) {
 
 		var domain = this.renderer.domain();
 
-		this.x = (this.xScale || d3.scale.linear()).domain(domain.x).range([0, this.width]);
-		this.y = (this.yScale || d3.scale.linear()).domain(domain.y).range([this.height, 0]);
+		// this.*Scale is coming from the configuration dictionary
+		// which may be referenced by the Graph creator, or shared
+		// with other Graphs. We need to ensure we copy the scale
+		// so that our mutations do not change the object given to us.
+		// Hence the .copy()
+		this.x = (this.xScale || d3.scale.linear()).copy().domain(domain.x).range([0, this.width]);
+		this.y = (this.yScale || d3.scale.linear()).copy().domain(domain.y).range([this.height, 0]);
+
+		this.x.magnitude = d3.scale.linear()
+			.domain([domain.x[0] - domain.x[0], domain.x[1] - domain.x[0]])
+			.range([0, this.width]);
 
 		this.y.magnitude = d3.scale.linear()
 			.domain([domain.y[0] - domain.y[0], domain.y[1] - domain.y[0]])
@@ -261,6 +273,8 @@ Rickshaw.Graph = function(args) {
 		Rickshaw.keys(this.config).forEach( function(k) {
 			this[k] = this.config[k];
 		}, this );
+
+		if ('stack' in args) args.unstack = !args.stack;
 
 		var renderer = args.renderer || (this.renderer && this.renderer.name) || 'stack';
 		this.setRenderer(renderer, args);

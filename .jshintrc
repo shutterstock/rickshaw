@@ -7,5 +7,5 @@
   "undef": true,
   "browser": true,
   "node": true,
-  "predef": ["Rickshaw", "d3", "$", "console", "io"]
+  "predef": ["Rickshaw", "d3", "jQuery", "console", "io"]
 }
