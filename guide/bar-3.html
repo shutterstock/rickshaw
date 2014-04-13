@@ -12,6 +12,7 @@ var graph = new Rickshaw.Graph( {
 	width: 235,
 	height: 85,
 	renderer: 'bar',
+	stack: false,
 	series: [ 
 		{
 			data: [ { x: 0, y: 40 }, { x: 1, y: 49 }, { x: 2, y: 38 }, { x: 3, y: 30 }, { x: 4, y: 32 } ],
@@ -23,7 +24,6 @@ var graph = new Rickshaw.Graph( {
 	} ]
 } );
 
-graph.renderer.unstack = true;
 graph.render();
 
 </script>

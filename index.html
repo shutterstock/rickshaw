@@ -130,36 +130,76 @@ Absinthe.initialize();
 
 	<h2><a name="bars">Bars</a></h2>
 
-	<section class="topic-3">
+	<section class="topic-2">
 		<div class="example">
 			<h3>Bars</h3>
 			<iframe src="guide/bar-1.html"></iframe>
 			<a class="button tertiary standalone" href="guide/bar-1.html" target="_blank">standalone example</a>
 		</div>
-		<div class="code">
-			<script src="https://gist.github.com/1adbdcef0a9de32cc039.js"></script>
+		<div class="documentation">
+<pre>
+var graph = new Rickshaw.Graph({
+	element: document.querySelector("#chart"),
+	renderer: 'bar',
+	series: [{
+		data: [ { x: 0, y: 40 }, { x: 1, y: 49 }, ...
+		color: 'steelblue'
+	}]
+});
+ 
+graph.render();
+</pre>
 		</div>
 	</section>
 
-	<section class="topic-3">
+	<section class="topic-2">
 		<div class="example">
 			<h3>Stacked Bars</h3>
 			<iframe src="guide/bar-2.html"></iframe>
 			<a class="button tertiary standalone" href="guide/bar-2.html" target="_blank">standalone example</a>
 		</div>
-		<div class="code">
-			<script src="https://gist.github.com/035cbfabc65e7d683578.js"></script>
+		<div class="documentation">
+<pre>
+var graph = new Rickshaw.Graph( {
+	element: document.querySelector("#chart"),
+	renderer: 'bar',
+	series: [{
+		data: [ { x: 0, y: 40 }, { x: 1, y: 49 }, ...
+		color: 'steelblue'
+	}, {
+		data: [ { x: 0, y: 20 }, { x: 1, y: 24 }, ...
+		color: 'lightblue'
+	}]
+});
+ 
+graph.render();
+</pre>
 		</div>
 	</section>
 
-	<section class="topic-3">
+	<section class="topic-2">
 		<div class="example">
 			<h3>Multiple Bars</h3>
-			<iframe src="guide/bar-3.html"></iframe>
-			<a class="button tertiary standalone" href="guide/bar-3.html" target="_blank">standalone example</a>
+			<iframe src="guide/bar-3.html?v=100"></iframe>
+			<a class="button tertiary standalone" href="guide/bar-3.html?v=100" target="_blank">standalone example</a>
 		</div>
-		<div class="code">
-			<script src="https://gist.github.com/192e336bb6d43594d792.js"></script>
+		<div class="documentation">
+<pre>
+var graph = new Rickshaw.Graph( {
+	element: document.querySelector("#chart"),
+	renderer: 'bar',
+	stack: false,
+	series: [{
+		data: [ { x: 0, y: 40 }, { x: 1, y: 49 }, ...
+		color: 'steelblue'
+	}, {
+		data: [ { x: 0, y: 20 }, { x: 1, y: 24 }, ...
+		color: 'lightblue'
+	}]
+});
+ 
+graph.render();
+</pre>
 		</div>
 	</section>
 
