@@ -69,6 +69,10 @@ Line smoothing / interpolation method (see [D3 docs](https://github.com/mbostock
   * `cardinal`: smooth curves via cardinal splines (default)
   * `basis`: smooth curves via B-splines
 
+##### stack
+
+Boolean to specify whether series should be stacked while in the context of stacking renderers (area, bar, etc).  Defaults to true.
+
 ### Methods
 
 Once you have instantiated a graph, call methods below to get pixels on the screen, change configuration, and set callbacks.
@@ -149,15 +153,33 @@ This library works in modern browsers and Internet Explorer 9+.
 Rickshaw relies on the HTMLElement#classList API, which isn't natively supported in Internet Explorer 9.  Rickshaw adds support by including a shim which implements the classList API by extending the HTMLElement prototype.  You can disable this behavior if you like, by setting `RICKSHAW_NO_COMPAT` to a true value before including the library. 
 
 
-## Dependencies & Building
+## Dependencies
 
 Rickshaw relies on the fantastic [D3 visualization library](http://mbostock.github.com/d3/) to do lots of the heavy lifting for stacking and rendering to SVG.
 
 Some extensions require [jQuery](http://jquery.com) and [jQuery UI](http://jqueryui.com), but for drawing some basic graphs you'll be okay without.
 
+## Building
+
 For building, we need [Node](http://nodejs.org) and [npm](http://npmjs.org).  Running `make` should get you going with any luck.
 
 After doing a build you can run the tests with the command: `npm test`
+
+If you'd like to do your own minification, you will need to give a hint to the minifier to leave variables named `$super` named `$super`.  For example, with uglify on the command line:
+
+```
+$ uglify-js --reserved-names "$super" rickshaw.js > rickshaw.min.js
+```
+
+Or a sample configuration with `grunt-contrib-uglify`: 
+
+```javascript
+uglify: {
+  options: {
+    mangle: { except: ["$super"] }
+  }
+}
+```
 
 ## Contributing
 

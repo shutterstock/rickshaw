@@ -37,7 +37,7 @@ var graph = new Rickshaw.Graph( {
 	renderer: 'multi',
 	width: 900,
 	height: 500,
-	dotSize: 2,
+	dotSize: 5,
 	series: [
 		{
 			name: 'temperature',
@@ -68,9 +68,9 @@ var graph = new Rickshaw.Graph( {
 	]
 } );
 
-var slider = new Rickshaw.Graph.RangeSlider({
+var slider = new Rickshaw.Graph.RangeSlider.Preview({
 	graph: graph,
-	element: $('#slider')
+	element: document.querySelector('#slider')
 });
 
 graph.render();
