@@ -182,7 +182,11 @@ Rickshaw.Graph = function(args) {
 
 			var layout = d3.layout.stack();
 			layout.offset( self.offset );
-			stackedData = layout(data);
+            if (data.length) {
+                stackedData = layout(data);
+            } else {
+                stackedData = [];
+            }
 		}
 
 		stackedData = stackedData || data;
