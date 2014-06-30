@@ -1610,6 +1610,7 @@ Rickshaw.Graph.Axis.Y = Rickshaw.Class.create( {
 
 	initialize: function(args) {
 
+		this.args = args;
 		this.graph = args.graph;
 		this.orientation = args.orientation || 'right';
 
@@ -1706,6 +1707,21 @@ Rickshaw.Graph.Axis.Y = Rickshaw.Class.create( {
 			.attr("class", ["y_ticks", this.ticksTreatment].join(" "))
 			.attr("transform", transform)
 			.call(axis.ticks(this.ticks).tickSubdivide(0).tickSize(this.tickSize));
+
+		// add label
+		if (this.args.label && this.args.label.text) {
+			var label = this.args.label;
+			this.vis.append("text")
+				.attr("class", "axis-label")
+				.attr("text-anchor", "end")
+				.attr("y", label.offsetX || "1em")
+				.attr("x", label.offsetY || "1em")
+				.style("color", label.color || "black")
+				.style("opacity", label.opacity || "0.5")
+				.style("font-size", label.fontSize || "10px")
+				.attr("transform", "rotate(-90)")
+				.text(label.text);
+		}
 
 		return axis;
 	},
@@ -1931,6 +1947,8 @@ Rickshaw.Graph.Behavior.Series.Toggle = function(args) {
 				line.element.classList.add('disabled');
 			}
 
+			self.graph.update();
+
 		}.bind(this);
 		
                 var label = line.element.getElementsByTagName('span')[0];
@@ -1976,6 +1994,8 @@ Rickshaw.Graph.Behavior.Series.Toggle = function(args) {
 
                         }
 
+                        self.graph.update();
+
                 };
 
 	};
@@ -2017,12 +2037,10 @@ Rickshaw.Graph.Behavior.Series.Toggle = function(args) {
 				}
 				
 				s.disabled = true;
-				self.graph.update();
 			};
 
 			s.enable = function() {
 				s.disabled = false;
-				self.graph.update();
 			};
 		} );
 	};
@@ -3759,7 +3777,6 @@ Rickshaw.Graph.Smoother = Rickshaw.Class.create({
 					max: 100,
 					slide: function( event, ui ) {
 						self.setScale(ui.value);
-						self.graph.update();
 					}
 				} );
 			} );
