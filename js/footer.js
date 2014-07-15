@@ -1,1 +1,1 @@
-document.write( '<footer> Copyright (c) 2011-2013, Shutterstock, Inc.</footer>' );
+document.write( '<footer> Copyright (c) 2011-' + new Date().getFullYear() + ', Shutterstock, Inc.</footer>' );
