@@ -23,7 +23,7 @@ Rickshaw.Graph.Behavior.Series.Order = function(args) {
 				var series = [];
 				jQuery(self.legend.list).find('li').each( function(index, item) {
 					if (!item.series) return;
-					series.push(item.series);
+					series = series.concat(item.series);
 				} );
 
 				for (var i = self.graph.series.length - 1; i >= 0; i--) {

@@ -15,11 +15,12 @@ Rickshaw.Graph.Behavior.Series.Toggle = function(args) {
 		line.element.insertBefore(anchor, line.element.firstChild);
 
 		anchor.onclick = function(e) {
-			if (line.series.disabled) {
+			if (line.series.disabled()) {
 				line.series.enable();
 				line.element.classList.remove('disabled');
-			} else { 
-				if (this.graph.series.filter(function(s) { return !s.disabled }).length <= 1) return;
+			} else {
+				// prevent disabling the last series
+				if (this.graph.series.filter(function(s) { return !s.disabled }).length <= line.series.length) return;
 				line.series.disable();
 				line.element.classList.add('disabled');
 			}
@@ -31,13 +32,14 @@ Rickshaw.Graph.Behavior.Series.Toggle = function(args) {
                 var label = line.element.getElementsByTagName('span')[0];
                 label.onclick = function(e){
 
-                        var disableAllOtherLines = line.series.disabled;
+                        var disableAllOtherLines = line.series.disabled();
                         if ( ! disableAllOtherLines ) {
+                                // if any other series is enabled, disableAllOtherLines
                                 for ( var i = 0; i < self.legend.lines.length; i++ ) {
                                         var l = self.legend.lines[i];
                                         if ( line.series === l.series ) {
                                                 // noop
-                                        } else if ( l.series.disabled ) {
+                                        } else if ( l.series.disabled() ) {
                                                 // noop
                                         } else {
                                                 disableAllOtherLines = true;

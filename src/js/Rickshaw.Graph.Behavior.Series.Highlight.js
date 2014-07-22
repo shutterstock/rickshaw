@@ -26,19 +26,27 @@ Rickshaw.Graph.Behavior.Series.Highlight = function(args) {
 				if (l === line) {
 
 					// if we're not in a stacked renderer bring active line to the top
-					if (self.graph.renderer.unstack && (line.series.renderer ? line.series.renderer.unstack : true)) {
+					if (self.graph.renderer.unstack)
+						line.series.forEach(function (series) {
+							if (series.renderer ? series.renderer.unstack : true) {
 
-						var seriesIndex = self.graph.series.indexOf(line.series);
-						line.originalIndex = seriesIndex;
+								var seriesIndex = self.graph.series.indexOf(series);
+								line.originalIndex = seriesIndex;
 
-						var series = self.graph.series.splice(seriesIndex, 1)[0];
-						self.graph.series.push(series);
-					}
+								series = self.graph.series.splice(seriesIndex, 1)[0];
+								self.graph.series.push(series);
+							}
+						});
 					return;
 				}
 
-				colorSafe[line.series.name] = colorSafe[line.series.name] || line.series.color;
-				line.series.color = disabledColor(line.series.color);
+				// backup and change the series' colors
+				line.series.forEach(function (series, s) {
+					if (!(series.name in colorSafe))
+						colorSafe[series.name] = [];
+					colorSafe[series.name][s] = colorSafe[series.name][s] || series.color;
+					series.color = disabledColor(series.color);
+				});
 
 			} );
 
@@ -61,9 +69,12 @@ Rickshaw.Graph.Behavior.Series.Highlight = function(args) {
 					delete line.originalIndex;
 				}
 
-				if (colorSafe[line.series.name]) {
-					line.series.color = colorSafe[line.series.name];
-				}
+				// restore the series' colors
+				line.series.forEach(function (series, s) {
+					if (colorSafe[series.name] && colorSafe[series.name][s]) {
+						series.color = colorSafe[series.name][s];
+					}
+				});
 			} );
 
 			self.graph.update();
