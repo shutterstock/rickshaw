@@ -55,7 +55,6 @@ Rickshaw.Graph.Annotate = function(args) {
 
 			annotation.boxes.forEach( function(box) {
 
-
 				var element = box.element;
 
 				if (!element) {

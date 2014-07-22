@@ -2458,6 +2458,10 @@ Rickshaw.Graph.RangeSlider = Rickshaw.Class.create({
 
 					graph.window.xMin = ui.values[0];
 					graph.window.xMax = ui.values[1];
+
+					console.log("graph.window.xMin: "+graph.window.xMin);
+					console.log("graph.window.xMax: "+graph.window.xMax);
+
 					graph.update();
 
 					var domain = graph.dataDomain();
@@ -3050,8 +3054,12 @@ Rickshaw.Graph.Renderer = Rickshaw.Class.create( {
 		xMin -= (xMax - xMin) * this.padding.left;
 		xMax += (xMax - xMin) * this.padding.right;
 
-    xMin = this.graph.max === undefined ? xMin : this.graph.xMin;
-    xMax = this.graph.max === undefined ? xMax : this.graph.xMax;
+    if(this.graph.xMin !== undefined){
+      xMin = this.graph.xMin;
+    }
+    if(this.graph.xMax !== undefined){
+      xMax = this.graph.xMax;
+    }
 
 		yMin = this.graph.min === 'auto' ? yMin : this.graph.min || 0;
 		yMax = this.graph.max === undefined ? yMax : this.graph.max;
