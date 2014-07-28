@@ -40,7 +40,7 @@ Rickshaw.Graph.Renderer.EventPlot = Rickshaw.Class.create( Rickshaw.Graph.Render
 				.data(series.stack.filter( function(d) { return d.x !== null } ))
 				.enter().append("svg:circle")
 					.attr("cx", function(d) { return graph.x(d.x) })
-					.attr("cy", function(d) { return (graph.height * 0.3) }) //from above
+					.attr("cy", function(d) { return (graph.height * 0.2) }) //from above
 					.attr("r", function(d) { return ("r" in d) ? d.r : dotSize});
 			if (series.className) {
 				nodes.classed(series.className, true);

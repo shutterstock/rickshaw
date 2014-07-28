@@ -2126,10 +2126,17 @@ Rickshaw.Graph.HoverDetail = Rickshaw.Class.create({
 			if (dataIndex < 0) dataIndex = 0;
 			var value = data[dataIndex];
 
-			var distance = Math.sqrt(
-				Math.pow(Math.abs(graph.x(value.x) - eventX), 2) +
-				Math.pow(Math.abs(graph.y(value.y + value.y0) - eventY), 2)
-			);
+      var distance = null;
+      if(e.target.nodeName == 'circle'){ //only use x axis for distance on eventplot!
+        distance = Math.sqrt(
+          Math.pow(Math.abs(graph.x(value.x) - eventX), 2)
+        );
+      }else{
+        distance = Math.sqrt(
+          Math.pow(Math.abs(graph.x(value.x) - eventX), 2) +
+          Math.pow(Math.abs(graph.y(value.y + value.y0) - eventY), 2)
+        );
+			}
 
 			var xFormatter = series.xFormatter || this.xFormatter;
 			var yFormatter = series.yFormatter || this.yFormatter;
@@ -2197,7 +2204,7 @@ Rickshaw.Graph.HoverDetail = Rickshaw.Class.create({
 		var points = args.points;
 		var point = points.filter( function(p) { return p.active } ).shift();
 
-		if (point.value.y === null) return;
+		if (point.value.y === null && point.series.renderer != 'eventplot') return;
 
 		var formattedXValue = point.formattedXValue;
 		var formattedYValue = point.formattedYValue;
@@ -2220,7 +2227,11 @@ Rickshaw.Graph.HoverDetail = Rickshaw.Class.create({
 		var actualY = series.scale ? series.scale.invert(point.value.y) : point.value.y;
 
 		item.innerHTML = this.formatter(series, point.value.x, actualY, formattedXValue, formattedYValue, point);
-		item.style.top = this.graph.y(point.value.y0 + point.value.y) + 'px';
+		if(point.series.renderer == 'eventplot'){
+		  item.style.top = (graph.height * 0.2) + 'px';
+		}else{
+		  item.style.top = this.graph.y(point.value.y0 + point.value.y) + 'px';
+		}
 
 		this.element.appendChild(item);
 
@@ -3541,7 +3552,7 @@ Rickshaw.Graph.Renderer.EventPlot = Rickshaw.Class.create( Rickshaw.Graph.Render
 				.data(series.stack.filter( function(d) { return d.x !== null } ))
 				.enter().append("svg:circle")
 					.attr("cx", function(d) { return graph.x(d.x) })
-					.attr("cy", function(d) { return (graph.height * 0.3) })
+					.attr("cy", function(d) { return (graph.height * 0.2) }) //from above
 					.attr("r", function(d) { return ("r" in d) ? d.r : dotSize});
 			if (series.className) {
 				nodes.classed(series.className, true);
