@@ -407,6 +407,8 @@ Rickshaw.Graph = function(args) {
 			offset: 'zero',
 			min: undefined,
 			max: undefined,
+			xMin: undefined,
+			xMax: undefined,
 			preserve: false,
 			xScale: undefined,
 			yScale: undefined,
@@ -669,6 +671,11 @@ Rickshaw.Graph = function(args) {
 			callback(args);
 		} );
 	};
+
+  this.setXRange = function(xMin, xMax){
+    this.xMin = xMin;
+    this.xMax = xMax;
+  };
 
 	this.setRenderer = function(r, args) {
 		if (typeof r == 'function') {
@@ -977,7 +984,7 @@ Rickshaw.Fixtures.Time = function() {
 	};
 
 	this.formatTime = function(d) {
-		return d.toUTCString().match(/(\d+:\d+):/)[1];
+		return d.toLocaleString().match(/(\d+:\d+):/)[1];
 	};
 
 	this.ceil = function(time, unit) {
@@ -1352,7 +1359,6 @@ Rickshaw.Graph.Annotate = function(args) {
 			annotation.element.style.display = 'block';
 
 			annotation.boxes.forEach( function(box) {
-
 
 				var element = box.element;
 
@@ -1931,6 +1937,8 @@ Rickshaw.Graph.Behavior.Series.Toggle = function(args) {
 				line.element.classList.add('disabled');
 			}
 
+			self.graph.update();
+
 		}.bind(this);
 		
                 var label = line.element.getElementsByTagName('span')[0];
@@ -1976,6 +1984,8 @@ Rickshaw.Graph.Behavior.Series.Toggle = function(args) {
 
                         }
 
+                        self.graph.update();
+
                 };
 
 	};
@@ -2017,12 +2027,10 @@ Rickshaw.Graph.Behavior.Series.Toggle = function(args) {
 				}
 				
 				s.disabled = true;
-				self.graph.update();
 			};
 
 			s.enable = function() {
 				s.disabled = false;
-				self.graph.update();
 			};
 		} );
 	};
@@ -2118,10 +2126,17 @@ Rickshaw.Graph.HoverDetail = Rickshaw.Class.create({
 			if (dataIndex < 0) dataIndex = 0;
 			var value = data[dataIndex];
 
-			var distance = Math.sqrt(
-				Math.pow(Math.abs(graph.x(value.x) - eventX), 2) +
-				Math.pow(Math.abs(graph.y(value.y + value.y0) - eventY), 2)
-			);
+      var distance = null;
+      if(e.target.nodeName == 'circle'){ //only use x axis for distance on eventplot!
+        distance = Math.sqrt(
+          Math.pow(Math.abs(graph.x(value.x) - eventX), 2)
+        );
+      }else{
+        distance = Math.sqrt(
+          Math.pow(Math.abs(graph.x(value.x) - eventX), 2) +
+          Math.pow(Math.abs(graph.y(value.y + value.y0) - eventY), 2)
+        );
+			}
 
 			var xFormatter = series.xFormatter || this.xFormatter;
 			var yFormatter = series.yFormatter || this.yFormatter;
@@ -2189,7 +2204,7 @@ Rickshaw.Graph.HoverDetail = Rickshaw.Class.create({
 		var points = args.points;
 		var point = points.filter( function(p) { return p.active } ).shift();
 
-		if (point.value.y === null) return;
+		if (point.value.y === null && point.series.renderer != 'eventplot') return;
 
 		var formattedXValue = point.formattedXValue;
 		var formattedYValue = point.formattedYValue;
@@ -2212,7 +2227,11 @@ Rickshaw.Graph.HoverDetail = Rickshaw.Class.create({
 		var actualY = series.scale ? series.scale.invert(point.value.y) : point.value.y;
 
 		item.innerHTML = this.formatter(series, point.value.x, actualY, formattedXValue, formattedYValue, point);
-		item.style.top = this.graph.y(point.value.y0 + point.value.y) + 'px';
+		if(point.series.renderer == 'eventplot'){
+		  item.style.top = (graph.height * 0.2) + 'px';
+		}else{
+		  item.style.top = this.graph.y(point.value.y0 + point.value.y) + 'px';
+		}
 
 		this.element.appendChild(item);
 
@@ -2449,6 +2468,7 @@ Rickshaw.Graph.RangeSlider = Rickshaw.Class.create({
 
 					graph.window.xMin = ui.values[0];
 					graph.window.xMax = ui.values[1];
+
 					graph.update();
 
 					var domain = graph.dataDomain();
@@ -3041,6 +3061,13 @@ Rickshaw.Graph.Renderer = Rickshaw.Class.create( {
 		xMin -= (xMax - xMin) * this.padding.left;
 		xMax += (xMax - xMin) * this.padding.right;
 
+    if(this.graph.xMin !== undefined){
+      xMin = this.graph.xMin;
+    }
+    if(this.graph.xMax !== undefined){
+      xMax = this.graph.xMax;
+    }
+
 		yMin = this.graph.min === 'auto' ? yMin : this.graph.min || 0;
 		yMax = this.graph.max === undefined ? yMax : this.graph.max;
 
@@ -3483,6 +3510,61 @@ Rickshaw.Graph.Renderer.ScatterPlot = Rickshaw.Class.create( Rickshaw.Graph.Rend
 		}, this );
 	}
 } );
+Rickshaw.namespace('Rickshaw.Graph.Renderer.EventPlot');
+
+Rickshaw.Graph.Renderer.EventPlot = Rickshaw.Class.create( Rickshaw.Graph.Renderer, {
+
+	name: 'eventplot',
+
+	defaults: function($super) {
+
+		return Rickshaw.extend( $super(), {
+			unstack: true,
+			fill: true,
+			stroke: false,
+			padding:{ top: 0.01, right: 0.01, bottom: 0.01, left: 0.01 },
+			dotSize: 4
+		} );
+	},
+
+	initialize: function($super, args) {
+		$super(args);
+	},
+
+	render: function(args) {
+
+		args = args || {};
+
+		var graph = this.graph;
+
+		var series = args.series || graph.series;
+		var vis = args.vis || graph.vis;
+
+		var dotSize = this.dotSize;
+
+		vis.selectAll('*').remove();
+
+		series.forEach( function(series) {
+
+			if (series.disabled) return;
+
+			var nodes = vis.selectAll("path")
+				.data(series.stack.filter( function(d) { return d.x !== null } ))
+				.enter().append("svg:circle")
+					.attr("cx", function(d) { return graph.x(d.x) })
+					.attr("cy", function(d) { return (graph.height * 0.2) }) //from above
+					.attr("r", function(d) { return ("r" in d) ? d.r : dotSize});
+			if (series.className) {
+				nodes.classed(series.className, true);
+			}
+			
+			Array.prototype.forEach.call(nodes[0], function(n) {
+				n.setAttribute('fill', series.color);
+			} );
+
+		}, this );
+	}
+} );
 Rickshaw.namespace('Rickshaw.Graph.Renderer.Multi');
 
 Rickshaw.Graph.Renderer.Multi = Rickshaw.Class.create( Rickshaw.Graph.Renderer, {
@@ -3759,7 +3841,6 @@ Rickshaw.Graph.Smoother = Rickshaw.Class.create({
 					max: 100,
 					slide: function( event, ui ) {
 						self.setScale(ui.value);
-						self.graph.update();
 					}
 				} );
 			} );

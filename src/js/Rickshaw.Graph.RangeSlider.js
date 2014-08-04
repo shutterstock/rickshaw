@@ -38,6 +38,7 @@ Rickshaw.Graph.RangeSlider = Rickshaw.Class.create({
 
 					graph.window.xMin = ui.values[0];
 					graph.window.xMax = ui.values[1];
+
 					graph.update();
 
 					var domain = graph.dataDomain();

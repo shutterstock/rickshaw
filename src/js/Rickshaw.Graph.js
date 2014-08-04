@@ -21,6 +21,8 @@ Rickshaw.Graph = function(args) {
 			offset: 'zero',
 			min: undefined,
 			max: undefined,
+			xMin: undefined,
+			xMax: undefined,
 			preserve: false,
 			xScale: undefined,
 			yScale: undefined,
@@ -283,6 +285,11 @@ Rickshaw.Graph = function(args) {
 			callback(args);
 		} );
 	};
+
+  this.setXRange = function(xMin, xMax){
+    this.xMin = xMin;
+    this.xMax = xMax;
+  };
 
 	this.setRenderer = function(r, args) {
 		if (typeof r == 'function') {
