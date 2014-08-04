@@ -984,7 +984,7 @@ Rickshaw.Fixtures.Time = function() {
 	};
 
 	this.formatTime = function(d) {
-		return d.toUTCString().match(/(\d+:\d+):/)[1];
+		return d.toLocaleString().match(/(\d+:\d+):/)[1];
 	};
 
 	this.ceil = function(time, unit) {
