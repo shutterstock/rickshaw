@@ -98,8 +98,21 @@ Rickshaw.Graph = function(args) {
 
 		var data = this.series.map( function(s) { return s.data } );
 
-		var min = d3.min( data.map( function(d) { return d[0].x } ) );
-		var max = d3.max( data.map( function(d) { return d[d.length - 1].x } ) );
+		var min = d3.min( data.map( function(d) { 
+			if (d.length === 0) {
+				return Infinity;
+			} else {
+				return d[0].x;
+			}
+			} ) );
+
+		var max = d3.max( data.map( function(d) {
+			if (d.length === 0) {
+				return -Infinity;
+			} else {
+				return d[d.length - 1].x;
+			}
+		} ) );
 
 		return [min, max];
 	};
