@@ -122,7 +122,7 @@ Rickshaw.Graph.Renderer = Rickshaw.Class.create( {
 					pathStash.push( series.path.pathSegList.removeItem(series.path.pathSegList.numberOfItems - 1) );
 				}
 
-				var len = series.path.getTotalLength(); // This might crash Chrome/Webkit on certain lines < 37
+				var len = series.path.getTotalLength(); // This might crash Chrome<37/Webkit on certain lines
 
 				//restore
 				for (j = pathStash.length - 1; j >= 0; j--) {
