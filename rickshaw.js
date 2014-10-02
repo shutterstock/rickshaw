@@ -1931,6 +1931,8 @@ Rickshaw.Graph.Behavior.Series.Toggle = function(args) {
 				line.element.classList.add('disabled');
 			}
 
+			self.graph.update();
+
 		}.bind(this);
 		
                 var label = line.element.getElementsByTagName('span')[0];
@@ -1976,6 +1978,8 @@ Rickshaw.Graph.Behavior.Series.Toggle = function(args) {
 
                         }
 
+                        self.graph.update();
+
                 };
 
 	};
@@ -2017,12 +2021,10 @@ Rickshaw.Graph.Behavior.Series.Toggle = function(args) {
 				}
 				
 				s.disabled = true;
-				self.graph.update();
 			};
 
 			s.enable = function() {
 				s.disabled = false;
-				self.graph.update();
 			};
 		} );
 	};
@@ -3084,12 +3086,41 @@ Rickshaw.Graph.Renderer = Rickshaw.Class.create( {
 		}
 
 		var i = 0;
+		var j;
 		series.forEach( function(series) {
 			if (series.disabled) return;
 			series.path = pathNodes[0][i];
 			if (this.stroke) series.stroke = strokeNodes[0][i];
 			this._styleSeries(series);
 			i++;
+
+			// support for a line breakpoint
+			if (series.lineBreakPoint && (series.data.length > series.lineBreakPoint) && !series.noPrediction) {
+
+				var pathStash = [];
+				for (var j = series.path.pathSegList.numberOfItems; j > series.lineBreakPoint; j--) {
+					pathStash.push( series.path.pathSegList.removeItem(series.path.pathSegList.numberOfItems - 1) );
+				}
+
+				var len = series.path.getTotalLength(); // This might crash Chrome<37/Webkit on certain lines
+
+				//restore
+				for (j = pathStash.length - 1; j >= 0; j--) {
+					series.path.pathSegList.appendItem(pathStash[j]);
+				}
+
+				var len2 = series.path.getTotalLength();
+
+				var times = ((len2 - len) / 8) + 2; // get the times we need to add the dashed pattern plus a safety
+
+				var strokes = [];
+				for (j = 0; j < times; j++) {
+					strokes.push("5,3");
+				}
+
+				series.path.setAttribute('style', 'stroke-dasharray:' + len + strokes.join(', '));
+			}
+
 		}, this );
 
 	},
@@ -3759,7 +3790,6 @@ Rickshaw.Graph.Smoother = Rickshaw.Class.create({
 					max: 100,
 					slide: function( event, ui ) {
 						self.setScale(ui.value);
-						self.graph.update();
 					}
 				} );
 			} );
