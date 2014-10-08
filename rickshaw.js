@@ -1925,16 +1925,19 @@ Rickshaw.Graph.Behavior.Series.Toggle = function(args) {
 			if (line.series.disabled) {
 				line.series.enable();
 				line.element.classList.remove('disabled');
-			} else { 
+			} else {
 				if (this.graph.series.filter(function(s) { return !s.disabled }).length <= 1) return;
 				line.series.disable();
 				line.element.classList.add('disabled');
 			}
 
+			self.graph.update();
+
 		}.bind(this);
-		
+
                 var label = line.element.getElementsByTagName('span')[0];
-                label.onclick = function(e){
+								var swatch = line.element.getElementsByTagName('div')[0];
+                this.clickBehavior = function(e){
 
                         var disableAllOtherLines = line.series.disabled;
                         if ( ! disableAllOtherLines ) {
@@ -1976,7 +1979,13 @@ Rickshaw.Graph.Behavior.Series.Toggle = function(args) {
 
                         }
 
+                        self.graph.update();
+
                 };
+								
+								// Bind the click behavior to both label and swatch elements.
+								label.onclick  = this.clickBehavior;
+								swatch.onclick = this.clickBehavior;
 
 	};
 
@@ -2009,20 +2018,18 @@ Rickshaw.Graph.Behavior.Series.Toggle = function(args) {
 	this._addBehavior = function() {
 
 		this.graph.series.forEach( function(s) {
-			
+
 			s.disable = function() {
 
 				if (self.graph.series.length <= 1) {
 					throw('only one series left');
 				}
-				
+
 				s.disabled = true;
-				self.graph.update();
 			};
 
 			s.enable = function() {
 				s.disabled = false;
-				self.graph.update();
 			};
 		} );
 	};
@@ -3759,7 +3766,6 @@ Rickshaw.Graph.Smoother = Rickshaw.Class.create({
 					max: 100,
 					slide: function( event, ui ) {
 						self.setScale(ui.value);
-						self.graph.update();
 					}
 				} );
 			} );
