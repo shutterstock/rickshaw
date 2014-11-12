@@ -72,7 +72,7 @@ Rickshaw.Graph.Renderer.LinePlot = Rickshaw.Class.create( Rickshaw.Graph.Rendere
 			Array.prototype.forEach.call(nodes[0], function(n) {
 				if (!n) return;
 				n.setAttribute('data-color', series.color);
-				n.setAttribute('fill', 'white');
+				n.setAttribute('fill', (series.fillColor) ? series.fillColor : 'white');
 				n.setAttribute('stroke', series.color);
 				n.setAttribute('stroke-width', this.strokeWidth);
 
