@@ -47,6 +47,7 @@ JS_FILES=\
 	src/js/Rickshaw.Graph.Renderer.ScatterPlot.js\
 	src/js/Rickshaw.Graph.Renderer.Multi.js\
 	src/js/Rickshaw.Graph.Renderer.LinePlot.js\
+	src/js/Rickshaw.Graph.SharedHoverDetail.js\
 	src/js/Rickshaw.Graph.Smoother.js\
 	src/js/Rickshaw.Graph.Socketio.js\
 	src/js/Rickshaw.Series.js\
