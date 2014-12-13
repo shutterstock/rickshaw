@@ -1,8 +1,16 @@
 {
   "name": "rickshaw",
   "version": "1.4.6",
+  "homepage": "http://code.shutterstock.com/rickshaw/",
   "dependencies": {
     "d3": "~3.3.6"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/shutterstock/rickshaw.git"
+  },
+  "bugs": {
+    "url": "https://github.com/shutterstock/rickshaw/issues"
   },
   "keywords": [
     "d3",
