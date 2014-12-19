@@ -5,33 +5,48 @@ Rickshaw.Graph.SharedHoverDetail = Rickshaw.Class.create({
     initialize: function (args) {
 
         this.graphs = args.graphs;
+        this.labelRender = args.labelRender;
+        this.mouseMove = args.mouseMove;
+
         var self = this;
 
         _.each(this.graphs, function (graph) {
+
+            var mouseMove = function (e) {
+                this.lastGraph = graph;
+                this.mousePositionX = e.offsetX;
+                this.mousePositionY = e.offsetY;
+
+                var x = this.getXValue(self.lastGraph, this.mousePositionX, this.mousePositionY);
+
+                this.update(x);
+
+                self.mouseMove(e.pageX, e.pageY);
+
+            }.bind(self);
+
+            var mouseOut = function (e) {
+                var elem = graph.element;
+                if(e.pageX >= $(elem).position().left && e.pageX <= ($(elem).position().left + $(elem).width()) && e.pageY >= $(elem).position().top && e.pageY <= $(elem).position().top + $(elem).height()){
+                    mouseMove(e);
+                    return;
+                }
+
+                this.mousePositionX = undefined;
+                this.mousePositionY = undefined;
+
+                if (e.relatedTarget && !(e.relatedTarget.compareDocumentPosition(graph.element) & Node.DOCUMENT_POSITION_CONTAINS)) {
+                    this.hide();
+                }
+            }.bind(self);
+
             graph.element.addEventListener(
-                'mousemove',
-                function (e) {
-                    this.lastGraph = graph;
-                    this.mousePositionX = e.offsetX;
-                    this.mousePositionY = e.offsetY;
-
-                    var x = this.getXValue(self.lastGraph, this.mousePositionX, this.mousePositionY);
-
-                    this.update(x);
-                }.bind(self),
-                false
+                'mousemove', mouseMove, false
             );
 
             graph.element.addEventListener(
                 'mouseout',
-                function (e) {
-                    this.mousePositionX = undefined;
-                    this.mousePositionY = undefined;
-
-                    if (e.relatedTarget && !(e.relatedTarget.compareDocumentPosition(graph.element) & Node.DOCUMENT_POSITION_CONTAINS)) {
-                        this.hide();
-                    }
-                }.bind(self),
+                mouseOut,
                 false
             );
 
@@ -48,11 +63,6 @@ Rickshaw.Graph.SharedHoverDetail = Rickshaw.Class.create({
             line.className = 'detail hoverLine';
             graph.element.appendChild(line);
 
-            _.each(graph.series, function (series, idx) {
-                var yLabel = document.createElement('div');
-                yLabel.className = 'item active series-' + idx;
-                line.appendChild(yLabel);
-            });
             $(line).hide();
 
         });
@@ -79,21 +89,13 @@ Rickshaw.Graph.SharedHoverDetail = Rickshaw.Class.create({
             graph.discoverRange();
             var left = graph.x(domainX) + 'px';
             line.css({left: left}).show();
-
-            _.each(graph.series, function (series, idx) {
-                var point = _.find(series.data, function (d) {
-                    return d.x === domainX;
-                });
-
-                var labelTop = graph.y(point.y0 + point.y);
-                var label = line.find('.item.series-' + idx);
-                label.css({top: (labelTop + 'px')});
-                label.html(series.name + ": " + point.y );
-            });
         });
+
+        this.labelRender(domainX);
     },
 
     hide: function () {
+        this.labelRender();
         _.each(this.graphs, function (graph) {
             $(graph.element).find('.hoverLine').hide();
         });
