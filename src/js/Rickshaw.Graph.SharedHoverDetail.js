@@ -7,12 +7,13 @@ Rickshaw.Graph.SharedHoverDetail = Rickshaw.Class.create({
         this.graphs = args.graphs;
         this.labelRender = args.labelRender;
         this.mouseMove = args.mouseMove;
+        this.mouseMoveHandlers = [];
 
         var self = this;
 
         _.each(this.graphs, function (graph) {
 
-            var mouseMove = function (e) {
+           var mouseHandler = function (e) {
                 this.lastGraph = graph;
                 this.mousePositionX = e.offsetX;
                 this.mousePositionY = e.offsetY;
@@ -25,10 +26,12 @@ Rickshaw.Graph.SharedHoverDetail = Rickshaw.Class.create({
 
             }.bind(self);
 
+            self.mouseMoveHandlers.push(mouseHandler);
+
             var mouseOut = function (e) {
                 var elem = graph.element;
                 if(e.pageX >= $(elem).position().left && e.pageX <= ($(elem).position().left + $(elem).width()) && e.pageY >= $(elem).position().top && e.pageY <= $(elem).position().top + $(elem).height()){
-                    mouseMove(e);
+                    mouseHandler(e);
                     return;
                 }
 
@@ -40,15 +43,9 @@ Rickshaw.Graph.SharedHoverDetail = Rickshaw.Class.create({
                 }
             }.bind(self);
 
-            graph.element.addEventListener(
-                'mousemove', mouseMove, false
-            );
+            graph.element.addEventListener('mousemove', mouseHandler, false);
 
-            graph.element.addEventListener(
-                'mouseout',
-                mouseOut,
-                false
-            );
+            graph.element.addEventListener('mouseout', mouseOut, false);
 
             graph.onUpdate(function () {
                 if (self.lastGraph !== graph) {
@@ -65,6 +62,15 @@ Rickshaw.Graph.SharedHoverDetail = Rickshaw.Class.create({
 
             $(line).hide();
 
+        });
+    },
+
+    raiseMouseMove: function(pageX, pageY){
+        this.mouseMoveHandlers[0]({
+            pageX: pageX,
+            pageY: pageY,
+            offsetX: pageX - $(this.graphs[0].element).position().left,
+            offsetY: pageY - $(this.graphs[0].element).position().top
         });
     },
 
