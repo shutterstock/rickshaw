@@ -8,6 +8,7 @@ Rickshaw.Graph.SharedHoverDetail = Rickshaw.Class.create({
         this.labelRender = args.labelRender;
         this.mouseMove = args.mouseMove;
         this.mouseMoveHandlers = [];
+        this.hideHover = false;
 
         var self = this;
 
@@ -21,7 +22,7 @@ Rickshaw.Graph.SharedHoverDetail = Rickshaw.Class.create({
                 var x = this.getXValue(self.lastGraph, this.mousePositionX, this.mousePositionY);
 
                 this.update(x);
-
+                this.hideHover = false;
                 self.mouseMove(e.pageX, e.pageY);
 
             }.bind(self);
@@ -37,6 +38,7 @@ Rickshaw.Graph.SharedHoverDetail = Rickshaw.Class.create({
 
                 this.mousePositionX = undefined;
                 this.mousePositionY = undefined;
+                this.hideHover = true;
 
                 if (e.relatedTarget && !(e.relatedTarget.compareDocumentPosition(graph.element) & Node.DOCUMENT_POSITION_CONTAINS)) {
                     this.hide();
@@ -85,7 +87,7 @@ Rickshaw.Graph.SharedHoverDetail = Rickshaw.Class.create({
 
         this.lastDomainX = domainX;
 
-        if (!domainX || domainX <= 0) {
+        if (!domainX || domainX <= 0 || this.hideHover) {
             this.hide();
             return;
         }
