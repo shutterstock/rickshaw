@@ -76,7 +76,7 @@ Rickshaw.Fixtures.Time.Local = function() {
 
 	this.ceil = function(time, unit) {
 
-		var date, floor, year;
+		var date, floor, year, offset;
 
 		if (unit.name == 'day') {
 
@@ -125,7 +125,7 @@ Rickshaw.Fixtures.Time.Local = function() {
 
 			return new Date(year, 0).getTime() / 1000;
 		}
-
-		return Math.ceil(time / unit.seconds) * unit.seconds;
+		offset = new Date(time * 1000).getTimezoneOffset() * 60;
+		return Math.ceil((time - offset) / unit.seconds) * unit.seconds + offset;
 	};
 };
