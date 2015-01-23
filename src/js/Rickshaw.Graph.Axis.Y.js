@@ -6,6 +6,7 @@ Rickshaw.Graph.Axis.Y = Rickshaw.Class.create( {
 
 		this.graph = args.graph;
 		this.orientation = args.orientation || 'right';
+		this.stroke = args.stroke || "#000000";
 
 		this.pixelsPerTick = args.pixelsPerTick || 75;
 		if (args.ticks) this.staticTicks = args.ticks;
@@ -23,6 +24,7 @@ Rickshaw.Graph.Axis.Y = Rickshaw.Class.create( {
 			this.element = args.element;
 			this.vis = d3.select(args.element)
 				.append("svg:svg")
+				.attr('stroke', this.stroke)
 				.attr('class', 'rickshaw_graph y_axis');
 
 			this.element = this.vis[0][0];
