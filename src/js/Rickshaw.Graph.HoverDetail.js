@@ -15,7 +15,7 @@ Rickshaw.Graph.HoverDetail = Rickshaw.Class.create({
 		};
 
 		var element = this.element = document.createElement('div');
-		element.className = 'detail';
+		element.className = 'detail inactive';
 
 		this.visible = true;
 		graph.element.appendChild(element);
