@@ -82,6 +82,7 @@ Rickshaw.Graph.Axis.Y = Rickshaw.Class.create( {
 	},
 
 	_drawAxis: function(scale) {
+		var self = this;
 		var axis = d3.svg.axis().scale(scale).orient(this.orientation);
 		axis.tickFormat(this.tickFormat);
 		if (this.tickValues) axis.tickValues(this.tickValues);
@@ -95,11 +96,42 @@ Rickshaw.Graph.Axis.Y = Rickshaw.Class.create( {
 			this.vis.selectAll('*').remove();
 		}
 
+		function breaker(selection) {
+			var domain = axis.scale().domain();
+
+			var yMin = +Infinity;
+			self.graph.stackedData.forEach( function(series) {
+
+				series.forEach( function(d) {
+					if (d.y == null) return;
+
+					var y = d.y + d.y0;
+					if (y < yMin) yMin = y;
+				} );
+
+				if (!series.length) return;
+			} );
+
+			if (yMin === 0 || self.graph.min === 0) {
+				// when domain starts at 0, do not apply break
+				return;
+			}
+			var path = selection.select('path').attr("d");
+			var axisHeight = path.match(/(\d+)H\d+$/)[1];
+
+			var lineBreaker = 'V' + (parseInt(axisHeight, 10) - 8) +
+				'm6,-3 l-12,6 m12,-3 l-12,6 m6,-3';
+
+			var newPath = path.replace(/(V\d+H\d+)$/, lineBreaker+'$1');
+			selection.select('path').attr("d", newPath);
+		}
+
 		this.vis
 			.append("svg:g")
 			.attr("class", ["y_ticks", this.ticksTreatment].join(" "))
 			.attr("transform", transform)
-			.call(axis.ticks(this.ticks).tickSubdivide(0).tickSize(this.tickSize));
+			.call(axis.ticks(this.ticks).tickSubdivide(0).tickSize(this.tickSize))
+			.call(breaker);
 
 		return axis;
 	},
