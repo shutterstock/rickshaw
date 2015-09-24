@@ -97,8 +97,6 @@ Rickshaw.Graph.Axis.Y = Rickshaw.Class.create( {
 		}
 
 		function breaker(selection) {
-			var domain = axis.scale().domain();
-
 			var yMin = +Infinity;
 			self.graph.stackedData.forEach( function(series) {
 
@@ -109,7 +107,6 @@ Rickshaw.Graph.Axis.Y = Rickshaw.Class.create( {
 					if (y < yMin) yMin = y;
 				} );
 
-				if (!series.length) return;
 			} );
 
 			if (yMin === 0 || self.graph.min === 0) {
