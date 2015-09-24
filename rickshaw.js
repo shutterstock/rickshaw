@@ -1703,8 +1703,6 @@ Rickshaw.Graph.Axis.Y = Rickshaw.Class.create( {
 		}
 
 		function breaker(selection) {
-			var domain = axis.scale().domain();
-
 			var yMin = +Infinity;
 			self.graph.stackedData.forEach( function(series) {
 
@@ -1715,7 +1713,6 @@ Rickshaw.Graph.Axis.Y = Rickshaw.Class.create( {
 					if (y < yMin) yMin = y;
 				} );
 
-				if (!series.length) return;
 			} );
 
 			if (yMin === 0 || self.graph.min === 0) {
@@ -1723,12 +1720,12 @@ Rickshaw.Graph.Axis.Y = Rickshaw.Class.create( {
 				return;
 			}
 			var path = selection.select('path').attr("d");
-			var axisHeight = path.match(/(\d+)\s*H\s*\d+$/)[1];
+			var axisHeight = path.match(/(-?\d+)\s*H\s*-?\d+$/)[1];
 
 			var lineBreaker = 'V' + (parseInt(axisHeight, 10) - 8) +
 				'm6,-3 l-12,6 m12,-3 l-12,6 m6,-3';
 
-			var newPath = path.replace(/(V\d+\s*H\s*\d+)$/, lineBreaker+'$1');
+			var newPath = path.replace(/(V-?\d+\s*H\s*-?\d+)$/, lineBreaker+'$1');
 			selection.select('path').attr("d", newPath);
 		}
 
