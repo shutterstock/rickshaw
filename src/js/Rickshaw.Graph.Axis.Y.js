@@ -98,7 +98,8 @@ Rickshaw.Graph.Axis.Y = Rickshaw.Class.create( {
 
 		function colorAxes(selection) {
 			if (!self.color) return;
-			selection.selectAll("line, path, text").attr("fill", self.color);
+			selection.selectAll("text").style("fill", self.color);
+			selection.selectAll("line, path").style("stroke", self.color);
 		}
 
 		function breaker(selection) {
