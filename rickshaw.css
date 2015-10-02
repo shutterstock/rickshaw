@@ -248,7 +248,7 @@
 }
 .rickshaw_graph .y_ticks text,
 .rickshaw_graph .x_ticks_d3 text {
-	opacity: 0.5;
+	fill: rgba(0, 0, 0, 0.65);
 	font-size: 12px;
 	pointer-events: none;
 }
