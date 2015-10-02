@@ -6,6 +6,7 @@ Rickshaw.Graph.Axis.Y = Rickshaw.Class.create( {
 
 		this.graph = args.graph;
 		this.orientation = args.orientation || 'right';
+		this.color = args.color;
 
 		this.pixelsPerTick = args.pixelsPerTick || 75;
 		if (args.ticks) this.staticTicks = args.ticks;
@@ -95,6 +96,12 @@ Rickshaw.Graph.Axis.Y = Rickshaw.Class.create( {
 			this.vis.selectAll('*').remove();
 		}
 
+		function colorAxes(selection) {
+			if (!self.color) return;
+			selection.selectAll("text").style("fill", self.color);
+			selection.selectAll("line, path").style("stroke", self.color);
+		}
+
 		function breaker(selection) {
 			var yMin = +Infinity;
 			self.graph.stackedData.forEach( function(series) {
@@ -127,7 +134,8 @@ Rickshaw.Graph.Axis.Y = Rickshaw.Class.create( {
 			.attr("class", ["y_ticks", this.ticksTreatment].join(" "))
 			.attr("transform", transform)
 			.call(axis.ticks(this.ticks).tickSubdivide(0).tickSize(this.tickSize))
-			.call(breaker);
+			.call(breaker)
+			.call(colorAxes);
 
 		return axis;
 	},

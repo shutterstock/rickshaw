@@ -9,6 +9,7 @@ Rickshaw.Graph.Axis.Y.Scaled = Rickshaw.Class.create( Rickshaw.Graph.Axis.Y, {
     }
 
     this.scale = args.scale;
+    this.color = args.color;
 
     if (typeof(args.grid) === 'undefined') {
       this.grid = true;
