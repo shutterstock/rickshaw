@@ -110,7 +110,7 @@ Rickshaw.Graph.Renderer = Rickshaw.Class.create( {
 			i++;
 
 			// support for a line breakpoint
-			if (series.lineBreakPoint && (series.data.length > series.lineBreakPoint) && !series.noPrediction) {
+			if (series.lineBreakPoint && series.path.pathSegList && (series.data.length > series.lineBreakPoint) && !series.noPrediction) {
 
 				var pathStash = [];
 				for (var j = series.path.pathSegList.numberOfItems; j > series.lineBreakPoint; j--) {
