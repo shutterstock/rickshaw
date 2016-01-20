@@ -1,14 +1,14 @@
 (function (root, factory) {
     if (typeof define === 'function' && define.amd) {
-        define(['d3'], function (d3) {
-            return (root.Rickshaw = factory(d3));
+        define(['d3', 'jquery'], function (d3, jquery) {
+            return (root.Rickshaw = factory(d3, jquery));
         });
     } else if (typeof exports === 'object') {
-        module.exports = factory(require('d3'));
+        module.exports = factory(require('d3'), require('jquery'));
     } else {
-        root.Rickshaw = factory(d3);
+        root.Rickshaw = factory(d3, jQuery);
     }
-}(this, function (d3) {
+}(this, function (d3, jQuery) {
 /* jshint -W079 */ 
 
 var Rickshaw = {

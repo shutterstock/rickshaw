@@ -1,8 +1,9 @@
 {
   "name": "rickshaw",
-  "version": "1.5.7",
+  "version": "1.5.8",
   "dependencies": {
-    "d3": "~3.3.6"
+    "d3": "~3.3.6",
+    "jquery": "2.1.4"
   },
   "keywords": [
     "d3",
