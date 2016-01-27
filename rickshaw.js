@@ -4,9 +4,9 @@
             return (root.Rickshaw = factory(d3, jquery));
         });
     } else if (typeof exports === 'object') {
-        module.exports = factory(require('d3'));
+        module.exports = factory(require('d3'), require('jquery'));
     } else {
-        root.Rickshaw = factory(d3);
+        root.Rickshaw = factory(d3, jQuery);
     }
 }(this, function (d3, jQuery) {
 /* jshint -W079 */ 
