@@ -1,6 +1,6 @@
 {
   "name": "rickshaw",
-  "version": "1.5.8",
+  "version": "1.5.9",
   "dependencies": {
     "d3": "~3.3.6",
     "jquery": "2.1.4"
