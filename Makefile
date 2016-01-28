@@ -51,8 +51,8 @@ JS_FILES=\
 	src/js/Rickshaw.Graph.Socketio.js\
 	src/js/Rickshaw.Series.js\
 	src/js/Rickshaw.Series.FixedDuration.js\
-	src/helpers/pathSeg.polyfill.js\
 	src/helpers/endUMD.js\
+	src/helpers/pathSeg.polyfill.js\
 
 .PHONY: clean build
 

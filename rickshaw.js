@@ -4130,6 +4130,8 @@ Rickshaw.Series.FixedDuration = Rickshaw.Class.create(Rickshaw.Series, {
 	}
 } );
 
+	return Rickshaw;
+}));
 // SVGPathSeg API polyfill
 // https://github.com/progers/pathseg
 //
@@ -4941,5 +4943,3 @@ Rickshaw.Series.FixedDuration = Rickshaw.Class.create(Rickshaw.Series, {
     }
   }
 }());
-	return Rickshaw;
-}));
