@@ -132,6 +132,15 @@ palette.color() // => first color in the palette
 palette.color() // => next color in the palette...
 ```
 
+Optionally, to palette.color() can take a numeric argument to specify which color from the palette should be used (zero-indexed).  This can be helpful when assigning a color to series of a plot with particular meaning:
+
+```javascript
+var palette = new Rickshaw.Color.Palette( { scheme: 'colorwheel' } );
+    
+palette.color(0) // => first color in the palette - red in this example
+palette.color(2) // => third color in the palette - light blue
+```
+
 #### Color Schemes
 
   * classic9
