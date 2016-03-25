@@ -19,6 +19,7 @@
     "svg",
     "graph"
   ],
+  "license": "MIT",
   "main": "./rickshaw",
   "engines": {
     "node": ">= 0.8.0"
