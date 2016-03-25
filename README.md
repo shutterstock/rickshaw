@@ -71,7 +71,7 @@ Line smoothing / interpolation method (see [D3 docs](https://github.com/mbostock
 
 ##### stack
 
-Boolean to specify whether series should be stacked while in the context of stacking renderers (area, bar, etc).  Defaults to true.
+Allows you to specify whether series should be stacked while in the context of stacking renderers (area, bar, etc).  Defaults to `stack: 'true'`. To unstack, `unstack: 'true'`.
 
 ### Methods
 
