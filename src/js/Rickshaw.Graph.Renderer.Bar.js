@@ -7,7 +7,6 @@ Rickshaw.Graph.Renderer.Bar = Rickshaw.Class.create( Rickshaw.Graph.Renderer, {
 	defaults: function($super) {
 
 		var defaults = Rickshaw.extend( $super(), {
-			gapSize: 0.05,
 			unstack: false
 		} );
 
@@ -17,7 +16,6 @@ Rickshaw.Graph.Renderer.Bar = Rickshaw.Class.create( Rickshaw.Graph.Renderer, {
 
 	initialize: function($super, args) {
 		args = args || {};
-		this.gapSize = args.gapSize || this.gapSize;
 		$super(args);
 	},
 
@@ -34,7 +32,7 @@ Rickshaw.Graph.Renderer.Bar = Rickshaw.Class.create( Rickshaw.Graph.Renderer, {
 	barWidth: function(series) {
 
 		var frequentInterval = this._frequentInterval(series.stack);
-		var barWidth = this.graph.x.magnitude(frequentInterval.magnitude) * (1 - this.gapSize);
+		var barWidth = this.graph.x.magnitude(frequentInterval.magnitude) * (1 - (series.gapSize ? series.gapSize : 0.05));
 
 		return barWidth;
 	},
