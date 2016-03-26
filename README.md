@@ -27,13 +27,13 @@ graph.render();
 ```
 See the [overview](http://code.shutterstock.com/rickshaw/), [tutorial](http://shutterstock.github.com/rickshaw/tutorial/introduction.html), and [examples](http://shutterstock.github.com/rickshaw/examples/) for more.
 
-## Rickshaw.Graph 
+## Rickshaw.Graph
 
 A Rickshaw graph.  Send an `element` reference, `series` data, and optionally other properties to the constructor before calling `render()` to point the graph.  A listing of properties follows.  Send these as arguments to the constructor, and optionally set them later on already-instantiated graphs with a call to `configure()`
 
 ##### element
 
-A reference to an HTML element that should hold the graph. 
+A reference to an HTML element that should hold the graph.
 
 ##### series
 
@@ -56,6 +56,14 @@ Height of the graph in pixels.  Falls back to the height of the `element`, or de
 Lower value on the Y-axis, or `auto` for the lowest value in the series.  Defaults to 0.
 
 ##### max
+
+Highest value on the Y-axis.  Defaults to the highest value in the series.
+
+##### x_min
+
+Lowest value on the X-axis.  Defaults to the lowest value in the series.
+
+##### x_max
 
 Highest value on the Y-axis.  Defaults to the highest value in the series.
 
@@ -130,7 +138,7 @@ Rickshaw comes with a few color schemes. Instantiate a palette and specify a sch
 
 ```javascript
 var palette = new Rickshaw.Color.Palette( { scheme: 'spectrum2001' } );
-    
+
 palette.color() // => first color in the palette
 palette.color() // => next color in the palette...
 ```
@@ -162,7 +170,7 @@ For graphs with more series than palettes have colors, specify an `interpolatedS
 
 This library works in modern browsers and Internet Explorer 9+.
 
-Rickshaw relies on the HTMLElement#classList API, which isn't natively supported in Internet Explorer 9.  Rickshaw adds support by including a shim which implements the classList API by extending the HTMLElement prototype.  You can disable this behavior if you like, by setting `RICKSHAW_NO_COMPAT` to a true value before including the library. 
+Rickshaw relies on the HTMLElement#classList API, which isn't natively supported in Internet Explorer 9.  Rickshaw adds support by including a shim which implements the classList API by extending the HTMLElement prototype.  You can disable this behavior if you like, by setting `RICKSHAW_NO_COMPAT` to a true value before including the library.
 
 
 ## Dependencies

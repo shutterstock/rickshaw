@@ -21,6 +21,8 @@ Rickshaw.Graph = function(args) {
 			offset: 'zero',
 			min: undefined,
 			max: undefined,
+			x_min: undefined,
+			x_max: undefined,
 			preserve: false,
 			xScale: undefined,
 			yScale: undefined,

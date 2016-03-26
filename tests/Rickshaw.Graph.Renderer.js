@@ -69,6 +69,7 @@ exports.domain = function(test) {
 	domain = graph.renderer.domain();
 	test.deepEqual(domain, { x: [ 0, 4 ], y: [ -72, 49 ] }, 'domain matches with negative numbers and min auto');
 
+
 	// different series lengths
 
 	graph.series.push({
@@ -92,6 +93,35 @@ exports.domain = function(test) {
 	domain = graph.renderer.domain();
 	test.deepEqual(domain, { x: [ 1, 3 ], y: [ 3, 49 ] }, "null values don't set min to zero");
 
+
+  // x_min should be used to calculate the domain
+
+	graph.series.splice(0, graph.series.length);
+	graph.series.push({ data: [ { x: 1, y: 27 }, { x: 2, y: 49 }, { x: 3, y: 14 } ] });
+	graph.series.push({ data: [ { x: 1, y: null }, { x: 2, y: 9 }, { x: 3, y: 3 } ] });
+
+	graph.configure({ x_min: '100' });
+	graph.stackData();
+
+	domain = graph.renderer.domain();
+	test.deepEqual(domain, { x: [ 100, 3 ], y: [ 3, 49 ] }, "x_min should be used to calculate the domain");
+	graph.configure({ x_min: void 0 });
+
+
+  // x_max should be used to calculate the domain
+
+	graph.series.splice(0, graph.series.length);
+	graph.series.push({ data: [ { x: 1, y: 27 }, { x: 2, y: 49 }, { x: 3, y: 14 } ] });
+	graph.series.push({ data: [ { x: 1, y: null }, { x: 2, y: 9 }, { x: 3, y: 3 } ] });
+
+	graph.configure({ x_max: '100' });
+	graph.stackData();
+
+	domain = graph.renderer.domain();
+	test.deepEqual(domain, { x: [ 1, 100 ], y: [ 3, 49 ] }, "x_max should be used to calculate the domain");
+	graph.configure({ x_max: void 0 });
+
+
 	// max of zero
 
 	graph.series.push({ data: [ { x: 1, y: -29 }, { x: 2, y: -9 }, { x: 3, y: -3 } ] });
@@ -108,11 +138,11 @@ exports.domain = function(test) {
 exports.respectStrokeFactory = function(test) {
 
 	var el = document.createElement("div");
-	
+
 	Rickshaw.Graph.Renderer.RespectStrokeFactory = Rickshaw.Class.create( Rickshaw.Graph.Renderer, {
 
 		name: 'respectStrokeFactory',
-		
+
 		seriesPathFactory: function() {
 			var graph = this.graph;
 			var factory = d3.svg.line()
@@ -122,7 +152,7 @@ exports.respectStrokeFactory = function(test) {
 			factory.defined && factory.defined( function(d) { return d.y !== null } );
 			return factory;
 		},
-		
+
 		seriesStrokeFactory: function() {
 			var graph = this.graph;
 			var factory = d3.svg.line()
@@ -133,7 +163,7 @@ exports.respectStrokeFactory = function(test) {
 			return factory;
 		}
 	});
-	
+
 	var graph = new Rickshaw.Graph({
 		element: el,
 		stroke: true,
@@ -154,18 +184,18 @@ exports.respectStrokeFactory = function(test) {
 		]
 	});
 	graph.render();
-	
+
 	var path = graph.vis.select('path.path.fnord');
 	test.equals(path.size(), 1, "we have a fnord path");
-	
+
 	var stroke = graph.vis.select('path.stroke.fnord');
 	test.equals(stroke.size(), 1, "we have a fnord stroke");
-	
+
 	// should also be availeable via series
 	var firstSeries = graph.series[0];
 	test.ok(d3.select(firstSeries.path).classed('path'), "selectable path");
 	test.ok(d3.select(firstSeries.stroke).classed('stroke', "selectable stroke"));
-	
+
 	test.done();
 };
 
