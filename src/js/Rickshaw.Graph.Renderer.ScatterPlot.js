@@ -35,13 +35,15 @@ Rickshaw.Graph.Renderer.ScatterPlot = Rickshaw.Class.create( Rickshaw.Graph.Rend
 		series.forEach( function(series) {
 
 			if (series.disabled) return;
+			var opacity = series.opacity ? series.opacity : 1;
 
 			var nodes = vis.selectAll("path")
 				.data(series.stack.filter( function(d) { return d.y !== null } ))
 				.enter().append("svg:circle")
 					.attr("cx", function(d) { return graph.x(d.x) })
 					.attr("cy", function(d) { return graph.y(d.y) })
-					.attr("r", function(d) { return ("r" in d) ? d.r : dotSize});
+					.attr("r", function(d) { return ("r" in d) ? d.r : dotSize})
+					.attr("opacity", function(d) { return ("opacity" in d) ? d.opacity : opacity});
 			if (series.className) {
 				nodes.classed(series.className, true);
 			}

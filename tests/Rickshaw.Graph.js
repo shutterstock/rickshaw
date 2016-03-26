@@ -34,10 +34,15 @@ exports.svg = function(test) {
 				{ x: 0, y: 40 },
 				{ x: 1, y: 49 },
 				{ x: 2, y: 38 },
-				{ x: 3, y: 30 },
-				{ x: 4, y: 32 } ]
-			}]
-	} );
+				{ x: 3, y: 30 }
+			],
+			strokeWidth: 5,
+			opacity: 0.8
+		}, {
+			color : 'blue',
+			data  : [ { x: 4, y: 32 } ]
+		}]
+	});
 
 	graph.renderer.dotSize = 6;
 	graph.render();

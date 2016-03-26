@@ -1104,13 +1104,13 @@ Rickshaw.Fixtures.Time.Local = function() {
 			var nearFuture = new Date((time + unit.seconds - 1) * 1000);
 
 			var rounded = new Date(0);
+			rounded.setFullYear(nearFuture.getFullYear());
+			rounded.setMonth(nearFuture.getMonth());
+			rounded.setDate(nearFuture.getDate());
 			rounded.setMilliseconds(0);
 			rounded.setSeconds(0);
 			rounded.setMinutes(0);
 			rounded.setHours(0);
-			rounded.setDate(nearFuture.getDate());
-			rounded.setMonth(nearFuture.getMonth());
-			rounded.setFullYear(nearFuture.getFullYear());
 
 			return rounded.getTime() / 1000;
 		}
@@ -3008,7 +3008,8 @@ Rickshaw.Graph.Renderer = Rickshaw.Class.create( {
 			unstack: true,
 			padding: { top: 0.01, right: 0, bottom: 0.01, left: 0 },
 			stroke: false,
-			fill: false
+			fill: false,
+			opacity: 1
 		};
 	},
 
@@ -3100,10 +3101,13 @@ Rickshaw.Graph.Renderer = Rickshaw.Class.create( {
 
 		var fill = this.fill ? series.color : 'none';
 		var stroke = this.stroke ? series.color : 'none';
+		var strokeWidth = series.strokeWidth ? series.strokeWidth : this.strokeWidth;
+		var opacity = series.opacity ? series.opacity : this.opacity;
 
 		series.path.setAttribute('fill', fill);
 		series.path.setAttribute('stroke', stroke);
-		series.path.setAttribute('stroke-width', this.strokeWidth);
+		series.path.setAttribute('stroke-width', strokeWidth);
+		series.path.setAttribute('opacity', opacity);
 
 		if (series.className) {
 			d3.select(series.path).classed(series.className, true);
@@ -3227,7 +3231,8 @@ Rickshaw.Graph.Renderer.Bar = Rickshaw.Class.create( Rickshaw.Graph.Renderer, {
 
 		var defaults = Rickshaw.extend( $super(), {
 			gapSize: 0.05,
-			unstack: false
+			unstack: false,
+			opacity: 1.0
 		} );
 
 		delete defaults.tension;
@@ -3293,6 +3298,7 @@ Rickshaw.Graph.Renderer.Bar = Rickshaw.Class.create( Rickshaw.Graph.Renderer, {
 				.attr("y", function(d) { return (graph.y(d.y0 + Math.abs(d.y))) * (d.y < 0 ? -1 : 1 ) })
 				.attr("width", seriesBarWidth)
 				.attr("height", function(d) { return graph.y.magnitude(Math.abs(d.y)) })
+				.attr("opacity", series.opacity)
 				.attr("transform", transform);
 
 			Array.prototype.forEach.call(nodes[0], function(n) {
@@ -3467,13 +3473,15 @@ Rickshaw.Graph.Renderer.ScatterPlot = Rickshaw.Class.create( Rickshaw.Graph.Rend
 		series.forEach( function(series) {
 
 			if (series.disabled) return;
+			var opacity = series.opacity ? series.opacity : 1;
 
 			var nodes = vis.selectAll("path")
 				.data(series.stack.filter( function(d) { return d.y !== null } ))
 				.enter().append("svg:circle")
 					.attr("cx", function(d) { return graph.x(d.x) })
 					.attr("cy", function(d) { return graph.y(d.y) })
-					.attr("r", function(d) { return ("r" in d) ? d.r : dotSize});
+					.attr("r", function(d) { return ("r" in d) ? d.r : dotSize})
+					.attr("opacity", function(d) { return ("opacity" in d) ? d.opacity : opacity});
 			if (series.className) {
 				nodes.classed(series.className, true);
 			}

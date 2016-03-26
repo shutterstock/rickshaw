@@ -16,6 +16,9 @@ var random = new Rickshaw.Fixtures.RandomData(150);
 
 for (var i = 0; i < 500; i++) {
 	random.addData(seriesData);
+	seriesData[0][i].r = 0|Math.random() * 2 + 8
+	seriesData[1][i].r = 0|Math.random() * 5 + 5
+	seriesData[2][i].r = 0|Math.random() * 8 + 2
 }
 
 // instantiate our graph!
@@ -29,9 +32,14 @@ var graph = new Rickshaw.Graph( {
 		{
 			color: "#ff9030",
 			data: seriesData[0],
+			opacity: 0.5
 		}, {
 			color: "#ff4040",
 			data: seriesData[1],
+			opacity: 0.3
+		}, {
+			color: "#4040ff",
+			data: seriesData[2]
 		}
 	]
 } );
