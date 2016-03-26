@@ -1,4 +1,4 @@
-runtime: node010
+runtime: node4
 build: npm install && make clean && make
 run: rock --runtime=python27 run python -m SimpleHTTPServer
 test: npm test
