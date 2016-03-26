@@ -114,7 +114,7 @@ Rickshaw.Graph.Renderer = Rickshaw.Class.create( {
 	_styleSeries: function(series) {
 
 		var fill = this.fill ? series.color : 'none';
-		var stroke = this.stroke ? series.color : 'none';
+		var stroke = this.stroke ? series.color : '#000000';
 
 		series.path.setAttribute('fill', fill);
 		series.path.setAttribute('stroke', stroke);
