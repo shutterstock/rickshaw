@@ -1,8 +1,10 @@
+var d3 = require("d3");
+
 exports.setUp = function(callback) {
 
 	Rickshaw = require('../rickshaw');
 
-	global.document = d3.select('html')[0][0].parentNode;
+	global.document = require("jsdom").jsdom("<html><head></head><body></body></html>");
 	global.window = document.defaultView;
 
 	new Rickshaw.Compat.ClassList();
