@@ -25,6 +25,11 @@
 	<div id="chart"></div>
 </div>
 
+<div>
+	<button onclick="window.showTextOnOtherSide()">Change text location</button>
+	<button onclick="window.setSize()">setSize()</button>
+</div>
+
 <script>
 
 // instantiate our graph!
@@ -56,5 +61,19 @@ var y_ticks = new Rickshaw.Graph.Axis.Y( {
 } );
 
 graph.render();
+
+window.showTextOnOtherSide = function() {
+	y_ticks.orientation = y_ticks.orientation === 'right' ? 'left' : 'right';
+	graph.render();
+};
+
+window.setSize = function() {
+	var width = parseInt(prompt('New axis width?', y_ticks.width), 10);
+	var height = parseInt(prompt('New axis height?', y_ticks.height), 10);
+	y_ticks.setSize({
+		width: width,
+		height: height
+	});
+};
 
 </script>
