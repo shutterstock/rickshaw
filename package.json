@@ -25,15 +25,19 @@
     "node": ">= 4.0.0"
   },
   "devDependencies": {
-    "jsdom": "^8.1.0",
-    "nodeunit": "^0.9.1",
     "clean-css": "^3.4.10",
-    "uglify-js": "^2.6.2",
-    "jshint": "^2.9.1"
+    "coveralls": "^2.11.9",
+    "istanbul": "^0.4.3",
+    "jsdom": "^8.1.0",
+    "jshint": "^2.9.1",
+    "nodeunit": "^0.9.1",
+    "uglify-js": "^2.6.2"
   },
   "scripts": {
     "build": "make clean && make",
     "examples": "open examples/index.html",
-    "test": "nodeunit tests"
+    "test": "nodeunit tests",
+    "coverage": "istanbul cover nodeunit tests --reporter=lcov",
+    "coveralls": "cat ./coverage/lcov.info | coveralls"
   }
 }

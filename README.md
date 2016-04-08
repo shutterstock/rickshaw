@@ -1,5 +1,6 @@
 [![NPM version][npm-image]][npm-url]
 [![Build Status][travis-image]][travis-url]
+[![Coverage Status][coverage-image]][coverage-url]
 
 # Rickshaw
 
@@ -223,3 +224,5 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 [npm-url]: https://npmjs.org/package/rickshaw
 [travis-image]: https://travis-ci.org/shutterstock/rickshaw.svg?branch=master
 [travis-url]: https://travis-ci.org/shutterstock/rickshaw
+[coverage-image]: https://coveralls.io/repos/github/shutterstock/rickshaw/badge.svg?branch=feature%2Ftest-coverage
+[coverage-url]: https://coveralls.io/github/shutterstock/rickshaw?branch=feature%2Ftest-coverage
