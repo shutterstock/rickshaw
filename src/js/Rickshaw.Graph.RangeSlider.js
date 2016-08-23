@@ -40,24 +40,21 @@ Rickshaw.Graph.RangeSlider = Rickshaw.Class.create({
 						graph[0].dataDomain()[0],
 						graph[0].dataDomain()[1]
 					],
+					start: function(event, ui) {
+						self.slideStarted(event, ui);
+					},
+					stop: function(event, ui) {
+						self.slideFinished(event, ui);
+					},
 					slide: function(event, ui) {
+
+						if (!self.slideShouldUpdate(event, ui))
+							return;
+
+						if (ui.values[1] <= ui.values[0]) return;
 						for (var i = 0; i < graph.length; i++) {
-							graph[i].window.xMin = ui.values[0];
-							graph[i].window.xMax = ui.values[1];
-							graph[i].update();
-
-							// if we're at an extreme, stick there
-							if (graph[i].dataDomain()[0] == ui.values[0]) {
-								graph[i].window.xMin = undefined;
-							}
-							if (graph[i].dataDomain()[1] == ui.values[1]) {
-								graph[i].window.xMax = undefined;
-							}
+							self.processSlideChange(event, ui, graph[i]);
 						}
-
-						self.slideCallbacks.forEach(function(callback) {
-							callback(graph[i], graph[i].window.xMin, graph[i].window.xMax);
-						});
 					}
 				});
 			});
@@ -76,28 +73,20 @@ Rickshaw.Graph.RangeSlider = Rickshaw.Class.create({
 						domain[0],
 						domain[1]
 					],
+					start: function(event, ui) {
+						self.slideStarted(event, ui);
+					},
+					stop: function(event, ui) {
+						self.slideFinished(event, ui);
+					},
 					slide: function(event, ui) {
+
+						if (!self.slideShouldUpdate(event, ui))
+							return;
 
 						if (ui.values[1] <= ui.values[0]) return;
 
-						graph.window.xMin = ui.values[0];
-						graph.window.xMax = ui.values[1];
-						graph.update();
-
-						var domain = graph.dataDomain();
-
-						// if we're at an extreme, stick there
-						if (domain[0] == ui.values[0]) {
-							graph.window.xMin = undefined;
-						}
-
-						if (domain[1] == ui.values[1]) {
-							graph.window.xMax = undefined;
-						}
-
-						self.slideCallbacks.forEach(function(callback) {
-							callback(graph, graph.window.xMin, graph.window.xMax);
-						});
+						self.processSlideChange(event, ui, graph);
 					}
 				});
 			});
@@ -143,6 +132,42 @@ Rickshaw.Graph.RangeSlider = Rickshaw.Class.create({
 
 	onSlide: function(callback) {
 		this.slideCallbacks.push(callback);
+	},
+
+	processSlideChange: function(event, ui, graph) {
+
+		graph.window.xMin = ui.values[0];
+		graph.window.xMax = ui.values[1];
+		graph.update();
+
+		var domain = graph.dataDomain();
+
+		// if we're at an extreme, stick there
+		if (domain[0] == ui.values[0]) {
+			graph.window.xMin = undefined;
+		}
+
+		if (domain[1] == ui.values[1]) {
+			graph.window.xMax = undefined;
+		}
+
+		this.slideCallbacks.forEach(function(callback) {
+			callback(graph, graph.window.xMin, graph.window.xMax);
+		});
+
+	},
+
+	// allows the slide updates to bail out if sliding is not permitted
+	slideShouldUpdate: function(event, ui) {
+		return true;
+	},
+
+	slideStarted: function(event, ui) {
+		return;
+	},
+
+	slideFinished: function(event, ui) {
+		return;
 	}
 });
 
