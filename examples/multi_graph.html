@@ -60,7 +60,7 @@ graph1.render();
 graph2.render();
 
 var slider = new Rickshaw.Graph.RangeSlider({
-  graph: graph1,
+  graph: [ graph1, graph2 ],
   element: document.getElementById('slider')
 });
 

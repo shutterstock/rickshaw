@@ -20,7 +20,6 @@ Rickshaw.Graph.RangeSlider = Rickshaw.Class.create({
 		var graph = this.graph;
 		var $ = jQuery;
 
-		var domain = graph.dataDomain();
 		var self = this;
 
 		if (graph.constructor === Array) {
@@ -73,6 +72,8 @@ Rickshaw.Graph.RangeSlider = Rickshaw.Class.create({
 
 			});
 		} else {
+			var domain = graph.dataDomain();
+
 			$(function() {
 				$(element).slider({
 					range: true,
