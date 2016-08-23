@@ -14,10 +14,13 @@ Rickshaw.Graph.RangeSlider = Rickshaw.Class.create({
 		if( graph.constructor === Array ) {
 			for( var i=0; i<graph.length; i++ ) {
 				graph[i].onUpdate( function() { this.update() }.bind(this) );
+				graph[i].onConfigure( function() { this.configure() }.bind(this) );
 			}
 		} else {
 			graph.onUpdate( function() { this.update() }.bind(this) );
+			graph.onConfigure( function() { this.configure() }.bind(this) );
 		}
+
 	},
 
 	build: function() {
@@ -101,6 +104,14 @@ Rickshaw.Graph.RangeSlider = Rickshaw.Class.create({
 
 			$(element)[0].style.width = graph.width + 'px';
 		}
+	},
+
+	configure: function() {
+		var element = this.element;
+		var graph = this.graph;
+		var $ = jQuery;
+
+		$(element)[0].style.width = graph.width + 'px';
 	},
 
 	update: function() {
