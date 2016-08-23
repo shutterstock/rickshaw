@@ -59,8 +59,8 @@ Rickshaw.Graph.RangeSlider = Rickshaw.Class.create({
 				});
 			});
 
-			element[0].style.width = graph[0].width + 'px';
-
+			graph[0].onConfigure(this.configure.bind(this));
+			this.configure();
 		} else {
 
 			var domain = graph.dataDomain();
@@ -91,7 +91,8 @@ Rickshaw.Graph.RangeSlider = Rickshaw.Class.create({
 				});
 			});
 
-			$(element)[0].style.width = graph.width + 'px';
+			graph.onConfigure(this.configure.bind(this));
+			this.configure();
 		}
 	},
 
