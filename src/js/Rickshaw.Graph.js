@@ -304,7 +304,7 @@ Rickshaw.Graph = function(args) {
 
 		args = args || {};
 
-		if (typeof window !== undefined) {
+		if (typeof window !== 'undefined') {
 			var style = window.getComputedStyle(this.element, null);
 			var elementWidth = parseInt(style.getPropertyValue('width'), 10);
 			var elementHeight = parseInt(style.getPropertyValue('height'), 10);
