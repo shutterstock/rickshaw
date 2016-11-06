@@ -4,104 +4,86 @@ Rickshaw.Graph.RangeSlider = Rickshaw.Class.create({
 
 	initialize: function(args) {
 
+		var $ = jQuery;
+		var self = this;
 		var element = this.element = args.element;
-		var graph = this.graph = args.graph;
+		var graphs = this.graphs = args.graphs;
+		if (!graphs) {
+			graphs = this.graph = args.graph;
+		}
+		if (graphs.constructor !== Array) {
+			graphs = [graphs];
+		}
+		this.graph = graphs[0];
 
 		this.slideCallbacks = [];
 
 		this.build();
 
-		if( graph.constructor === Array ) {
-			for( var i=0; i<graph.length; i++ ) {
-				graph[i].onUpdate( function() { this.update() }.bind(this) );
-				graph[i].onConfigure( function() { this.configure() }.bind(this) );
-			}
-		} else {
-			graph.onUpdate( function() { this.update() }.bind(this) );
-			graph.onConfigure( function() { this.configure() }.bind(this) );
+		for (var i = 0; i < graphs.length; i++) {
+			graphs[i].onUpdate(function() {
+				self.update();
+			}.bind(self));
+
+			graphs[i].onConfigure(function() {
+				$(element)[0].style.width = graphs[i].width + 'px';
+			}.bind(self));
 		}
 
 	},
 
 	build: function() {
 
+		var domain;
 		var element = this.element;
-		var graph = this.graph;
 		var $ = jQuery;
 		var self = this;
+		var graphs = this.graphs || this.graph;
 
-		if (graph.constructor === Array) {
-			$(function() {
-				$(element).slider({
-					range: true,
-					min: graph[0].dataDomain()[0],
-					max: graph[0].dataDomain()[1],
-					values: [
-						graph[0].dataDomain()[0],
-						graph[0].dataDomain()[1]
-					],
-					start: function(event, ui) {
-						self.slideStarted(event, ui);
-					},
-					stop: function(event, ui) {
-						self.slideFinished(event, ui);
-					},
-					slide: function(event, ui) {
-
-						if (!self.slideShouldUpdate(event, ui))
-							return;
-
-						if (ui.values[1] <= ui.values[0]) return;
-						for (var i = 0; i < graph.length; i++) {
-							self.processSlideChange(event, ui, graph[i]);
-						}
-					}
-				});
-			});
-
-			graph[0].onConfigure(this.configure.bind(this));
-			this.configure();
-		} else {
-
-			var domain = graph.dataDomain();
-			$(function() {
-				$(element).slider({
-					range: true,
-					min: domain[0],
-					max: domain[1],
-					values: [
-						domain[0],
-						domain[1]
-					],
-					start: function(event, ui) {
-						self.slideStarted(event, ui);
-					},
-					stop: function(event, ui) {
-						self.slideFinished(event, ui);
-					},
-					slide: function(event, ui) {
-
-						if (!self.slideShouldUpdate(event, ui))
-							return;
-
-						if (ui.values[1] <= ui.values[0]) return;
-
-						self.processSlideChange(event, ui, graph);
-					}
-				});
-			});
-
-			graph.onConfigure(this.configure.bind(this));
-			this.configure();
+		if (graphs.constructor !== Array) {
+			graphs = [graphs];
 		}
-	},
 
-	configure: function() {
-		var element = this.element;
-		var graph = this.graph;
-		var $ = jQuery;
+		// base the slider's min/max on the first graph
+		this.graph = graphs[0];
+		domain = graphs[0].dataDomain();
 
-		$(element)[0].style.width = graph.width + 'px';
+		$(function() {
+			$(element).slider({
+				range: true,
+				min: domain[0],
+				max: domain[1],
+				values: [
+					domain[0],
+					domain[1]
+				],
+				start: function(event, ui) {
+					self.slideStarted({ event: event, ui: ui });
+				},
+				stop: function(event, ui) {
+					self.slideFinished({ event: event, ui: ui });
+				},
+				slide: function(event, ui) {
+					if (!self.slideShouldUpdate(event, ui))
+						return;
+
+					if (ui.values[1] <= ui.values[0]) return;
+
+					for (var i = 0; i < graphs.length; i++) {
+						self.processSlideChange({
+							event: event,
+							ui: ui,
+							graph: graphs[i]
+						});
+					}
+				}
+			} );
+		} );
+
+		graphs[0].onConfigure(function() {
+			$(element)[0].style.width = graphs[0].width + 'px';
+		}.bind(this));
+
 	},
 
 	update: function() {
@@ -111,10 +93,6 @@ Rickshaw.Graph.RangeSlider = Rickshaw.Class.create({
 		var $ = jQuery;
 
 		var values = $(element).slider('option', 'values');
-
-		if( graph.constructor === Array ) {
-			graph = graph[0];
-		}
 
 		var domain = graph.dataDomain();
 
@@ -135,7 +113,10 @@ Rickshaw.Graph.RangeSlider = Rickshaw.Class.create({
 		this.slideCallbacks.push(callback);
 	},
 
-	processSlideChange: function(event, ui, graph) {
+	processSlideChange: function(args) {
+		var event = args.event;
+		var ui = args.ui;
+		var graph = args.graph;
 
 		graph.window.xMin = ui.values[0];
 		graph.window.xMax = ui.values[1];
@@ -159,15 +140,15 @@ Rickshaw.Graph.RangeSlider = Rickshaw.Class.create({
 	},
 
 	// allows the slide updates to bail out if sliding is not permitted
-	slideShouldUpdate: function(event, ui) {
+	slideShouldUpdate: function() {
 		return true;
 	},
 
-	slideStarted: function(event, ui) {
+	slideStarted: function() {
 		return;
 	},
 
-	slideFinished: function(event, ui) {
+	slideFinished: function() {
 		return;
 	}
 });

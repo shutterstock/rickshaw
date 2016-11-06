@@ -37,13 +37,13 @@ names = ['New York','London','Tokyo']
 var graphs = []
 
 // Make all three graphs in a loop
-for (var i = 0; i < names.length; i++) { 
+for (var i = 0; i < names.length; i++) {
 	graph = new Rickshaw.Graph( {
 		element: document.getElementById("chart_"+i),
 		width: 800,
 		height: 100,
 		renderer: 'line',
-		series: [{	
+		series: [{
 			color: color[i],
 			data: seriesData[i],
 			name: names[i]
@@ -56,8 +56,8 @@ for (var i = 0; i < names.length; i++) {
 }
 
 // One slider, attributed to multiple graphs.
-var slider = new Rickshaw.Graph.RangeSlider( { 
-	graph: graphs,
+var slider = new Rickshaw.Graph.RangeSlider( {
+	graphs: graphs,
 	element: $("#slider")
 } );
 
