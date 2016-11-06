@@ -30,6 +30,7 @@
     "istanbul": "^0.4.3",
     "jsdom": "^8.1.0",
     "jshint": "^2.9.1",
+    "nodemon": "^1.11.0",
     "nodeunit": "^0.9.1",
     "uglify-js": "^2.6.2"
   },
