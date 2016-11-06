@@ -81,17 +81,12 @@ $(JSDOM):
 $(NODEUNIT):
 	npm install nodeunit
 
-watchjs:
-	$(NODE_MODULES)/.bin/nodemon --watch src --exec make buildjs
-
-buildjs: $(JS_FILES)
-	cat $(JS_FILES) > rickshaw.js 
-
 rickshaw.css: $(CSS_FILES)
 	cat $(CSS_FILES) > rickshaw.css
 
-rickshaw.js: buildjs $(JS_HINT)
+rickshaw.js: $(JS_FILES) $(JS_HINT)
 	$(JS_HINT) src/js
+	cat $(JS_FILES) > rickshaw.js
 
 rickshaw.min.css: $(CSS_MIN) rickshaw.css
 	$(CSS_MIN) rickshaw.css > rickshaw.min.css

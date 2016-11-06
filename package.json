@@ -38,6 +38,7 @@
     "build": "make clean && make",
     "examples": "open examples/index.html",
     "test": "nodeunit tests",
+    "watch": "nodemon --watch src --exec make rickshaw.js",
     "coverage": "istanbul cover nodeunit tests --reporter=lcov",
     "coveralls": "cat ./coverage/lcov.info | coveralls"
   }
