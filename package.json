@@ -30,13 +30,16 @@
     "istanbul": "^0.4.3",
     "jsdom": "^8.1.0",
     "jshint": "^2.9.1",
+    "nodemon": "^1.11.0",
     "nodeunit": "^0.9.1",
     "uglify-js": "^2.6.2"
   },
   "scripts": {
     "build": "make clean && make",
     "examples": "open examples/index.html",
+    "lint": "jshint src/js/*",
     "test": "nodeunit tests",
+    "watch": "nodemon --watch src --exec make rickshaw.js",
     "coverage": "istanbul cover nodeunit tests --reporter=lcov",
     "coveralls": "cat ./coverage/lcov.info | coveralls"
   }
