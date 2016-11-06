@@ -66,13 +66,15 @@ Rickshaw.Graph.Axis.X = function(args) {
 		this.ticks = this.staticTicks || Math.floor(this.graph.width / this.pixelsPerTick);
 
 		var berth = Math.floor(this.width * berthRate / 2) || 0;
+		var bar_offset = this.graph.renderer.name == "bar" && Math.ceil(this.graph.width * 0.95 / this.graph.series[0].data.length / 2) || 0;
+
 		var transform;
 
 		if (this.orientation == 'top') {
 			var yOffset = this.height || this.graph.height;
-			transform = 'translate(' + berth + ',' + yOffset + ')';
+			transform = 'translate(' + (berth + bar_offset) + ',' + yOffset + ')';
 		} else {
-			transform = 'translate(' + berth + ', 0)';
+			transform = 'translate(' + (berth + bar_offset) + ', 0)';
 		}
 
 		if (this.element) {
