@@ -3,3 +3,5 @@ node_modules/
 **/*[.-]min.js
 src/js/Rickshaw.Class.js
 src/js/Rickshaw.Compat.ClassList.js
+src/helpers/endUMD.js
+src/helpers/startUMD.js
