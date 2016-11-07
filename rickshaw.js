@@ -690,7 +690,7 @@ Rickshaw.Graph = function(args) {
 
 		args = args || {};
 
-		if (typeof window !== undefined) {
+		if (typeof window !== 'undefined') {
 			var style = window.getComputedStyle(this.element, null);
 			var elementWidth = parseInt(style.getPropertyValue('width'), 10);
 			var elementHeight = parseInt(style.getPropertyValue('height'), 10);
@@ -1097,7 +1097,7 @@ Rickshaw.Fixtures.Time.Local = function() {
 
 	this.ceil = function(time, unit) {
 
-		var date, floor, year;
+		var date, floor, year, offset;
 
 		if (unit.name == 'day') {
 
@@ -1146,8 +1146,8 @@ Rickshaw.Fixtures.Time.Local = function() {
 
 			return new Date(year, 0).getTime() / 1000;
 		}
-
-		return Math.ceil(time / unit.seconds) * unit.seconds;
+		offset = new Date(time * 1000).getTimezoneOffset() * 60;
+		return Math.ceil((time - offset) / unit.seconds) * unit.seconds + offset;
 	};
 };
 Rickshaw.namespace('Rickshaw.Fixtures.Number');
@@ -1554,13 +1554,15 @@ Rickshaw.Graph.Axis.X = function(args) {
 		this.ticks = this.staticTicks || Math.floor(this.graph.width / this.pixelsPerTick);
 
 		var berth = Math.floor(this.width * berthRate / 2) || 0;
+		var bar_offset = this.graph.renderer.name == "bar" && Math.ceil(this.graph.width * 0.95 / this.graph.series[0].data.length / 2) || 0;
+
 		var transform;
 
 		if (this.orientation == 'top') {
 			var yOffset = this.height || this.graph.height;
-			transform = 'translate(' + berth + ',' + yOffset + ')';
+			transform = 'translate(' + (berth + bar_offset) + ',' + yOffset + ')';
 		} else {
-			transform = 'translate(' + berth + ', 0)';
+			transform = 'translate(' + (berth + bar_offset) + ', 0)';
 		}
 
 		if (this.element) {
@@ -2417,61 +2419,85 @@ Rickshaw.Graph.RangeSlider = Rickshaw.Class.create({
 
 	initialize: function(args) {
 
+		var $ = jQuery;
+		var self = this;
 		var element = this.element = args.element;
-		var graph = this.graph = args.graph;
+		var graphs = this.graphs = args.graphs;
+		if (!graphs) {
+			graphs = this.graph = args.graph;
+		}
+		if (graphs.constructor !== Array) {
+			graphs = [graphs];
+		}
+		this.graph = graphs[0];
 
 		this.slideCallbacks = [];
 
 		this.build();
 
-		graph.onUpdate( function() { this.update() }.bind(this) );
+		for (var i = 0; i < graphs.length; i++) {
+			graphs[i].onUpdate(function() {
+				self.update();
+			}.bind(self));
+
+			graphs[i].onConfigure(function() {
+				$(element)[0].style.width = graphs[i].width + 'px';
+			}.bind(self));
+		}
+
 	},
 
 	build: function() {
 
+		var domain;
 		var element = this.element;
-		var graph = this.graph;
 		var $ = jQuery;
-
-		var domain = graph.dataDomain();
 		var self = this;
+		var graphs = this.graphs || this.graph;
 
-		$( function() {
-			$(element).slider( {
+		if (graphs.constructor !== Array) {
+			graphs = [graphs];
+		}
+
+		// base the slider's min/max on the first graph
+		this.graph = graphs[0];
+		domain = graphs[0].dataDomain();
+
+		$(function() {
+			$(element).slider({
 				range: true,
 				min: domain[0],
 				max: domain[1],
-				values: [ 
+				values: [
 					domain[0],
 					domain[1]
 				],
-				slide: function( event, ui ) {
+				start: function(event, ui) {
+					self.slideStarted({ event: event, ui: ui });
+				},
+				stop: function(event, ui) {
+					self.slideFinished({ event: event, ui: ui });
+				},
+				slide: function(event, ui) {
+					if (!self.slideShouldUpdate(event, ui))
+						return;
 
 					if (ui.values[1] <= ui.values[0]) return;
 
-					graph.window.xMin = ui.values[0];
-					graph.window.xMax = ui.values[1];
-					graph.update();
-
-					var domain = graph.dataDomain();
-
-					// if we're at an extreme, stick there
-					if (domain[0] == ui.values[0]) {
-						graph.window.xMin = undefined;
+					for (var i = 0; i < graphs.length; i++) {
+						self.processSlideChange({
+							event: event,
+							ui: ui,
+							graph: graphs[i]
+						});
 					}
-
-					if (domain[1] == ui.values[1]) {
-						graph.window.xMax = undefined;
-					}
-
-					self.slideCallbacks.forEach(function(callback) {
-						callback(graph, graph.window.xMin, graph.window.xMax);
-					});
 				}
 			} );
 		} );
 
-		$(element)[0].style.width = graph.width + 'px';
+		graphs[0].onConfigure(function() {
+			$(element)[0].style.width = graphs[0].width + 'px';
+		}.bind(this));
 
 	},
 
@@ -2500,6 +2526,45 @@ Rickshaw.Graph.RangeSlider = Rickshaw.Class.create({
 
 	onSlide: function(callback) {
 		this.slideCallbacks.push(callback);
+	},
+
+	processSlideChange: function(args) {
+		var event = args.event;
+		var ui = args.ui;
+		var graph = args.graph;
+
+		graph.window.xMin = ui.values[0];
+		graph.window.xMax = ui.values[1];
+		graph.update();
+
+		var domain = graph.dataDomain();
+
+		// if we're at an extreme, stick there
+		if (domain[0] == ui.values[0]) {
+			graph.window.xMin = undefined;
+		}
+
+		if (domain[1] == ui.values[1]) {
+			graph.window.xMax = undefined;
+		}
+
+		this.slideCallbacks.forEach(function(callback) {
+			callback(graph, graph.window.xMin, graph.window.xMax);
+		});
+
+	},
+
+	// allows the slide updates to bail out if sliding is not permitted
+	slideShouldUpdate: function() {
+		return true;
+	},
+
+	slideStarted: function() {
+		return;
+	},
+
+	slideFinished: function() {
+		return;
 	}
 });
 
@@ -3017,6 +3082,9 @@ Rickshaw.Graph.Renderer = Rickshaw.Class.create( {
 		// Requires that at least one series contains some data
 		var stackedData = data || this.graph.stackedData || this.graph.stackData();
 
+		// filter out any series that may be empty in the current x-domain
+		stackedData = stackedData.filter(function (a) { return a && a.length !== 0; });
+
 		var xMin = +Infinity;
 		var xMax = -Infinity;
 
@@ -3321,8 +3389,13 @@ Rickshaw.Graph.Renderer.Bar = Rickshaw.Class.create( Rickshaw.Graph.Renderer, {
 		}
 
 		var frequentInterval = { count: 0, magnitude: 1 };
-
-		Rickshaw.keys(intervalCounts).forEach( function(i) {
+		
+		// Sorting object's keys returned to guarantee consistency when iterating over
+		// Keys order in `for .. in` loop is not specified and browsers behave differently here
+		// This results with different invterval value being calculated for different browsers
+		// See last but one section here: http://www.ecma-international.org/ecma-262/5.1/#sec-12.6.4
+		var keysSorted = Rickshaw.keys(intervalCounts).sort(function asc(a, b) { return Number(a) - Number(b); });
+		keysSorted.forEach( function(i) {
 			if (frequentInterval.count < intervalCounts[i]) {
 				frequentInterval = {
 					count: intervalCounts[i],
