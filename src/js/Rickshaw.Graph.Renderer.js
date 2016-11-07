@@ -32,6 +32,9 @@ Rickshaw.Graph.Renderer = Rickshaw.Class.create( {
 		// Requires that at least one series contains some data
 		var stackedData = data || this.graph.stackedData || this.graph.stackData();
 
+		// filter out any series that may be empty in the current x-domain
+		stackedData = stackedData.filter(function (a) { return a && a.length !== 0; });
+
 		var xMin = +Infinity;
 		var xMax = -Infinity;
 

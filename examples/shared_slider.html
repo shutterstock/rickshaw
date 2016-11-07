@@ -1,0 +1,66 @@
+<!doctype>
+<head>
+
+<link type="text/css" rel="stylesheet" href="../rickshaw.css">
+<link type="text/css" rel="stylesheet" href="css/lines.css">
+<link type="text/css" rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/base/jquery-ui.css">
+<script src="../vendor/d3.v3.js"></script>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.15/jquery-ui.min.js"></script>
+
+<script src="../rickshaw.js"></script>
+<script src="../src/js/Rickshaw.Graph.RangeSlider.js"></script>
+
+</head>
+<body>
+<div id="chart_container">
+	<div id="slider" style="margin-bottom: 20px"></div>
+	<div id="chart_0"></div>
+	<div id="chart_1"></div>
+	<div id="chart_2"></div>
+</div>
+
+<script>
+
+// set up our data series with 50 random data points
+var seriesData = [ [], [], [] ];
+var random = new Rickshaw.Fixtures.RandomData(150);
+
+for (var i = 0; i < 150; i++) {
+	random.addData(seriesData);
+}
+
+color = [ "#c05020", "#30c020","#6060c0"]
+names = ['New York','London','Tokyo']
+
+var graphs = []
+
+// Make all three graphs in a loop
+for (var i = 0; i < names.length; i++) {
+	graph = new Rickshaw.Graph( {
+		element: document.getElementById("chart_"+i),
+		width: 800,
+		height: 100,
+		renderer: 'line',
+		series: [{
+			color: color[i],
+			data: seriesData[i],
+			name: names[i]
+		}]
+	});
+
+	graph.render()
+
+	graphs.push(graph)
+}
+
+// One slider, attributed to multiple graphs.
+var slider = new Rickshaw.Graph.RangeSlider( {
+	graphs: graphs,
+	element: $("#slider")
+} );
+
+</script>
+
+</body>
