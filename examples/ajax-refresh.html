@@ -1,0 +1,60 @@
+<!doctype>
+<head>
+	<link type="text/css" rel="stylesheet" href="../src/css/graph.css">
+	<link type="text/css" rel="stylesheet" href="css/lines.css">
+
+	<script src="../vendor/d3.v2.js"></script>
+
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.1/jquery.min.js"></script>
+
+	<script src="../src/js/Rickshaw.js"></script>
+	<script src="../src/js/Rickshaw.Class.js"></script>
+	<script src="../src/js/Rickshaw.Graph.js"></script>
+	<script src="../src/js/Rickshaw.Graph.Ajax.js"></script>
+	<script src="../src/js/Rickshaw.Graph.Renderer.js"></script>
+	<script src="../src/js/Rickshaw.Graph.Renderer.Line.js"></script>
+	<script src="../src/js/Rickshaw.Graph.Unstacker.js"></script>
+</head>
+<body>
+
+<div id="chart_container">
+	<div id="chart"></div>
+	<button id="refresh">refresh</button>
+</div>
+
+<script>
+
+var ajaxGraph = new Rickshaw.Graph.Ajax( {
+
+	element: document.getElementById("chart"),
+	width: 400,
+	height: 200,
+	renderer: 'line',
+	dataURL: 'data/data.json',
+	onData: function(d) { d[0].data[0].y = 80; return d },
+	series: [
+		{
+			name: 'New York',
+			color: '#c05020',
+		}, {
+			name: 'London',
+			color: '#30c020',
+		}, {
+			name: 'Tokyo',
+			color: '#6060c0'
+		}
+	]
+} );
+
+$('#refresh').on('click',function(event) {
+    if (ajaxGraph.dataURL === 'data/data.json')
+        ajaxGraph.dataURL = "data/data2.json";
+    else
+        ajaxGraph.dataURL = "data/data.json";
+
+    ajaxGraph.request();
+    return false;
+});
+</script>
+
+</body>
