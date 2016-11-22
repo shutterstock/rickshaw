@@ -1,5 +1,6 @@
 Rickshaw.namespace('Rickshaw.Graph.Renderer.Area');
 
+// Note: Doesn't work with the multi renderer. use Rickshaw.Graph.Renderer.Stack instead if you need that.
 Rickshaw.Graph.Renderer.Area = Rickshaw.Class.create( Rickshaw.Graph.Renderer, {
 
 	name: 'area',
