@@ -90,6 +90,26 @@ Rickshaw.Graph.Renderer = Rickshaw.Class.create( {
 			.filter(function(s) { return !s.disabled })
 			.map(function(s) { return s.stack });
 
+		series.forEach(function(series){
+			if(series.disabled || series.min === undefined || series.max === undefined)
+				return;
+
+			var min = series.min;
+			var max = series.max;
+
+			if(min >= max)
+				return;
+
+			var color = series.limitColor === undefined ? d3.interpolateRgb(d3.rgb(series.color), d3.rgb('#FFFFFF'))(0.7).toString() : series.limitColor;
+
+			vis.append("rect")
+				.attr("x", 0)
+				.attr("y", graph.y(max))                        //upper limit
+				.attr("height", graph.y(min) - graph.y(max))    //lower limit
+				.attr("width", graph.width)
+				.style("fill", color)
+		});
+
 		var pathNodes = vis.selectAll("path.path")
 			.data(data)
 			.enter().append("svg:path")
@@ -179,4 +199,3 @@ Rickshaw.Graph.Renderer = Rickshaw.Class.create( {
 		}
 	}
 } );
-
