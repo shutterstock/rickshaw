@@ -7,7 +7,11 @@ Rickshaw.Series = Rickshaw.Class.create( Array, {
 		options = options || {};
 
 		this.palette = new Rickshaw.Color.Palette(palette);
-
+		
+		this.setTimeInterval(typeof(options.timeInterval) === 'undefined' ?
+            		1 :
+            		options.timeInterval);
+            
 		this.timeBase = typeof(options.timeBase) === 'undefined' ? 
 			Math.floor(new Date().getTime() / 1000) : 
 			options.timeBase;
