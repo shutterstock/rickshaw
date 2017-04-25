@@ -11,6 +11,12 @@ Rickshaw.Graph = function(args) {
 
 		this.element = args.element;
 		this.series = args.series;
+
+		this.setSeries = function(series) {
+			this.series = series;
+			this.update();
+		};
+
 		this.window = {};
 
 		this.updateCallbacks = [];
@@ -31,7 +37,7 @@ Rickshaw.Graph = function(args) {
 		this.configure(args);
 		this.validateSeries(args.series);
 
-		this.series.active = function() { return self.series.filter( function(s) { return !s.disabled } ) };
+		this.activeSeries = function() { return self.series.filter( function(s) { return !s.disabled } ) };
 		this.setSize({ width: args.width, height: args.height });
 		this.element.classList.add('rickshaw_graph');
 
@@ -142,7 +148,7 @@ Rickshaw.Graph = function(args) {
 
 	this.stackData = function() {
 
-		var data = this.series.active()
+		var data = this.activeSeries()
 			.map( function(d) { return d.data } )
 			.map( function(d) { return d.filter( function(d) { return this._slice(d) }, this ) }, this);
 
@@ -158,7 +164,7 @@ Rickshaw.Graph = function(args) {
 
 		data = preserve ? Rickshaw.clone(data) : data;
 
-		this.series.active().forEach( function(series, index) {
+		this.activeSeries().forEach( function(series, index) {
 			if (series.scale) {
 				// apply scale to each series
 				var seriesData = data[index];
