@@ -45,8 +45,8 @@ Rickshaw.Graph.HoverDetail = Rickshaw.Class.create({
 
 		var graph = this.graph;
 
-		var eventX = e.offsetX || e.layerX;
-		var eventY = e.offsetY || e.layerY;
+		var eventX = e.layerX || e.offsetX;
+		var eventY = e.layerY || e.offsetY;
 
 		var j = 0;
 		var points = [];
