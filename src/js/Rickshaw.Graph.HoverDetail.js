@@ -14,6 +14,9 @@ Rickshaw.Graph.HoverDetail = Rickshaw.Class.create({
 			return y === null ? y : y.toFixed(2);
 		};
 
+		// Whether the x-value hover detail is visible; true by default.
+		this.xHoverVisible = (args.xHoverVisible === undefined) || args.xHoverVisible;
+
 		var element = this.element = document.createElement('div');
 		element.className = 'detail';
 
@@ -164,11 +167,13 @@ Rickshaw.Graph.HoverDetail = Rickshaw.Class.create({
 		this.element.innerHTML = '';
 		this.element.style.left = graph.x(point.value.x) + 'px';
 
-		var xLabel = document.createElement('div');
-
-		xLabel.className = 'x_label';
-		xLabel.innerHTML = formattedXValue;
-		this.element.appendChild(xLabel);
+		// Add x-value hover detail.
+		if (this.xHoverVisible) {
+			var xLabel = document.createElement('div');
+			xLabel.className = 'x_label';
+			xLabel.innerHTML = formattedXValue;
+			this.element.appendChild(xLabel);
+		}
 
 		var item = document.createElement('div');
 
@@ -198,7 +203,8 @@ Rickshaw.Graph.HoverDetail = Rickshaw.Class.create({
 
 		// Assume left alignment until the element has been displayed and
 		// bounding box calculations are possible.
-		var alignables = [xLabel, item];
+		var alignables = [item];
+		if (this.xHoverVisible) alignables.push(xLabel);
 		alignables.forEach(function(el) {
 			el.classList.add('left');
 		});
