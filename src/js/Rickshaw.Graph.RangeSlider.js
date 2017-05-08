@@ -67,7 +67,8 @@ Rickshaw.Graph.RangeSlider = Rickshaw.Class.create({
 					if (!self.slideShouldUpdate(event, ui))
 						return;
 
-					if (ui.values[1] <= ui.values[0]) return;
+					step = graph.series[0].data[1].x - graph.series[0].data[0].x
+					if (ui.values[1] <= ui.values[0] + step) return;
 
 					for (var i = 0; i < graphs.length; i++) {
 						self.processSlideChange({
