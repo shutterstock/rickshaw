@@ -266,8 +266,8 @@ exports.listeners = function(test) {
     onHide: sinon.spy()
   });
 
-  test.equal(typeof hoverDetail.mousemoveListener, 'undefined', 'we have a default mousemoveListener');
-  test.equal(typeof hoverDetail.mouseoutListener, 'undefined', 'we have a default mouseoutListener');
+  test.equal(typeof hoverDetail.mousemoveListener, 'function', 'we have a default mousemoveListener');
+  test.equal(typeof hoverDetail.mouseoutListener, 'function', 'we have a default mouseoutListener');
 
   var event = global.document.createEvent('Event');
   event.initEvent('mouseout', true, true);
@@ -299,6 +299,11 @@ exports.listeners = function(test) {
   element.dispatchEvent(moveEvent);
   test.equal(hoverDetail.visible, true);
   test.equal(hoverDetail.update.calledOnce, true);
+
+  hoverDetail.update = sinon.spy();
+  hoverDetail._removeListeners();
+  element.dispatchEvent(moveEvent);
+  test.equal(hoverDetail.update.calledOnce, false);
 
   test.done();
 };
