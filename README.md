@@ -42,7 +42,7 @@ Array of objects containing series data to plot.  Each object should contain `da
 
 ##### renderer
 
-A string containing the name of the renderer to be used.  Options include `area`, `stack`, `bar`, `line`, and `scatterplot`.  Also see the `multi` meta renderer in order to support different renderers per series.
+A string containing the name of the renderer to be used.  Options include `area`, `stack`, `bar`, `line`, and `scatterplot`.  Defaults to `line`. Also see the `multi` meta renderer in order to support different renderers per series. 
 
 ##### width
 
