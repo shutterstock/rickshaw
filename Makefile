@@ -14,7 +14,7 @@ CSS_FILES=\
 	src/css/legend.css\
 
 JS_FILES=\
-	src/helpers/startUMD.js\
+	src/helpers/startUMD.js.prepend\
 	src/js/Rickshaw.js\
 	src/js/Rickshaw.Class.js\
 	src/js/Rickshaw.Compat.ClassList.js\
@@ -51,7 +51,7 @@ JS_FILES=\
 	src/js/Rickshaw.Graph.Socketio.js\
 	src/js/Rickshaw.Series.js\
 	src/js/Rickshaw.Series.FixedDuration.js\
-	src/helpers/endUMD.js\
+	src/helpers/endUMD.js.append\
 
 .PHONY: clean build
 
