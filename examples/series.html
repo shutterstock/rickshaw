@@ -80,7 +80,7 @@ var graph = new Rickshaw.Graph( {
 
 var slider = new Rickshaw.Graph.RangeSlider( {
 	graph: graph,
-	element: $('#slider')
+	element: document.getElementById('slider')
 } );
 
 var hoverDetail = new Rickshaw.Graph.HoverDetail( {
@@ -160,6 +160,17 @@ setInterval( function() {
 	graph.series.addData(data);
 	graph.update();
 }, tv );
+
+var resize = function() {
+  graph.configure({
+    width: window.innerWidth * 0.75,
+    height: window.innerHeight * 0.75
+  });
+  graph.render();
+}
+
+window.addEventListener('resize', resize);
+resize();
 
 </script>
 
