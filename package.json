@@ -25,15 +25,16 @@
     "node": ">= 4.0.0"
   },
   "devDependencies": {
-    "clean-css": "^3.4.10",
+    "clean-css": "^3.4.28",
     "coveralls": "^2.11.9",
     "istanbul": "^0.4.3",
+    "jquery": "^3.2.1",
     "jsdom": "^8.1.0",
-    "jshint": "^2.9.1",
+    "jshint": "^2.9.5",
     "nodemon": "^1.11.0",
     "nodeunit": "^0.9.1",
     "sinon": "^2.3.8",
-    "uglify-js": "^2.6.2"
+    "uglify-js": "^2.8.29"
   },
   "scripts": {
     "build": "make clean && make",

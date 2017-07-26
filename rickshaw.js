@@ -1988,10 +1988,8 @@ Rickshaw.Graph.Behavior.Series.Toggle = function(args) {
 
 	if (this.legend) {
 
-		var $ = jQuery;
-		if (typeof $ != 'undefined' && $(this.legend.list).sortable) {
-
-			$(this.legend.list).sortable( {
+		if (typeof jQuery != 'undefined' && jQuery(this.legend.list).sortable) {
+			jQuery(this.legend.list).sortable( {
 				start: function(event, ui) {
 					ui.item.bind('no.onclick',
 						function(event) {
@@ -2052,7 +2050,7 @@ Rickshaw.Graph.HoverDetail = Rickshaw.Class.create({
 		};
 
 		var element = this.element = document.createElement('div');
-		element.className = 'detail';
+		element.className = 'detail inactive';
 
 		this.visible = true;
 		graph.element.appendChild(element);
@@ -2457,9 +2455,11 @@ Rickshaw.Graph.RangeSlider = Rickshaw.Class.create({
 				self.update();
 			}.bind(self));
 
-			graphs[i].onConfigure(function() {
-				$(element)[0].style.width = graphs[i].width + 'px';
-			}.bind(self));
+			(function(idx){
+				graphs[idx].onConfigure(function() {
+					$(this.element)[0].style.width = graphs[idx].width + 'px';
+				}.bind(self));
+			})(i);
 		}
 
 	},
@@ -2513,7 +2513,7 @@ Rickshaw.Graph.RangeSlider = Rickshaw.Class.create({
 		} );
 
 		graphs[0].onConfigure(function() {
-			$(element)[0].style.width = graphs[0].width + 'px';
+			$(this.element)[0].style.width = graphs[0].width + 'px';
 		}.bind(this));
 
 	},

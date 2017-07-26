@@ -21,18 +21,15 @@ Rickshaw.Graph.RangeSlider = Rickshaw.Class.create({
 		this.build();
 
 		for (var i = 0; i < graphs.length; i++) {
-			// When the loop exits, the value of i would be an out-of-bound index for the 
-			// graphs array, which would cause problems when it's used in the onConfigure
-			// callback below. Since there are no block scopes in JS. Hence, a locally scoped 
-			// copy.
-			var idx = i;
 			graphs[i].onUpdate(function() {
 				self.update();
 			}.bind(self));
 
-			graphs[i].onConfigure(function() {
-				$(element)[0].style.width = graphs[idx].width + 'px';
-			}.bind(self));
+			(function(idx){
+				graphs[idx].onConfigure(function() {
+					$(this.element)[0].style.width = graphs[idx].width + 'px';
+				}.bind(self));
+			})(i);
 		}
 
 	},
@@ -86,7 +83,7 @@ Rickshaw.Graph.RangeSlider = Rickshaw.Class.create({
 		} );
 
 		graphs[0].onConfigure(function() {
-			$(element)[0].style.width = graphs[0].width + 'px';
+			$(this.element)[0].style.width = graphs[0].width + 'px';
 		}.bind(this));
 
 	},

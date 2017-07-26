@@ -1,9 +1,4 @@
 var d3 = require("d3");
-global.jQuery = function(arg){
-	return arg;
-}
-
-var graphs;
 
 function createGraphs() {
 	var graphs = [];
@@ -22,7 +17,7 @@ function createGraphs() {
 	for (var i = 0; i < names.length; i++) {
 		graph = new Rickshaw.Graph( {
 			element: document.getElementById("chart_"+i),
-			width: 800,
+			width: 800 * i,
 			height: 100,
 			renderer: 'line',
 			series: [{
@@ -45,10 +40,9 @@ exports.setUp = function(callback) {
 
 	global.document = require("jsdom").jsdom("<html><head></head><body><div id='chart_0'></div><div id='chart_1'></div><div id='chart_2'><div id='slider'></div></div></body></html>");
 	global.window = document.defaultView;
+	global.jQuery = require("jquery");
 
 	new Rickshaw.Compat.ClassList();
-
-	graphs = createGraphs();
 
 	callback();
 };
@@ -64,22 +58,43 @@ exports.basic = function(test) {
 
 	var slider = new Rickshaw.Graph.RangeSlider({
 		element:  document.getElementById("slider"),
-		graph: graphs[0]
+		graph: createGraphs()[0]
 	});
 
 	test.ok(slider.graph, "slider supports multiple graphs");
 	test.done();
 };
 
+exports.basicJQueryElement = function(test) {
+	var graphs = createGraphs();
+
+	var slider = new Rickshaw.Graph.RangeSlider({
+		element: jQuery('#slider'),
+		graph: createGraphs()[0]
+	});
+
+	test.ok(slider.graph, "slider supports multiple graphs");
+	test.equal(jQuery(slider.element)[0].style.width, '');
+	slider.graph.configure({});
+	test.equal(slider.element[0].style.width, '400px');
+	test.done();
+};
+
 exports.shared = function(test) {
 	var slider = new Rickshaw.Graph.RangeSlider({
 		element:  document.getElementById("slider"),
-		graphs: graphs
+		graphs: createGraphs()
 	});
 
 	test.ok(slider.graphs, "slider supports multiple graphs");
 	test.ok(slider.graph === slider.graphs[0], "slider uses first graph as reference");
+
+	test.equal(slider.element.style.width, '');
+	slider.graphs[0].configure({});
+	test.equal(slider.element.style.width, '400px');
+	slider.graphs[2].configure({});
+	test.equal(slider.element.style.width, '1600px');
+
 	test.done();
 };
-
 
