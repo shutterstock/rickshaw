@@ -1,8 +1,11 @@
+var d3 = require("d3");
+var Rickshaw;
+
 exports.setUp = function(callback) {
 
 	Rickshaw = require('../rickshaw');
 
-	global.document = d3.select('html')[0][0].parentNode;
+	global.document = require("jsdom").jsdom("<html><head></head><body></body></html>");
 	global.window = document.defaultView;
 
 	new Rickshaw.Compat.ClassList();
@@ -50,6 +53,19 @@ exports.basic = function(test) {
 	});
 
 	test.equal(graph.renderer.name, drag.graph.renderer.name);
+	test.done();
+};
+
+exports.initialize = function(test) {
+
+	var el = document.createElement("div");
+
+	try {
+		var drag = new Rickshaw.Graph.DragZoom();
+	} catch (err) {
+		test.equal(err.message, "Rickshaw.Graph.DragZoom needs a reference to a graph");
+	}
+
 	test.done();
 };
 

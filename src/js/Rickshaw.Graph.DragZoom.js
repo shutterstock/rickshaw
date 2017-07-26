@@ -3,8 +3,8 @@ Rickshaw.namespace('Rickshaw.Graph.DragZoom');
 Rickshaw.Graph.DragZoom = Rickshaw.Class.create({
 
 	initialize: function(args) {
-		if (!args.graph) {
-			throw "Rickshaw.Graph.DragZoom needs a reference to a graph";
+		if (!args || !args.graph) {
+			throw new Error("Rickshaw.Graph.DragZoom needs a reference to a graph");
 		}
 		var defaults = {
 			opacity: 0.5,
