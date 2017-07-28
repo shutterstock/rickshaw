@@ -1,0 +1,71 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <link type="text/css" rel="stylesheet" href="../rickshaw.css">
+  <script src="../vendor/d3.v3.js"></script>
+  <script src="../rickshaw.js"></script>
+</head>
+<body>
+  <div id="chart"></div>
+
+  <script>
+
+  // set up our data series with 50 random data points
+  var seriesData = [
+    [],
+    [],
+    []
+  ];
+  var random = new Rickshaw.Fixtures.RandomData(150);
+
+  for (var i = 0; i < 500; i++) {
+    random.addData(seriesData);
+    seriesData[0][i].r = 0 | Math.random() * 2 + 8
+    seriesData[1][i].r = 0 | Math.random() * 5 + 5
+    seriesData[2][i].r = 0 | Math.random() * 8 + 2
+  }
+
+  // instantiate our graph!
+
+  var graph = new Rickshaw.Graph({
+    element: document.getElementById("chart"),
+    width: 960,
+    height: 500,
+    renderer: 'scatterplot',
+    series: [{
+      color: "#ff9030",
+      data: seriesData[0],
+      opacity: 0.5
+    }, {
+      color: "#ff4040",
+      data: seriesData[1],
+      opacity: 0.3
+    }, {
+      color: "#4040ff",
+      data: seriesData[2]
+    }]
+  });
+
+  graph.renderer.dotSize = 6;
+
+  new Rickshaw.Graph.HoverDetail({
+    graph: graph
+  });
+
+  var drag = new Rickshaw.Graph.DragZoom({
+    graph: graph,
+    opacity: 0.5,
+    fill: 'steelblue',
+    minimumTimeSelection: 15,
+    callback: function(args) {
+      console.log(args.range, args.endTime);
+    }
+  });
+
+  graph.render();
+
+
+  </script>
+</body>
+</html>

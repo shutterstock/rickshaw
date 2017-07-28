@@ -81,7 +81,7 @@ exports.drag = function(test) {
 	event.initMouseEvent('mousemove', true, true, window, 1, 900, 600, 290, 260, false, false, false, false, 0, null);
 	drag.svg[0][0].dispatchEvent(event);
 
-	// TODO bug or problem with d3.event when run with jsdom?
+	// TODO offsetX is not currently set on d3.event in d3 v3 when run with jsdom
 	test.equal(rect.attributes.fill, null);
 	test.equal(rect.attributes.x, null);
 	test.equal(rect.attributes.width, null);
@@ -163,7 +163,7 @@ exports.notDrag = function(test) {
 	rect = d3.select(element).selectAll('rect')[0][0];
 	test.equal(rect, null, 'after mouseup rect is gone');
 
-	// TODO bug? registerMouseEvents is only called in initialize, not in reset?
+	// This is not reproduceable in the browser
 	event = global.document.createEvent('MouseEvent');
 	event.initMouseEvent('mousedown', true, true, window, 1, 800, 600, 290, 260, false, false, false, false, 0, null);
 	drag.svg[0][0].dispatchEvent(event);
