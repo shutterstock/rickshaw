@@ -29,9 +29,8 @@ Rickshaw.Graph = function(args) {
 
 		this._loadRenderers();
 		this.configure(args);
-		this.validateSeries(args.series);
+		this.setSeries(args.series);
 
-		this.series.active = function() { return self.series.filter( function(s) { return !s.disabled } ) };
 		this.setSize({ width: args.width, height: args.height });
 		this.element.classList.add('rickshaw_graph');
 
@@ -73,7 +72,7 @@ Rickshaw.Graph = function(args) {
 			if (!Array.isArray(s.data)) {
 				throw "series data is not an array: " + JSON.stringify(s.data);
 			}
-			
+
 			if (s.data.length > 0) {
 				var x = s.data[0].x;
 				var y = s.data[0].y;
@@ -92,6 +91,12 @@ Rickshaw.Graph = function(args) {
 			}
 
 		}, this );
+	};
+
+	this.setSeries = function(series) {
+		this.validateSeries(series);
+		this.series = series;
+		this.series.active = function() { return self.series.filter( function(s) { return !s.disabled } ) };
 	};
 
 	this.dataDomain = function() {

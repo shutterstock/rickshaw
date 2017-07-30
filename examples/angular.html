@@ -95,11 +95,11 @@ angular.module('d3chartsApp')
 
 		// Simulate changes to the data over time
 		$timeout(function(){
-			$scope.chartData1.push({
+			$scope.chartData1 = $scope.chartData1.concat([{
 				color: "#6060c0",
 				data: seriesData[2],
 				name: 'Tokyo'
-			});
+			}]);
 		}, 2000);
 	});
 </script>
@@ -139,23 +139,19 @@ angular.module('d3chartsApp')
 				scope.safeApply(function() {
 					graph.width = component.clientWidth;
 					graph.setRenderer(scope.renderer);
-					graph.series = scope.data;
+					graph.setSeries(scope.data);
 					yAxis.render();
 					xAxis.render();
 					graph.render();
 				});
 			};
 
-			scope.$watch('data', function(newVal) {
-				if (newVal && scope.data === newVal  && newVal.length) {
-					scope.data = newVal;
+			scope.$watchCollection('[data, renderer]', function(newVal) {
+				if (newVal[0] && scope.data === newVal[0]) {
+					scope.data = newVal[0];
 				}
-				scope.render();
-			}, true /* deep watch to trigger re-draws upo data changes */);
-
-			scope.$watch('renderer', function(newVal) {
-				if (newVal && scope.renderer === newVal) {
-					scope.renderer = newVal;
+				if (newVal[1] && scope.renderer === newVal[1]) {
+					scope.renderer = newVal[1];
 				}
 				scope.render();
 			});
