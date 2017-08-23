@@ -1,4 +1,14 @@
-## Pull requests are always welcome! 
+# Contribute to Rickshaw
+
+Thanks for contributing!
+
+## Issues
+
+We're currently overhauling how we do issues. Before we have a template in place and relevant labels, it would be great if you made your issue concise, clear, and to the point. If you have labels that you would suggest we add, please add this line with suggested labels at the bottom of the issue:
+
+`Suggested labels: example, another-example-label`
+
+## Pull requests are always welcome!
 
 Please follow a few guidelines:
 
