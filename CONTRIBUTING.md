@@ -8,6 +8,8 @@ We're currently overhauling how we do issues. Before we have a template in place
 
 `Suggested labels: example, another-example-label`
 
+If you'd like to weigh in on labels, check out [this issue](https://github.com/shutterstock/rickshaw/issues/588).
+
 ## Pull requests are always welcome!
 
 Please follow a few guidelines:
