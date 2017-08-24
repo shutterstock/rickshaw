@@ -205,6 +205,8 @@ Pull requests are always welcome!  Please follow a few guidelines:
 - Do as the Romans do and stick with existing whitespace and formatting conventions (i.e., tabs instead of spaces, etc)
 - Consider adding a simple example under `examples/` that demonstrates any new functionality
 
+Please note that all interactions with Shutterstock follow the [Contributor Covenant Code of Conduct](CODE_OF_CONDUCT.md).
+
 ## Authors
 
 This library was developed by David Chester, Douglas Hunter, and Silas Sewell at [Shutterstock](http://www.shutterstock.com)
