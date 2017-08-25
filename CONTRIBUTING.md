@@ -19,3 +19,7 @@ Please follow a few guidelines:
 - Please run the tests and make sure tests are all passing before submitting your pull request
 - Do as the Romans do and stick with existing whitespace and formatting conventions (i.e., tabs instead of spaces, etc)
 - Consider adding a simple example under examples/ that demonstrates any new functionality
+
+## Code of Conduct
+
+All interactions with Shutterstock follow the [Contributor Covenant Code of Conduct](CODE_OF_CONDUCT.md).
