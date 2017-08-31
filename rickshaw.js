@@ -12,7 +12,7 @@
 /* jshint -W079 */
 
 var Rickshaw = {
-	version: '1.6.1',
+	version: '1.6.2',
 
 	namespace: function(namespace, obj) {
 
@@ -949,7 +949,7 @@ Rickshaw.Fixtures.Time = function() {
 		}, {
 			name: 'minute',
 			seconds: 60,
-			formatter: function(d) { return d.getUTCMinutes() }
+			formatter: function(d) { return d.getUTCMinutes() + 'm' }
 		}, {
 			name: '15 second',
 			seconds: 15,
