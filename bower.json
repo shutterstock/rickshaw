@@ -2,7 +2,10 @@
   "name": "rickshaw",
   "version": "1.6.2",
   "description": "Rickshaw is a JavaScript toolkit for creating interactive time series graphs.",
-  "main": "./rickshaw",
+  "main": [
+    "./rickshaw.js",
+    "./rickshaw.css"
+  ],
   "license": "MIT",
   "keywords": [
     "d3",
