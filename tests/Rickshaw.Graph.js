@@ -87,7 +87,7 @@ exports.validate = function(test) {
 
 exports['should validate empty data when rendering multiple series'] = function(test) {
 	var el = document.createElement("div");
-	
+
 	try {
 		var graph = new Rickshaw.Graph({
 			element: el,
@@ -110,8 +110,8 @@ exports['should validate empty data when rendering multiple series'] = function(
 		test.fail(error);
 	}
 	//test.deepEquals(graph.domain(), [NaN, NaN], should have proper );
-	
-	
+
+
 	test.done();
 };
 
@@ -169,7 +169,7 @@ exports.scales = function(test) {
 	test.deepEqual(scale.range(), graph.x.range());
 	scale.range([0, 1])
 	test.notDeepEqual(scale.range(), graph.x.range());
-	
+
 	test.done();
 };
 
@@ -287,6 +287,33 @@ exports.configure = function(test) {
 	test.deepEqual(graph.vis[0][0].getAttribute('height'), 100, "height set on svg");
 
 	test.done();
+};
+
+exports.setSeries = function(test) {
+
+  var el = document.createElement('div');
+
+  var graph = new Rickshaw.Graph({
+    element: el,
+    width: 960,
+    height: 500,
+    padding: { top: 0.2 },
+    renderer: 'stack',
+    series: [ { data: [ { x: 1, y: 40 } ] } ]
+  });
+
+  test.equal(graph.series[0].data[0].y, 40);
+
+  graph.setSeries([{
+    data: []
+  }, {
+    data: [{ x: 2, y: 3 }]
+  }]);
+
+  test.equal(graph.series[0].data[0], undefined);
+  test.equal(graph.series[1].data[0].x, 2);
+
+  test.done();
 };
 
 exports.rendererAutodiscover = function(test) {
