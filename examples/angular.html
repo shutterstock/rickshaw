@@ -1,0 +1,172 @@
+<!doctype html>
+<head>
+	<meta charset="utf-8">
+
+	<link type="text/css" rel="stylesheet" href="../src/css/graph.css">
+	<link type="text/css" rel="stylesheet" href="../src/css/detail.css">
+	<style>
+		body {
+			font-family: Arial, sans-serif
+		}
+
+		.detail .item, .dot {
+			margin-top:-450px !important;
+		}
+	</style>
+</head>
+<body ng-app="d3chartsApp">
+	<div class="container" ng-controller="MainCtrl">
+		<div class="header">
+			<h3 class="text-muted">AngularJS Example</h3>
+			<p>
+				For a more complete angular directive, use <a target="_blank" href="http://ngyewch.github.io/angular-rickshaw/#/home">angular-rickshaw</a>. This example is based on <a target="_blank" href="https://github.com/hendrikswan">@hendrickswan</a>'s <a target="_blank" href="http://tagtree.io/d3-with-rickshaw-and-angular">Using D3 with Rickshaw and Angular</a> Tutorial and Screencast.
+			</p>
+		</div>
+
+		<select   ng-options="renderer for renderer in renderers"
+		ng-model="renderer">
+		</select>
+
+		<table width="100%">
+			<tr>
+				<td width="70%">
+					<rickshaw-chart
+						data="chartData1"
+						renderer="renderer"
+						height="450"
+						>
+					</rickshaw-chart>
+				</td>
+				<td width="30%">
+					<rickshaw-chart
+						data="chartData1"
+						renderer="renderer"
+						height="450"
+						>
+					</rickshaw-chart>
+				</td>
+			</tr>
+		</table>
+		<rickshaw-chart
+			data="chartData1"
+			renderer="renderer"
+			height="450"
+			>
+		</rickshaw-chart>
+	</div>
+
+<script src="../vendor/d3.v3.js"></script>
+<script src="../rickshaw.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.6.5/angular.js"></script>
+
+<script>
+angular.module('d3chartsApp', [])
+	.config(function() {});
+</script>
+
+<script>
+angular.module('d3chartsApp')
+	.controller('MainCtrl', function($scope, $timeout) {
+		$scope.renderers = [
+			'line',
+			'bar',
+			'scatterplot',
+			'area'
+		];
+		$scope.renderer = 'line';
+
+		// set up our data series with 50 random data points
+		var seriesData = [ [], [], [] ];
+		var random = new Rickshaw.Fixtures.RandomData(150);
+
+		for (var i = 0; i < 150; i++) {
+			random.addData(seriesData);
+		}
+
+		$scope.chartData1 = [{
+			color: "#c05020",
+			data: seriesData[0],
+			name: 'New York'
+		}, {
+			color: "#30c020",
+			data: seriesData[1],
+			name: 'London'
+		}];
+
+		// Simulate changes to the data over time
+		$timeout(function(){
+			$scope.chartData1 = $scope.chartData1.concat([{
+				color: "#6060c0",
+				data: seriesData[2],
+				name: 'Tokyo'
+			}]);
+		}, 2000);
+	});
+</script>
+
+<script>
+angular.module('d3chartsApp')
+	.directive('rickshawChart', function() {
+		// for more info on how to customize a link function
+		// for a d3 render see also https://github.com/3DGenomes/angular-d3js
+		var link = function postLink(scope, element, attrs) {
+			var component = element[0].parentNode;
+
+			scope.safeApply = function(fn) {
+				var phase = this.$root.$$phase;
+				if (phase === '$apply' || phase === '$digest') {
+					if (fn && (typeof(fn) === 'function')) {
+						fn();
+					}
+				} else {
+					this.$apply(fn);
+				}
+			};
+
+			var graph = new Rickshaw.Graph({
+				element: element[0],
+				width: component.clientWidth,
+				height: parseInt(attrs.height, 10) || 400,
+				series: scope.data,
+				renderer: scope.renderer
+			});
+
+			var yAxis = new Rickshaw.Graph.Axis.Y({ graph: graph });
+			var xAxis =  new Rickshaw.Graph.Axis.Time({ graph: graph });
+			var hover = new Rickshaw.Graph.HoverDetail({ graph: graph });
+
+			scope.render = function() {
+				scope.safeApply(function() {
+					graph.width = component.clientWidth;
+					graph.setRenderer(scope.renderer);
+					graph.setSeries(scope.data);
+					yAxis.render();
+					xAxis.render();
+					graph.render();
+				});
+			};
+
+			scope.$watchCollection('[data, renderer]', function(newVal) {
+				if (newVal[0] && scope.data === newVal[0]) {
+					scope.data = newVal[0];
+				}
+				if (newVal[1] && scope.renderer === newVal[1]) {
+					scope.renderer = newVal[1];
+				}
+				scope.render();
+			});
+		};
+
+		return {
+			scope: {
+				data: '=',
+				renderer: '='
+			},
+			template: '',
+			restrict: 'E',
+			link: link
+		};
+	});
+</script>
+</body>
+</html>
