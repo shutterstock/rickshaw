@@ -90,7 +90,7 @@ A Rickshaw graph.  Send an `element` reference, `series` data, and optionally ot
 
 ##### element
 
-A reference to an HTML element that should hold the graph. 
+A reference to an HTML element that should hold the graph.
 
 ##### series
 
@@ -98,7 +98,7 @@ Array of objects containing series data to plot.  Each object should contain `da
 
 ##### renderer
 
-A string containing the name of the renderer to be used.  Options include `area`, `stack`, `bar`, `line`, and `scatterplot`.  Defaults to `line`. Also see the `multi` meta renderer in order to support different renderers per series. 
+A string containing the name of the renderer to be used.  Options include `area`, `stack`, `bar`, `line`, and `scatterplot`.  Defaults to `line`. Also see the `multi` meta renderer in order to support different renderers per series.
 
 ##### width
 
@@ -187,7 +187,7 @@ Rickshaw comes with a few color schemes. Instantiate a palette and specify a sch
 
 ```javascript
 var palette = new Rickshaw.Color.Palette( { scheme: 'spectrum2001' } );
-    
+
 palette.color() // => first color in the palette
 palette.color() // => next color in the palette...
 ```
@@ -196,7 +196,7 @@ Optionally, to palette.color() can take a numeric argument to specify which colo
 
 ```javascript
 var palette = new Rickshaw.Color.Palette( { scheme: 'colorwheel' } );
-    
+
 palette.color(0) // => first color in the palette - red in this example
 palette.color(2) // => third color in the palette - light blue
 ```
@@ -219,21 +219,17 @@ For graphs with more series than palettes have colors, specify an `interpolatedS
 
 This library works in modern browsers and Internet Explorer 9+.
 
-Rickshaw relies on the HTMLElement#classList API, which isn't natively supported in Internet Explorer 9.  Rickshaw adds support by including a shim which implements the classList API by extending the HTMLElement prototype.  You can disable this behavior if you like, by setting `RICKSHAW_NO_COMPAT` to a true value before including the library. 
+Rickshaw relies on the HTMLElement#classList API, which isn't natively supported in Internet Explorer 9.  Rickshaw adds support by including a shim which implements the classList API by extending the HTMLElement prototype.  You can disable this behavior if you like, by setting `RICKSHAW_NO_COMPAT` to a true value before including the library.
 
-## Building
+## Minification
 
-For building, we need [Node](http://nodejs.org) and [npm](http://npmjs.org).  Running `make` should get you going with any luck.
-
-After doing a build you can run the tests with the command: `npm test`
-
-If you'd like to do your own minification, you will need to give a hint to the minifier to leave variables named `$super` named `$super`.  For example, with uglify on the command line:
+If your project uses minification, you will need to give a hint to the minifier to leave variables named `$super` named `$super`.  For example, with uglify on the command line:
 
 ```
 $ uglify-js --reserved-names "$super" rickshaw.js > rickshaw.min.js
 ```
 
-Or a sample configuration with `grunt-contrib-uglify`: 
+Or a sample configuration with `grunt-contrib-uglify`:
 
 ```javascript
 uglify: {
@@ -242,6 +238,15 @@ uglify: {
   }
 }
 ```
+
+## Development
+
+For building, we use [Node](http://nodejs.org) and [npm](http://npmjs.org). Running `npm run build` or `make` should get you going with any luck.
+
+After doing a build you can run the tests with the command: `npm test`
+
+For more availible options see the [package.json](package.json) scripts section.
+
 
 ## Contributing
 
