@@ -309,14 +309,21 @@ Rickshaw.Graph = function(args) {
 
 		args = args || {};
 
-		if (typeof window !== 'undefined') {
-			var style = window.getComputedStyle(this.element, null);
-			var elementWidth = parseInt(style.getPropertyValue('width'), 10);
-			var elementHeight = parseInt(style.getPropertyValue('height'), 10);
+		if (args.width && args.height) {
+			// use explicitly specified size
+			this.width = args.width;
+			this.height = args.height;
+		} else {
+			// calc size (will cause layout reflow)
+			if (typeof window !== 'undefined') {
+				var style = window.getComputedStyle(this.element, null);
+				var elementWidth = parseInt(style.getPropertyValue('width'), 10);
+				var elementHeight = parseInt(style.getPropertyValue('height'), 10);
+			}
+			
+			this.width = args.width || elementWidth || 400;
+			this.height = args.height || elementHeight || 250;
 		}
-
-		this.width = args.width || elementWidth || 400;
-		this.height = args.height || elementHeight || 250;
 
 		this.vis && this.vis
 			.attr('width', this.width)
