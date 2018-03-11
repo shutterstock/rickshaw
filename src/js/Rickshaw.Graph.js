@@ -320,7 +320,7 @@ Rickshaw.Graph = function(args) {
 				var elementWidth = parseInt(style.getPropertyValue('width'), 10);
 				var elementHeight = parseInt(style.getPropertyValue('height'), 10);
 			}
-			
+
 			this.width = args.width || elementWidth || 400;
 			this.height = args.height || elementHeight || 250;
 		}
