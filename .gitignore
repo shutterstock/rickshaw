@@ -5,6 +5,7 @@ yarn.lock
 
 # Dependency directories
 node_modules
+vendor
 
 # Coverage directory used by tools like istanbul
 coverage
