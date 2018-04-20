@@ -120,7 +120,7 @@ Rickshaw.Graph.Renderer = Rickshaw.Class.create( {
 		var fill = this.fill ? series.color : 'none';
 		var stroke = this.stroke ? series.color : 'none';
 		var strokeWidth = series.strokeWidth ? series.strokeWidth : this.strokeWidth;
-		var opacity = series.opacity ? series.opacity : this.opacity;
+		var opacity = series.opacity === undefined ? this.opacity : series.opacity;
 
 		series.path.setAttribute('fill', fill);
 		series.path.setAttribute('stroke', stroke);
@@ -179,4 +179,3 @@ Rickshaw.Graph.Renderer = Rickshaw.Class.create( {
 		}
 	}
 } );
-
