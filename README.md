@@ -62,7 +62,7 @@ var graph = new Rickshaw.Graph( {
 
 graph.render();
 ```
-See the [overview](http://code.shutterstock.com/rickshaw/), [tutorial](http://shutterstock.github.com/rickshaw/tutorial/introduction.html), and [examples](http://shutterstock.github.com/rickshaw/examples/) for more.
+See the [overview](https://shutterstock.github.io/rickshaw/), [tutorial](http://shutterstock.github.com/rickshaw/tutorial/introduction.html), and [examples](http://shutterstock.github.com/rickshaw/examples/) for more.
 
 ## Install
 
@@ -153,7 +153,7 @@ Add a callback to run when the graph is rendered
 
 ## Extensions
 
-Once you have a basic graph, extensions let you add functionality.  See the [overview](http://code.shutterstock.com/rickshaw/) and [examples](http://shutterstock.github.com/rickshaw/examples/) listing for more.
+Once you have a basic graph, extensions let you add functionality.  See the [overview](https://shutterstock.github.io/rickshaw/) and [examples](http://shutterstock.github.com/rickshaw/examples/) listing for more.
 
 * __Rickshaw.Graph.Legend__ - add a basic legend
 
