@@ -3,7 +3,7 @@ var Number = require('../rickshaw').Fixtures.Number;
 exports.formatKMBT = function(test) {
 
   var formatted = Number.formatKMBT(0);
-  test.equal(formatted, '');
+  test.equal(formatted, '0');
 
   formatted = Number.formatKMBT(1);
   test.equal(formatted, 1);
@@ -12,7 +12,7 @@ exports.formatKMBT = function(test) {
   test.equal(formatted, '0.10');
 
   formatted = Number.formatKMBT(123456);
-  test.equal(formatted, '123.45K');
+  test.equal(formatted, '123.46K');
 
   formatted = Number.formatKMBT(1000000000000.54);
   test.equal(formatted, '1.00T');
@@ -21,10 +21,10 @@ exports.formatKMBT = function(test) {
   test.equal(formatted, '1.00B');
 
   formatted = Number.formatKMBT(098765432.54);
-  test.equal(formatted, '98.76M');
+  test.equal(formatted, '98.77M');
 
   formatted = Number.formatKMBT(-12345);
-  test.equal(formatted, '-12.34K');
+  test.equal(formatted, '-12.35K');
 
   test.done();
 };
@@ -56,7 +56,7 @@ exports.formatBase1024KMGTP = function(test) {
   test.equal(formatted, '1.00M');
 
   formatted = Number.formatBase1024KMGTP(-12345);
-  test.equal(formatted, '-12.05K');
+  test.equal(formatted, '-12.06K');
 
   test.done();
 };
