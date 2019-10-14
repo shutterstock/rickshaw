@@ -8,7 +8,7 @@
     "start": "node app.js"
   },
   "dependencies": {
-    "express": "3.3.5",
+    "express": "4.17.1",
     "socket.io": "~0.9.16"
   },
   "author": "Alex Williams, Unscramble <license@unscramble.jp>",
