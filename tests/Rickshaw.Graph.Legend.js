@@ -19,6 +19,8 @@ exports.setUp = function(callback) {
 		series: [
 			{
 				name: 'foo',
+				color: 'green',
+				stroke: 'red',
 				data: [
 					{ x: 4, y: 32 }
 				]
@@ -78,6 +80,31 @@ exports.canOverrideClassName = function(test) {
 	});
 	
 	test.equal(this.legendEl.className, "fnord")
+	test.done();
+};
+
+exports.hasDefaultColorKey = function(test) {
+	var legend = new Rickshaw.Graph.Legend({
+		graph: this.graph,
+		element: this.legendEl
+	});
+
+
+	test.equal(legend.colorKey, "color");
+	test.equal(this.legendEl.getElementsByClassName('swatch')[1].style.backgroundColor, "green");
+	test.done();
+};
+
+exports.canOverrideColorKey = function(test) {
+	var legend = new Rickshaw.Graph.Legend({
+		graph: this.graph,
+		element: this.legendEl,
+		colorKey: 'stroke'
+	});
+
+
+	test.equal(legend.colorKey, "stroke");
+	test.equal(this.legendEl.getElementsByClassName('swatch')[1].style.backgroundColor, "red");
 	test.done();
 };
 
