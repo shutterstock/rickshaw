@@ -28,6 +28,12 @@ exports.setUp = function(callback) {
 				data: [
 					{ x: 4, y: 32 }
 				]
+			},
+			{
+				name: 'bar',
+				data: [
+					{ x: 32, y: 4 }
+				]
 			}
 		]
 	});
@@ -84,6 +90,7 @@ exports.canOverrideClassName = function(test) {
 exports['should put series classes on legend elements'] = function(test) {
 	this.graph.series[0].className = 'fnord-series-0';
 	this.graph.series[1].className = 'fnord-series-1';
+	this.graph.series[2].className = 'fnord-series-2';
 	
 	var legend = new Rickshaw.Graph.Legend({
 		graph: this.graph,
@@ -91,6 +98,7 @@ exports['should put series classes on legend elements'] = function(test) {
 	});
 	test.equal(d3.select(this.legendEl).selectAll('.line').size(), 2);
 	test.equal(d3.select(this.legendEl).selectAll('.fnord-series-0').size(), 1);
-	test.equal(d3.select(this.legendEl).selectAll('.fnord-series-1').size(), 1);
+	test.equal(d3.select(this.legendEl).selectAll('.fnord-series-1').size(), 0);
+	test.equal(d3.select(this.legendEl).selectAll('.fnord-series-2').size(), 1);
 	test.done();
 };

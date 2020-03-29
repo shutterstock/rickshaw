@@ -1,0 +1,179 @@
+<!doctype html>
+<head>
+    <link type="text/css" rel="stylesheet" href="../rickshaw.css">
+    <link type="text/css" rel="stylesheet" href="css/lines.css">
+    <link type="text/css" rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/base/jquery-ui.css">
+    <script src="../vendor/d3.v3.js"></script>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.15/jquery-ui.min.js"></script>
+
+    <script src="../rickshaw.js"></script>
+    <style>
+        .column {
+            display: inline-block
+        }
+
+        #legend {
+            background: white
+        }
+
+        #legend .line {
+            color: #333
+        }
+    </style>
+</head>
+<body>
+
+<div class="column">
+    <div id="chart"></div>
+    <div id="slider"></div>
+</div>
+<div class="column" id="legend"></div>
+
+<script>
+
+    var data =
+    {
+        "labels": ["06q1", "06q2", "06q3", "06q4", "07q1", "07q2", "07q3", "07q4", "08q1", "08q2", "08q3", "08q4", "09q1", "09q2", "09q3", "09q4", "10q1", "10q2", "10q3", "10q4", "11q1", "11q2", "11q3", "11q4", "12q1", "12q2", "12q3", "12q4", "13q1", "13q2", "13q3", "13q4", "14q1"],
+        "data": {
+            "RENT_JA3_2_2000": [570.0, 580.0, 600.0, 600.0, 650.0, 650.0, 650.0, 680.0, 700.0, 720.0, 740.0, 730.0, 750.0, 725.0, 725.0, 750.0, 730.0, 750.0, 750.0, 750.0, 765.0, 780.0, 780.0, 800.0, 800.0, 800.0, 800.0, 820.0, 805.0, 810.0, 830.0, 850.0, 822.5],
+            "RENT_JA3_2_2032": [347.5, 335.0, 330.0, 330.0, 342.5, 370.0, 372.5, 375.0, 400.0, 420.0, 420.0, 427.5, 435.0, 460.0, 440.0, 450.0, 440.0, 460.0, 480.0, 480.0, 500.0, 505.0, 525.0, 500.0, 520.0, 520.0, 550.0, 482.5, 520.0, 532.5, 530.0, 520.0, 550.0],
+            "RENT_JA3_2_2131": [255.0, 275.0, 280.0, 280.0, 285.0, 300.0, 320.0, 310.0, 325.0, 350.0, 350.0, 350.0, 350.5, 360.0, 360.0, 370.0, 375.0, 380.0, 380.0, 400.0, 390.0, 415.0, 405.0, 412.5, 410.0, 410.0, 420.0, 410.0, 425.0, 430.0, 430.0, 440.0, 450.0],
+            "RENT_JA3_2_2204": [250.0, 270.0, 270.0, 290.0, 280.0, 280.0, 320.0, 355.0, 310.0, 345.0, 350.0, 350.0, 360.0, 370.0, 360.0, 370.0, 360.0, 420.0, 400.0, 420.0, 400.0, 420.0, 427.5, 407.5, 420.0, 420.0, 430.0, 450.0, 450.0, 472.5, 460.0, 450.0, 470.0],
+            "RENT_JA3_2_2265": [115.0, null, 165.0, null, 170.0, null, 157.5, null, null, null, null, null, 152.0, null, 220.0, null, null, null, null, null, 180.0, null, null, null, null, null, null, null, null, null, null, null, 193.0]
+        },
+        "metadata": {
+            "RENT_JA3_2_2000": {"count": ["MANY", "MANY", "MANY", "MANY", "MANY", "MANY", "MANY", "MANY", "MANY", "MANY", "MANY", "MANY", "MANY", "MANY", "MANY", "MANY", "MANY", "MANY", "MANY", "MANY", "MANY", "MANY", "MANY", "MANY", "MANY", "MANY", "MANY", "MANY", "MANY", "MANY", "MANY", "MANY", "MANY"]},
+            "RENT_JA3_2_2032": {"count": ["MANY", "MANY", "MANY", "MANY", "MANY", "MANY", "MANY", "MANY", "MANY", "MANY", "MANY", "MANY", "MANY", "MANY", "MANY", "MANY", "MANY", "MANY", "MANY", "MANY", "MANY", "MANY", "MANY", "MANY", "MANY", "MANY", "MANY", "MANY", "MANY", "MANY", "MANY", "MANY", "MANY"]},
+            "RENT_JA3_2_2131": {"count": ["MANY", "MANY", "MANY", "MANY", "MANY", "MANY", "MANY", "MANY", "MANY", "MANY", "MANY", "MANY", "MANY", "MANY", "MANY", "MANY", "MANY", "MANY", "MANY", "MANY", "MANY", "MANY", "MANY", "MANY", "MANY", "MANY", "MANY", "MANY", "MANY", "MANY", "MANY", "MANY", "MANY"]},
+            "RENT_JA3_2_2204": {"count": ["MANY", "MANY", "MANY", "MANY", "MANY", "MANY", "MANY", "MANY", "MANY", "MANY", "MANY", "MANY", "MANY", "MANY", "MANY", "MANY", "MANY", "MANY", "MANY", "MANY", "MANY", "MANY", "MANY", "MANY", "MANY", "MANY", "MANY", "MANY", "MANY", "MANY", "MANY", "MANY", "MANY"]},
+            "RENT_JA3_2_2265": {"count": ["FEW", "MISSING", "FEW", "MISSING", "FEW", "MISSING", "FEW", "MISSING", "NOT_ENOUGH", "MISSING", "MISSING", "MISSING", "FEW", "MISSING", "FEW", "NOT_ENOUGH", "MISSING", "MISSING", "MISSING", "NOT_ENOUGH", "FEW", "MISSING", "MISSING", "NOT_ENOUGH", "NOT_ENOUGH", "NOT_ENOUGH", "NOT_ENOUGH", "NOT_ENOUGH", "NOT_ENOUGH", "NOT_ENOUGH", "NOT_ENOUGH", "NOT_ENOUGH", "FEW"]}
+        }
+    };
+
+    // TODO: sort from highest price to lowest price (average) (for area)
+
+    var series = [];
+
+    var names = 0;
+    for (var name in data.data) {
+        ++names;
+    }
+
+    var n = 0;
+    for (name in data.data) {
+        var seriesData = [];
+        //noinspection JSUnfilteredForInLoop
+        for (var x = 0; x < data.data[name].length; x++) {
+            //noinspection JSUnfilteredForInLoop
+            var price = data.data[name][x];
+            seriesData.push({x: x, y: price});
+        }
+
+        // TODO: hue based on rank
+        //noinspection JSUnfilteredForInLoop
+        series.push({
+            name: name,
+            data: seriesData,
+            color: 'hsla(' + (120 - n * (120 / (names - 1))) + ',100%,33%,.5)',
+            renderer: 'line'
+        });
+        //noinspection JSUnfilteredForInLoop
+        series.push({
+            name: name,
+            data: seriesData,
+            color: 'hsla(' + (120 - n * (120 / (names - 1))) + ',100%,33%,1)',
+            renderer: 'scatterplot'
+        });
+        ++n;
+    }
+
+//    seriesData[0][10].y = null;//gap in stack
+//    seriesData[1][20].y = null;//gap in stack
+//    seriesData[2][30].y = null;//gap in scatter
+//    seriesData[3][40].y = null;//gap in bar
+//    seriesData[4][50].y = null;//0 in line
+
+    var graph = new Rickshaw.Graph({
+        element: document.getElementById("chart"),
+        renderer: 'multi',
+        stack: false,
+        width: 900,
+        height: 500,
+        dotSize: 5,
+        series: series
+//            [
+//            {
+//                name: 'temperature',
+//                data: seriesData.shift(),
+//                color: 'rgba(255, 0, 0, 0.4)',
+//                renderer: 'stack'
+//            },
+//            {
+//                name: 'heat index',
+//                data: seriesData.shift(),
+//                color: 'rgba(255, 127, 0, 0.4)',
+//                renderer: 'stack'
+//            },
+//            {
+//                name: 'dewpoint',
+//                data: seriesData.shift(),
+//                color: 'rgba(127, 0, 0, 0.3)',
+//                renderer: 'scatterplot'
+//            },
+//            {
+//                name: 'pop',
+//                data: seriesData.shift().map(function (d) {
+//                    return {x: d.x, y: d.y / 4}
+//                }),
+//                color: 'rgba(0, 0, 127, 0.4)',
+//                renderer: 'bar'
+//            },
+//            {
+//                name: 'humidity',
+//                data: seriesData.shift().map(function (d) {
+//                    return {x: d.x, y: d.y * 1.5}
+//                }),
+//                renderer: 'line',
+//                color: 'rgba(0, 0, 127, 0.25)'
+//            }
+//        ]
+    });
+
+    var slider = new Rickshaw.Graph.RangeSlider.Preview({
+        graph: graph,
+        element: document.querySelector('#slider')
+    });
+
+    graph.window.xMin = x - 12;
+    graph.window.xMax = x - 1;
+    graph.render();
+
+    var detail = new Rickshaw.Graph.HoverDetail({
+        graph: graph
+    });
+
+    var legend = new Rickshaw.Graph.Legend({
+        graph: graph,
+        element: document.querySelector('#legend')
+    });
+
+    var highlighter = new Rickshaw.Graph.Behavior.Series.Highlight({
+        graph: graph,
+        legend: legend,
+        disabledColor: function () {
+            return 'rgba(0, 0, 0, 0.2)'
+        }
+    });
+
+    var shelving = new Rickshaw.Graph.Behavior.Series.Toggle({
+        graph: graph,
+        legend: legend
+    });
+
+    //no order but can still drag and drop?
+
+
+</script>
+</body>
