@@ -32,7 +32,7 @@ Rickshaw.Graph.Behavior.Series.Highlight = function(args) {
 			else activeLine = l;
 
 			self.legend.lines.forEach( function(line) {
-				var newProperties = {};
+				var newProperties;
 				var isActive = false;
 
 				if (l === line) {
@@ -49,7 +49,7 @@ Rickshaw.Graph.Behavior.Series.Highlight = function(args) {
 					}
 				}
 
-				var newProperties = transformFn(isActive, line.series);
+				newProperties = transformFn(isActive, line.series);
 
 				propertiesSafe[line.series.name] = propertiesSafe[line.series.name] || {
 					color   : line.series.color,
