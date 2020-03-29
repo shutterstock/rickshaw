@@ -8,10 +8,12 @@ Rickshaw.Graph.Behavior.Series.Highlight = function(args) {
 	var self = this;
 
 	var colorSafe = {};
+	var limitColorSafe = {};
 	var activeLine = null;
 
-	var disabledColor = args.disabledColor || function(seriesColor) {
-		return d3.interpolateRgb(seriesColor, d3.rgb('#d8d8d8'))(0.8).toString();
+	var disabledColor = args.disabledColor || function(seriesColor, interpolateColor) {
+		interpolateColor = interpolateColor === undefined ? '#d8d8d8' : interpolateColor;
+		return d3.interpolateRgb(seriesColor, d3.rgb(interpolateColor))(0.8).toString();
 	};
 
 	this.addHighlightEvents = function (l) {
@@ -39,6 +41,8 @@ Rickshaw.Graph.Behavior.Series.Highlight = function(args) {
 
 				colorSafe[line.series.name] = colorSafe[line.series.name] || line.series.color;
 				line.series.color = disabledColor(line.series.color);
+				limitColorSafe[line.series.name] = limitColorSafe[line.series.name] || line.series.limitColor;
+				line.series.limitColor = disabledColor(line.series.limitColor, "#FFFFFF");
 
 			} );
 
@@ -63,6 +67,7 @@ Rickshaw.Graph.Behavior.Series.Highlight = function(args) {
 
 				if (colorSafe[line.series.name]) {
 					line.series.color = colorSafe[line.series.name];
+					line.series.limitColor = limitColorSafe[line.series.name];
 				}
 			} );
 
