@@ -3,7 +3,7 @@ var Number = require('../rickshaw').Fixtures.Number;
 exports.formatKMBT = function(test) {
 
   var formatted = Number.formatKMBT(0);
-  test.equal(formatted, '');
+  test.equal(formatted, '0');
 
   formatted = Number.formatKMBT(1);
   test.equal(formatted, 1);
@@ -12,19 +12,19 @@ exports.formatKMBT = function(test) {
   test.equal(formatted, '0.10');
 
   formatted = Number.formatKMBT(123456);
-  test.equal(formatted, '123.456K');
+  test.equal(formatted, '123.46K');
 
   formatted = Number.formatKMBT(1000000000000.54);
-  test.equal(formatted, '1.00000000000054T');
+  test.equal(formatted, '1.00T');
 
   formatted = Number.formatKMBT(1000000000.54);
-  test.equal(formatted, '1.00000000054B');
+  test.equal(formatted, '1.00B');
 
   formatted = Number.formatKMBT(098765432.54);
-  test.equal(formatted, '98.76543254M');
+  test.equal(formatted, '98.77M');
 
   formatted = Number.formatKMBT(-12345);
-  test.equal(formatted, '-12.345K');
+  test.equal(formatted, '-12.35K');
 
   test.done();
 };
@@ -32,7 +32,7 @@ exports.formatKMBT = function(test) {
 exports.formatBase1024KMGTP = function(test) {
 
   var formatted = Number.formatBase1024KMGTP(0);
-  test.equal(formatted, '');
+  test.equal(formatted, '0');
 
   formatted = Number.formatBase1024KMGTP(1);
   test.equal(formatted, 1);
@@ -41,22 +41,22 @@ exports.formatBase1024KMGTP = function(test) {
   test.equal(formatted, '0.10');
 
   formatted = Number.formatBase1024KMGTP(123456);
-  test.equal(formatted, '120.5625K');
+  test.equal(formatted, '120.56K');
 
   formatted = Number.formatBase1024KMGTP(1125899906842624.54);
-  test.equal(formatted, '1.0000000000000004P');
+  test.equal(formatted, '1.00P');
 
   formatted = Number.formatBase1024KMGTP(1099511627778);
-  test.equal(formatted, '1.000000000001819T');
+  test.equal(formatted, '1.00T');
 
   formatted = Number.formatBase1024KMGTP(1073741825);
-  test.equal(formatted, '1.0000000009313226G');
+  test.equal(formatted, '1.00G');
 
   formatted = Number.formatBase1024KMGTP(1048579);
-  test.equal(formatted, '1.0000028610229492M');
+  test.equal(formatted, '1.00M');
 
   formatted = Number.formatBase1024KMGTP(-12345);
-  test.equal(formatted, '-12.0556640625K');
+  test.equal(formatted, '-12.06K');
 
   test.done();
 };
