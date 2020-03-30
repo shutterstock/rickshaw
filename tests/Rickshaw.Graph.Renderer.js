@@ -109,24 +109,24 @@ exports.domain = function(test) {
 exports.respectStrokeFactory = function(test) {
 
 	var el = document.createElement("div");
-	
+
 	Rickshaw.Graph.Renderer.RespectStrokeFactory = Rickshaw.Class.create( Rickshaw.Graph.Renderer, {
 
 		name: 'respectStrokeFactory',
-		
+
 		seriesPathFactory: function() {
 			var graph = this.graph;
-			var factory = d3.svg.line()
+			var factory = d3.line()
 				.x( function(d) { return graph.x(d.x) } )
 				.y( function(d) { return graph.y(d.y + d.y0) } )
 				.interpolate(graph.interpolation).tension(this.tension);
 			factory.defined && factory.defined( function(d) { return d.y !== null } );
 			return factory;
 		},
-		
+
 		seriesStrokeFactory: function() {
 			var graph = this.graph;
-			var factory = d3.svg.line()
+			var factory = d3.line()
 				.x( function(d) { return graph.x(d.x) } )
 				.y( function(d) { return graph.y(d.y + d.y0) } )
 				.interpolate(graph.interpolation).tension(this.tension);
@@ -134,7 +134,7 @@ exports.respectStrokeFactory = function(test) {
 			return factory;
 		}
 	});
-	
+
 	var graph = new Rickshaw.Graph({
 		element: el,
 		stroke: true,
@@ -155,27 +155,27 @@ exports.respectStrokeFactory = function(test) {
 		]
 	});
 	graph.render();
-	
+
 	var path = graph.vis.select('path.path.fnord');
 	test.equals(path.size(), 1, "we have a fnord path");
 	test.equals(path[0][0].getAttribute('opacity'), 1, 'default opacity');
 
 	var stroke = graph.vis.select('path.stroke.fnord');
 	test.equals(stroke.size(), 1, "we have a fnord stroke");
-	
+
 	// should also be availeable via series
 	var firstSeries = graph.series[0];
 	test.ok(d3.select(firstSeries.path).classed('path'), "selectable path");
 	test.ok(d3.select(firstSeries.stroke).classed('stroke', "selectable stroke"));
-	
+
 	test.done();
 };
 
 
 exports['should allow arbitrary empty series when finding the domain of stacked data'] = function(test) {
-	
+
 	var el = document.createElement("div");
-	
+
 	// should not throw
 	var graph = new Rickshaw.Graph({
 		element: el,
@@ -199,7 +199,7 @@ exports['should allow arbitrary empty series when finding the domain of stacked 
 		]
 	});
 	test.deepEqual(graph.renderer.domain(), { x: [0, 4], y: [0, 49.49]});
-	
+
 	test.done();
 };
 

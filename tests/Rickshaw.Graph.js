@@ -128,13 +128,13 @@ exports.scales = function(test) {
 		}
 	];
 
-	var scale = d3.time.scale();
+	var scale = d3.scaleTime();
 	var graph = new Rickshaw.Graph({
 		element: el,
 		width: 960,
 		height: 500,
 		xScale: scale,
-		yScale: d3.scale.sqrt(),
+		yScale: d3.scaleSqrt(),
 		series: series
 	});
 

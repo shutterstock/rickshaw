@@ -52,7 +52,7 @@ for (i = 0; i < series[0].length; i++) {
   max = Math.max(max, series[0][i].y);
 }
 
-var logScale = d3.scale.log().domain([min/4, max]);
+var logScale = d3.scaleLog().domain([min/4, max]);
 var linearScale = d3.scaleLinear().domain([min, max]).range(logScale.range());
 var graph = new Rickshaw.Graph( {
   element: document.getElementById("chart"),

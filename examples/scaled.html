@@ -58,7 +58,7 @@ for (_k = 0, _len1 = data.length; _k < _len1; _k++) {
   if (_k === 0) {
     scales.push(d3.scaleLinear().domain([min, max]).nice());
   } else {
-    scales.push(d3.scale.pow().domain([min, max]).nice());
+    scales.push(d3.scalePow().domain([min, max]).nice());
   }
 }
 

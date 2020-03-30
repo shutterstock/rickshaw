@@ -67,7 +67,7 @@ Rickshaw.Fixtures.Time = function() {
 	};
 
 	this.formatDate = function(d) {
-		return d3.time.format('%b %e')(d);
+		return d3.timeFormat('%b %e')(d);
 	};
 
 	this.formatTime = function(d) {

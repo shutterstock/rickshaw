@@ -25,8 +25,8 @@ var graph = new Rickshaw.Graph({
 	stroke: true,
 	strokeWidth: 0.5,
 	renderer: 'area',
-	xScale: d3.time.scale(),
-	yScale: d3.scale.sqrt(),
+	xScale: d3.scaleTime(),
+	yScale: d3.scaleSqrt(),
 	series:[
 		{ color: 'steelblue', data: seriesData[0] },
 		{ color: '#99d4ee', data: seriesData[1] }
