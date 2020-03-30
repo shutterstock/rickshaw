@@ -1,0 +1,26 @@
+*.log
+*swp
+yarn-error.log
+yarn.lock
+package-lock.json
+
+# Dependency directories
+node_modules
+
+# Coverage directory used by tools like istanbul
+coverage
+
+# Docs
+examples
+tutorial
+tests
+
+# Development files
+.editorconfig
+.jshintignore
+.jshintrc
+.rock.yml
+.travis.yml
+Makefile
+CODE_OF_CONDUCT.md
+CONTRIBUTING.md

@@ -46,7 +46,7 @@
     "coveralls": "cat ./coverage/lcov.info | coveralls",
     "preversion:src": "sed \"s/version: '[^,]*'/version: '$npm_package_version'/\" src/js/Rickshaw.js  > output &&  mv output src/js/Rickshaw.js",
     "preversion:bower": "sed 's/\"version\": \"[^,]*\"/\"version\": \"'$npm_package_version'\"/' bower.json  > output &&  mv output bower.json",
-    "version": "npm run preversion:src && npm run preversion:bower && make clean && make && npm test && git add -A src bower.json rickshaw.js rickshaw.min.js",
+    "version": "npm run preversion:src && npm run preversion:bower && make clean && make && npm test && git add -A src bower.json rickshaw.js rickshaw.min.js rickshaw.css rickshaw.min.css",
     "doctoc": "doctoc --title='## Table of Contents' --github README.md"
   },
   "description": " JavaScript toolkit for creating interactive real-time graphs",
