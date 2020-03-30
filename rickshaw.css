@@ -16,6 +16,8 @@
 }
 .rickshaw_graph .detail .item.active {
 	opacity: 1;
+	width: auto;
+	height: auto;
 }
 .rickshaw_graph .detail .x_label {
 	font-family: Arial, sans-serif;

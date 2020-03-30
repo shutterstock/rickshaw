@@ -1,7 +1,7 @@
 /* jshint -W079 */
 
 var Rickshaw = {
-	version: '1.7.0',
+	version: '1.7.1',
 
 	namespace: function(namespace, obj) {
 

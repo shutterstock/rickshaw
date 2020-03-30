@@ -1,6 +1,6 @@
 {
   "name": "rickshaw",
-  "version": "1.7.0",
+  "version": "1.7.1",
   "homepage": "https://shutterstock.github.io/rickshaw/",
   "dependencies": {
     "d3": "^3.5.16"
