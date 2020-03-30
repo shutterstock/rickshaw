@@ -53,7 +53,7 @@ for (i = 0; i < series[0].length; i++) {
 }
 
 var logScale = d3.scale.log().domain([min/4, max]);
-var linearScale = d3.scale.linear().domain([min, max]).range(logScale.range());
+var linearScale = d3.scaleLinear().domain([min, max]).range(logScale.range());
 var graph = new Rickshaw.Graph( {
   element: document.getElementById("chart"),
   renderer: 'line',

@@ -118,14 +118,14 @@ Rickshaw.Graph = function(args) {
 		// with other Graphs. We need to ensure we copy the scale
 		// so that our mutations do not change the object given to us.
 		// Hence the .copy()
-		this.x = (this.xScale || d3.scale.linear()).copy().domain(domain.x).range([0, this.width]);
-		this.y = (this.yScale || d3.scale.linear()).copy().domain(domain.y).range([this.height, 0]);
+		this.x = (this.xScale || d3.scaleLinear()).copy().domain(domain.x).range([0, this.width]);
+		this.y = (this.yScale || d3.scaleLinear()).copy().domain(domain.y).range([this.height, 0]);
 
-		this.x.magnitude = d3.scale.linear()
+		this.x.magnitude = d3.scaleLinear()
 			.domain([domain.x[0] - domain.x[0], domain.x[1] - domain.x[0]])
 			.range([0, this.width]);
 
-		this.y.magnitude = d3.scale.linear()
+		this.y.magnitude = d3.scaleLinear()
 			.domain([domain.y[0] - domain.y[0], domain.y[1] - domain.y[0]])
 			.range([0, this.height]);
 	};
