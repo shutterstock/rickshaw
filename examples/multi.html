@@ -85,18 +85,27 @@ var legend = new Rickshaw.Graph.Legend({
 });
 
 var highlighter = new Rickshaw.Graph.Behavior.Series.Highlight({
-    graph: graph,
-    legend: legend,
-    disabledColor: function() { return 'rgba(0, 0, 0, 0.2)' }
+		graph: graph,
+		legend: legend,
+		disabledColor: function() { return 'rgba(0, 0, 0, 0.2)' }
 });
 
 var highlighter = new Rickshaw.Graph.Behavior.Series.Toggle({
-    graph: graph,
-    legend: legend
+		graph: graph,
+		legend: legend,
+		transform: function(isActive, series) {
+			var	 obj = {};
+			if (isActive) {
+				obj.color  = "rgba(255, 0, 0, 0.5)";
+				obj.stroke = "rgba(255, 0, 0, 0.5)";
+			} else {
+				// lower opacity of non-highlighed data
+				obj.stroke = "rgba(0,0,0,0.1)";
+				obj.color =  "rgba(0,0,0,0.05)";
+			}
+			return obj;
+		}
 });
-
-
-
 
 </script>
 </body>

@@ -35,7 +35,7 @@ Rickshaw.Graph.Renderer.ScatterPlot = Rickshaw.Class.create( Rickshaw.Graph.Rend
 		series.forEach( function(series) {
 
 			if (series.disabled) return;
-			var opacity = series.opacity ? series.opacity : 1;
+			var opacity = series.opacity === undefined ? 1 : series.opacity;
 
 			var nodes = vis.selectAll("path")
 				.data(series.stack.filter( function(d) { return d.y !== null } ))
@@ -47,7 +47,7 @@ Rickshaw.Graph.Renderer.ScatterPlot = Rickshaw.Class.create( Rickshaw.Graph.Rend
 			if (series.className) {
 				nodes.classed(series.className, true);
 			}
-			
+
 			Array.prototype.forEach.call(nodes[0], function(n) {
 				n.setAttribute('fill', series.color);
 			} );

@@ -7,12 +7,22 @@ Rickshaw.Graph.Behavior.Series.Highlight = function(args) {
 
 	var self = this;
 
-	var colorSafe = {};
+	var propertiesSafe = {};
 	var activeLine = null;
 
 	var disabledColor = args.disabledColor || function(seriesColor) {
 		return d3.interpolateRgb(seriesColor, d3.rgb('#d8d8d8'))(0.8).toString();
 	};
+
+	var transformFn = args.transform || function(isActive, series) {
+		var newProperties = {};
+		if (!isActive) {
+			// backwards compability
+			newProperties.color = disabledColor(series.color);
+		}
+		return newProperties;
+	};
+
 
 	this.addHighlightEvents = function (l) {
 
@@ -22,8 +32,11 @@ Rickshaw.Graph.Behavior.Series.Highlight = function(args) {
 			else activeLine = l;
 
 			self.legend.lines.forEach( function(line) {
+				var newProperties;
+				var isActive = false;
 
 				if (l === line) {
+					isActive = true;
 
 					// if we're not in a stacked renderer bring active line to the top
 					if (self.graph.renderer.unstack && (line.series.renderer ? line.series.renderer.unstack : true)) {
@@ -34,11 +47,21 @@ Rickshaw.Graph.Behavior.Series.Highlight = function(args) {
 						var series = self.graph.series.splice(seriesIndex, 1)[0];
 						self.graph.series.push(series);
 					}
-					return;
 				}
 
-				colorSafe[line.series.name] = colorSafe[line.series.name] || line.series.color;
-				line.series.color = disabledColor(line.series.color);
+				newProperties = transformFn(isActive, line.series);
+
+				propertiesSafe[line.series.name] = propertiesSafe[line.series.name] || {
+					color   : line.series.color,
+					stroke  : line.series.stroke
+				};
+
+				if (newProperties.color) {
+					line.series.color = newProperties.color;
+				}
+				if (newProperties.stroke) {
+					line.series.stroke = newProperties.stroke;
+				}
 
 			} );
 
@@ -61,8 +84,10 @@ Rickshaw.Graph.Behavior.Series.Highlight = function(args) {
 					delete line.originalIndex;
 				}
 
-				if (colorSafe[line.series.name]) {
-					line.series.color = colorSafe[line.series.name];
+				var lineProperties = propertiesSafe[line.series.name];
+				if (lineProperties) {
+					line.series.color  = lineProperties.color;
+					line.series.stroke = lineProperties.stroke;
 				}
 			} );
 

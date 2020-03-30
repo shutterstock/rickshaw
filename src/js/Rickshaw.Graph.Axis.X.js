@@ -9,6 +9,7 @@ Rickshaw.Graph.Axis.X = function(args) {
 
 		this.graph = args.graph;
 		this.orientation = args.orientation || 'top';
+		this.color = args.color || "#000000";
 
 		this.pixelsPerTick = args.pixelsPerTick || 75;
 		if (args.ticks) this.staticTicks = args.ticks;
@@ -26,6 +27,7 @@ Rickshaw.Graph.Axis.X = function(args) {
 				.append("svg:svg")
 				.attr('height', this.height)
 				.attr('width', this.width)
+				.attr('stroke', this.color)
 				.attr('class', 'rickshaw_graph x_axis_d3');
 
 			this.element = this.vis[0][0];

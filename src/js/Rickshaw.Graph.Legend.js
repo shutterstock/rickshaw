@@ -8,6 +8,7 @@ Rickshaw.Graph.Legend = Rickshaw.Class.create( {
 		this.element = args.element;
 		this.graph = args.graph;
 		this.naturalOrder = args.naturalOrder;
+		this.colorKey = args.colorKey || 'color';
 
 		this.element.classList.add(this.className);
 
@@ -55,7 +56,7 @@ Rickshaw.Graph.Legend = Rickshaw.Class.create( {
 		}
 		var swatch = document.createElement('div');
 		swatch.className = 'swatch';
-		swatch.style.backgroundColor = series.color;
+		swatch.style.backgroundColor = series[this.colorKey];
 
 		line.appendChild(swatch);
 
@@ -84,4 +85,3 @@ Rickshaw.Graph.Legend = Rickshaw.Class.create( {
 		return line;
 	}
 } );
-
