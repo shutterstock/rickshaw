@@ -1,5 +1,10 @@
 <!doctype html>
 <link type="text/css" rel="stylesheet" href="../rickshaw.css">
+<style type="text/css">
+	.rickshaw_graph .detail .item.active {
+		white-space: pre-wrap;
+	}
+</style>
 
 <script src="../vendor/d3.v3.js"></script>
 
@@ -30,14 +35,17 @@ var graph = new Rickshaw.Graph( {
 	renderer: 'scatterplot',
 	series: [
 		{
+			name: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
 			color: "#ff9030",
 			data: seriesData[0],
 			opacity: 0.5
 		}, {
+			name: "Nullam in risus tellus. Donec pellentesque sit amet enim in sollicitudin.",
 			color: "#ff4040",
 			data: seriesData[1],
 			opacity: 0.3
 		}, {
+			name: "Nunc tempus malesuada diam.",
 			color: "#4040ff",
 			data: seriesData[2]
 		}
