@@ -1,6 +1,6 @@
 {
   "name": "rickshaw",
-  "version": "1.6.6",
+  "version": "1.7.0",
   "description": "Rickshaw is a JavaScript toolkit for creating interactive time series graphs.",
   "main": [
     "./rickshaw.js",

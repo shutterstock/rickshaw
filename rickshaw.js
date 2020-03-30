@@ -12,7 +12,7 @@
 /* jshint -W079 */
 
 var Rickshaw = {
-	version: '1.6.6',
+	version: '1.7.0',
 
 	namespace: function(namespace, obj) {
 
@@ -1167,25 +1167,25 @@ Rickshaw.namespace('Rickshaw.Fixtures.Number');
 
 Rickshaw.Fixtures.Number.formatKMBT = function(y) {
 	var abs_y = Math.abs(y);
-	if (abs_y >= 1000000000000)   { return y / 1000000000000 + "T" }
-	else if (abs_y >= 1000000000) { return y / 1000000000 + "B" }
-	else if (abs_y >= 1000000)    { return y / 1000000 + "M" }
-	else if (abs_y >= 1000)       { return y / 1000 + "K" }
-	else if (abs_y < 1 && abs_y > 0)  { return y.toFixed(2) }
-	else if (abs_y === 0)         { return '' }
-	else                      { return y }
+	if (abs_y >= 1000000000000)      { return (y / 1000000000000).toFixed(2) + "T" }
+	else if (abs_y >= 1000000000)    { return (y / 1000000000).toFixed(2) + "B" }
+	else if (abs_y >= 1000000)       { return (y / 1000000).toFixed(2) + "M" }
+	else if (abs_y >= 1000)          { return (y / 1000).toFixed(2) + "K" }
+	else if (abs_y < 1 && abs_y > 0) { return y.toFixed(2) }
+	else if (abs_y === 0)            { return '0' }
+	else                             { return y }
 };
 
 Rickshaw.Fixtures.Number.formatBase1024KMGTP = function(y) {
-    var abs_y = Math.abs(y);
-    if (abs_y >= 1125899906842624)  { return y / 1125899906842624 + "P" }
-    else if (abs_y >= 1099511627776){ return y / 1099511627776 + "T" }
-    else if (abs_y >= 1073741824)   { return y / 1073741824 + "G" }
-    else if (abs_y >= 1048576)      { return y / 1048576 + "M" }
-    else if (abs_y >= 1024)         { return y / 1024 + "K" }
-    else if (abs_y < 1 && abs_y > 0)    { return y.toFixed(2) }
-    else if (abs_y === 0)           { return '' }
-    else                        { return y }
+	var abs_y = Math.abs(y);
+	if (abs_y >= 1125899906842624)   { return (y / 1125899906842624).toFixed(2) + "P" }
+	else if (abs_y >= 1099511627776) { return (y / 1099511627776).toFixed(2) + "T" }
+	else if (abs_y >= 1073741824)    { return (y / 1073741824).toFixed(2) + "G" }
+	else if (abs_y >= 1048576)       { return (y / 1048576).toFixed(2) + "M" }
+	else if (abs_y >= 1024)          { return (y / 1024).toFixed(2) + "K" }
+	else if (abs_y < 1 && abs_y > 0) { return y.toFixed(2) }
+	else if (abs_y === 0)            { return '0' }
+	else                             { return y }
 };
 Rickshaw.namespace("Rickshaw.Color.Palette");
 
@@ -1510,6 +1510,7 @@ Rickshaw.Graph.Axis.X = function(args) {
 
 		this.graph = args.graph;
 		this.orientation = args.orientation || 'top';
+		this.color = args.color || "#000000";
 
 		this.pixelsPerTick = args.pixelsPerTick || 75;
 		if (args.ticks) this.staticTicks = args.ticks;
@@ -1527,6 +1528,7 @@ Rickshaw.Graph.Axis.X = function(args) {
 				.append("svg:svg")
 				.attr('height', this.height)
 				.attr('width', this.width)
+				.attr('stroke', this.color)
 				.attr('class', 'rickshaw_graph x_axis_d3');
 
 			this.element = this.vis[0][0];
@@ -1627,6 +1629,7 @@ Rickshaw.Graph.Axis.Y = Rickshaw.Class.create( {
 
 		this.graph = args.graph;
 		this.orientation = args.orientation || 'right';
+		this.color = args.color || "#000000";
 
 		this.pixelsPerTick = args.pixelsPerTick || 75;
 		if (args.ticks) this.staticTicks = args.ticks;
@@ -1644,6 +1647,7 @@ Rickshaw.Graph.Axis.Y = Rickshaw.Class.create( {
 			this.element = args.element;
 			this.vis = d3.select(args.element)
 				.append("svg:svg")
+				.attr('stroke', this.color)
 				.attr('class', 'rickshaw_graph y_axis');
 
 			this.element = this.vis[0][0];
@@ -1805,12 +1809,22 @@ Rickshaw.Graph.Behavior.Series.Highlight = function(args) {
 
 	var self = this;
 
-	var colorSafe = {};
+	var propertiesSafe = {};
 	var activeLine = null;
 
 	var disabledColor = args.disabledColor || function(seriesColor) {
 		return d3.interpolateRgb(seriesColor, d3.rgb('#d8d8d8'))(0.8).toString();
 	};
+
+	var transformFn = args.transform || function(isActive, series) {
+		var newProperties = {};
+		if (!isActive) {
+			// backwards compability
+			newProperties.color = disabledColor(series.color);
+		}
+		return newProperties;
+	};
+
 
 	this.addHighlightEvents = function (l) {
 
@@ -1820,8 +1834,11 @@ Rickshaw.Graph.Behavior.Series.Highlight = function(args) {
 			else activeLine = l;
 
 			self.legend.lines.forEach( function(line) {
+				var newProperties;
+				var isActive = false;
 
 				if (l === line) {
+					isActive = true;
 
 					// if we're not in a stacked renderer bring active line to the top
 					if (self.graph.renderer.unstack && (line.series.renderer ? line.series.renderer.unstack : true)) {
@@ -1832,11 +1849,21 @@ Rickshaw.Graph.Behavior.Series.Highlight = function(args) {
 						var series = self.graph.series.splice(seriesIndex, 1)[0];
 						self.graph.series.push(series);
 					}
-					return;
 				}
 
-				colorSafe[line.series.name] = colorSafe[line.series.name] || line.series.color;
-				line.series.color = disabledColor(line.series.color);
+				newProperties = transformFn(isActive, line.series);
+
+				propertiesSafe[line.series.name] = propertiesSafe[line.series.name] || {
+					color   : line.series.color,
+					stroke  : line.series.stroke
+				};
+
+				if (newProperties.color) {
+					line.series.color = newProperties.color;
+				}
+				if (newProperties.stroke) {
+					line.series.stroke = newProperties.stroke;
+				}
 
 			} );
 
@@ -1859,8 +1886,10 @@ Rickshaw.Graph.Behavior.Series.Highlight = function(args) {
 					delete line.originalIndex;
 				}
 
-				if (colorSafe[line.series.name]) {
-					line.series.color = colorSafe[line.series.name];
+				var lineProperties = propertiesSafe[line.series.name];
+				if (lineProperties) {
+					line.series.color  = lineProperties.color;
+					line.series.stroke = lineProperties.stroke;
 				}
 			} );
 
@@ -2484,6 +2513,7 @@ Rickshaw.Graph.Legend = Rickshaw.Class.create( {
 		this.element = args.element;
 		this.graph = args.graph;
 		this.naturalOrder = args.naturalOrder;
+		this.colorKey = args.colorKey || 'color';
 
 		this.element.classList.add(this.className);
 
@@ -2531,7 +2561,7 @@ Rickshaw.Graph.Legend = Rickshaw.Class.create( {
 		}
 		var swatch = document.createElement('div');
 		swatch.className = 'swatch';
-		swatch.style.backgroundColor = series.color;
+		swatch.style.backgroundColor = series[this.colorKey];
 
 		line.appendChild(swatch);
 
@@ -2560,7 +2590,6 @@ Rickshaw.Graph.Legend = Rickshaw.Class.create( {
 		return line;
 	}
 } );
-
 Rickshaw.namespace('Rickshaw.Graph.RangeSlider');
 
 Rickshaw.Graph.RangeSlider = Rickshaw.Class.create({
@@ -3320,7 +3349,7 @@ Rickshaw.Graph.Renderer = Rickshaw.Class.create( {
 		var fill = this.fill ? series.color : 'none';
 		var stroke = this.stroke ? series.color : 'none';
 		var strokeWidth = series.strokeWidth ? series.strokeWidth : this.strokeWidth;
-		var opacity = series.opacity ? series.opacity : this.opacity;
+		var opacity = series.opacity === undefined ? this.opacity : series.opacity;
 
 		series.path.setAttribute('fill', fill);
 		series.path.setAttribute('stroke', stroke);
@@ -3379,7 +3408,6 @@ Rickshaw.Graph.Renderer = Rickshaw.Class.create( {
 		}
 	}
 } );
-
 Rickshaw.namespace('Rickshaw.Graph.Renderer.Line');
 
 Rickshaw.Graph.Renderer.Line = Rickshaw.Class.create( Rickshaw.Graph.Renderer, {
@@ -3696,7 +3724,7 @@ Rickshaw.Graph.Renderer.ScatterPlot = Rickshaw.Class.create( Rickshaw.Graph.Rend
 		series.forEach( function(series) {
 
 			if (series.disabled) return;
-			var opacity = series.opacity ? series.opacity : 1;
+			var opacity = series.opacity === undefined ? 1 : series.opacity;
 
 			var nodes = vis.selectAll("path")
 				.data(series.stack.filter( function(d) { return d.y !== null } ))
@@ -3708,7 +3736,7 @@ Rickshaw.Graph.Renderer.ScatterPlot = Rickshaw.Class.create( Rickshaw.Graph.Rend
 			if (series.className) {
 				nodes.classed(series.className, true);
 			}
-			
+
 			Array.prototype.forEach.call(nodes[0], function(n) {
 				n.setAttribute('fill', series.color);
 			} );
