@@ -26,7 +26,7 @@ Rickshaw.Fixtures.Time.Local = function() {
 		}, {
 			name: 'day',
 			seconds: 86400,
-			formatter: function(d) { return d.getDate() }
+			formatter: function(d) { return self.formatDate(d) }
 		}, {
 			name: '6 hour',
 			seconds: 3600 * 6,
