@@ -212,7 +212,7 @@ exports.inconsistent = function(test) {
 		});
 
 	}, "we don't throw for inconsistent length series for lines" );
-
+	
 	test.throws( function() {
 
 		var graph = new Rickshaw.Graph({
@@ -236,6 +236,40 @@ exports.inconsistent = function(test) {
 		});
 
 	}, null, "throw an error for undefined element reference" );
+
+  // Test that dataDomain only considers active series
+  series[1].data.push({x: 100, y: 22});
+  series[1].disabled = true;
+
+  var graph = new Rickshaw.Graph({
+    element: el,
+    width: 960,
+    height: 500,
+    renderer: 'line',
+    series: series
+  });
+
+  test.deepEqual(graph.dataDomain(), [0, 3]);
+	
+	series.push(
+		{
+			color: "red",
+			data: []
+		}
+	);
+	
+	test.doesNotThrow( function() {
+		
+		var graph = new Rickshaw.Graph({
+			element: el,
+			width: 960,
+			height: 500,
+			renderer: 'line',
+			series: series
+		});
+
+		test.deepEqual(graph.dataDomain(), [0, 3]);
+	}, "We don't throw on dataDomain if a series has no data" );
 
 	test.done();
 };
