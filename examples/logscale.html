@@ -4,7 +4,7 @@
 <link type="text/css" rel="stylesheet" href="css/lines.css">
 <link type="text/css" rel="stylesheet" href="../src/css/detail.css">
 
-<script src="../node_modules/d3/d3.min.js"></script>
+<script src="../node_modules/d3/dist/d3.min.js"></script>
 <script src="../rickshaw.js"></script>
 
 <style>
@@ -52,8 +52,8 @@ for (i = 0; i < series[0].length; i++) {
   max = Math.max(max, series[0][i].y);
 }
 
-var logScale = d3.scale.log().domain([min/4, max]);
-var linearScale = d3.scale.linear().domain([min, max]).range(logScale.range());
+var logScale = d3.scaleLog().domain([min/4, max]);
+var linearScale = d3.scaleLinear().domain([min, max]).range(logScale.range());
 var graph = new Rickshaw.Graph( {
   element: document.getElementById("chart"),
   renderer: 'line',

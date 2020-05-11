@@ -33,14 +33,14 @@ Rickshaw.Graph.Axis.Y.Scaled = Rickshaw.Class.create( Rickshaw.Graph.Axis.Y, {
     // A mapping from the ideal render domain [0, 1] to the extent
     // of the original scale's domain.  This is used to calculate
     // the extents of the adjusted domain.
-    var extentMap = d3.scale.linear().domain([0, 1]).range(extents);
+    var extentMap = d3.scaleLinear().domain([0, 1]).range(extents);
 
     var adjExtents = [
       extentMap(renderDomain[0]),
       extentMap(renderDomain[1])];
 
     // A mapping from the original domain to the adjusted domain.
-    var adjustment = d3.scale.linear().domain(extents).range(adjExtents);
+    var adjustment = d3.scaleLinear().domain(extents).range(adjExtents);
 
     // Make a copy of the custom scale, apply the adjusted domain, and
     // copy the range to match the graph's scale.

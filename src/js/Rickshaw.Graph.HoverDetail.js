@@ -62,7 +62,7 @@ Rickshaw.Graph.HoverDetail = Rickshaw.Class.create({
 
 			var domainX = graph.x.invert(eventX);
 
-			var domainIndexScale = d3.scale.linear()
+			var domainIndexScale = d3.scaleLinear()
 				.domain([data[0].x, data.slice(-1)[0].x])
 				.range([0, data.length - 1]);
 

@@ -2,7 +2,7 @@
 <link type="text/css" rel="stylesheet" href="../src/css/graph.css">
 <link type="text/css" rel="stylesheet" href="css/lines.css">
 
-<script src="../node_modules/d3/d3.min.js"></script>
+<script src="../node_modules/d3/dist/d3.min.js"></script>
 
 <script src="../rickshaw.min.js"></script>
 
@@ -25,12 +25,12 @@ var graph = new Rickshaw.Graph({
 	stroke: true,
 	strokeWidth: 0.5,
 	renderer: 'area',
-	xScale: d3.time.scale(),
-	yScale: d3.scale.sqrt(),
+	xScale: d3.scaleTime(),
+	yScale: d3.scaleSqrt(),
 	series:[
 		{ color: 'steelblue', data: seriesData[0] },
 		{ color: '#99d4ee', data: seriesData[1] }
-	] 
+	]
 });
 
 graph.render();

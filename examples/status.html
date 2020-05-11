@@ -3,7 +3,7 @@
 <link type="text/css" rel="stylesheet" href="../src/css/legend.css">
 <link type="text/css" rel="stylesheet" href="css/extensions.css">
 
-<script src="../node_modules/d3/d3.min.js"></script>
+<script src="../node_modules/d3/dist/d3.min.js"></script>
 <script src="../rickshaw.min.js"></script>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
@@ -24,8 +24,8 @@ var wrapper = new Rickshaw.Graph.Ajax( {
 	renderer: 'bar',
 	onData: function(d) { return transformData(d) },
 	onComplete: function(w) {
-		var legend = new Rickshaw.Graph.Legend( { 
-			element: document.querySelector('#legend'), 
+		var legend = new Rickshaw.Graph.Legend( {
+			element: document.querySelector('#legend'),
 			graph: w.graph
 		} );
 	}

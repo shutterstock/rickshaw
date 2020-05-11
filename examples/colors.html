@@ -2,7 +2,7 @@
 <link type="text/css" rel="stylesheet" href="../src/css/graph.css">
 <link type="text/css" rel="stylesheet" href="css/lines.css">
 
-<script src="../node_modules/d3/d3.min.js"></script>
+<script src="../node_modules/d3/dist/d3.min.js"></script>
 
 <script src="../rickshaw.min.js"></script>
 
@@ -30,11 +30,11 @@ span {
 <script>
 
 var schemes = [
-	'spectrum14', 
-	'colorwheel', 
+	'spectrum14',
+	'colorwheel',
 	'cool',
-	'spectrum2000', 
-	'spectrum2001', 
+	'spectrum2000',
+	'spectrum2001',
 	'classic9',
 	'munin'
 ];
@@ -73,7 +73,7 @@ schemes.forEach( function(name) {
 			color: palette.color()
 		} );
 	} );
-	
+
 	var graph = new Rickshaw.Graph( {
 		element: element,
 		series: series

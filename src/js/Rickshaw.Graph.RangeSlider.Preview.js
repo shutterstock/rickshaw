@@ -25,7 +25,7 @@ Rickshaw.Graph.RangeSlider.Preview = Rickshaw.Class.create({
 		};
 
 		this.heightRatio = args.heightRatio || this.defaults.heightRatio;
-		this.defaults.gripperColor = d3.rgb(this.defaults.frameColor).darker().toString(); 
+		this.defaults.gripperColor = d3.rgb(this.defaults.frameColor).darker().toString();
 
 		this.configureCallbacks = [];
 		this.slideCallbacks = [];
@@ -129,7 +129,7 @@ Rickshaw.Graph.RangeSlider.Preview = Rickshaw.Class.create({
 
 			parent.onUpdate(function() { graph.render(); self.render() });
 
-			parent.onConfigure(function(args) { 
+			parent.onConfigure(function(args) {
 				// don't propagate height
 				delete args.height;
 				args.width = args.width - self.config.frameHandleThickness * 2;
@@ -163,13 +163,13 @@ Rickshaw.Graph.RangeSlider.Preview = Rickshaw.Class.create({
 		// Use the first graph as the "master" for the frame state
 		var masterGraph = this.graphs[0];
 
-		var domainScale = d3.scale.linear()
+		var domainScale = d3.scaleLinear()
 			.domain([0, this.previewWidth])
 			.range(masterGraph.dataDomain());
 
 		var currentWindow = [masterGraph.window.xMin, masterGraph.window.xMax];
 
-		this.currentFrame[0] = currentWindow[0] === undefined ? 
+		this.currentFrame[0] = currentWindow[0] === undefined ?
 			0 : Math.round(domainScale.invert(currentWindow[0]));
 
 		if (this.currentFrame[0] < 0) this.currentFrame[0] = 0;
@@ -381,7 +381,7 @@ Rickshaw.Graph.RangeSlider.Preview = Rickshaw.Class.create({
 
 			self.graphs.forEach(function(graph) {
 
-				var domainScale = d3.scale.linear()
+				var domainScale = d3.scaleLinear()
 					.interpolate(d3.interpolateNumber)
 					.domain([0, self.previewWidth])
 					.range(graph.dataDomain());

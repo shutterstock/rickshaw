@@ -84,7 +84,7 @@ Rickshaw.Graph.Axis.Y = Rickshaw.Class.create( {
 	},
 
 	_drawAxis: function(scale) {
-		var axis = d3.svg.axis().scale(scale).orient(this.orientation);
+		var axis = d3.axisLeft(scale);
 		axis.tickFormat(this.tickFormat);
 		if (this.tickValues) axis.tickValues(this.tickValues);
 

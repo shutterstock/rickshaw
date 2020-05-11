@@ -3,7 +3,7 @@
 <link type="text/css" rel="stylesheet" href="../src/css/detail.css">
 <link type="text/css" rel="stylesheet" href="css/lines.css">
 
-<script src="../node_modules/d3/d3.min.js"></script>
+<script src="../node_modules/d3/dist/d3.min.js"></script>
 <script src="../rickshaw.js"></script>
 <style type="text/css">
   #axis0 {
@@ -56,9 +56,9 @@ for (_k = 0, _len1 = data.length; _k < _len1; _k++) {
     max = Math.max(max, point.y);
   }
   if (_k === 0) {
-    scales.push(d3.scale.linear().domain([min, max]).nice());
+    scales.push(d3.scaleLinear().domain([min, max]).nice());
   } else {
-    scales.push(d3.scale.pow().domain([min, max]).nice());
+    scales.push(d3.scalePow().domain([min, max]).nice());
   }
 }
 
