@@ -22,7 +22,7 @@
     "examples",
     "node_modules",
     "tests",
-    "turorial"
+    "tutorial"
   ],
   "dependencies": {
     "d3": "~3.5.5"
