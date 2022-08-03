@@ -246,7 +246,7 @@ For building, we use [Node](http://nodejs.org) and [npm](http://npmjs.org). Runn
 
 After doing a build you can run the tests with the command: `npm test`
 
-For more availible options see the [package.json](package.json) scripts section.
+For more available options see the [package.json](package.json) scripts section.
 
 
 ## Contributing

@@ -52,7 +52,7 @@ exports.axis = function(test) {
 	});
 
 	test.equal(yAxis.width, 20, "setSize causes changes");
-	test.equal(yAxis.height, 600, "setSize doent change values which are not passed");
+	test.equal(yAxis.height, 600, "setSize doesn't change values which are not passed");
 
 	test.done();
 };
