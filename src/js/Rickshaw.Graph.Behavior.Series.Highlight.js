@@ -17,7 +17,7 @@ Rickshaw.Graph.Behavior.Series.Highlight = function(args) {
 	var transformFn = args.transform || function(isActive, series) {
 		var newProperties = {};
 		if (!isActive) {
-			// backwards compability
+			// backwards compatibility
 			newProperties.color = disabledColor(series.color);
 		}
 		return newProperties;

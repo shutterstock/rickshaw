@@ -163,7 +163,7 @@ exports.notDrag = function(test) {
 	rect = d3.select(element).selectAll('rect')[0][0];
 	test.equal(rect, null, 'after mouseup rect is gone');
 
-	// This is not reproduceable in the browser
+	// This is not reproducible in the browser
 	event = global.document.createEvent('MouseEvent');
 	event.initMouseEvent('mousedown', true, true, window, 1, 800, 600, 290, 260, false, false, false, false, 0, null);
 	drag.svg[0][0].dispatchEvent(event);
