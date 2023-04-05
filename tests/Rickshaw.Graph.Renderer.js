@@ -163,7 +163,7 @@ exports.respectStrokeFactory = function(test) {
 	var stroke = graph.vis.select('path.stroke.fnord');
 	test.equals(stroke.size(), 1, "we have a fnord stroke");
 	
-	// should also be availeable via series
+	// should also be available via series
 	var firstSeries = graph.series[0];
 	test.ok(d3.select(firstSeries.path).classed('path'), "selectable path");
 	test.ok(d3.select(firstSeries.stroke).classed('stroke', "selectable stroke"));
