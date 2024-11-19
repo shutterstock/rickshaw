@@ -1819,7 +1819,7 @@ Rickshaw.Graph.Behavior.Series.Highlight = function(args) {
 	var transformFn = args.transform || function(isActive, series) {
 		var newProperties = {};
 		if (!isActive) {
-			// backwards compability
+			// backwards compatibility
 			newProperties.color = disabledColor(series.color);
 		}
 		return newProperties;
@@ -3570,7 +3570,7 @@ Rickshaw.Graph.Renderer.Bar = Rickshaw.Class.create( Rickshaw.Graph.Renderer, {
 		
 		// Sorting object's keys returned to guarantee consistency when iterating over
 		// Keys order in `for .. in` loop is not specified and browsers behave differently here
-		// This results with different invterval value being calculated for different browsers
+		// This results with different interval value being calculated for different browsers
 		// See last but one section here: http://www.ecma-international.org/ecma-262/5.1/#sec-12.6.4
 		var keysSorted = Rickshaw.keys(intervalCounts).sort(function asc(a, b) { return Number(a) - Number(b); });
 		keysSorted.forEach( function(i) {
