@@ -16,6 +16,10 @@ Rickshaw.Fixtures.Time.Local = function() {
 			seconds: 86400 * 365.25,
 			formatter: function(d) { return d.getFullYear() }
 		}, {
+			name: 'quarter',
+			seconds: 86400 * 30.5 * 3,
+			formatter: function(d) { return d.getFullYear() + 'Q' + (d.getMonth() / 3 + 1) }
+		}, {
 			name: 'month',
 			seconds: 86400 * 30.5,
 			formatter: function(d) { return self.months[d.getMonth()] }
@@ -94,7 +98,7 @@ Rickshaw.Fixtures.Time.Local = function() {
 			return rounded.getTime() / 1000;
 		}
 
-		if (unit.name == 'month') {
+		if (unit.name == 'month' || unit.name == 'quarter') {
 
 			date = new Date(time * 1000);
 
@@ -104,11 +108,10 @@ Rickshaw.Fixtures.Time.Local = function() {
 			year = date.getFullYear();
 			var month = date.getMonth();
 
-			if (month == 11) {
-				month = 0;
-				year = year + 1;
-			} else {
-				month += 1;
+			month += (unit.name == 'month' ? 1 : 2);
+			if (month >= 12) {
+				month -= 12;
+				year += 1;
 			}
 
 			return new Date(year, month).getTime() / 1000;
