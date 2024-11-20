@@ -1,5 +1,5 @@
 [![NPM version][npm-image]][npm-url]
-[![Build Status][travis-image]][travis-url]
+[![Build Status][github-actions-image]][github-actions-url]
 [![Coverage Status][coverage-image]][coverage-url]
 
 # Rickshaw
@@ -267,7 +267,7 @@ This library was developed by David Chester, Douglas Hunter, and Silas Sewell at
 
 ## License
 
-Copyright (C) 2011-2020 by Shutterstock Images, LLC
+Copyright (C) 2011-2024 by Shutterstock Images, LLC
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 
@@ -277,7 +277,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 [npm-image]: https://img.shields.io/npm/v/rickshaw.svg?style=flat-square
 [npm-url]: https://npmjs.org/package/rickshaw
-[travis-image]: https://travis-ci.org/shutterstock/rickshaw.svg?branch=master
-[travis-url]: https://travis-ci.org/shutterstock/rickshaw
-[coverage-image]: https://coveralls.io/repos/github/shutterstock/rickshaw/badge.svg?branch=master
+[github-actions-image]: https://github.com/shutterstock/rickshaw/actions/workflows/ci.yaml/badge.svg
+[github-actions-url]: https://github.com/shutterstock/rickshaw/actions/workflows/ci.yaml
+[coverage-image]: https://coveralls.io/repos/github/shutterstock/rickshaw/badge.svg?branch=main
 [coverage-url]: https://coveralls.io/github/shutterstock/rickshaw
