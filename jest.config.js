@@ -1,9 +1,11 @@
 module.exports = {
   testEnvironment: 'jsdom',
   moduleDirectories: ['node_modules'],
-  testMatch: ['**/tests/**/*.js'],
+  testMatch: ['**/**/*.test.js'],
   collectCoverageFrom: [
-    'src/**/*.js',
+    'Rickshaw.*.js',
+    'rickshaw.js',
+    '!rickshaw.min.js',
     '!**/node_modules/**',
   ],
   setupFiles: ['./jest.setup.js'],
