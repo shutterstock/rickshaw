@@ -14,7 +14,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [12.x, 22.x]
+        node-version: [22.x]
 
     env:
       COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
