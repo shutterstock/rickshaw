@@ -1,12 +1,10 @@
 const d3 = require('d3');
-const { JSDOM } = require('jsdom');
 const jQuery = require('jquery');
 const Rickshaw = require('../rickshaw');
 
 // Helper function to create test graphs
 function createGraphs() {
   const graphs = [];
-  // Set up data series with 50 random data points
   const seriesData = [[], [], []];
   const random = new Rickshaw.Fixtures.RandomData(150);
 
@@ -17,7 +15,6 @@ function createGraphs() {
   const colors = ['#c05020', '#30c020', '#6060c0'];
   const names = ['New York', 'London', 'Tokyo'];
 
-  // Make all three graphs in a loop
   for (let i = 0; i < names.length; i++) {
     const graph = new Rickshaw.Graph({
       element: document.getElementById(`chart_${i}`),
@@ -39,45 +36,29 @@ function createGraphs() {
 }
 
 describe('Rickshaw.Graph.RangeSlider', () => {
-  let document;
-  let window;
-
   beforeEach(() => {
-    // Set up DOM environment
-    const dom = new JSDOM(`
-      <html>
-        <head></head>
-        <body>
-          <div id="chart_0"></div>
-          <div id="chart_1"></div>
-          <div id="chart_2">
-            <div id="slider"></div>
-          </div>
-        </body>
-      </html>
-    `);
+    document.body.innerHTML = `
+      <div id="chart_0"></div>
+      <div id="chart_1"></div>
+      <div id="chart_2">
+        <div id="slider"></div>
+      </div>
+    `;
 
-    // Set up global environment
-    document = dom.window.document;
-    window = dom.window;
-    global.document = document;
-    global.window = window;
+    // Initialize jQuery on the document
     global.jQuery = jQuery;
-
-    // Initialize Rickshaw compatibility
-    new Rickshaw.Compat.ClassList();
+    jQuery.fn.jquery = '1.8.1';
   });
 
   afterEach(() => {
-    // Clean up
-    delete require.cache.d3;
+    delete global.jQuery;
   });
 
   test('creates slider with single graph', () => {
     const graphs = createGraphs();
     const slider = new Rickshaw.Graph.RangeSlider({
       element: document.getElementById('slider'),
-      graph: createGraphs()[0]
+      graph: graphs[0]
     });
 
     expect(slider.graph).toBeTruthy();
@@ -87,7 +68,7 @@ describe('Rickshaw.Graph.RangeSlider', () => {
     const graphs = createGraphs();
     const slider = new Rickshaw.Graph.RangeSlider({
       element: jQuery('#slider'),
-      graph: createGraphs()[0]
+      graph: graphs[0]
     });
 
     expect(slider.graph).toBeTruthy();
@@ -98,9 +79,10 @@ describe('Rickshaw.Graph.RangeSlider', () => {
   });
 
   test('supports multiple graphs with shared slider', () => {
+    const graphs = createGraphs();
     const slider = new Rickshaw.Graph.RangeSlider({
       element: document.getElementById('slider'),
-      graphs: createGraphs()
+      graphs: graphs
     });
 
     // Test multiple graphs support
