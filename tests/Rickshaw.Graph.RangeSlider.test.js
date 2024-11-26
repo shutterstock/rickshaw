@@ -45,7 +45,7 @@ describe('Rickshaw.Graph.RangeSlider', () => {
       </div>
     `;
 
-    // Initialize jQuery on the document
+    // Setup jQuery globally since RangeSlider expects it
     global.jQuery = jQuery;
     jQuery.fn.jquery = '1.8.1';
   });
