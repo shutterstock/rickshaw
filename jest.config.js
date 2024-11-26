@@ -10,11 +10,11 @@ module.exports = {
   ],
   coverageThreshold: {
     global: {
-      branches: 52,
+      branches: 54,
+      functions: 56,
       lines: 62,
-      functions: 53,
       statements: 61,
-    },
+    }
   },
   setupFiles: ['./jest.setup.js'],
   transform: {},
