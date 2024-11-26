@@ -8,6 +8,14 @@ module.exports = {
     '!rickshaw.min.js',
     '!**/node_modules/**',
   ],
+  coverageThreshold: {
+    global: {
+      branches: 52,
+      lines: 62,
+      functions: 53,
+      statements: 61,
+    },
+  },
   setupFiles: ['./jest.setup.js'],
   transform: {},
   testEnvironmentOptions: {
