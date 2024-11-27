@@ -5,8 +5,6 @@ CSS_MIN=$(NODE_MODULES)/.bin/cleancss
 JS_MIN=$(NODE_MODULES)/.bin/uglifyjs
 JS_HINT=$(NODE_MODULES)/.bin/jshint
 D3=$(NODE_MODULES)/d3
-JSDOM=$(NODE_MODULES)/jsdom
-NODEUNIT=$(NODE_MODULES)/nodeunit
 
 CSS_FILES=\
 	src/css/detail.css\
@@ -61,7 +59,7 @@ build: rickshaw.min.css rickshaw.min.js
 clean:
 	rm -rf rickshaw.css rickshaw.js rickshaw.min.*
 
-test: $(D3) $(JSDOM) $(NODEUNIT)
+test: $(D3)
 	npm test
 
 $(JS_HINT):
@@ -75,12 +73,6 @@ $(JS_MIN):
 
 $(D3):
 	npm install d3
-
-$(JSDOM):
-	npm install jsdom
-
-$(NODEUNIT):
-	npm install nodeunit
 
 rickshaw.css: $(CSS_FILES)
 	cat $(CSS_FILES) > rickshaw.css
