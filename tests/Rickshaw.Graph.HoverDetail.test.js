@@ -1,5 +1,4 @@
 const Rickshaw = require('../rickshaw');
-const sinon = require('sinon');
 
 describe('Rickshaw.Graph.HoverDetail', () => {
   // Helper function to create a test graph
@@ -33,7 +32,7 @@ describe('Rickshaw.Graph.HoverDetail', () => {
     const event = document.createEvent('Event');
     event.initEvent(type, true, true);
     event.relatedTarget = {
-      compareDocumentPosition: sinon.spy()
+      compareDocumentPosition: jest.fn()
     };
     if (target) {
       event.target = target;
@@ -66,9 +65,9 @@ describe('Rickshaw.Graph.HoverDetail', () => {
     const element = document.createElement('div');
     const graph = createTestGraph(element);
     
-    const formatter = sinon.spy();
-    const xFormatter = sinon.spy();
-    const yFormatter = sinon.spy();
+    const formatter = jest.fn();
+    const xFormatter = jest.fn();
+    const yFormatter = jest.fn();
 
     const hoverDetail = new Rickshaw.Graph.HoverDetail({
       graph,
@@ -77,18 +76,18 @@ describe('Rickshaw.Graph.HoverDetail', () => {
       yFormatter
     });
 
-    expect(formatter.called).toBe(false);
-    expect(xFormatter.called).toBe(false);
-    expect(yFormatter.called).toBe(false);
+    expect(formatter).not.toHaveBeenCalled();
+    expect(xFormatter).not.toHaveBeenCalled();
+    expect(yFormatter).not.toHaveBeenCalled();
 
     hoverDetail.formatter();
-    expect(formatter.calledOnce).toBe(true);
+    expect(formatter).toHaveBeenCalledTimes(1);
 
     hoverDetail.xFormatter();
-    expect(xFormatter.calledOnce).toBe(true);
+    expect(xFormatter).toHaveBeenCalledTimes(1);
 
     hoverDetail.yFormatter();
-    expect(yFormatter.calledOnce).toBe(true);
+    expect(yFormatter).toHaveBeenCalledTimes(1);
 
     // Clean up
     element.remove();
@@ -101,14 +100,13 @@ describe('Rickshaw.Graph.HoverDetail', () => {
     const hoverDetail = new Rickshaw.Graph.HoverDetail({
       graph
     });
-    hoverDetail.render = sinon.spy();
+    hoverDetail.render = jest.fn();
 
     // Test update without event
     hoverDetail.update();
-    expect(hoverDetail.render.called).toBe(false);
+    expect(hoverDetail.render).not.toHaveBeenCalled();
 
     // Test direct render with points
-    hoverDetail.render = jest.fn(); // Replace sinon spy with jest mock
     hoverDetail.render({
       points: [{
         active: true,
@@ -146,7 +144,7 @@ describe('Rickshaw.Graph.HoverDetail', () => {
     const element = document.createElement('div');
     const graph = createTestGraph(element);
     
-    const onHide = sinon.spy();
+    const onHide = jest.fn();
     const hoverDetail = new Rickshaw.Graph.HoverDetail({
       graph,
       onHide
@@ -158,7 +156,7 @@ describe('Rickshaw.Graph.HoverDetail', () => {
     // Test mouseout event
     const mouseoutEvent = createMouseEvent('mouseout');
     element.dispatchEvent(mouseoutEvent);
-    expect(onHide.calledOnce).toBe(true);
+    expect(onHide).toHaveBeenCalledTimes(1);
     expect(hoverDetail.visible).toBe(false);
 
     // Test SPA-like DOM manipulation
@@ -170,17 +168,17 @@ describe('Rickshaw.Graph.HoverDetail', () => {
     expect(hoverDetail.element.parentNode).toBe(null);
 
     // Test mousemove after DOM manipulation
-    hoverDetail.update = sinon.spy();
+    hoverDetail.update = jest.fn();
     const moveEvent = createMouseEvent('mousemove');
     element.dispatchEvent(moveEvent);
     expect(hoverDetail.visible).toBe(true);
-    expect(hoverDetail.update.calledOnce).toBe(true);
+    expect(hoverDetail.update).toHaveBeenCalledTimes(1);
 
     // Test listener removal
-    hoverDetail.update = sinon.spy();
+    hoverDetail.update = jest.fn();
     hoverDetail._removeListeners();
     element.dispatchEvent(moveEvent);
-    expect(hoverDetail.update.called).toBe(false);
+    expect(hoverDetail.update).not.toHaveBeenCalled();
 
     // Clean up
     element.remove();
@@ -190,9 +188,9 @@ describe('Rickshaw.Graph.HoverDetail', () => {
     const element = document.createElement('div');
     const graph = createTestGraph(element);
     
-    const onShow = sinon.spy();
-    const onHide = sinon.spy();
-    const onRender = sinon.spy();
+    const onShow = jest.fn();
+    const onHide = jest.fn();
+    const onRender = jest.fn();
     
     const hoverDetail = new Rickshaw.Graph.HoverDetail({
       graph,
@@ -212,7 +210,7 @@ describe('Rickshaw.Graph.HoverDetail', () => {
 
     let items = d3.select(element).selectAll('.item');
     expect(items[0].length).toBe(0);
-    expect(onRender.called).toBe(false);
+    expect(onRender).not.toHaveBeenCalled();
 
     // Test render with multiple points
     hoverDetail.render({
@@ -233,8 +231,8 @@ describe('Rickshaw.Graph.HoverDetail', () => {
       }]
     });
 
-    expect(onShow.calledOnce).toBe(true);
-    expect(onRender.calledOnce).toBe(true);
+    expect(onShow).toHaveBeenCalledTimes(1);
+    expect(onRender).toHaveBeenCalledTimes(1);
 
     const xLabel = d3.select(element).selectAll('.x_label');
     expect(xLabel[0].length).toBe(1);
@@ -249,7 +247,7 @@ describe('Rickshaw.Graph.HoverDetail', () => {
 
     // Test hide functionality
     hoverDetail.hide();
-    expect(onHide.calledOnce).toBe(true);
+    expect(onHide).toHaveBeenCalledTimes(1);
 
     // Clean up
     element.remove();
@@ -274,17 +272,17 @@ describe('Rickshaw.Graph.HoverDetail', () => {
     expect(hoverDetail.element.parentNode).toBe(null);
 
     // Test event handling after cleanup
-    hoverDetail.update = sinon.spy();
+    hoverDetail.update = jest.fn();
     const moveEvent = createMouseEvent('mousemove');
     element.dispatchEvent(moveEvent);
     expect(hoverDetail.visible).toBe(true);
-    expect(hoverDetail.update.calledOnce).toBe(true);
+    expect(hoverDetail.update).toHaveBeenCalledTimes(1);
 
     // Test listener removal
-    hoverDetail.update = sinon.spy();
+    hoverDetail.update = jest.fn();
     hoverDetail._removeListeners();
     element.dispatchEvent(moveEvent);
-    expect(hoverDetail.update.called).toBe(false);
+    expect(hoverDetail.update).not.toHaveBeenCalled();
 
     // Clean up
     element.remove();
