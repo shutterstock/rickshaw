@@ -1,171 +1,196 @@
-var Rickshaw = require("../rickshaw");
+const Rickshaw = require('../rickshaw');
 
-function seriesData() {
-	return {
-		name: 'series1',
-		data: [ {x: 0, y: 20}, {x: 1, y: 21}, { x: 2, y: 15} ],
-		color: 'red'
-	};
-}
+describe('Rickshaw.Series', () => {
+  // Helper function to create consistent test data
+  const createSeriesData = () => ({
+    name: 'series1',
+    data: [
+      { x: 0, y: 20 },
+      { x: 1, y: 21 },
+      { x: 2, y: 15 }
+    ],
+    color: 'red'
+  });
 
-exports.basic = function(test) {
+  // Helper to create a clean series instance
+  const createSeries = (items = [createSeriesData()]) => {
+    return new Rickshaw.Series(items, 'spectrum2001', { timeBase: 0 });
+  };
 
-	test.equal(typeof Rickshaw.Series, 'function', 'Rickshaw.Series is a function');
-	test.done();
-};
+  describe('initialization', () => {
+    test('should be defined as a function', () => {
+      expect(typeof Rickshaw.Series).toBe('function');
+    });
 
-exports.initialize = function(test) {
+    test('should create a valid series instance', () => {
+      const series = createSeries();
 
-	var series = new Rickshaw.Series([seriesData()], 'spectrum2001', {timeBase: 0});
+      expect(series).toBeInstanceOf(Rickshaw.Series);
+      expect(series).toBeInstanceOf(Array);
+      expect(series[0].data).toEqual([
+        { x: 0, y: 20 },
+        { x: 1, y: 21 },
+        { x: 2, y: 15 }
+      ]);
+    });
+  });
 
-	test.ok(series instanceof Rickshaw.Series);
-	test.ok(series instanceof Array);
+  describe('addItem', () => {
+    test('should add a new series item', () => {
+      const series = createSeries();
 
-	test.deepEqual(
-		series[0].data,
-		[ { x: 0, y: 20 },
-			{ x: 1, y: 21 },
-			{ x: 2, y: 15 } ],
-		'data made it in as we expect'
-	);
+      series.addItem({
+        name: 'series2',
+        data: [
+          { x: 0, y: 10 },
+          { x: 1, y: 13 },
+          { x: 2, y: 12 }
+        ]
+      });
 
-	test.done();
-};
+      expect(series.length).toBe(2);
+      expect(series[1].name).toBe('series2');
+      expect(series[1].data).toHaveLength(3);
+    });
+  });
 
-exports.addItem = function(test) {
+  describe('addData', () => {
+    test('should add data point to existing series', () => {
+      const series = createSeries();
 
-	var series = new Rickshaw.Series([seriesData()], 'spectrum2001', {timeBase: 0});
+      series.addData({ series1: 22 });
 
-	series.addItem( {
-		name: 'series2',
-		data: [ {x: 0, y: 10}, {x: 1, y: 13}, {x: 2, y: 12} ]
-	} );
+      expect(series[0].data).toHaveLength(4);
+      expect(series[0].data[3].y).toBe(22);
+    });
 
-	test.equal(series.length, 2, 'series has two items');
-	test.done();
-};
+    test('should add data points to multiple series', () => {
+      const series = createSeries();
+      series.addItem({
+        name: 'series2',
+        data: [
+          { x: 0, y: 10 },
+          { x: 1, y: 13 },
+          { x: 2, y: 12 }
+        ]
+      });
 
-exports.addData = function(test) {
+      series.addData({ series1: 29, series2: 57 });
 
-	var series = new Rickshaw.Series([seriesData()], 'spectrum2001', {timeBase: 0});
+      expect(series[0].data[3].y).toBe(29);
+      expect(series[1].data[3].y).toBe(57);
+    });
 
-	series.addData( { series1: 22 } );
+    test('should add data with custom x-axis value', () => {
+      const series = createSeries();
 
-	test.equal(series[0].data.length, 4, 'first series has four data points');
-	test.equal(series[0].data[3].y, 22, 'first series last data point made it in');
+      series.addData({ series1: 22 }, 5);
+      expect(series[0].data[3]).toEqual({ x: 5, y: 22 });
 
-	series.addData( { series1: 29, series2: 57 } );
+      series.addData({ series1: 29, series2: 57 }, 7);
+      expect(series[0].data[4]).toEqual({ x: 7, y: 29 });
+      expect(series[1].data[4]).toEqual({ x: 7, y: 57 });
+    });
+  });
 
-	test.equal(series[0].data[4].y, 29, 'first series has a new data point');
+  describe('itemByName', () => {
+    test('should retrieve series by name', () => {
+      const series = createSeries();
+      const item = series.itemByName('series1');
 
-	test.equal(series[1].data.length, 5, 'second series has five data points');
-	test.equal(series[1].data[4].y, 57, 'second series last data point made it in');
+      expect(item).toBe(series[0]);
+      expect(item.name).toBe('series1');
+    });
 
-	test.done();
-};
+    test('should return undefined for non-existent series', () => {
+      const series = createSeries();
+      expect(series.itemByName('nonexistent')).toBeUndefined();
+    });
+  });
 
-exports.addDataWithXAxisValue = function(test) {
+  describe('dump', () => {
+    test('should dump series data in expected format', () => {
+      const series = createSeries();
 
-	var series = new Rickshaw.Series([seriesData()], 'spectrum2001', {timeBase: 0});
+      expect(series.dump()).toEqual({
+        timeBase: 0,
+        timeInterval: 1,
+        items: [{
+          color: 'red',
+          name: 'series1',
+          data: [
+            { x: 0, y: 20 },
+            { x: 1, y: 21 },
+            { x: 2, y: 15 }
+          ]
+        }]
+      });
+    });
+  });
 
-	series.addData({ series1: 22 }, 5);
+  describe('fill methods', () => {
+    test('zeroFill should fill gaps with zeros', () => {
+      const gappedData = [
+        { name: 'series1', data: [{ x: 1, y: 22 }, { x: 3, y: 29 }] },
+        { name: 'series2', data: [{ x: 2, y: 49 }] }
+      ];
+      const series = new Rickshaw.Series(gappedData, 'spectrum2001', { timeBase: 0 });
+      
+      Rickshaw.Series.zeroFill(series);
 
-	test.equal(series[0].data.length, 4, 'first series has four data points');
-	test.equal(series[0].data[3].y, 22, 'first series last data point made it in');
-	test.equal(series[0].data[3].x, 5, 'first series last data point made it in with the correct x');
+      // Verify each series data
+      expect(series[0].data).toEqual([
+        { x: 1, y: 22 },
+        { x: 2, y: 0 },
+        { x: 3, y: 29 }
+      ]);
+      expect(series[1].data).toEqual([
+        { x: 1, y: 0 },
+        { x: 2, y: 49 },
+        { x: 3, y: 0 }
+      ]);
+    });
 
-	series.addData({ series1: 29, series2: 57 }, 7);
+    test('fill should fill gaps with specified value', () => {
+      const gappedData = [
+        { name: 'series1', data: [{ x: 1, y: 22 }, { x: 3, y: 29 }] },
+        { name: 'series2', data: [{ x: 2, y: 49 }] }
+      ];
+      const series = new Rickshaw.Series(gappedData, 'spectrum2001', { timeBase: 0 });
+      const fillValue = null;
 
-	test.equal(series[0].data[4].y, 29, 'first series has a new data point');
-	test.equal(series[0].data[4].x, 7, 'first series has a new data point with the correct x');
+      Rickshaw.Series.fill(series, fillValue);
 
-	test.equal(series[1].data.length, 5, 'second series has five data points');
-	test.equal(series[1].data[4].y, 57, 'second series last data point made it in');
-	test.equal(series[1].data[4].x, 7, 'second series last data point made it in with the correct x');
+      // Verify each series data
+      expect(series[0].data).toEqual([
+        { x: 1, y: 22 },
+        { x: 2, y: fillValue },
+        { x: 3, y: 29 }
+      ]);
+      expect(series[1].data).toEqual([
+        { x: 1, y: fillValue },
+        { x: 2, y: 49 },
+        { x: 3, y: fillValue }
+      ]);
+    });
+  });
 
-	test.done();
-};
+  describe('load', () => {
+    test('should load series data from dump format', () => {
+      const series = new Rickshaw.Series([], 'spectrum2001', { timeBase: 0 });
+      const data = {
+        items: [createSeriesData()],
+        timeInterval: 3,
+        timeBase: 0
+      };
 
-exports.itemByName = function(test) {
+      series.load(data);
+      delete series.palette; // Remove palette for comparison
 
-	var series = new Rickshaw.Series([seriesData()], 'spectrum2001', {timeBase: 0});
-
-	test.strictEqual(series.itemByName('series1'), series[0], 'we get the right item');
-	test.strictEqual(series.itemByName('series1').name, 'series1', 'item by name is right');
-	test.done();
-};
-
-exports.dump = function(test) {
-
-	var series = new Rickshaw.Series([seriesData()], 'spectrum2001', {timeBase: 0});
-
-	test.deepEqual(
-		series.dump(),
-		{
-			"timeBase":0,
-			"timeInterval": 1,
-			"items":[{
-				"color":"red",
-				"name":"series1",
-				"data":[{"x":0,"y":20},{"x":1,"y":21},{"x":2,"y":15}]
-			}]
-		},
-		'dumped series matches'
-	);
-
-	test.done();
-};
-
-exports.zeroFill = function(test) {
-
-	var series = [
-		{ name: "series1", data: [{ x: 1, y: 22 }, { x: 3, y: 29 }] },
-		{ name: "series2", data: [{ x: 2, y: 49 }] }
-	];
-
-	Rickshaw.Series.zeroFill(series);
-
-	var expectedSeries = [
-		{ name: "series1", data: [{ x: 1, y: 22 }, { x: 2, y: 0 }, { x: 3, y: 29 }] },
-		{ name: "series2", data: [{ x: 1, y: 0}, { x: 2, y: 49 }, { x: 3, y: 0 }] }
-	];
-
-	test.deepEqual(series, expectedSeries, "zero fill fills in zeros");
-	test.done();
-};
-
-exports.nullFill = function(test) {
-
-	var series = [
-		{ name: "series1", data: [{ x: 1, y: 22 }, { x: 3, y: 29 }] },
-		{ name: "series2", data: [{ x: 2, y: 49 }] }
-	];
-
-	Rickshaw.Series.fill(series, null);
-
-	var expectedSeries = [
-		{ name: "series1", data: [{ x: 1, y: 22 }, { x: 2, y: null }, { x: 3, y: 29 }] },
-		{ name: "series2", data: [{ x: 1, y: null}, { x: 2, y: 49 }, { x: 3, y: null }] }
-	];
-
-	test.deepEqual(series, expectedSeries, "null fill fills in nulls");
-	test.done();
-};
-
-exports.load = function(test) {
-
-	var series = new Rickshaw.Series([], 'spectrum2001', {timeBase: 0});
-
-	series.load({
-		items: [ seriesData() ],
-		timeInterval: 3,
-		timeBase: 0
-	});
-
-	delete series.palette;
-
-	test.equal(series.timeBase, 0, 'time base made it in');
-	test.equal(series.timeInterval, 3, 'time interval made it in');
-	test.equal(series[0].data.length, 3, 'series data made it in');
-	test.done();
-};
+      expect(series.timeBase).toBe(0);
+      expect(series.timeInterval).toBe(3);
+      expect(series[0].data).toHaveLength(3);
+      expect(series[0].name).toBe('series1');
+    });
+  });
+});

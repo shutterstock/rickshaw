@@ -1,58 +1,45 @@
-var d3 = require("d3");
-var Rickshaw;
+const d3 = require('d3');
+const Rickshaw = require('../rickshaw');
 
-exports.setUp = function(callback) {
+describe('Rickshaw.Graph.Axis.Y', () => {
+  test('should render y-axis with correct ticks and handle dimension changes', () => {
+    // Set up test DOM elements
+    document.body.innerHTML = `
+      <div id="y_axis" style="width: 40px;"></div>
+      <div id="chart"></div>
+    `;
 
-	Rickshaw = require('../rickshaw');
+    // Initialize graph with test data
+    const chartElement = document.getElementById('chart');
+    const yAxisElement = document.getElementById('y_axis');
 
-	global.document = require("jsdom").jsdom("<html><head><style>#y_axis {width: 40px;}</style></head><body><div id='y_axis'></div><div id='chart'></div></body></html>");
-	global.window = document.defaultView;
+    const graph = new Rickshaw.Graph({
+      width: 900,
+      height: 600,
+      element: chartElement,
+      series: [{ data: [{ x: 4, y: 32 }, { x: 16, y: 100 }] }]
+    });
 
-	new Rickshaw.Compat.ClassList();
+    const yAxis = new Rickshaw.Graph.Axis.Y({
+      element: yAxisElement,
+      graph: graph,
+      orientation: 'left'
+    });
 
-	callback();
-};
+    yAxis.render();
 
-exports.tearDown = function(callback) {
+    // Test tick rendering
+    const ticks = d3.select(chartElement).selectAll('.y_grid .tick');
+    expect(ticks[0].length).toBe(11);
+    expect(ticks[0][0].getAttribute('data-y-value')).toBe('0');
 
-	delete require.cache.d3;
-	callback();
-};
+    // Test initial dimensions
+    expect(yAxis.width).toBe(40);
+    expect(yAxis.height).toBe(600);
 
-exports.axis = function(test) {
-
-	var chartElement = document.getElementById('chart');
-	var yAxisElement = document.getElementById('y_axis');
-
-	var graph = new Rickshaw.Graph({
-		width: 900,
-		height: 600,
-		element: chartElement,
-		series: [ { data: [ { x: 4, y: 32 }, { x: 16, y: 100 } ] } ]
-	});
-
-	var yAxis = new Rickshaw.Graph.Axis.Y({
-		element: yAxisElement,
-		graph: graph,
-		orientation: 'left'
-	});
-
-	yAxis.render();
-
-	var ticks = d3.select(chartElement).selectAll('.y_grid .tick')
-
-	test.equal(ticks[0].length, 11, "we have some ticks");
-	test.equal(ticks[0][0].getAttribute('data-y-value'), '0');
-
-	test.equal(yAxis.width, 40, "width is set from axis element");
-	test.equal(yAxis.height, 600, "height is set from chart element");
-
-	yAxis.setSize({
-		width: 20
-	});
-
-	test.equal(yAxis.width, 20, "setSize causes changes");
-	test.equal(yAxis.height, 600, "setSize doesn't change values which are not passed");
-
-	test.done();
-};
+    // Test dimension updates
+    yAxis.setSize({ width: 20 });
+    expect(yAxis.width).toBe(20);
+    expect(yAxis.height).toBe(600);
+  });
+});

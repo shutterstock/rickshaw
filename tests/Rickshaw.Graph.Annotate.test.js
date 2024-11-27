@@ -1,125 +1,117 @@
-var d3 = require('d3');
-var jsdom = require('jsdom').jsdom;
+const d3 = require('d3');
+const Rickshaw = require('../rickshaw');
 
-var Rickshaw = require('../rickshaw');
-
-exports.setUp = function(callback) {
-
-  global.document = jsdom('<html><head></head><body></body></html>');
-  global.window = document.defaultView;
-  global.Node = {};
-
-  new Rickshaw.Compat.ClassList();
-
-  callback();
-};
-
-exports.tearDown = function(callback) {
-
-  delete require.cache.d3;
-  callback();
-};
-
-exports.initialize = function(test) {
-
-  var element = document.createElement('div');
-  var annotateElement = document.createElement('div');
-
-  var graph = new Rickshaw.Graph({
-    width: 900,
-    element: element,
-    series: [{
-      data: [{
-        x: 4,
-        y: 32
-      }, {
-        x: 16,
-        y: 100
+describe('Rickshaw.Graph.Annotate', () => {
+  // Helper function to create a test graph and annotate instance
+  function createTestGraph() {
+    const element = document.createElement('div');
+    return new Rickshaw.Graph({
+      width: 900,
+      element: element,
+      series: [{
+        data: [
+          { x: 4, y: 32 },
+          { x: 16, y: 100 }
+        ]
       }]
-    }]
+    });
+  }
+
+  test('initializes with correct elements', () => {
+    const graph = createTestGraph();
+    const annotateElement = document.createElement('div');
+
+    const annotate = new Rickshaw.Graph.Annotate({
+      graph: graph,
+      element: annotateElement
+    });
+
+    expect(annotate.elements.timeline).toBe(annotateElement);
+    const timeline = d3.select(graph.element).selectAll('.rickshaw_annotation_timeline');
+    expect(annotate.element).toBe(timeline[0][0]);
   });
 
-  var annotate = new Rickshaw.Graph.Annotate({
-    graph: graph,
-    element: annotateElement
+  test('adds annotations correctly', () => {
+    const graph = createTestGraph();
+    const annotateElement = document.createElement('div');
+
+    const annotate = new Rickshaw.Graph.Annotate({
+      graph: graph,
+      element: annotateElement
+    });
+
+    // Add an annotation with time and end time
+    const time = 4;
+    const endTime = time + 10;
+    annotate.add(time, 'annotation', endTime);
+    
+    // Check if annotation was added with correct structure
+    expect(annotate.data[time]).toEqual({
+      boxes: [{
+        content: 'annotation',
+        end: endTime
+      }]
+    });
+
+    // Add another annotation to the same time
+    annotate.add(time, 'another annotation', endTime + 5);
+    
+    // Check both annotations at the same time point
+    expect(annotate.data[time].boxes.length).toBe(2);
+    expect(annotate.data[time].boxes[1]).toEqual({
+      content: 'another annotation',
+      end: endTime + 5
+    });
   });
 
-  test.equal(annotate.elements.timeline, annotateElement);
-  var timeline = d3.select(element).selectAll('.rickshaw_annotation_timeline');
-  test.equal(annotate.element, timeline[0][0]);
+  test('updates annotations correctly', () => {
+    // Create and append test elements to document
+    const element = document.createElement('div');
+    const annotateElement = document.createElement('div');
+    document.body.appendChild(element);
+    document.body.appendChild(annotateElement);
 
-  test.done();
-};
+    const graph = new Rickshaw.Graph({
+      element: element,
+      width: 900,
+      height: 100,
+      series: [{
+        data: [{ x: 2900, y: 10 }, { x: 3100, y: 20 }]
+      }]
+    });
 
-exports.add = function(test) {
+    const annotate = new Rickshaw.Graph.Annotate({
+      graph: graph,
+      element: annotateElement
+    });
 
-  var element = document.createElement('div');
-  var annotateElement = document.createElement('div');
+    // Add an annotation
+    const time = 3000;
+    annotate.add(time, 'foo', time + 10 * 1000);
+    graph.render();
+    annotate.update();
 
-  var graph = new Rickshaw.Graph({
-    element: element,
-    series: []
+    // Find and click the annotation element
+    const annotations = d3.select(annotateElement).selectAll('.annotation');
+    expect(annotations[0].length).toBeGreaterThan(0, 'No annotation elements found');
+    
+    const addedElement = annotations[0][0];
+    const clickEvent = document.createEvent('Event');
+    clickEvent.initEvent('click', true, true);
+    addedElement.dispatchEvent(clickEvent);
+
+    // Check if annotation becomes active after click
+    expect(Array.from(addedElement.classList)).toContain('active');
+
+    // Update graph and check if annotation stays visible
+    annotate.graph.onUpdate();
+    annotate.update();
+
+    expect(addedElement.style.display).toBe('block');
+    expect(Array.from(annotate.data[time].element.classList)).toContain('active');
+
+    // Clean up
+    document.body.removeChild(element);
+    document.body.removeChild(annotateElement);
   });
-
-  var annotate = new Rickshaw.Graph.Annotate({
-    graph: graph,
-    element: annotateElement
-  });
-
-  var time = Date.now();
-  annotate.add(time, 'foo', time + 10 * 1000);
-
-  test.deepEqual(annotate.data[time], {
-    boxes: [{
-      content: 'foo',
-      end: time + 10 * 1000
-    }]
-  });
-
-  test.done();
-};
-
-exports.update = function(test) {
-
-  var element = document.createElement('div');
-  var annotateElement = document.createElement('div');
-
-  var graph = new Rickshaw.Graph({
-    element: element,
-    series: []
-  });
-
-  var annotate = new Rickshaw.Graph.Annotate({
-    graph: graph,
-    element: annotateElement
-  });
-
-  var time = 3000;
-  annotate.add(time, 'foo', time + 10 * 1000);
-
-  annotate.update();
-
-  var clickEvent = global.document.createEvent('Event');
-  clickEvent.initEvent('click', true, true);
-  var addedElement = d3.select(annotateElement).selectAll('.annotation')[0][0];
-  addedElement.dispatchEvent(clickEvent);
-
-  test.deepEqual(addedElement.classList, {
-    '0': 'annotation',
-    '1': 'active'
-  });
-
-  annotate.graph.onUpdate();
-  annotate.update();
-
-  test.deepEqual(addedElement.style._values, {
-    display: 'block'
-  });
-
-  test.deepEqual(annotate.data[time].element.classList, {
-    '0': 'annotation',
-    '1': 'active'
-  });
-
-  test.done();
-};
+});

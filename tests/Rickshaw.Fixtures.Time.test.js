@@ -1,64 +1,47 @@
-var Rickshaw = require('../rickshaw');
+const Rickshaw = require('../rickshaw');
 
-var time = new Rickshaw.Fixtures.Time;
+describe('Rickshaw.Fixtures.Time', () => {
+  const time = new Rickshaw.Fixtures.Time();
 
-exports.monthBoundary = function(test) {
+  describe('month handling', () => {
+    const february = 1359676800;
+    const march = 1362096000;
 
-	var february = 1359676800;
-	var ceil = time.ceil(february, time.unit('month'));
+    test('handles month boundary', () => {
+      const ceil = time.ceil(february, time.unit('month'));
+      expect(ceil).toBe(february);
+    });
 
-	test.equal(ceil, february, "february resolves to itself");
-	test.done();
-};
+    test('handles just before month boundary', () => {
+      const ceil = time.ceil(february - 1, time.unit('month'));
+      expect(ceil).toBe(february);
+    });
 
-exports.monthMinus = function(test) {
+    test('handles mid-month values', () => {
+      const ceil = time.ceil(february + 1, time.unit('month'));
+      expect(ceil).toBe(march);
+    });
 
-	var february = 1359676800;
-	var ceil = time.ceil(february - 1, time.unit('month'));
+    test('handles December to January wrap', () => {
+      const december2013 = 1385856000;
+      const january2014 = 1388534400;
+      const ceil = time.ceil(december2013 + 1, time.unit('month'));
+      expect(ceil).toBe(january2014);
+    });
+  });
 
-	test.equal(ceil, february, "just before february resolves up to february");
-	test.done();
-};
+  describe('year handling', () => {
+    const year2013 = 1356998400;
 
-exports.month = function(test) {
+    test('handles year boundary', () => {
+      const ceil = time.ceil(year2013, time.unit('year'));
+      expect(ceil).toBe(year2013);
+    });
 
-	var february = 1359676800;
-	var march = 1362096000;
-
-	var ceil = time.ceil(february + 1, time.unit('month'));
-
-	test.equal(ceil, march, "february plus a bit resolves to march");
-	test.done();
-};
-
-exports.decemberMonthWrap = function(test) {
-
-	var december2013 = 1385856000;
-	var january2014 = 1388534400;
-
-	var ceil = time.ceil(december2013 + 1, time.unit('month'));
-
-	test.equal(ceil, january2014, "december wraps to next year");
-	test.done();
-};
-
-exports.yearBoundary = function(test) {
-
-	var year2013 = 1356998400;
-	var ceil = time.ceil(year2013, time.unit('year'));
-
-	test.equal(ceil, year2013, "midnight new year resolves to itself");
-	test.done();
-};
-
-exports.year = function(test) {
-
-	var year2013 = 1356998400;
-	var year2014 = 1388534400;
-
-	var ceil = time.ceil(year2013 + 1, time.unit('year'));
-
-	test.equal(ceil, year2014, "midnight new year plus a bit resolves to next year");
-	test.done();
-};
-
+    test('handles mid-year values', () => {
+      const ceil = time.ceil(year2013 + 1, time.unit('year'));
+      const year2014 = year2013 + 365 * 24 * 60 * 60;
+      expect(ceil).toBe(year2014);
+    });
+  });
+});

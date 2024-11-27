@@ -1,75 +1,83 @@
-var Rickshaw = require("../rickshaw");
+const Rickshaw = require('../rickshaw');
 
-function seriesData() {
-	return {
-		name: 'series1',
-		data: [ {x: 0, y: 20}, {x: 1, y: 21}, { x: 2, y: 15} ],
-		color: 'red'
-	};
-}
+describe('Rickshaw.Series.FixedDuration', () => {
+  // Helper function to create test series data
+  const createSeriesData = () => ({
+    name: 'series1',
+    data: [
+      { x: 0, y: 20 },
+      { x: 1, y: 21 },
+      { x: 2, y: 15 }
+    ],
+    color: 'red'
+  });
 
-exports.basic = function(test) {
+  test('is a function', () => {
+    expect(typeof Rickshaw.Series.FixedDuration).toBe('function');
+  });
 
-	test.equal(typeof Rickshaw.Series.FixedDuration, 'function', 'Rickshaw.Series.FixedDuration is a function');
-	test.done();
-};
+  describe('initialization', () => {
+    test('throws error without timeInterval', () => {
+      expect(() => {
+        new Rickshaw.Series.FixedDuration(
+          [createSeriesData()],
+          'spectrum2001',
+          { timeBase: 0, maxDataPoints: 2000 }
+        );
+      }).toThrow('FixedDuration series requires timeInterval');
+    });
 
-exports.initialize = function(test) {
+    test('throws error without maxDataPoints', () => {
+      expect(() => {
+        new Rickshaw.Series.FixedDuration(
+          [createSeriesData()],
+          'spectrum2001',
+          { timeBase: 0, timeInterval: 30 }
+        );
+      }).toThrow('FixedDuration series requires maxDataPoints');
+    });
 
-	function instantiateMalformed() {
+    test('initializes with valid parameters', () => {
+      const series = new Rickshaw.Series.FixedDuration(
+        [createSeriesData()],
+        'spectrum2001',
+        {
+          timeBase: 0,
+          timeInterval: 30,
+          maxDataPoints: 2000
+        }
+      );
 
-		var series = new Rickshaw.Series.FixedDuration(
-			[seriesData()],
-			'spectrum2001',
-			{ timeBase: 0, maxDataPoints: 2000 }
-		);
-	}
+      expect(series).toBeInstanceOf(Rickshaw.Series.FixedDuration);
+      expect(series).toBeInstanceOf(Array);
+      // Check if series has array-like behavior
+      expect(series.length).toBeGreaterThan(0);
+      expect(series[0]).toBeDefined();
+    });
+  });
 
-	test.throws(instantiateMalformed, 'FixedDuration series requires timeInterval', 'we die without a timeInterval');
+  describe('addData', () => {
+    test('maintains maxDataPoints limit', () => {
+      const maxPoints = 20;
+      const series = new Rickshaw.Series.FixedDuration(
+        [createSeriesData()],
+        'spectrum2001',
+        {
+          timeBase: 0,
+          timeInterval: 1,
+          maxDataPoints: maxPoints
+        }
+      );
 
-	function instantiateMalformed2() {
+      // Add data points beyond maxDataPoints limit
+      for (let i = 0; i < 300; i++) {
+        series.addData({ series1: 42 });
+      }
 
-		var series = new Rickshaw.Series.FixedDuration(
-			[seriesData()],
-			'spectrum2001',
-			{ timeBase: 0, timeInterval: 30 }
-		);
-	}
-
-	test.throws(instantiateMalformed2, 'FixedDuration series requires maxDataPoints', 'we die without maxDataPoints');
-
-	var series = new Rickshaw.Series.FixedDuration(
-		[seriesData()],
-		'spectrum2001',
-		{
-			timeBase: 0,
-			timeInterval: 30,
-			maxDataPoints: 2000
-		}
-	);
-
-	test.ok(series instanceof Rickshaw.Series.FixedDuration);
-	test.ok(series instanceof Array);
-	test.done();
-};
-
-exports.addData = function(test) {
-
-	var series = new Rickshaw.Series.FixedDuration(
-		[seriesData()],
-		'spectrum2001',
-		{
-			timeBase: 0,
-			timeInterval: 1,
-			maxDataPoints: 20
-		}
-	);
-
-	for (var i = 0; i < 300; i++) {
-		series.addData({series1: 42});
-	}
-
-	test.equal(series[0].data.length, 20 + 2, 'series length stuck around maxDataPoints');
-	test.equal(series.currentSize, 20, 'series.currentSize is stuck at maxDataPoints');
-	test.done();
-};
+      // series[0].data.length is maxPoints + 2 because of how Rickshaw handles
+      // data point interpolation at the edges of the time window
+      expect(series[0].data.length).toBe(maxPoints + 2);
+      expect(series.currentSize).toBe(maxPoints);
+    });
+  });
+});

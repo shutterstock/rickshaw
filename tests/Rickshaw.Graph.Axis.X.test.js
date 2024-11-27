@@ -1,45 +1,27 @@
-var d3 = require("d3");
-var Rickshaw;
+const d3 = require('d3');
+const Rickshaw = require('../rickshaw');
 
-exports.setUp = function(callback) {
+describe('Rickshaw.Graph.Axis.X', () => {
+  test('renders x-axis with correct ticks', () => {
+    // Create test elements
+    const element = document.createElement('div');
 
-	Rickshaw = require('../rickshaw');
+    // Initialize graph with test data
+    const graph = new Rickshaw.Graph({
+      width: 900,
+      element: element,
+      series: [{ data: [{ x: 4, y: 32 }, { x: 16, y: 100 }] }]
+    });
 
-	global.document = require("jsdom").jsdom("<html><head></head><body></body></html>");
-	global.window = document.defaultView;
+    // Create and render x-axis
+    const xAxis = new Rickshaw.Graph.Axis.X({
+      graph: graph
+    });
+    xAxis.render();
 
-	new Rickshaw.Compat.ClassList();
-
-	callback();
-};
-
-exports.tearDown = function(callback) {
-
-	delete require.cache.d3;
-	callback();
-};
-
-exports.axis = function(test) {
-
-	var element = document.createElement('div');
-
-	var graph = new Rickshaw.Graph({
-		width: 900,
-		element: element,
-		series: [ { data: [ { x: 4, y: 32 }, { x: 16, y: 100 } ] } ]
-	});
-
-	var xAxis = new Rickshaw.Graph.Axis.X({
-		graph: graph
-	});
-
-	xAxis.render();
-
-	var ticks = d3.select(element).selectAll('.x_grid_d3 .tick')
-
-	test.equal(ticks[0].length, 13, "we have some ticks");
-	test.equal(ticks[0][0].getAttribute('data-x-value'), '4');
-
-	test.done();
-};
-
+    // Check ticks
+    const ticks = d3.select(element).selectAll('.x_grid_d3 .tick');
+    expect(ticks[0].length).toBe(13);
+    expect(ticks[0][0].getAttribute('data-x-value')).toBe('4');
+  });
+});

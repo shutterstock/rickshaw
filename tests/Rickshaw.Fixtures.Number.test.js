@@ -1,62 +1,53 @@
-var Number = require('../rickshaw').Fixtures.Number;
+const { Fixtures } = require('../rickshaw');
+const { Number: NumberFixtures } = Fixtures;
 
-exports.formatKMBT = function(test) {
+describe('Rickshaw.Fixtures.Number', () => {
+  describe('formatKMBT', () => {
+    const testCases = [
+      { input: 0, expected: '0' },
+      { input: 1, expected: 1 },
+      { input: 0.1, expected: '0.10' },
+      { input: 123456, expected: '123.46K' },
+      { input: 1000000000000.54, expected: '1.00T' },
+      { input: 1000000000.54, expected: '1.00B' },
+      { input: 98765432.54, expected: '98.77M' },
+      { input: -12345, expected: '-12.35K' }
+    ];
 
-  var formatted = Number.formatKMBT(0);
-  test.equal(formatted, '0');
+    testCases.forEach(({ input, expected }) => {
+      test(`formats ${input} to ${expected}`, () => {
+        const result = NumberFixtures.formatKMBT(input);
+        if (typeof expected === 'number') {
+          expect(result).toBe(expected);
+        } else {
+          expect(String(result)).toBe(expected);
+        }
+      });
+    });
+  });
 
-  formatted = Number.formatKMBT(1);
-  test.equal(formatted, 1);
+  describe('formatBase1024KMGTP', () => {
+    const testCases = [
+      { input: 0, expected: '0' },
+      { input: 1, expected: 1 },
+      { input: 0.1, expected: '0.10' },
+      { input: 123456, expected: '120.56K' },
+      { input: 1125899906842624.54, expected: '1.00P' },
+      { input: 1099511627778, expected: '1.00T' },
+      { input: 1073741824, expected: '1.00G' },
+      { input: 1048576, expected: '1.00M' },
+      { input: -12345, expected: '-12.06K' }
+    ];
 
-  formatted = Number.formatKMBT(0.1);
-  test.equal(formatted, '0.10');
-
-  formatted = Number.formatKMBT(123456);
-  test.equal(formatted, '123.46K');
-
-  formatted = Number.formatKMBT(1000000000000.54);
-  test.equal(formatted, '1.00T');
-
-  formatted = Number.formatKMBT(1000000000.54);
-  test.equal(formatted, '1.00B');
-
-  formatted = Number.formatKMBT(098765432.54);
-  test.equal(formatted, '98.77M');
-
-  formatted = Number.formatKMBT(-12345);
-  test.equal(formatted, '-12.35K');
-
-  test.done();
-};
-
-exports.formatBase1024KMGTP = function(test) {
-
-  var formatted = Number.formatBase1024KMGTP(0);
-  test.equal(formatted, '0');
-
-  formatted = Number.formatBase1024KMGTP(1);
-  test.equal(formatted, 1);
-
-  formatted = Number.formatBase1024KMGTP(0.1);
-  test.equal(formatted, '0.10');
-
-  formatted = Number.formatBase1024KMGTP(123456);
-  test.equal(formatted, '120.56K');
-
-  formatted = Number.formatBase1024KMGTP(1125899906842624.54);
-  test.equal(formatted, '1.00P');
-
-  formatted = Number.formatBase1024KMGTP(1099511627778);
-  test.equal(formatted, '1.00T');
-
-  formatted = Number.formatBase1024KMGTP(1073741825);
-  test.equal(formatted, '1.00G');
-
-  formatted = Number.formatBase1024KMGTP(1048579);
-  test.equal(formatted, '1.00M');
-
-  formatted = Number.formatBase1024KMGTP(-12345);
-  test.equal(formatted, '-12.06K');
-
-  test.done();
-};
+    testCases.forEach(({ input, expected }) => {
+      test(`formats ${input} to ${expected}`, () => {
+        const result = NumberFixtures.formatBase1024KMGTP(input);
+        if (typeof expected === 'number') {
+          expect(result).toBe(expected);
+        } else {
+          expect(String(result)).toBe(expected);
+        }
+      });
+    });
+  });
+});

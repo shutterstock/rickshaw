@@ -1,52 +1,57 @@
-var Rickshaw = require('../rickshaw');
+const Rickshaw = require('../rickshaw');
 
-exports.load = function(test) {
+describe('Rickshaw.Class', () => {
+  test('should be defined as an object', () => {
+    expect(typeof Rickshaw.Class).toBe('object');
+  });
 
-	test.equal(typeof Rickshaw.Class, 'object', 'Rickshaw.Class is a function');
-	test.done();
-};
+  describe('instantiation', () => {
+    test('should create a basic class instance', () => {
+      // Create fresh class definition for this test
+      const TestClass = Rickshaw.Class.create({
+        name: 'sample',
+        concat: function(suffix) {
+          return [this.name, suffix].join(' ');
+        }
+      });
 
-exports.instantiation = function(test) {
+      const sample = new TestClass();
+      expect(sample.concat('polka')).toBe('sample polka');
+    });
 
-	Rickshaw.namespace('Rickshaw.Sample.Class');
+    test('should create a subclass instance', () => {
+      // Create fresh parent class for this test
+      const ParentClass = Rickshaw.Class.create({
+        name: 'sample',
+        concat: function(suffix) {
+          return [this.name, suffix].join(' ');
+        }
+      });
 
-	Rickshaw.Sample.Class = Rickshaw.Class.create({
-		name: 'sample',
-		concat: function(suffix) {
-			return [this.name, suffix].join(' ');
-		}
-	});
+      // Create fresh subclass for this test
+      const SubClass = Rickshaw.Class.create(ParentClass, {
+        name: 'sampler'
+      });
 
-	var sample = new Rickshaw.Sample.Class();
-	test.equal(sample.concat('polka'), 'sample polka');
+      const sampler = new SubClass();
+      expect(sampler.concat('polka')).toBe('sampler polka');
+    });
+  });
 
-	Rickshaw.namespace('Rickshaw.Sample.Class.Prefix');
+  describe('array inheritance', () => {
+    test('should extend Array functionality', () => {
+      // Create fresh array class for this test
+      const TestArray = Rickshaw.Class.create(Array, {
+        second: function() {
+          return this[1];
+        }
+      });
 
-	Rickshaw.Sample.Subclass = Rickshaw.Class.create( Rickshaw.Sample.Class, {
-		name: 'sampler'
-	});
-
-	var sampler = new Rickshaw.Sample.Subclass();
-	test.equal(sampler.concat('polka'), 'sampler polka');
-
-	test.done();
-};
-
-exports.array = function(test) {
-
-	Rickshaw.namespace('Rickshaw.Sample.Array');
-
-	Rickshaw.Sample.Array = Rickshaw.Class.create(Array, {
-		second: function() {
-			return this[1];
-		}
-	});
-
-	var array = new Rickshaw.Sample.Array();
-	array.push('red');
-	array.push('blue');
-
-	test.equal(array.second(), 'blue');
-
-	test.done();
-};
+      const array = new TestArray();
+      array.push('red');
+      array.push('blue');
+      
+      expect(array.second()).toBe('blue');
+    });
+  });
+});
