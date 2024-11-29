@@ -2,6 +2,7 @@
 
 .rickshaw_graph {
 	position: relative;
+	overflow: visible;
 }
 .rickshaw_graph svg {
 	display: block;	
