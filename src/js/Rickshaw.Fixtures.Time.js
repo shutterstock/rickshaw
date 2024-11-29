@@ -16,6 +16,10 @@ Rickshaw.Fixtures.Time = function() {
 			seconds: 86400 * 365.25,
 			formatter: function(d) { return d.getUTCFullYear() }
 		}, {
+			name: 'quarter',
+			seconds: 86400 * 30.5 * 3,
+			formatter: function(d) { return d.getUTCFullYear() + 'Q' + (d.getUTCMonth() / 3 + 1) }
+		}, {
 			name: 'month',
 			seconds: 86400 * 30.5,
 			formatter: function(d) { return self.months[d.getUTCMonth()] }
@@ -78,7 +82,7 @@ Rickshaw.Fixtures.Time = function() {
 
 		var date, floor, year;
 
-		if (unit.name == 'month') {
+		if (unit.name == 'month' || unit.name == 'quarter') {
 
 			date = new Date(time * 1000);
 
@@ -88,11 +92,10 @@ Rickshaw.Fixtures.Time = function() {
 			year = date.getUTCFullYear();
 			var month = date.getUTCMonth();
 
-			if (month == 11) {
-				month = 0;
-				year = year + 1;
-			} else {
-				month += 1;
+			month += (unit.name == 'month' ? 1 : 2);
+			if (month >= 12) {
+				month -= 12;
+				year += 1;
 			}
 
 			return Date.UTC(year, month) / 1000;
