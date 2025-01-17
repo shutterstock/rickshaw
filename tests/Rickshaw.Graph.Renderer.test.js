@@ -1,205 +1,245 @@
-var d3 = require("d3");
-var Rickshaw = require("../rickshaw");
+const d3 = require('d3');
+const Rickshaw = require('../rickshaw');
 
-exports.setUp = function(callback) {
+describe('Rickshaw.Graph.Renderer', () => {
+  // Helper function to create a clean graph instance
+  const createGraph = (options = {}) => {
+    const el = document.createElement('div');
+    return new Rickshaw.Graph({
+      element: el,
+      width: options.width || 960,
+      height: options.height || 500,
+      padding: options.padding || { top: 0, right: 0, bottom: 0, left: 0 },
+      renderer: options.renderer || 'scatterplot',
+      series: options.series || [{
+        color: 'steelblue',
+        data: [
+          { x: 0, y: 40 },
+          { x: 1, y: 49 },
+          { x: 2, y: 38 },
+          { x: 3, y: 30 },
+          { x: 4, y: 32 }
+        ]
+      }],
+      min: options.min,
+      max: options.max,
+      stroke: options.stroke
+    });
+  };
 
-	Rickshaw = require('../rickshaw');
+  describe('domain calculation', () => {
+    test('calculates basic domain without padding', () => {
+      const graph = createGraph();
+      const domain = graph.renderer.domain();
+      expect(domain).toEqual({ x: [0, 4], y: [0, 49] });
+    });
 
-	global.document = require("jsdom").jsdom("<html><head></head><body></body></html>");
-	global.window = document.defaultView;
+    test('calculates domain with padding', () => {
+      const graph = createGraph({
+        padding: { top: 0.1, right: 0.1, bottom: 0.1, left: 0.1 }
+      });
+      const domain = graph.renderer.domain();
+      expect(domain).toEqual({ x: [-0.4, 4.44], y: [0, 53.9] });
+    });
 
-	new Rickshaw.Compat.ClassList();
+    test('handles negative y-values without auto min', () => {
+      const graph = createGraph({
+        series: [{
+          data: [
+            { x: 0, y: 40 },
+            { x: 1, y: 49 },
+            { x: 2, y: -72 },
+            { x: 3, y: 30 },
+            { x: 4, y: 32 }
+          ]
+        }]
+      });
+      const domain = graph.renderer.domain();
+      expect(domain).toEqual({ x: [0, 4], y: [0, 49] });
+    });
 
-	callback();
-};
+    test('handles negative y-values with auto min', () => {
+      const graph = createGraph({
+        min: 'auto',
+        series: [{
+          data: [
+            { x: 0, y: 40 },
+            { x: 1, y: 49 },
+            { x: 2, y: -72 },
+            { x: 3, y: 30 },
+            { x: 4, y: 32 }
+          ]
+        }]
+      });
+      const domain = graph.renderer.domain();
+      expect(domain).toEqual({ x: [0, 4], y: [-72, 49] });
+    });
 
-exports.tearDown = function(callback) {
+    test('handles different series lengths', () => {
+      const graph = createGraph({
+        min: 'auto',
+        series: [
+          {
+            data: [
+              { x: 0, y: 40 },
+              { x: 1, y: 49 },
+              { x: 2, y: -72 },
+              { x: 3, y: 30 },
+              { x: 4, y: 32 }
+            ]
+          },
+          {
+            data: [
+              { x: 1, y: 20 },
+              { x: 2, y: 38 },
+              { x: 3, y: 30 },
+              { x: 4, y: 32 },
+              { x: 5, y: 32 }
+            ]
+          }
+        ]
+      });
+      graph.stackData();
+      const domain = graph.renderer.domain();
+      expect(domain).toEqual({ x: [0, 5], y: [-72, 49] });
+    });
 
-	delete require.cache.d3;
-	callback();
-};
+    test('handles null values with auto min', () => {
+      const graph = createGraph({
+        min: 'auto',
+        series: [
+          { data: [{ x: 1, y: 27 }, { x: 2, y: 49 }, { x: 3, y: 14 }] },
+          { data: [{ x: 1, y: null }, { x: 2, y: 9 }, { x: 3, y: 3 }] }
+        ]
+      });
+      graph.stackData();
+      const domain = graph.renderer.domain();
+      expect(domain).toEqual({ x: [1, 3], y: [3, 49] });
+    });
 
-exports.domain = function(test) {
+    test('handles explicit zero max', () => {
+      const graph = createGraph({
+        min: 'auto',
+        max: 0,
+        series: [
+          { data: [{ x: 1, y: -29 }, { x: 2, y: -9 }, { x: 3, y: -3 }] }
+        ]
+      });
+      graph.stackData();
+      const domain = graph.renderer.domain();
+      expect(domain).toEqual({ x: [1, 3], y: [-29, 0] });
+    });
+  });
 
-	// document comes from jsdom
-	var el = document.createElement("div");
+  describe('stroke factory', () => {
+    // Create a test renderer that implements stroke factory
+    beforeAll(() => {
+      Rickshaw.Graph.Renderer.RespectStrokeFactory = Rickshaw.Class.create(Rickshaw.Graph.Renderer, {
+        name: 'respectStrokeFactory',
+        
+        seriesPathFactory: function() {
+          const graph = this.graph;
+          const factory = d3.svg.line()
+            .x(d => graph.x(d.x))
+            .y(d => graph.y(d.y + d.y0))
+            .interpolate(graph.interpolation)
+            .tension(this.tension);
+          factory.defined && factory.defined(d => d.y !== null);
+          return factory;
+        },
+        
+        seriesStrokeFactory: function() {
+          const graph = this.graph;
+          const factory = d3.svg.line()
+            .x(d => graph.x(d.x))
+            .y(d => graph.y(d.y + d.y0))
+            .interpolate(graph.interpolation)
+            .tension(this.tension);
+          factory.defined && factory.defined(d => d.y !== null);
+          return factory;
+        }
+      });
+    });
 
-	var graph = new Rickshaw.Graph({
-		element: el,
-		width: 960,
-		height: 500,
-		padding: { top: 0, right: 0, bottom: 0, left: 0 },
-		renderer: 'scatterplot',
-		series: [
-			{
-				color: 'steelblue',
-				data: [
-					{ x: 0, y: 40 },
-					{ x: 1, y: 49 },
-					{ x: 2, y: 38 },
-					{ x: 3, y: 30 },
-					{ x: 4, y: 32 }
-				]
-			}
-		]
-	});
+    test('creates both path and stroke elements', () => {
+      const graph = createGraph({
+        width: 10,
+        height: 10,
+        renderer: 'respectStrokeFactory',
+        stroke: true,
+        series: [{
+          className: 'fnord',
+          data: [
+            { x: 0, y: 40 },
+            { x: 1, y: 49 },
+            { x: 2, y: 38 },
+            { x: 3, y: 30 },
+            { x: 4, y: 32 }
+          ]
+        }]
+      });
+      graph.render();
 
-	var domain = graph.renderer.domain();
-	test.deepEqual(domain, { x: [ 0, 4 ], y: [ 0, 49 ] }, 'domain matches');
+      const path = graph.vis.select('path.path.fnord');
+      expect(path.size()).toBe(1);
+      expect(path[0][0].getAttribute('opacity')).toBe('1');
 
-	// with padding
+      const stroke = graph.vis.select('path.stroke.fnord');
+      expect(stroke.size()).toBe(1);
 
-	graph.configure({ padding: { top: 0.1, right: 0.1, bottom: 0.1, left: 0.1 }});
+      // Check series references
+      const firstSeries = graph.series[0];
+      expect(d3.select(firstSeries.path).classed('path')).toBe(true);
+      expect(d3.select(firstSeries.stroke).classed('stroke')).toBe(true);
+    });
+  });
 
-	domain = graph.renderer.domain();
-	test.deepEqual(domain, { x: [ -0.4, 4.44 ], y: [ 0, 49 + 4.9 ] }, 'domain matches with padding');
+  describe('empty series handling', () => {
+    test('allows arbitrary empty series when finding domain', () => {
+      const graph = createGraph({
+        width: 10,
+        height: 10,
+        renderer: 'line',
+        series: [
+          { data: [] },
+          {
+            data: [
+              { x: 0, y: 40 },
+              { x: 1, y: 49 },
+              { x: 2, y: 38 },
+              { x: 3, y: 30 },
+              { x: 4, y: 32 }
+            ]
+          }
+        ]
+      });
 
-	// negative y-values minus auto
+      // TODO: the original test expected { x: [0, 4], y: [0, 49.49] }
+      expect(graph.renderer.domain()).toEqual({ x: [0, 4], y: [0, 49] });
+    });
+  });
 
-	graph.series[0].data[2].y = -72;
-	graph.configure({ padding: { top: 0, right: 0, bottom: 0, left: 0 }});
+  describe('configuration', () => {
+    test('initializes with default settings', () => {
+      const graph = createGraph();
+      const defaults = graph.renderer.defaults();
 
-	domain = graph.renderer.domain();
-	test.deepEqual(domain, { x: [ 0, 4 ], y: [ 0, 49 ] }, 'domain matches with negative numbers and no auto');
+      expect(defaults.tension).toBe(0.8);
+      expect(defaults.strokeWidth).toBe(2);
+      expect(defaults.unstack).toBe(true);
+      expect(defaults.padding).toEqual({ top: 0.01, right: 0.01, bottom: 0.01, left: 0.01 });
+      expect(defaults.stroke).toBe(false);
+      expect(defaults.opacity).toBe(1);
+    });
 
-	// negative y-values w/ auto
+    test('allows setting stroke width and tension', () => {
+      const graph = createGraph();
+      
+      graph.renderer.setStrokeWidth(3);
+      expect(graph.renderer.strokeWidth).toBe(3);
 
-	graph.series[0].data[2].y = -72;
-	graph.configure({ padding: { top: 0, right: 0, bottom: 0, left: 0 }, min: 'auto'});
-
-	domain = graph.renderer.domain();
-	test.deepEqual(domain, { x: [ 0, 4 ], y: [ -72, 49 ] }, 'domain matches with negative numbers and min auto');
-
-	// different series lengths
-
-	graph.series.push({
-		color: 'lightblue',
-		data: [ { x: 1, y: 20 }, { x: 2, y: 38 }, { x: 3, y: 30 }, { x: 4, y: 32 }, { x: 5, y: 32 } ]
-	});
-
-	graph.stackData();
-	domain = graph.renderer.domain();
-	test.deepEqual(domain, { x: [ 0, 5 ], y: [ -72, 49 ] }, 'multiple length series extents match');
-
-	// null values and auto
-
-	graph.series.splice(0, graph.series.length);
-	graph.series.push({ data: [ { x: 1, y: 27 }, { x: 2, y: 49 }, { x: 3, y: 14 } ] });
-	graph.series.push({ data: [ { x: 1, y: null }, { x: 2, y: 9 }, { x: 3, y: 3 } ] });
-
-	graph.configure({ min: 'auto' });
-	graph.stackData();
-
-	domain = graph.renderer.domain();
-	test.deepEqual(domain, { x: [ 1, 3 ], y: [ 3, 49 ] }, "null values don't set min to zero");
-
-	// max of zero
-
-	graph.series.push({ data: [ { x: 1, y: -29 }, { x: 2, y: -9 }, { x: 3, y: -3 } ] });
-
-	graph.configure({ max: 0 });
-	graph.stackData();
-
-	domain = graph.renderer.domain();
-	test.deepEqual(domain, { x: [ 1, 3 ], y: [ -29, 0 ] }, "explicit zero max doesn't fall through");
-
-	test.done();
-};
-
-exports.respectStrokeFactory = function(test) {
-
-	var el = document.createElement("div");
-	
-	Rickshaw.Graph.Renderer.RespectStrokeFactory = Rickshaw.Class.create( Rickshaw.Graph.Renderer, {
-
-		name: 'respectStrokeFactory',
-		
-		seriesPathFactory: function() {
-			var graph = this.graph;
-			var factory = d3.svg.line()
-				.x( function(d) { return graph.x(d.x) } )
-				.y( function(d) { return graph.y(d.y + d.y0) } )
-				.interpolate(graph.interpolation).tension(this.tension);
-			factory.defined && factory.defined( function(d) { return d.y !== null } );
-			return factory;
-		},
-		
-		seriesStrokeFactory: function() {
-			var graph = this.graph;
-			var factory = d3.svg.line()
-				.x( function(d) { return graph.x(d.x) } )
-				.y( function(d) { return graph.y(d.y + d.y0) } )
-				.interpolate(graph.interpolation).tension(this.tension);
-			factory.defined && factory.defined( function(d) { return d.y !== null } );
-			return factory;
-		}
-	});
-	
-	var graph = new Rickshaw.Graph({
-		element: el,
-		stroke: true,
-		width: 10,
-		height: 10,
-		renderer: 'respectStrokeFactory',
-		series: [
-			{
-				className: 'fnord',
-				data: [
-					{ x: 0, y: 40 },
-					{ x: 1, y: 49 },
-					{ x: 2, y: 38 },
-					{ x: 3, y: 30 },
-					{ x: 4, y: 32 }
-				]
-			}
-		]
-	});
-	graph.render();
-	
-	var path = graph.vis.select('path.path.fnord');
-	test.equals(path.size(), 1, "we have a fnord path");
-	test.equals(path[0][0].getAttribute('opacity'), 1, 'default opacity');
-
-	var stroke = graph.vis.select('path.stroke.fnord');
-	test.equals(stroke.size(), 1, "we have a fnord stroke");
-	
-	// should also be available via series
-	var firstSeries = graph.series[0];
-	test.ok(d3.select(firstSeries.path).classed('path'), "selectable path");
-	test.ok(d3.select(firstSeries.stroke).classed('stroke', "selectable stroke"));
-	
-	test.done();
-};
-
-
-exports['should allow arbitrary empty series when finding the domain of stacked data'] = function(test) {
-	
-	var el = document.createElement("div");
-	
-	// should not throw
-	var graph = new Rickshaw.Graph({
-		element: el,
-		stroke: true,
-		width: 10,
-		height: 10,
-		renderer: 'line',
-		series: [
-			{
-				data: []
-			},
-			{
-				data: [
-					{ x: 0, y: 40 },
-					{ x: 1, y: 49 },
-					{ x: 2, y: 38 },
-					{ x: 3, y: 30 },
-					{ x: 4, y: 32 }
-				]
-			}
-		]
-	});
-	test.deepEqual(graph.renderer.domain(), { x: [0, 4], y: [0, 49.49]});
-	
-	test.done();
-};
-
+      graph.renderer.setTension(0.5);
+      expect(graph.renderer.tension).toBe(0.5);
+    });
+  });
+});

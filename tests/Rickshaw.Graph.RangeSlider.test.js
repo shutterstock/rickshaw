@@ -1,100 +1,101 @@
-var d3 = require("d3");
+const d3 = require('d3');
+const jQuery = require('jquery');
+const Rickshaw = require('../rickshaw');
 
+// Helper function to create test graphs
 function createGraphs() {
-	var graphs = [];
-	// set up our data series with 50 random data points
-	var seriesData = [ [], [], [] ];
-	var random = new Rickshaw.Fixtures.RandomData(150);
+  const graphs = [];
+  const seriesData = [[], [], []];
+  const random = new Rickshaw.Fixtures.RandomData(150);
 
-	for (var i = 0; i < 150; i++) {
-		random.addData(seriesData);
-	}
+  for (let i = 0; i < 150; i++) {
+    random.addData(seriesData);
+  }
 
-	color = [ "#c05020", "#30c020","#6060c0"]
-	names = ['New York','London','Tokyo']
+  const colors = ['#c05020', '#30c020', '#6060c0'];
+  const names = ['New York', 'London', 'Tokyo'];
 
-	// Make all three graphs in a loop
-	for (var i = 0; i < names.length; i++) {
-		graph = new Rickshaw.Graph( {
-			element: document.getElementById("chart_"+i),
-			width: 800 * i,
-			height: 100,
-			renderer: 'line',
-			series: [{
-				color: color[i],
-				data: seriesData[i],
-				name: names[i]
-			}]
-		});
+  for (let i = 0; i < names.length; i++) {
+    const graph = new Rickshaw.Graph({
+      element: document.getElementById(`chart_${i}`),
+      width: 800 * i,
+      height: 100,
+      renderer: 'line',
+      series: [{
+        color: colors[i],
+        data: seriesData[i],
+        name: names[i]
+      }]
+    });
 
-		graph.render()
-		graphs.push(graph)
-	}
+    graph.render();
+    graphs.push(graph);
+  }
 
-	return graphs;
+  return graphs;
 }
 
-exports.setUp = function(callback) {
+describe('Rickshaw.Graph.RangeSlider', () => {
+  beforeEach(() => {
+    document.body.innerHTML = `
+      <div id="chart_0"></div>
+      <div id="chart_1"></div>
+      <div id="chart_2">
+        <div id="slider"></div>
+      </div>
+    `;
 
-	Rickshaw = require('../rickshaw');
+    // Setup jQuery globally since RangeSlider expects it
+    global.jQuery = jQuery;
+    jQuery.fn.jquery = '1.8.1';
+  });
 
-	global.document = require("jsdom").jsdom("<html><head></head><body><div id='chart_0'></div><div id='chart_1'></div><div id='chart_2'><div id='slider'></div></div></body></html>");
-	global.window = document.defaultView;
-	global.jQuery = require("jquery");
+  afterEach(() => {
+    delete global.jQuery;
+  });
 
-	new Rickshaw.Compat.ClassList();
+  test('creates slider with single graph', () => {
+    const graphs = createGraphs();
+    const slider = new Rickshaw.Graph.RangeSlider({
+      element: document.getElementById('slider'),
+      graph: graphs[0]
+    });
 
-	callback();
-};
+    expect(slider.graph).toBeTruthy();
+  });
 
-exports.tearDown = function(callback) {
+  test('creates slider with jQuery element', () => {
+    const graphs = createGraphs();
+    const slider = new Rickshaw.Graph.RangeSlider({
+      element: jQuery('#slider'),
+      graph: graphs[0]
+    });
 
-	delete require.cache.d3;
-	callback();
-};
+    expect(slider.graph).toBeTruthy();
+    expect(jQuery(slider.element)[0].style.width).toBe('');
+    
+    slider.graph.configure({});
+    expect(slider.element[0].style.width).toBe('400px');
+  });
 
-exports.basic = function(test) {
-	var graphs = createGraphs();
+  test('supports multiple graphs with shared slider', () => {
+    const graphs = createGraphs();
+    const slider = new Rickshaw.Graph.RangeSlider({
+      element: document.getElementById('slider'),
+      graphs: graphs
+    });
 
-	var slider = new Rickshaw.Graph.RangeSlider({
-		element:  document.getElementById("slider"),
-		graph: createGraphs()[0]
-	});
+    // Test multiple graphs support
+    expect(slider.graphs).toBeTruthy();
+    expect(slider.graph).toBe(slider.graphs[0]);
 
-	test.ok(slider.graph, "slider supports multiple graphs");
-	test.done();
-};
-
-exports.basicJQueryElement = function(test) {
-	var graphs = createGraphs();
-
-	var slider = new Rickshaw.Graph.RangeSlider({
-		element: jQuery('#slider'),
-		graph: createGraphs()[0]
-	});
-
-	test.ok(slider.graph, "slider supports multiple graphs");
-	test.equal(jQuery(slider.element)[0].style.width, '');
-	slider.graph.configure({});
-	test.equal(slider.element[0].style.width, '400px');
-	test.done();
-};
-
-exports.shared = function(test) {
-	var slider = new Rickshaw.Graph.RangeSlider({
-		element:  document.getElementById("slider"),
-		graphs: createGraphs()
-	});
-
-	test.ok(slider.graphs, "slider supports multiple graphs");
-	test.ok(slider.graph === slider.graphs[0], "slider uses first graph as reference");
-
-	test.equal(slider.element.style.width, '');
-	slider.graphs[0].configure({});
-	test.equal(slider.element.style.width, '400px');
-	slider.graphs[2].configure({});
-	test.equal(slider.element.style.width, '1600px');
-
-	test.done();
-};
-
+    // Test width adjustments
+    expect(slider.element.style.width).toBe('');
+    
+    slider.graphs[0].configure({});
+    expect(slider.element.style.width).toBe('400px');
+    
+    slider.graphs[2].configure({});
+    expect(slider.element.style.width).toBe('1600px');
+  });
+});

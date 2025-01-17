@@ -14,7 +14,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [12.x, 22.x]
+        node-version: [22.x]
 
     env:
       COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
@@ -39,10 +39,7 @@ jobs:
 
     - name: Run tests
       run: npm run coverage
-
-    - name: Run Coveralls
-      run: npm run coveralls
-
+      
     - name: Check for changed dist files
       run: |
         git fetch origin main --depth=1
@@ -54,3 +51,7 @@ jobs:
           echo "$DIST_CHANGED"
           exit 1
         fi
+
+    - name: Run Coveralls
+      run: npm run coveralls
+      if: github.event_name == 'push' && github.ref == 'refs/heads/main'

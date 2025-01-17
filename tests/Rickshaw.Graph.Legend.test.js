@@ -1,123 +1,138 @@
-var d3 = require("d3");
-var Rickshaw;
+const Rickshaw = require('../rickshaw');
 
-exports.setUp = function(callback) {
+describe('Rickshaw.Graph.Legend', () => {
+  // Helper function to create a test graph
+  function createTestGraph() {
+    const element = document.createElement('div');
+    return new Rickshaw.Graph({
+      element,
+      width: 960,
+      height: 500,
+      renderer: 'stack',
+      series: [
+        {
+          name: 'foo',
+          color: 'green',
+          stroke: 'red',
+          data: [{ x: 4, y: 32 }]
+        },
+        {
+          name: 'bar',
+          data: [{ x: 4, y: 32 }]
+        }
+      ]
+    });
+  }
 
-	Rickshaw = require('../rickshaw');
+  test('renders legend with correct items', () => {
+    const graph = createTestGraph();
+    const legendElement = document.createElement('div');
+    
+    const legend = new Rickshaw.Graph.Legend({
+      graph,
+      element: legendElement
+    });
 
-	global.document = require("jsdom").jsdom("<html><head></head><body></body></html>");
-	global.window = document.defaultView;
+    const items = legendElement.getElementsByTagName('li');
+    expect(items.length).toBe(2);
+    expect(items[1].getElementsByClassName('label')[0].innerHTML).toBe('foo');
+    expect(items[0].getElementsByClassName('label')[0].innerHTML).toBe('bar');
 
-	new Rickshaw.Compat.ClassList();
+    // Clean up
+    graph.element.remove();
+    legendElement.remove();
+  });
 
-	var el = document.createElement("div");
-	this.graph = new Rickshaw.Graph({
-		element: el,
-		width: 960,
-		height: 500,
-		renderer: 'stack',
-		series: [
-			{
-				name: 'foo',
-				color: 'green',
-				stroke: 'red',
-				data: [
-					{ x: 4, y: 32 }
-				]
-			},
-			{
-				name: 'bar',
-				data: [
-					{ x: 4, y: 32 }
-				]
-			}
-		]
-	});
-	this.legendEl = document.createElement("div");
+  test('has default class name', () => {
+    const graph = createTestGraph();
+    const legendElement = document.createElement('div');
+    
+    const legend = new Rickshaw.Graph.Legend({
+      graph,
+      element: legendElement
+    });
 
+    expect(legendElement.className).toBe('rickshaw_legend');
 
-	callback();
-};
+    // Clean up
+    graph.element.remove();
+    legendElement.remove();
+  });
 
-exports.tearDown = function(callback) {
+  test('can override class name through inheritance', () => {
+    const graph = createTestGraph();
+    const legendElement = document.createElement('div');
+    
+    const MyLegend = Rickshaw.Class.create(Rickshaw.Graph.Legend, {
+      className: 'fnord'
+    });
 
-	delete require.cache.d3;
-	callback();
-};
+    const legend = new MyLegend({
+      graph,
+      element: legendElement
+    });
 
-exports.rendersLegend = function(test) {
-	var legend = new Rickshaw.Graph.Legend({
-		graph: this.graph,
-		element: this.legendEl
-	});
+    expect(legendElement.className).toBe('fnord');
 
-	var items = this.legendEl.getElementsByTagName('li')
-	test.equal(items.length, 2, "legend count")
-	test.equal(items[1].getElementsByClassName('label')[0].innerHTML, "foo")
-	test.equal(items[0].getElementsByClassName('label')[0].innerHTML, "bar")
+    // Clean up
+    graph.element.remove();
+    legendElement.remove();
+  });
 
-	test.done();
+  test('uses default color key', () => {
+    const graph = createTestGraph();
+    const legendElement = document.createElement('div');
+    
+    const legend = new Rickshaw.Graph.Legend({
+      graph,
+      element: legendElement
+    });
 
-};
+    expect(legend.colorKey).toBe('color');
+    expect(legendElement.getElementsByClassName('swatch')[1].style.backgroundColor).toBe('green');
 
-exports.hasDefaultClassName = function(test) {
-	var legend = new Rickshaw.Graph.Legend({
-		graph: this.graph,
-		element: this.legendEl
-	});
+    // Clean up
+    graph.element.remove();
+    legendElement.remove();
+  });
 
-	test.equal(this.legendEl.className, "rickshaw_legend")
-	test.done();
-};
+  test('can override color key', () => {
+    const graph = createTestGraph();
+    const legendElement = document.createElement('div');
+    
+    const legend = new Rickshaw.Graph.Legend({
+      graph,
+      element: legendElement,
+      colorKey: 'stroke'
+    });
 
-exports.canOverrideClassName = function(test) {
-	var MyLegend = Rickshaw.Class.create( Rickshaw.Graph.Legend, {
-		className: 'fnord'
-	});
-	var legend = new MyLegend({
-		graph: this.graph,
-		element: this.legendEl
-	});
-	
-	test.equal(this.legendEl.className, "fnord")
-	test.done();
-};
+    expect(legend.colorKey).toBe('stroke');
+    expect(legendElement.getElementsByClassName('swatch')[1].style.backgroundColor).toBe('red');
 
-exports.hasDefaultColorKey = function(test) {
-	var legend = new Rickshaw.Graph.Legend({
-		graph: this.graph,
-		element: this.legendEl
-	});
+    // Clean up
+    graph.element.remove();
+    legendElement.remove();
+  });
 
+  test('adds series classes to legend elements', () => {
+    const graph = createTestGraph();
+    const legendElement = document.createElement('div');
+    
+    // Add class names to series
+    graph.series[0].className = 'fnord-series-0';
+    graph.series[1].className = 'fnord-series-1';
 
-	test.equal(legend.colorKey, "color");
-	test.equal(this.legendEl.getElementsByClassName('swatch')[1].style.backgroundColor, "green");
-	test.done();
-};
+    const legend = new Rickshaw.Graph.Legend({
+      graph,
+      element: legendElement
+    });
 
-exports.canOverrideColorKey = function(test) {
-	var legend = new Rickshaw.Graph.Legend({
-		graph: this.graph,
-		element: this.legendEl,
-		colorKey: 'stroke'
-	});
+    const items = legendElement.getElementsByTagName('li');
+    expect(items[0].className).toContain('fnord-series-1');
+    expect(items[1].className).toContain('fnord-series-0');
 
-
-	test.equal(legend.colorKey, "stroke");
-	test.equal(this.legendEl.getElementsByClassName('swatch')[1].style.backgroundColor, "red");
-	test.done();
-};
-
-exports['should put series classes on legend elements'] = function(test) {
-	this.graph.series[0].className = 'fnord-series-0';
-	this.graph.series[1].className = 'fnord-series-1';
-	
-	var legend = new Rickshaw.Graph.Legend({
-		graph: this.graph,
-		element: this.legendEl
-	});
-	test.equal(d3.select(this.legendEl).selectAll('.line').size(), 2);
-	test.equal(d3.select(this.legendEl).selectAll('.fnord-series-0').size(), 1);
-	test.equal(d3.select(this.legendEl).selectAll('.fnord-series-1').size(), 1);
-	test.done();
-};
+    // Clean up
+    graph.element.remove();
+    legendElement.remove();
+  });
+});
