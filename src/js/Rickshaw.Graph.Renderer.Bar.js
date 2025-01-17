@@ -26,7 +26,7 @@ Rickshaw.Graph.Renderer.Bar = Rickshaw.Class.create( Rickshaw.Graph.Renderer, {
 
 		var domain = $super();
 
-		var frequentInterval = this._frequentInterval(this.graph.stackedData.slice(-1).shift());
+		var frequentInterval = this._frequentInterval(this.graph.stackedData.slice(-1).shift() || []);
 		domain.x[1] += Number(frequentInterval.magnitude);
 
 		return domain;
@@ -34,7 +34,7 @@ Rickshaw.Graph.Renderer.Bar = Rickshaw.Class.create( Rickshaw.Graph.Renderer, {
 
 	barWidth: function(series) {
 
-		var frequentInterval = this._frequentInterval(series.stack);
+		var frequentInterval = this._frequentInterval(series ? series.stack : []);
 		var barWidth = this.graph.x.magnitude(frequentInterval.magnitude) * (1 - this.gapSize);
 
 		return barWidth;
