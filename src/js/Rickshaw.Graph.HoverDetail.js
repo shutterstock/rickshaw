@@ -224,6 +224,25 @@ Rickshaw.Graph.HoverDetail = Rickshaw.Class.create({
 			}
 		}
 
+		var collisions = this._calcLayoutCollisions(alignables);
+		if (collisions.length !== 0) {
+			// There's a collision between the item and x_label.
+			// This happens when a datapoint appears near the top of the chart.
+			// The item and x_label are aligned horizontally so to avoid the collision
+			// we move the x_label below the item.
+			
+			var parentRect = this.element.parentNode.getBoundingClientRect();
+			var itemRect = item.getBoundingClientRect();
+			// The following assumes that the x_label is positioned absolutely
+			// with respect its parent element.
+
+			// To move the x_label above the item use the following position instead:
+			// xlabelRect = xLabel.getBoundingClientRect();
+			// topPosition = itemRect.top - (xlabelRect.bottom - xlabelRect.top) - parentRect.top; 
+			var topPosition = itemRect.bottom - parentRect.top;
+			xLabel.style.top = topPosition + "px";  
+		}
+
 		if (typeof this.onRender == 'function') {
 			this.onRender(args);
 		}
@@ -250,6 +269,28 @@ Rickshaw.Graph.HoverDetail = Rickshaw.Class.create({
 			}
 		});
 		return error;
+	},
+
+	_calcLayoutCollisions: function(alignables) {
+		// return pairs of elements among alignables that overlap
+		var collisions = [];
+		var a1, a2, r1, r2;
+
+		for (var i=0; i<alignables.length; i++) {
+			a1 = alignables[i];
+			r1 = a1.getBoundingClientRect();
+			for (var j=i+1; j<alignables.length; j++) {
+				a2 = alignables[j];
+				r2 = a2.getBoundingClientRect();
+				if (!(r1.right < r2.left ||
+							r1.left > r2.right ||
+							r1.bottom < r2.top ||
+							r1.top > r2.bottom)) {
+					collisions.push([a1, a2]);
+				}
+			}
+		}
+		return collisions;
 	},
 
 	_addListeners: function() {
